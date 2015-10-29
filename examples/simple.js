@@ -25,7 +25,7 @@ webpackJsonp([0,1],[
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"rc-trigger/assets/index.less\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(195);
 	
 	var _objectAssign = __webpack_require__(196);
 	
@@ -22937,7 +22937,6 @@ webpackJsonp([0,1],[
 	    var transitionDuration = parseFloat(getDuration(node, 'transition-duration')) || 0;
 	    var animationDuration = parseFloat(getDuration(node, 'animation-duration')) || 0;
 	    var time = Math.max(transitionDuration, animationDuration);
-	    return;
 	    // sometimes, browser bug
 	    node.rcEndAnimTimeout = setTimeout(function () {
 	      node.rcEndAnimTimeout = null;
@@ -23067,7 +23066,6 @@ webpackJsonp([0,1],[
 	cssAnimation.isCssAnimationSupported = isCssAnimationSupported;
 	
 	module.exports = cssAnimation;
-
 
 /***/ },
 /* 192 */
@@ -23222,7 +23220,12 @@ webpackJsonp([0,1],[
 	module.exports = exports["default"];
 
 /***/ },
-/* 195 */,
+/* 195 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
 /* 196 */
 /***/ function(module, exports) {
 
