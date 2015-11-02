@@ -4,7 +4,7 @@ import Trigger from 'rc-trigger';
 import 'rc-trigger/assets/index.less';
 import assign from 'object-assign';
 
-const placementAlignMap = {
+const builtinPlacements = {
   left: {
     points: ['cr', 'cl'],
   },
@@ -30,17 +30,6 @@ const placementAlignMap = {
     points: ['tl', 'bl'],
   },
 };
-
-function getPlacementFromAlign(align) {
-  var points = align.points;
-  for (var p in placementAlignMap) {
-    var currentAlign = placementAlignMap[p];
-    var currentPoints = currentAlign.points;
-    if (currentPoints[0] === points[0] && currentPoints[1] === points[1]) {
-      return p;
-    }
-  }
-}
 
 const Test = React.createClass({
   getInitialState() {
@@ -100,26 +89,16 @@ const Test = React.createClass({
     console.log('tooltip', visible);
   },
 
-  getAlign(){
-    var state = this.state;
-    return assign({}, placementAlignMap[state.placement], {
-      offset: [state.offsetX, state.offsetY],
-      overflow: {
-        adjustX: 1,
-        adjustY: 1
-      }
-    });
-  },
-
   render() {
-    var trigger = this.state.trigger;
+    var state = this.state;
+    var trigger = state.trigger;
     return <div >
       <div style={{margin: '10px 20px'}}>
         <label>
           placement:
-          <select value={this.state.placement} onChange={this.onPlacementChange}>
-            <option>left</option>
+          <select value={state.placement} onChange={this.onPlacementChange}>
             <option>right</option>
+            <option>left</option>
             <option>top</option>
             <option>bottom</option>
             <option>topLeft</option>
@@ -131,7 +110,7 @@ const Test = React.createClass({
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label>
           <input value='rc-trigger-popup-zoom' type='checkbox' onChange={this.onTransitionChange}
-                 checked={this.state.transitionName === 'rc-trigger-popup-zoom'}/>
+                 checked={state.transitionName === 'rc-trigger-popup-zoom'}/>
           transitionName
         </label>
 
@@ -163,14 +142,21 @@ const Test = React.createClass({
         </label>
       </div>
       <div style={{margin: 100}}>
-        <Trigger popupAlign={this.getAlign()}
+        <Trigger popupAlign={{
+      offset: [state.offsetX, state.offsetY],
+      overflow: {
+        adjustX: 1,
+        adjustY: 1
+      }
+    }}
                  mouseEnterDelay={0}
-                 //destroyPopupOnHide={true}
+                 popupPlacement={state.placement}
+          //destroyPopupOnHide={true}
                  mouseLeaveDelay={0.1}
-                 action={Object.keys(this.state.trigger)}
-                 getPopupClassNameFromAlign={getPlacementFromAlign}
+                 action={Object.keys(state.trigger)}
+                 builtinPlacements={builtinPlacements}
                  popup={<div style={{border:'1px solid red',padding:10}}>i am a popup</div>}
-                 popupTransitionName={this.state.transitionName}>
+                 popupTransitionName={state.transitionName}>
           <a href='#' style={{margin: 20}} onClick={this.preventDefault}>trigger</a>
         </Trigger>
       </div>

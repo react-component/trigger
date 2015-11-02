@@ -174,6 +174,18 @@ ReactDOM.render(<Trigger align={{
           <td></td>
           <td>function returning html node which will act as popup container</td>
         </tr>
+        <tr>
+          <td>popupPlacement</td>
+          <td>string</td>
+          <td></td>
+          <td>use preset popup align config from builtinPlacements, can be merged by popupAlign prop</td>
+        </tr>   
+        <tr>
+          <td>builtinPlacements</td>
+          <td>object</td>
+          <td></td>
+          <td>builtin placement align map. used by placement prop</td>
+        </tr>        
     </tbody>
 </table>
 

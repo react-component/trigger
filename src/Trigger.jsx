@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {createChainedFunction, Dom} from 'rc-util';
 import Popup from './Popup';
+import {getAlignFromPlacement, getPopupClassNameFromAlign} from './utils';
 
 function noop() {
 }
@@ -19,6 +20,10 @@ const Trigger = React.createClass({
     popup: PropTypes.node.isRequired,
     popupStyle: PropTypes.object,
     popupClassName: PropTypes.string,
+    popupPlacement: PropTypes.string,
+    builtinPlacements: PropTypes.object,
+    popupTransitionName: PropTypes.string,
+    popupAnimation: PropTypes.any,
     mouseEnterDelay: PropTypes.number,
     mouseLeaveDelay: PropTypes.number,
     getPopupContainer: PropTypes.func,
@@ -205,6 +210,28 @@ const Trigger = React.createClass({
     return this.popupContainer;
   },
 
+  getPopupClassNameFromAlign(align) {
+    const className = [];
+    const props = this.props;
+    const {popupPlacement, builtinPlacements, prefixCls} = props;
+    if (popupPlacement && builtinPlacements) {
+      className.push(getPopupClassNameFromAlign(builtinPlacements, prefixCls, align));
+    }
+    if (props.getPopupClassNameFromAlign) {
+      className.push(props.getPopupClassNameFromAlign(align));
+    }
+    return className.join(' ');
+  },
+
+  getPopupAlign() {
+    const props = this.props;
+    const {popupPlacement, popupAlign, builtinPlacements} = props;
+    if (popupPlacement && builtinPlacements) {
+      return getAlignFromPlacement(builtinPlacements, popupPlacement, popupAlign);
+    }
+    return popupAlign;
+  },
+
   getPopupElement() {
     if (!this.popupRendered) {
       return null;
@@ -220,10 +247,10 @@ const Trigger = React.createClass({
                    visible={state.popupVisible}
                    className={props.popupClassName}
                    action={props.action}
-                   align={props.popupAlign}
+                   align={this.getPopupAlign()}
                    animation={props.popupAnimation}
                    onAnimateLeave={this.onAnimateLeave}
-                   getClassNameFromAlign={props.getPopupClassNameFromAlign}
+                   getClassNameFromAlign={this.getPopupClassNameFromAlign}
       {...mouseProps}
                    wrap={this}
                    style={props.popupStyle}
