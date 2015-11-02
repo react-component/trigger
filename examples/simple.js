@@ -25,13 +25,13 @@ webpackJsonp([0,1],[
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(195);
+	__webpack_require__(197);
 	
 	var _objectAssign = __webpack_require__(196);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
-	var placementAlignMap = {
+	var builtinPlacements = {
 	  left: {
 	    points: ['cr', 'cl']
 	  },
@@ -57,17 +57,6 @@ webpackJsonp([0,1],[
 	    points: ['tl', 'bl']
 	  }
 	};
-	
-	function getPlacementFromAlign(align) {
-	  var points = align.points;
-	  for (var p in placementAlignMap) {
-	    var currentAlign = placementAlignMap[p];
-	    var currentPoints = currentAlign.points;
-	    if (currentPoints[0] === points[0] && currentPoints[1] === points[1]) {
-	      return p;
-	    }
-	  }
-	}
 	
 	var Test = _react2['default'].createClass({
 	  displayName: 'Test',
@@ -129,19 +118,9 @@ webpackJsonp([0,1],[
 	    console.log('tooltip', visible);
 	  },
 	
-	  getAlign: function getAlign() {
-	    var state = this.state;
-	    return (0, _objectAssign2['default'])({}, placementAlignMap[state.placement], {
-	      offset: [state.offsetX, state.offsetY],
-	      overflow: {
-	        adjustX: 1,
-	        adjustY: 1
-	      }
-	    });
-	  },
-	
 	  render: function render() {
-	    var trigger = this.state.trigger;
+	    var state = this.state;
+	    var trigger = state.trigger;
 	    return _react2['default'].createElement(
 	      'div',
 	      null,
@@ -154,16 +133,16 @@ webpackJsonp([0,1],[
 	          'placement:',
 	          _react2['default'].createElement(
 	            'select',
-	            { value: this.state.placement, onChange: this.onPlacementChange },
-	            _react2['default'].createElement(
-	              'option',
-	              null,
-	              'left'
-	            ),
+	            { value: state.placement, onChange: this.onPlacementChange },
 	            _react2['default'].createElement(
 	              'option',
 	              null,
 	              'right'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              null,
+	              'left'
 	            ),
 	            _react2['default'].createElement(
 	              'option',
@@ -202,7 +181,7 @@ webpackJsonp([0,1],[
 	          'label',
 	          null,
 	          _react2['default'].createElement('input', { value: 'rc-trigger-popup-zoom', type: 'checkbox', onChange: this.onTransitionChange,
-	            checked: this.state.transitionName === 'rc-trigger-popup-zoom' }),
+	            checked: state.transitionName === 'rc-trigger-popup-zoom' }),
 	          'transitionName'
 	        ),
 	        '     trigger:',
@@ -244,18 +223,25 @@ webpackJsonp([0,1],[
 	        { style: { margin: 100 } },
 	        _react2['default'].createElement(
 	          _rcTrigger2['default'],
-	          { popupAlign: this.getAlign(),
+	          { popupAlign: {
+	              offset: [state.offsetX, state.offsetY],
+	              overflow: {
+	                adjustX: 1,
+	                adjustY: 1
+	              }
+	            },
 	            mouseEnterDelay: 0,
+	            popupPlacement: state.placement,
 	            //destroyPopupOnHide={true}
 	            mouseLeaveDelay: 0.1,
-	            action: Object.keys(this.state.trigger),
-	            getPopupClassNameFromAlign: getPlacementFromAlign,
+	            action: Object.keys(state.trigger),
+	            builtinPlacements: builtinPlacements,
 	            popup: _react2['default'].createElement(
 	              'div',
 	              { style: { border: '1px solid red', padding: 10 } },
 	              'i am a popup'
 	            ),
-	            popupTransitionName: this.state.transitionName },
+	            popupTransitionName: state.transitionName },
 	          _react2['default'].createElement(
 	            'a',
 	            { href: '#', style: { margin: 20 }, onClick: this.preventDefault },
@@ -11394,8 +11380,8 @@ webpackJsonp([0,1],[
 	        props = ReactDOMInput.getNativeProps(this, props, context);
 	        break;
 	      case 'option':
-	        ReactDOMOption.mountWrapper(this, props, context);
 	        props = ReactDOMOption.getNativeProps(this, props, context);
+	        ReactDOMOption.mountWrapper(this, props, context);
 	        break;
 	      case 'select':
 	        ReactDOMSelect.mountWrapper(this, props, context);
@@ -11912,6 +11898,7 @@ webpackJsonp([0,1],[
 	assign(ReactDOMComponent.prototype, ReactDOMComponent.Mixin, ReactMultiChild.Mixin);
 	
 	module.exports = ReactDOMComponent;
+	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
@@ -13374,30 +13361,36 @@ webpackJsonp([0,1],[
 	    var selected = null;
 	    if (selectValue != null) {
 	      selected = false;
+	      var value;
+	      if('value' in props){
+	        value = props.value + '';
+	      } else {
+	        value = props.children;
+	      }
 	      if (Array.isArray(selectValue)) {
 	        // multiple
 	        for (var i = 0; i < selectValue.length; i++) {
-	          if ('' + selectValue[i] === '' + props.value) {
+	          if ('' + selectValue[i] === value) {
 	            selected = true;
 	            break;
 	          }
 	        }
 	      } else {
-	        selected = '' + selectValue === '' + props.value;
+	        selected = '' + selectValue === value;
 	      }
 	    }
 	
 	    inst._wrapperState = { selected: selected };
+	
+	    // Read state only from initial mount because <select> updates value
+	    // manually; we need the initial state only for server rendering
+	    if(selected != null) {
+	      props.selected = selected;
+	    }
 	  },
 	
 	  getNativeProps: function (inst, props, context) {
 	    var nativeProps = assign({ selected: undefined, children: undefined }, props);
-	
-	    // Read state only from initial mount because <select> updates value
-	    // manually; we need the initial state only for server rendering
-	    if (inst._wrapperState.selected != null) {
-	      nativeProps.selected = inst._wrapperState.selected;
-	    }
 	
 	    var content = '';
 	
@@ -13421,6 +13414,7 @@ webpackJsonp([0,1],[
 	};
 	
 	module.exports = ReactDOMOption;
+	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
@@ -19905,6 +19899,8 @@ webpackJsonp([0,1],[
 	
 	var _Popup2 = _interopRequireDefault(_Popup);
 	
+	var _utils = __webpack_require__(195);
+	
 	function noop() {}
 	
 	function returnEmptyString() {
@@ -19922,6 +19918,10 @@ webpackJsonp([0,1],[
 	    popup: _react.PropTypes.node.isRequired,
 	    popupStyle: _react.PropTypes.object,
 	    popupClassName: _react.PropTypes.string,
+	    popupPlacement: _react.PropTypes.string,
+	    builtinPlacements: _react.PropTypes.object,
+	    popupTransitionName: _react.PropTypes.string,
+	    popupAnimation: _react.PropTypes.any,
 	    mouseEnterDelay: _react.PropTypes.number,
 	    mouseLeaveDelay: _react.PropTypes.number,
 	    getPopupContainer: _react.PropTypes.func,
@@ -20116,6 +20116,34 @@ webpackJsonp([0,1],[
 	    return this.popupContainer;
 	  },
 	
+	  getPopupClassNameFromAlign: function getPopupClassNameFromAlign(align) {
+	    var className = [];
+	    var props = this.props;
+	    var popupPlacement = props.popupPlacement;
+	    var builtinPlacements = props.builtinPlacements;
+	    var prefixCls = props.prefixCls;
+	
+	    if (popupPlacement && builtinPlacements) {
+	      className.push((0, _utils.getPopupClassNameFromAlign)(builtinPlacements, prefixCls, align));
+	    }
+	    if (props.getPopupClassNameFromAlign) {
+	      className.push(props.getPopupClassNameFromAlign(align));
+	    }
+	    return className.join(' ');
+	  },
+	
+	  getPopupAlign: function getPopupAlign() {
+	    var props = this.props;
+	    var popupPlacement = props.popupPlacement;
+	    var popupAlign = props.popupAlign;
+	    var builtinPlacements = props.builtinPlacements;
+	
+	    if (popupPlacement && builtinPlacements) {
+	      return (0, _utils.getAlignFromPlacement)(builtinPlacements, popupPlacement, popupAlign);
+	    }
+	    return popupAlign;
+	  },
+	
 	  getPopupElement: function getPopupElement() {
 	    if (!this.popupRendered) {
 	      return null;
@@ -20133,10 +20161,10 @@ webpackJsonp([0,1],[
 	        visible: state.popupVisible,
 	        className: props.popupClassName,
 	        action: props.action,
-	        align: props.popupAlign,
+	        align: this.getPopupAlign(),
 	        animation: props.popupAnimation,
 	        onAnimateLeave: this.onAnimateLeave,
-	        getClassNameFromAlign: props.getPopupClassNameFromAlign
+	        getClassNameFromAlign: this.getPopupClassNameFromAlign
 	      }, mouseProps, {
 	        wrap: this,
 	        style: props.popupStyle,
@@ -23221,9 +23249,42 @@ webpackJsonp([0,1],[
 
 /***/ },
 /* 195 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	// removed by extract-text-webpack-plugin
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.getAlignFromPlacement = getAlignFromPlacement;
+	exports.getPopupClassNameFromAlign = getPopupClassNameFromAlign;
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _objectAssign = __webpack_require__(196);
+	
+	var _objectAssign2 = _interopRequireDefault(_objectAssign);
+	
+	function isPointsEq(a1, a2) {
+	  return a1[0] === a2[0] && a1[1] === a2[1];
+	}
+	
+	function getAlignFromPlacement(builtinPlacements, placementStr, align) {
+	  var baseAlign = builtinPlacements[placementStr] || {};
+	  return (0, _objectAssign2['default'])({}, baseAlign, align);
+	}
+	
+	function getPopupClassNameFromAlign(builtinPlacements, prefixCls, align) {
+	  var points = align.points;
+	  for (var placement in builtinPlacements) {
+	    if (builtinPlacements.hasOwnProperty(placement)) {
+	      if (isPointsEq(builtinPlacements[placement].points, points)) {
+	        return prefixCls + '-placement-' + placement;
+	      }
+	    }
+	  }
+	  return '';
+	}
 
 /***/ },
 /* 196 */
@@ -23269,6 +23330,12 @@ webpackJsonp([0,1],[
 		return to;
 	};
 
+
+/***/ },
+/* 197 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 ]);
