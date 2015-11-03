@@ -19959,7 +19959,9 @@ webpackJsonp([0,1],[
 	  },
 	
 	  componentDidMount: function componentDidMount() {
-	    this.componentDidUpdate();
+	    this.componentDidUpdate({}, {
+	      popupVisible: this.state.popupVisible
+	    });
 	  },
 	
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
@@ -19970,12 +19972,11 @@ webpackJsonp([0,1],[
 	    }
 	  },
 	
-	  componentDidUpdate: function componentDidUpdate() {
+	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
 	    var _this = this;
 	
 	    var props = this.props;
 	    var state = this.state;
-	    // in case popup change
 	    if (this.popupRendered) {
 	      var _ret = (function () {
 	        var self = _this;
@@ -19985,7 +19986,9 @@ webpackJsonp([0,1],[
 	          } else {
 	            self.popupDomNode = null;
 	          }
-	          props.afterPopupVisibleChange(state.popupVisible);
+	          if (prevState.popupVisible !== state.popupVisible) {
+	            props.afterPopupVisibleChange(state.popupVisible);
+	          }
 	        });
 	        if (props.action.indexOf('click') !== -1) {
 	          if (state.popupVisible) {
