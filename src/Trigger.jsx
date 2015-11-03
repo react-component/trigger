@@ -61,7 +61,9 @@ const Trigger = React.createClass({
   },
 
   componentDidMount() {
-    this.componentDidUpdate();
+    this.componentDidUpdate({}, {
+      popupVisible: this.state.popupVisible,
+    });
   },
 
   componentWillReceiveProps(nextProps) {
@@ -72,10 +74,9 @@ const Trigger = React.createClass({
     }
   },
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     const props = this.props;
     const state = this.state;
-    // in case popup change
     if (this.popupRendered) {
       const self = this;
       ReactDOM.unstable_renderSubtreeIntoContainer(this, this.getPopupElement(), this.getPopupContainer(), function renderPopup() {
@@ -84,7 +85,9 @@ const Trigger = React.createClass({
         } else {
           self.popupDomNode = null;
         }
-        props.afterPopupVisibleChange(state.popupVisible);
+        if (prevState.popupVisible !== state.popupVisible) {
+          props.afterPopupVisibleChange(state.popupVisible);
+        }
       });
       if (props.action.indexOf('click') !== -1) {
         if (state.popupVisible) {
