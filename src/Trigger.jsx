@@ -61,9 +61,7 @@ const Trigger = React.createClass({
   },
 
   componentDidMount() {
-    this.componentDidUpdate({}, {
-      popupVisible: false,
-    });
+    this.componentDidUpdate();
   },
 
   componentWillReceiveProps(nextProps) {
@@ -74,10 +72,11 @@ const Trigger = React.createClass({
     }
   },
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     const props = this.props;
     const state = this.state;
-    if (prevState.popupVisible !== state.popupVisible) {
+    // in case popup change
+    if (this.popupRendered) {
       const self = this;
       ReactDOM.unstable_renderSubtreeIntoContainer(this, this.getPopupElement(), this.getPopupContainer(), function renderPopup() {
         if (this.isMounted()) {
@@ -284,6 +283,7 @@ const Trigger = React.createClass({
   },
 
   render() {
+    this.popupRendered = this.popupRendered || this.state.popupVisible;
     const props = this.props;
     const children = props.children;
     const child = React.Children.only(children);
