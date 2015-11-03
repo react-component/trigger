@@ -19959,9 +19959,7 @@ webpackJsonp([0,1],[
 	  },
 	
 	  componentDidMount: function componentDidMount() {
-	    this.componentDidUpdate({}, {
-	      popupVisible: false
-	    });
+	    this.componentDidUpdate();
 	  },
 	
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
@@ -19972,12 +19970,13 @@ webpackJsonp([0,1],[
 	    }
 	  },
 	
-	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	  componentDidUpdate: function componentDidUpdate() {
 	    var _this = this;
 	
 	    var props = this.props;
 	    var state = this.state;
-	    if (prevState.popupVisible !== state.popupVisible) {
+	    // in case popup change
+	    if (this.popupRendered) {
 	      var _ret = (function () {
 	        var self = _this;
 	        _reactDom2['default'].unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
@@ -20200,6 +20199,7 @@ webpackJsonp([0,1],[
 	  },
 	
 	  render: function render() {
+	    this.popupRendered = this.popupRendered || this.state.popupVisible;
 	    var props = this.props;
 	    var children = props.children;
 	    var child = _react2['default'].Children.only(children);
