@@ -19951,9 +19951,9 @@ webpackJsonp([0,1],[
 	    var props = this.props;
 	    var popupVisible = undefined;
 	    if ('popupVisible' in props) {
-	      popupVisible = props.popupVisible;
+	      popupVisible = !!props.popupVisible;
 	    } else {
-	      popupVisible = props.defaultPopupVisible;
+	      popupVisible = !!props.defaultPopupVisible;
 	    }
 	    return { popupVisible: popupVisible };
 	  },
@@ -20145,9 +20145,6 @@ webpackJsonp([0,1],[
 	  },
 	
 	  getPopupElement: function getPopupElement() {
-	    if (!this.popupRendered) {
-	      return null;
-	    }
 	    var props = this.props;
 	    var state = this.state;
 	    var mouseProps = {};
@@ -20203,9 +20200,6 @@ webpackJsonp([0,1],[
 	  },
 	
 	  render: function render() {
-	    if (this.state.popupVisible) {
-	      this.popupRendered = true;
-	    }
 	    var props = this.props;
 	    var children = props.children;
 	    var child = _react2['default'].Children.only(children);
