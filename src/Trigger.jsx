@@ -53,9 +53,9 @@ const Trigger = React.createClass({
     const props = this.props;
     let popupVisible;
     if ('popupVisible' in props) {
-      popupVisible = props.popupVisible;
+      popupVisible = !!props.popupVisible;
     } else {
-      popupVisible = props.defaultPopupVisible;
+      popupVisible = !!props.defaultPopupVisible;
     }
     return {popupVisible};
   },
@@ -233,9 +233,6 @@ const Trigger = React.createClass({
   },
 
   getPopupElement() {
-    if (!this.popupRendered) {
-      return null;
-    }
     const props = this.props;
     const state = this.state;
     const mouseProps = {};
@@ -287,9 +284,6 @@ const Trigger = React.createClass({
   },
 
   render() {
-    if (this.state.popupVisible) {
-      this.popupRendered = true;
-    }
     const props = this.props;
     const children = props.children;
     const child = React.Children.only(children);
