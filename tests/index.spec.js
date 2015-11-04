@@ -88,7 +88,7 @@ describe('rc-trigger', function () {
     ReactDOM.unmountComponentAtNode(div);
   });
 
-  describe('Trigger', ()=> {
+  describe('action', ()=> {
     it('click works', (done)=> {
       var trigger = ReactDOM.render(<Trigger action={['click']} popupAlign={placementAlignMap.left}
                                              popup={<strong className='x-content'>tooltip2</strong>}>
@@ -361,47 +361,78 @@ describe('rc-trigger', function () {
     });
   });
 
-  if (window.TransitionEvent) {
-    it('transitionName works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger
-        action={['click']}
-        popupTransitionName="fade"
-        popupAlign={placementAlignMap.top}
-        popup={<strong>trigger</strong>}>
+  describe('destroyPopupOnHide', function(){
+    it('defaults to false', function(){
+      var trigger = ReactDOM.render(<Trigger action={['click']}
+                                             popupAlign={placementAlignMap.topRight}
+                                             popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
       var domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
-      async.series([
-          timeout(100),
-          (next)=> {
-            var popupDomNode = trigger.getPopupDomNode();
-            expect(popupDomNode).to.be.ok();
-            expect($(popupDomNode).css('opacity')).not.to.be('1');
-            next();
-          },
-          timeout(500),
-          (next)=> {
-            var popupDomNode = trigger.getPopupDomNode();
-            expect(popupDomNode).to.be.ok();
-            expect($(popupDomNode).css('opacity')).to.be('1');
-            Simulate.click(domNode);
-            next();
-          },
-          timeout(100),
-          (next)=> {
-            var popupDomNode = trigger.getPopupDomNode();
-            expect(popupDomNode).to.be.ok();
-            expect($(popupDomNode).css('opacity')).not.to.be('1');
-            next();
-          },
-          timeout(500),
-          (next)=> {
-            var popupDomNode = trigger.getPopupDomNode();
-            expect($(popupDomNode).css('display')).to.be('none');
-            next();
-          }],
-        done);
+      expect(trigger.getPopupDomNode()).to.be.ok();
+      Simulate.click(domNode);
+      expect(trigger.getPopupDomNode()).to.be.ok();
+    });
+
+    it('set true will destroy tooltip on hide', function(){
+      var trigger = ReactDOM.render(<Trigger action={['click']}
+                                             destroyPopupOnHide
+                                             popupAlign={placementAlignMap.topRight}
+                                             popup={<strong>trigger</strong>}>
+        <div className="target">click</div>
+      </Trigger>, div);
+      var domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      expect(trigger.getPopupDomNode()).to.be.ok();
+      Simulate.click(domNode);
+      expect(trigger.getPopupDomNode()).not.to.be.ok();
+    });
+  });
+
+  if (window.TransitionEvent) {
+    describe('transitionName', function () {
+      it('works', (done)=> {
+        var trigger = ReactDOM.render(<Trigger
+          action={['click']}
+          popupTransitionName="fade"
+          popupAlign={placementAlignMap.top}
+          popup={<strong>trigger</strong>}>
+          <div className="target">click</div>
+        </Trigger>, div);
+        var domNode = ReactDOM.findDOMNode(trigger);
+        Simulate.click(domNode);
+        async.series([
+            timeout(100),
+            (next)=> {
+              var popupDomNode = trigger.getPopupDomNode();
+              expect(popupDomNode).to.be.ok();
+              expect($(popupDomNode).css('opacity')).not.to.be('1');
+              next();
+            },
+            timeout(500),
+            (next)=> {
+              var popupDomNode = trigger.getPopupDomNode();
+              expect(popupDomNode).to.be.ok();
+              expect($(popupDomNode).css('opacity')).to.be('1');
+              Simulate.click(domNode);
+              next();
+            },
+            timeout(100),
+            (next)=> {
+              var popupDomNode = trigger.getPopupDomNode();
+              expect(popupDomNode).to.be.ok();
+              expect($(popupDomNode).css('opacity')).not.to.be('1');
+              next();
+            },
+            timeout(500),
+            (next)=> {
+              var popupDomNode = trigger.getPopupDomNode();
+              expect($(popupDomNode).css('display')).to.be('none');
+              next();
+            }],
+          done);
+      });
     });
   }
 });
