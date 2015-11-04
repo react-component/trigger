@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
+import PopupInner from './PopupInner';
 
 const Popup = React.createClass({
   propTypes: {
@@ -55,17 +56,14 @@ const Popup = React.createClass({
     const {prefixCls} = props;
     let className = prefixCls + ' ' + props.className + ' ';
     className += currentAlignClassName;
-    const hiddenClass = `${prefixCls}-hidden`;
-    if (!props.visible) {
-      className += ` ${hiddenClass}`;
-    }
     return className;
   },
 
   render() {
     const props = this.props;
-    const {align, style, visible} = props;
+    const {align, style, visible, prefixCls} = props;
     const className = this.getClassName(this.currentAlignClassName || props.getClassNameFromAlign(align));
+    const hiddenClassName = `${prefixCls}-hidden`;
     if (!visible) {
       this.currentAlignClassName = null;
     }
@@ -74,20 +72,24 @@ const Popup = React.createClass({
                      transitionAppear
                      onLeave={this.onAnimateLeave}
                      transitionName={this.getTransitionName()}
-                     showProp="data-visible">
+                     showProp="xVisible">
       <Align target={this.getTarget}
              key="popup"
              monitorWindowResize
-             data-visible={visible}
+             xVisible={visible}
+             childrenProps={{
+               visible: 'xVisible',
+             }}
              disabled={!visible}
              align={align}
              onAlign={this.onAlign}>
-        <div className={className}
-             onMouseEnter={props.onMouseEnter}
-             onMouseLeave={props.onMouseLeave}
-             style={style}>
+        <PopupInner className={className}
+                    hiddenClassName={hiddenClassName}
+                    onMouseEnter={props.onMouseEnter}
+                    onMouseLeave={props.onMouseLeave}
+                    style={style}>
           {props.children}
-        </div>
+        </PopupInner>
       </Align>
     </Animate>);
   },
