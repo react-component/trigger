@@ -3,14 +3,9 @@
   left: -9999px;
   top: -9999px;
   z-index: 1070;
-  display: block;
 }
 .rc-trigger-popup-hidden {
   display: none;
-}
-.rc-trigger-popup.rc-trigger-popup-zoom-enter,
-.rc-trigger-popup.rc-trigger-popup-zoom-leave {
-  display: block;
 }
 .rc-trigger-popup-zoom-enter,
 .rc-trigger-popup-zoom-appear {

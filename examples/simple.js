@@ -25,9 +25,9 @@ webpackJsonp([0,1],[
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(197);
+	__webpack_require__(198);
 	
-	var _objectAssign = __webpack_require__(196);
+	var _objectAssign = __webpack_require__(197);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -19899,7 +19899,7 @@ webpackJsonp([0,1],[
 	
 	var _Popup2 = _interopRequireDefault(_Popup);
 	
-	var _utils = __webpack_require__(195);
+	var _utils = __webpack_require__(196);
 	
 	function noop() {}
 	
@@ -21108,6 +21108,10 @@ webpackJsonp([0,1],[
 	
 	var _rcAnimate2 = _interopRequireDefault(_rcAnimate);
 	
+	var _PopupInner = __webpack_require__(195);
+	
+	var _PopupInner2 = _interopRequireDefault(_PopupInner);
+	
 	var Popup = _react2['default'].createClass({
 	  displayName: 'Popup',
 	
@@ -21163,10 +21167,6 @@ webpackJsonp([0,1],[
 	
 	    var className = prefixCls + ' ' + props.className + ' ';
 	    className += currentAlignClassName;
-	    var hiddenClass = prefixCls + '-hidden';
-	    if (!props.visible) {
-	      className += ' ' + hiddenClass;
-	    }
 	    return className;
 	  },
 	
@@ -21175,8 +21175,10 @@ webpackJsonp([0,1],[
 	    var align = props.align;
 	    var style = props.style;
 	    var visible = props.visible;
+	    var prefixCls = props.prefixCls;
 	
 	    var className = this.getClassName(this.currentAlignClassName || props.getClassNameFromAlign(align));
+	    var hiddenClassName = prefixCls + '-hidden';
 	    if (!visible) {
 	      this.currentAlignClassName = null;
 	    }
@@ -21187,19 +21189,23 @@ webpackJsonp([0,1],[
 	        transitionAppear: true,
 	        onLeave: this.onAnimateLeave,
 	        transitionName: this.getTransitionName(),
-	        showProp: 'data-visible' },
+	        showProp: 'xVisible' },
 	      _react2['default'].createElement(
 	        _rcAlign2['default'],
 	        { target: this.getTarget,
 	          key: 'popup',
 	          monitorWindowResize: true,
-	          'data-visible': visible,
+	          xVisible: visible,
+	          childrenProps: {
+	            visible: 'xVisible'
+	          },
 	          disabled: !visible,
 	          align: align,
 	          onAlign: this.onAlign },
 	        _react2['default'].createElement(
-	          'div',
+	          _PopupInner2['default'],
 	          { className: className,
+	            hiddenClassName: hiddenClassName,
 	            onMouseEnter: props.onMouseEnter,
 	            onMouseLeave: props.onMouseLeave,
 	            style: style },
@@ -21277,6 +21283,7 @@ webpackJsonp([0,1],[
 	  displayName: 'Align',
 	
 	  propTypes: {
+	    childrenProps: _react.PropTypes.object,
 	    align: _react.PropTypes.object.isRequired,
 	    target: _react.PropTypes.func,
 	    onAlign: _react.PropTypes.func,
@@ -21368,7 +21375,21 @@ webpackJsonp([0,1],[
 	  },
 	
 	  render: function render() {
-	    return _react2['default'].Children.only(this.props.children);
+	    var _props = this.props;
+	    var childrenProps = _props.childrenProps;
+	    var children = _props.children;
+	
+	    var child = _react2['default'].Children.only(children);
+	    if (childrenProps) {
+	      var newProps = {};
+	      for (var prop in childrenProps) {
+	        if (childrenProps.hasOwnProperty(prop)) {
+	          newProps[prop] = this.props[childrenProps[prop]];
+	        }
+	      }
+	      return _react2['default'].cloneElement(child, newProps);
+	    }
+	    return child;
 	  }
 	});
 	
@@ -21543,15 +21564,6 @@ webpackJsonp([0,1],[
 	    }
 	  }
 	
-	  // https://github.com/kissyteam/kissy/issues/190
-	  // http://localhost:8888/kissy/src/overlay/demo/other/relative_align/align.html
-	  // 相对于屏幕位置没变，而 left/top 变了
-	  // 例如 <div 'relative'><el absolute></div>
-	  _utils2['default'].offset(el, {
-	    left: newElRegion.left,
-	    top: newElRegion.top
-	  });
-	
 	  // need judge to in case set fixed with in css on height auto element
 	  if (newElRegion.width !== elRegion.width) {
 	    _utils2['default'].css(el, 'width', el.width() + newElRegion.width - elRegion.width);
@@ -21560,6 +21572,18 @@ webpackJsonp([0,1],[
 	  if (newElRegion.height !== elRegion.height) {
 	    _utils2['default'].css(el, 'height', el.height() + newElRegion.height - elRegion.height);
 	  }
+	
+	  // https://github.com/kissyteam/kissy/issues/190
+	  // http://localhost:8888/kissy/src/overlay/demo/other/relative_align/align.html
+	  // 相对于屏幕位置没变，而 left/top 变了
+	  // 例如 <div 'relative'><el absolute></div>
+	  _utils2['default'].offset(el, {
+	    left: newElRegion.left,
+	    top: newElRegion.top
+	  }, {
+	    useCssRight: align.useCssRight,
+	    useCssBottom: align.useCssBottom
+	  });
 	
 	  return {
 	    points: points,
@@ -21696,9 +21720,10 @@ webpackJsonp([0,1],[
 	  var computedStyle = cs;
 	  var val = '';
 	  var d = elem.ownerDocument;
+	  computedStyle = computedStyle || d.defaultView.getComputedStyle(elem, null);
 	
 	  // https://github.com/kissyteam/kissy/issues/61
-	  if (computedStyle = computedStyle || d.defaultView.getComputedStyle(elem, null)) {
+	  if (computedStyle) {
 	    val = computedStyle.getPropertyValue(name) || computedStyle[name];
 	  }
 	
@@ -21752,25 +21777,66 @@ webpackJsonp([0,1],[
 	  getComputedStyleX = window.getComputedStyle ? _getComputedStyle : _getComputedStyleIE;
 	}
 	
+	function getOffsetDirection(dir, option) {
+	  if (dir === 'left') {
+	    return option.useCssRight ? 'right' : dir;
+	  }
+	  return option.useCssBottom ? 'bottom' : dir;
+	}
+	
+	function oppositeOffsetDirection(dir) {
+	  if (dir === 'left') {
+	    return 'right';
+	  } else if (dir === 'right') {
+	    return 'left';
+	  } else if (dir === 'top') {
+	    return 'bottom';
+	  } else if (dir === 'bottom') {
+	    return 'top';
+	  }
+	}
+	
 	// 设置 elem 相对 elem.ownerDocument 的坐标
-	function setOffset(elem, offset) {
+	function setOffset(elem, offset, option) {
 	  // set position first, in-case top/left are set even on static elem
 	  if (css(elem, 'position') === 'static') {
 	    elem.style.position = 'relative';
 	  }
-	  var preset = -9999;
+	  var presetH = -999;
+	  var presetV = -999;
+	  var horizontalProperty = getOffsetDirection('left', option);
+	  var verticalProperty = getOffsetDirection('top', option);
+	  var oppositeHorizontalProperty = oppositeOffsetDirection(horizontalProperty);
+	  var oppositeVerticalProperty = oppositeOffsetDirection(verticalProperty);
+	
+	  if (horizontalProperty !== 'left') {
+	    presetH = 999;
+	  }
+	
+	  if (verticalProperty !== 'top') {
+	    presetV = 999;
+	  }
+	
 	  if ('left' in offset) {
-	    elem.style.left = preset + 'px';
+	    elem.style[oppositeHorizontalProperty] = '';
+	    elem.style[horizontalProperty] = presetH + 'px';
 	  }
 	  if ('top' in offset) {
-	    elem.style.top = preset + 'px';
+	    elem.style[oppositeVerticalProperty] = '';
+	    elem.style[verticalProperty] = presetV + 'px';
 	  }
 	  var old = getOffset(elem);
 	  var ret = {};
 	  var key = undefined;
 	  for (key in offset) {
 	    if (offset.hasOwnProperty(key)) {
-	      ret[key] = preset + offset[key] - old[key];
+	      var dir = getOffsetDirection(key, option);
+	      var preset = key === 'left' ? presetH : presetV;
+	      if (dir === key) {
+	        ret[dir] = preset + offset[key] - old[key];
+	      } else {
+	        ret[dir] = preset + old[key] - offset[key];
+	      }
 	    }
 	  }
 	  css(elem, ret);
@@ -21985,9 +22051,9 @@ webpackJsonp([0,1],[
 	    var doc = node.ownerDocument || node;
 	    return doc.defaultView || doc.parentWindow;
 	  },
-	  offset: function offset(el, value) {
+	  offset: function offset(el, value, option) {
 	    if (typeof value !== 'undefined') {
-	      setOffset(el, value);
+	      setOffset(el, value, option || {});
 	    } else {
 	      return getOffset(el);
 	    }
@@ -22142,11 +22208,11 @@ webpackJsonp([0,1],[
 	  // all scrollable containers.
 	  while (el) {
 	    // clientWidth is zero for inline block elements in ie.
-	    if ((navigator.userAgent.indexOf('MSIE') === -1 || el.clientWidth !== 0) && (
+	    if ((navigator.userAgent.indexOf('MSIE') === -1 || el.clientWidth !== 0) &&
 	    // body may have overflow set on it, yet we still get the entire
 	    // viewport. In some browsers, el.offsetParent may be
 	    // document.documentElement, so check for that too.
-	    el !== body && el !== documentElement && _utils2['default'].css(el, 'overflow') !== 'visible')) {
+	    el !== body && el !== documentElement && _utils2['default'].css(el, 'overflow') !== 'visible') {
 	      var pos = _utils2['default'].offset(el);
 	      // add border
 	      pos.left += el.clientLeft;
@@ -23253,12 +23319,58 @@ webpackJsonp([0,1],[
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var PopupInner = _react2['default'].createClass({
+	  displayName: 'PopupInner',
+	
+	  propTypes: {
+	    hiddenClassName: _react.PropTypes.string,
+	    className: _react.PropTypes.string,
+	    onMouseEnter: _react.PropTypes.func,
+	    onMouseLeave: _react.PropTypes.func,
+	    children: _react.PropTypes.any
+	  },
+	  render: function render() {
+	    var props = this.props;
+	    var className = props.className;
+	    if (!props.visible) {
+	      className += ' ' + props.hiddenClassName;
+	    }
+	    return _react2['default'].createElement(
+	      'div',
+	      { className: className,
+	        onMouseEnter: props.onMouseEnter,
+	        onMouseLeave: props.onMouseLeave,
+	        style: props.style },
+	      props.children
+	    );
+	  }
+	});
+	
+	exports['default'] = PopupInner;
+	module.exports = exports['default'];
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 	exports.getAlignFromPlacement = getAlignFromPlacement;
 	exports.getPopupClassNameFromAlign = getPopupClassNameFromAlign;
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _objectAssign = __webpack_require__(196);
+	var _objectAssign = __webpack_require__(197);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -23284,7 +23396,7 @@ webpackJsonp([0,1],[
 	}
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports) {
 
 	/* eslint-disable no-unused-vars */
@@ -23329,7 +23441,7 @@ webpackJsonp([0,1],[
 
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
