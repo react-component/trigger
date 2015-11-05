@@ -67,7 +67,7 @@ ReactDOM.render(<Trigger align={{
   offset: [0, 3]
 }} trigger={['click']} popup={<span>popup</span>}>
 <a href='#'>hover</a>
-</Tooltip>, container);
+</Trigger>, container);
 ```
 
 ## API
