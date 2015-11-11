@@ -232,7 +232,7 @@ webpackJsonp([0,1],[
 	            },
 	            mouseEnterDelay: 0,
 	            popupPlacement: state.placement,
-	            //destroyPopupOnHide={true}
+	            //destroyPopupOnHide
 	            mouseLeaveDelay: 0.1,
 	            action: Object.keys(state.trigger),
 	            builtinPlacements: builtinPlacements,
@@ -20084,13 +20084,6 @@ webpackJsonp([0,1],[
 	    this.setPopupVisible(!this.state.popupVisible);
 	  },
 	
-	  onAnimateLeave: function onAnimateLeave() {
-	    if (this.props.destroyPopupOnHide) {
-	      _reactDom2['default'].unmountComponentAtNode(this.getPopupContainer());
-	      this.popupDomNode = null;
-	    }
-	  },
-	
 	  onDocumentClick: function onDocumentClick(event) {
 	    var target = event.target;
 	    var root = _reactDom2['default'].findDOMNode(this);
@@ -20157,12 +20150,12 @@ webpackJsonp([0,1],[
 	    return _react2['default'].createElement(
 	      _Popup2['default'],
 	      _extends({ prefixCls: props.prefixCls,
+	        destroyPopupOnHide: props.destroyPopupOnHide,
 	        visible: state.popupVisible,
 	        className: props.popupClassName,
 	        action: props.action,
 	        align: this.getPopupAlign(),
 	        animation: props.popupAnimation,
-	        onAnimateLeave: this.onAnimateLeave,
 	        getClassNameFromAlign: this.getPopupClassNameFromAlign
 	      }, mouseProps, {
 	        wrap: this,
@@ -21121,7 +21114,6 @@ webpackJsonp([0,1],[
 	    style: _react.PropTypes.object,
 	    getClassNameFromAlign: _react.PropTypes.func,
 	    onMouseEnter: _react.PropTypes.func,
-	    onAnimateLeave: _react.PropTypes.func,
 	    className: _react.PropTypes.string,
 	    onMouseLeave: _react.PropTypes.func
 	  },
@@ -21138,10 +21130,6 @@ webpackJsonp([0,1],[
 	      this.currentAlignClassName = currentAlignClassName;
 	      popupDomNode.className = this.getClassName(currentAlignClassName);
 	    }
-	  },
-	
-	  onAnimateLeave: function onAnimateLeave() {
-	    this.props.onAnimateLeave();
 	  },
 	
 	  getPopupDomNode: function getPopupDomNode() {
@@ -21176,18 +21164,44 @@ webpackJsonp([0,1],[
 	    var style = props.style;
 	    var visible = props.visible;
 	    var prefixCls = props.prefixCls;
+	    var destroyPopupOnHide = props.destroyPopupOnHide;
 	
 	    var className = this.getClassName(this.currentAlignClassName || props.getClassNameFromAlign(align));
 	    var hiddenClassName = prefixCls + '-hidden';
 	    if (!visible) {
 	      this.currentAlignClassName = null;
 	    }
+	    if (destroyPopupOnHide) {
+	      return _react2['default'].createElement(
+	        _rcAnimate2['default'],
+	        { component: '',
+	          exclusive: true,
+	          transitionAppear: true,
+	          transitionName: this.getTransitionName() },
+	        visible ? _react2['default'].createElement(
+	          _rcAlign2['default'],
+	          { target: this.getTarget,
+	            key: 'popup',
+	            monitorWindowResize: true,
+	            align: align,
+	            onAlign: this.onAlign },
+	          _react2['default'].createElement(
+	            _PopupInner2['default'],
+	            { className: className,
+	              visible: true,
+	              onMouseEnter: props.onMouseEnter,
+	              onMouseLeave: props.onMouseLeave,
+	              style: style },
+	            props.children
+	          )
+	        ) : null
+	      );
+	    }
 	    return _react2['default'].createElement(
 	      _rcAnimate2['default'],
 	      { component: '',
 	        exclusive: true,
 	        transitionAppear: true,
-	        onLeave: this.onAnimateLeave,
 	        transitionName: this.getTransitionName(),
 	        showProp: 'xVisible' },
 	      _react2['default'].createElement(
