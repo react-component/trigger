@@ -11,7 +11,6 @@ const Popup = React.createClass({
     style: PropTypes.object,
     getClassNameFromAlign: PropTypes.func,
     onMouseEnter: PropTypes.func,
-    onAnimateLeave: PropTypes.func,
     className: PropTypes.string,
     onMouseLeave: PropTypes.func,
   },
@@ -28,10 +27,6 @@ const Popup = React.createClass({
       this.currentAlignClassName = currentAlignClassName;
       popupDomNode.className = this.getClassName(currentAlignClassName);
     }
-  },
-
-  onAnimateLeave() {
-    this.props.onAnimateLeave();
   },
 
   getPopupDomNode() {
@@ -61,16 +56,35 @@ const Popup = React.createClass({
 
   render() {
     const props = this.props;
-    const {align, style, visible, prefixCls} = props;
+    const {align, style, visible, prefixCls, destroyPopupOnHide} = props;
     const className = this.getClassName(this.currentAlignClassName || props.getClassNameFromAlign(align));
     const hiddenClassName = `${prefixCls}-hidden`;
     if (!visible) {
       this.currentAlignClassName = null;
     }
+    if (destroyPopupOnHide) {
+      return (<Animate component=""
+                       exclusive
+                       transitionAppear
+                       transitionName={this.getTransitionName()}>
+        {visible ? (<Align target={this.getTarget}
+                         key="popup"
+                         monitorWindowResize
+                         align={align}
+                         onAlign={this.onAlign}>
+          <PopupInner className={className}
+                      visible
+                      onMouseEnter={props.onMouseEnter}
+                      onMouseLeave={props.onMouseLeave}
+                      style={style}>
+            {props.children}
+          </PopupInner>
+        </Align>) : null}
+      </Animate>);
+    }
     return (<Animate component=""
                      exclusive
                      transitionAppear
-                     onLeave={this.onAnimateLeave}
                      transitionName={this.getTransitionName()}
                      showProp="xVisible">
       <Align target={this.getTarget}

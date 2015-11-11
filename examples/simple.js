@@ -151,7 +151,7 @@ const Test = React.createClass({
     }}
                  mouseEnterDelay={0}
                  popupPlacement={state.placement}
-          //destroyPopupOnHide={true}
+                 //destroyPopupOnHide
                  mouseLeaveDelay={0.1}
                  action={Object.keys(state.trigger)}
                  builtinPlacements={builtinPlacements}

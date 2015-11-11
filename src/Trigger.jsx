@@ -178,13 +178,6 @@ const Trigger = React.createClass({
     this.setPopupVisible(!this.state.popupVisible);
   },
 
-  onAnimateLeave() {
-    if (this.props.destroyPopupOnHide) {
-      ReactDOM.unmountComponentAtNode(this.getPopupContainer());
-      this.popupDomNode = null;
-    }
-  },
-
   onDocumentClick(event) {
     const target = event.target;
     const root = ReactDOM.findDOMNode(this);
@@ -243,12 +236,12 @@ const Trigger = React.createClass({
       mouseProps.onMouseLeave = this.onMouseLeave;
     }
     return (<Popup prefixCls={props.prefixCls}
+                   destroyPopupOnHide={props.destroyPopupOnHide}
                    visible={state.popupVisible}
                    className={props.popupClassName}
                    action={props.action}
                    align={this.getPopupAlign()}
                    animation={props.popupAnimation}
-                   onAnimateLeave={this.onAnimateLeave}
                    getClassNameFromAlign={this.getPopupClassNameFromAlign}
       {...mouseProps}
                    wrap={this}
