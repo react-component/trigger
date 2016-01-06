@@ -1,12 +1,10 @@
-import assign from 'object-assign';
-
 function isPointsEq(a1, a2) {
   return a1[0] === a2[0] && a1[1] === a2[1];
 }
 
 export function getAlignFromPlacement(builtinPlacements, placementStr, align) {
   const baseAlign = builtinPlacements[placementStr] || {};
-  return assign({}, baseAlign, align);
+  return {...baseAlign, ...align};
 }
 
 export function getPopupClassNameFromAlign(builtinPlacements, prefixCls, align) {

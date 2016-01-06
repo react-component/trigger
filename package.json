@@ -55,7 +55,6 @@
   "dependencies": {
     "rc-align": "2.x",
     "rc-animate": "2.x",
-    "rc-util": "3.x",
-    "object-assign": "4.x"
+    "rc-util": "3.x"
   }
 }

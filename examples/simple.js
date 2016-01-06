@@ -1,8 +1,20 @@
+/* eslint no-console:0 */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from 'rc-trigger';
 import 'rc-trigger/assets/index.less';
 import assign from 'object-assign';
+
+function getPopupAlign(state) {
+  return {
+    offset: [state.offsetX, state.offsetY],
+    overflow: {
+      adjustX: 1,
+      adjustY: 1,
+    },
+  };
+}
 
 const builtinPlacements = {
   left: {
@@ -31,8 +43,11 @@ const builtinPlacements = {
   },
 };
 
+function preventDefault(e) {
+  e.preventDefault();
+}
 
-function getPopupContainer(trigger){
+function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
 
@@ -41,53 +56,49 @@ const Test = React.createClass({
     return {
       placement: 'right',
       trigger: {
-        hover: 1
+        hover: 1,
       },
       offsetX: undefined,
-      offsetY: undefined
+      offsetY: undefined,
     };
   },
 
   onPlacementChange(e) {
     this.setState({
-      placement: e.target.value
+      placement: e.target.value,
     });
   },
 
   onTransitionChange(e) {
     this.setState({
-      transitionName: e.target.checked ? e.target.value : ''
+      transitionName: e.target.checked ? e.target.value : '',
     });
   },
 
   onTriggerChange(e) {
-    var trigger = assign({}, this.state.trigger);
+    const trigger = assign({}, this.state.trigger);
     if (e.target.checked) {
       trigger[e.target.value] = 1;
     } else {
       delete trigger[e.target.value];
     }
     this.setState({
-      trigger: trigger
+      trigger: trigger,
     });
   },
 
   onOffsetXChange(e) {
-    var targetValue = e.target.value;
+    const targetValue = e.target.value;
     this.setState({
       offsetX: targetValue ? targetValue : undefined,
     });
   },
 
   onOffsetYChange(e) {
-    var targetValue = e.target.value;
+    const targetValue = e.target.value;
     this.setState({
       offsetY: targetValue ? targetValue : undefined,
     });
-  },
-
-  preventDefault(e) {
-    e.preventDefault();
   },
 
   onVisibleChange(visible) {
@@ -95,9 +106,9 @@ const Test = React.createClass({
   },
 
   render() {
-    var state = this.state;
-    var trigger = state.trigger;
-    return <div >
+    const state = this.state;
+    const trigger = state.trigger;
+    return (<div >
       <div style={{margin: '10px 20px'}}>
         <label>
           placement:
@@ -114,7 +125,7 @@ const Test = React.createClass({
         </label>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label>
-          <input value='rc-trigger-popup-zoom' type='checkbox' onChange={this.onTransitionChange}
+          <input value="rc-trigger-popup-zoom" type="checkbox" onChange={this.onTransitionChange}
                  checked={state.transitionName === 'rc-trigger-popup-zoom'}/>
           transitionName
         </label>
@@ -124,53 +135,47 @@ const Test = React.createClass({
         trigger:
 
         <label>
-          <input value='hover' checked={trigger.hover} type='checkbox' onChange={this.onTriggerChange}/>
+          <input value="hover" checked={trigger.hover} type="checkbox" onChange={this.onTriggerChange}/>
           hover
         </label>
         <label>
-          <input value='focus' checked={trigger.focus} type='checkbox' onChange={this.onTriggerChange}/>
+          <input value="focus" checked={trigger.focus} type="checkbox" onChange={this.onTriggerChange}/>
           focus
         </label>
         <label>
-          <input value='click' checked={trigger.click} type='checkbox' onChange={this.onTriggerChange}/>
+          <input value="click" checked={trigger.click} type="checkbox" onChange={this.onTriggerChange}/>
           click
         </label>
         <br/>
         <label>
           offsetX:
-          <input type='text' onChange={this.onOffsetXChange} style={{width:50}}/>
+          <input type="text" onChange={this.onOffsetXChange} style={{width: 50}}/>
         </label>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label>
           offsetY:
-          <input type='text' onChange={this.onOffsetYChange} style={{width:50}}/>
+          <input type="text" onChange={this.onOffsetYChange} style={{width: 50}}/>
         </label>
       </div>
       <div style={{margin: 100, position: 'relative'}}>
         <Trigger
           getPopupContainer={null && getPopupContainer}
-          popupAlign={{
-      offset: [state.offsetX, state.offsetY],
-      overflow: {
-        adjustX: 1,
-        adjustY: 1
-      }
-    }}
-                 mouseEnterDelay={0}
-                 popupPlacement={state.placement}
-                 //destroyPopupOnHide
-                 mouseLeaveDelay={0.1}
-                 action={Object.keys(state.trigger)}
-                 builtinPlacements={builtinPlacements}
-                 popup={<div style={{border:'1px solid red',padding:10}}>i am a popup</div>}
-                 popupTransitionName={state.transitionName}>
-          <a href='#' style={{margin: 20}} onClick={this.preventDefault}>trigger</a>
+          popupAlign={getPopupAlign(state)}
+          mouseEnterDelay={0}
+          popupPlacement={state.placement}
+          // destroyPopupOnHide
+          mouseLeaveDelay={0.1}
+          action={Object.keys(state.trigger)}
+          builtinPlacements={builtinPlacements}
+          popup={<div style={{border: '1px solid red', padding: 10}}>i am a popup</div>}
+          popupTransitionName={state.transitionName}>
+          <a href="#" style={{margin: 20}} onClick={preventDefault}>trigger</a>
         </Trigger>
       </div>
-    </div>;
-  }
+    </div>);
+  },
 });
 
 ReactDOM.render(<div>
   <Test />
-</div>, document.getElementById("__react-content"));
+</div>, document.getElementById('__react-content'));

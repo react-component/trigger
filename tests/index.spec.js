@@ -1,23 +1,22 @@
-'use strict';
+/* eslint no-console:0 */
 
-var expect = require('expect.js');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-var assign = require('object-assign');
-var $ = require('jquery');
+const expect = require('expect.js');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const $ = require('jquery');
 window.$ = $;
 require('../assets/index.less');
-var Trigger = require('../index');
-var scryRenderedDOMComponentsWithClass = TestUtils.scryRenderedDOMComponentsWithClass;
+const Trigger = require('../index');
+const scryRenderedDOMComponentsWithClass = TestUtils.scryRenderedDOMComponentsWithClass;
 require('./test.less');
-var async = require('async');
+const async = require('async');
 
 function timeout(ms) {
-  return (done)=> {
+  return (done) => {
     setTimeout(done, ms);
-  }
+  };
 }
 
 const autoAdjustOverflow = {
@@ -25,62 +24,62 @@ const autoAdjustOverflow = {
   adjustY: 1,
 };
 
-const targetOffset = [0, 0];
+const targetOffsetG = [0, 0];
 
 const placementAlignMap = {
   left: {
     points: ['cr', 'cl'],
     overflow: autoAdjustOverflow,
     offset: [-3, 0],
-    targetOffset,
+    targetOffsetG,
   },
   right: {
     points: ['cl', 'cr'],
     overflow: autoAdjustOverflow,
     offset: [3, 0],
-    targetOffset,
+    targetOffsetG,
   },
   top: {
     points: ['bc', 'tc'],
     overflow: autoAdjustOverflow,
     offset: [0, -3],
-    targetOffset,
+    targetOffsetG,
   },
   bottom: {
     points: ['tc', 'bc'],
     overflow: autoAdjustOverflow,
     offset: [0, 3],
-    targetOffset,
+    targetOffsetG,
   },
   topLeft: {
     points: ['bl', 'tl'],
     overflow: autoAdjustOverflow,
     offset: [0, -3],
-    targetOffset,
+    targetOffsetG,
   },
   topRight: {
     points: ['br', 'tr'],
     overflow: autoAdjustOverflow,
     offset: [0, -3],
-    targetOffset,
+    targetOffsetG,
   },
   bottomRight: {
     points: ['tr', 'br'],
     overflow: autoAdjustOverflow,
     offset: [0, 3],
-    targetOffset,
+    targetOffsetG,
   },
   bottomLeft: {
     points: ['tl', 'bl'],
     overflow: autoAdjustOverflow,
     offset: [0, 3],
-    targetOffset,
+    targetOffsetG,
   },
 };
 
-describe('rc-trigger', function () {
+describe('rc-trigger', function main() {
   this.timeout(40000);
-  var div = document.createElement('div');
+  const div = document.createElement('div');
   div.style.margin = '100px';
   div.style.position = 'relative';
   document.body.insertBefore(div, document.body.firstChild);
@@ -91,14 +90,15 @@ describe('rc-trigger', function () {
 
   describe('getPopupContainer', () => {
     it('defaults to document.body', (done) => {
-      var trigger = ReactDOM.render(<Trigger action={['click']} popupAlign={placementAlignMap.left}
-                                             popup={<strong className='x-content'>tooltip2</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.left}
+                                                popup={<strong className="x-content">tooltip2</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
-      async.series([timeout(20), (next)=> {
-        var popupDomNode = trigger.getPopupDomNode();
+      async.series([timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode.parentNode.parentNode).to.be(document.body);
         next();
       }], done);
@@ -109,16 +109,16 @@ describe('rc-trigger', function () {
         return node.parentNode;
       }
 
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             getPopupContainer={getPopupContainer}
-                                             popupAlign={placementAlignMap.left}
-                                             popup={<strong className='x-content'>tooltip2</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                getPopupContainer={getPopupContainer}
+                                                popupAlign={placementAlignMap.left}
+                                                popup={<strong className="x-content">tooltip2</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       async.series([timeout(20), (next)=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode.parentNode.parentNode).to.be(div);
         next();
       }], done);
@@ -127,41 +127,42 @@ describe('rc-trigger', function () {
 
   describe('action', ()=> {
     it('click works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']} popupAlign={placementAlignMap.left}
-                                             popup={<strong className='x-content'>tooltip2</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.left}
+                                                popup={<strong className="x-content">tooltip2</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       async.series([timeout(20), (next)=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect($(popupDomNode).find('.x-content').html()).to.be('tooltip2');
         expect(popupDomNode).to.be.ok();
         Simulate.click(domNode);
         next();
       }, timeout(20), (next)=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect($(popupDomNode).css('display')).to.be('none');
         next();
       }], done);
     });
 
     it('hover works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['hover']}
-                                             popupAlign={placementAlignMap.left}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['hover']}
+                                                popupAlign={placementAlignMap.left}
+                                                popup={<strong>trigger</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var target = scryRenderedDOMComponentsWithClass(trigger, 'target')[0];
+      </Trigger>), div);
+      const target = scryRenderedDOMComponentsWithClass(trigger, 'target')[0];
       // can not simulate mouseenter
       Simulate.mouseEnter(target);
       async.series([timeout(200), (next)=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
         Simulate.mouseLeave(target);
         next();
       }, timeout(200), (next)=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect($(popupDomNode).css('display')).to.be('none');
         next();
       }], done);
@@ -170,19 +171,19 @@ describe('rc-trigger', function () {
 
   describe('placement', ()=> {
     it('left works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.left}
-                                             popupStyle={{width:50}}
-                                             popup={<div>trigger</div>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.left}
+                                                popupStyle={{width: 50}}
+                                                popup={<div>trigger</div>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         expect(popupOffset.left + $(popupDomNode).outerWidth()).to.be(targetOffset.left - 3);
         Simulate.click(domNode);
         done();
@@ -190,19 +191,19 @@ describe('rc-trigger', function () {
     });
 
     it('auto adjust left works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.left}
-                                             popupStyle={{width:400}}
-                                             popup={<div>trigger</div>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.left}
+                                                popupStyle={{width: 400}}
+                                                popup={<div>trigger</div>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         // offset is 3
         if (!window.callPhantom) {
           expect(popupOffset.left).to.be(targetOffset.left + $(domNode).outerWidth() + 3);
@@ -212,18 +213,18 @@ describe('rc-trigger', function () {
     });
 
     it('right works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.right}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.right}
+                                                popup={<strong>trigger</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.left).to.be(targetOffset.left + $(domNode).outerWidth() + 3);
         Simulate.click(domNode);
@@ -232,18 +233,18 @@ describe('rc-trigger', function () {
     });
 
     it('bottom works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.bottom}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.bottom}
+                                                popup={<strong>trigger</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.top).to.be(targetOffset.top + $(domNode).outerHeight() + 3);
         Simulate.click(domNode);
@@ -252,18 +253,18 @@ describe('rc-trigger', function () {
     });
 
     it('bottomRight works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.bottomRight}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.bottomRight}
+                                                popup={<strong>trigger</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.top).to.be(targetOffset.top + $(domNode).outerHeight() + 3);
         Simulate.click(domNode);
@@ -272,18 +273,18 @@ describe('rc-trigger', function () {
     });
 
     it('bottomLeft works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.bottomLeft}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.bottomLeft}
+                                                popup={<strong>trigger</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.top).to.be(targetOffset.top + $(domNode).outerHeight() + 3);
         Simulate.click(domNode);
@@ -292,18 +293,18 @@ describe('rc-trigger', function () {
     });
 
     it('top works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.top}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render((<Trigger action={['click']}
+                                                popupAlign={placementAlignMap.top}
+                                                popup={<strong>trigger</strong>}>
         <div className="target">click</div>
-      </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.top).to.be(targetOffset.top - $(popupDomNode).outerHeight() - 3);
         Simulate.click(domNode);
@@ -312,19 +313,18 @@ describe('rc-trigger', function () {
     });
 
     it('topLeft works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.topLeft}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render(<Trigger action={['click']}
+                                               popupAlign={placementAlignMap.topLeft}
+                                               popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
-        console.log(popupOffset, targetOffset);
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         expect(popupOffset.top).to.be(targetOffset.top - $(popupDomNode).outerHeight() - 3);
         expect(popupOffset.left).to.be(targetOffset.left);
         Simulate.click(domNode);
@@ -333,18 +333,18 @@ describe('rc-trigger', function () {
     });
 
     it('topRight works', (done)=> {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.topRight}
-                                             popup={<strong>trigger</strong>}>
+      const trigger = ReactDOM.render(<Trigger action={['click']}
+                                               popupAlign={placementAlignMap.topRight}
+                                               popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.top).to.be(targetOffset.top - $(popupDomNode).outerHeight() - 3);
         expect(popupOffset.left).to.be(targetOffset.left);
@@ -356,19 +356,19 @@ describe('rc-trigger', function () {
 
   describe('align', ()=> {
     it('offsetX works', (done)=> {
-      let offsetX = 10;
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={assign({},placementAlignMap.bottomRight,{offset:[offsetX,3]})}
-                                             popup={<strong>trigger</strong>}>
+      const offsetX = 10;
+      const trigger = ReactDOM.render(<Trigger action={['click']}
+                                               popupAlign={{...placementAlignMap.bottomRight, offset: [offsetX, 3]}}
+                                               popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.left).to.be(targetOffset.left + offsetX);
         Simulate.click(domNode);
@@ -377,19 +377,19 @@ describe('rc-trigger', function () {
     });
 
     it('offsetY works', (done)=> {
-      let offsetY = 50;
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={assign({},placementAlignMap.topRight,{offset:[0,offsetY]})}
-                                             popup={<strong>trigger</strong>}>
+      const offsetY = 50;
+      const trigger = ReactDOM.render(<Trigger action={['click']}
+                                               popupAlign={{...placementAlignMap.topRight, offset: [0, offsetY]}}
+                                               popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       setTimeout(()=> {
-        var popupDomNode = trigger.getPopupDomNode();
+        const popupDomNode = trigger.getPopupDomNode();
         expect(popupDomNode).to.be.ok();
-        var targetOffset = $(domNode).offset();
-        var popupOffset = $(popupDomNode).offset();
+        const targetOffset = $(domNode).offset();
+        const popupOffset = $(popupDomNode).offset();
         console.log(popupOffset, targetOffset);
         expect(popupOffset.top).to.be(targetOffset.top - $(popupDomNode).outerHeight() + offsetY);
         Simulate.click(domNode);
@@ -398,28 +398,28 @@ describe('rc-trigger', function () {
     });
   });
 
-  describe('destroyPopupOnHide', function () {
-    it('defaults to false', function () {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             popupAlign={placementAlignMap.topRight}
-                                             popup={<strong>trigger</strong>}>
+  describe('destroyPopupOnHide', () => {
+    it('defaults to false', () => {
+      const trigger = ReactDOM.render(<Trigger action={['click']}
+                                               popupAlign={placementAlignMap.topRight}
+                                               popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       expect(trigger.getPopupDomNode()).to.be.ok();
       Simulate.click(domNode);
       expect(trigger.getPopupDomNode()).to.be.ok();
     });
 
-    it('set true will destroy tooltip on hide', function () {
-      var trigger = ReactDOM.render(<Trigger action={['click']}
-                                             destroyPopupOnHide
-                                             popupAlign={placementAlignMap.topRight}
-                                             popup={<strong>trigger</strong>}>
+    it('set true will destroy tooltip on hide', () => {
+      const trigger = ReactDOM.render(<Trigger action={['click']}
+                                               destroyPopupOnHide
+                                               popupAlign={placementAlignMap.topRight}
+                                               popup={<strong>trigger</strong>}>
         <div className="target">click</div>
       </Trigger>, div);
-      var domNode = ReactDOM.findDOMNode(trigger);
+      const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
       expect(trigger.getPopupDomNode()).to.be.ok();
       Simulate.click(domNode);
@@ -428,43 +428,42 @@ describe('rc-trigger', function () {
   });
 
   if (window.TransitionEvent) {
-    describe('transitionName', function () {
+    describe('transitionName', () => {
       it('works', (done)=> {
-        var trigger = ReactDOM.render(<Trigger
+        const trigger = ReactDOM.render(<Trigger
           action={['click']}
           popupTransitionName="fade"
           popupAlign={placementAlignMap.top}
           popup={<strong>trigger</strong>}>
           <div className="target">click</div>
         </Trigger>, div);
-        var domNode = ReactDOM.findDOMNode(trigger);
+        const domNode = ReactDOM.findDOMNode(trigger);
         Simulate.click(domNode);
-        async.series([
-            timeout(100),
-            (next)=> {
-              var popupDomNode = trigger.getPopupDomNode();
+        async.series([timeout(100),
+            (next) => {
+              const popupDomNode = trigger.getPopupDomNode();
               expect(popupDomNode).to.be.ok();
               expect($(popupDomNode).css('opacity')).not.to.be('1');
               next();
             },
             timeout(500),
-            (next)=> {
-              var popupDomNode = trigger.getPopupDomNode();
+            (next) => {
+              const popupDomNode = trigger.getPopupDomNode();
               expect(popupDomNode).to.be.ok();
               expect($(popupDomNode).css('opacity')).to.be('1');
               Simulate.click(domNode);
               next();
             },
             timeout(100),
-            (next)=> {
-              var popupDomNode = trigger.getPopupDomNode();
+            (next) => {
+              const popupDomNode = trigger.getPopupDomNode();
               expect(popupDomNode).to.be.ok();
               expect($(popupDomNode).css('opacity')).not.to.be('1');
               next();
             },
             timeout(500),
-            (next)=> {
-              var popupDomNode = trigger.getPopupDomNode();
+            (next) => {
+              const popupDomNode = trigger.getPopupDomNode();
               expect($(popupDomNode).css('display')).to.be('none');
               next();
             }],
