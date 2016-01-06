@@ -31,6 +31,11 @@ const builtinPlacements = {
   },
 };
 
+
+function getPopupContainer(trigger){
+  return trigger.parentNode;
+}
+
 const Test = React.createClass({
   getInitialState() {
     return {
@@ -141,8 +146,10 @@ const Test = React.createClass({
           <input type='text' onChange={this.onOffsetYChange} style={{width:50}}/>
         </label>
       </div>
-      <div style={{margin: 100}}>
-        <Trigger popupAlign={{
+      <div style={{margin: 100, position: 'relative'}}>
+        <Trigger
+          getPopupContainer={null && getPopupContainer}
+          popupAlign={{
       offset: [state.offsetX, state.offsetY],
       overflow: {
         adjustX: 1,

@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, {findDOMNode} from 'react-dom';
 import {createChainedFunction, Dom} from 'rc-util';
 import Popup from './Popup';
 import {getAlignFromPlacement, getPopupClassNameFromAlign} from './utils';
@@ -81,7 +81,7 @@ const Trigger = React.createClass({
       const self = this;
       ReactDOM.unstable_renderSubtreeIntoContainer(this, this.getPopupElement(), this.getPopupContainer(), function renderPopup() {
         if (this.isMounted()) {
-          self.popupDomNode = ReactDOM.findDOMNode(this);
+          self.popupDomNode = findDOMNode(this);
         } else {
           self.popupDomNode = null;
         }
@@ -112,7 +112,7 @@ const Trigger = React.createClass({
     if (popupContainer) {
       ReactDOM.unmountComponentAtNode(popupContainer);
       if (this.props.getPopupContainer) {
-        const mountNode = this.props.getPopupContainer();
+        const mountNode = this.props.getPopupContainer(findDOMNode(this));
         mountNode.removeChild(popupContainer);
       } else {
         document.body.removeChild(popupContainer);
@@ -180,7 +180,7 @@ const Trigger = React.createClass({
 
   onDocumentClick(event) {
     const target = event.target;
-    const root = ReactDOM.findDOMNode(this);
+    const root = findDOMNode(this);
     const popupNode = this.getPopupDomNode();
     if (!Dom.contains(root, target) && !Dom.contains(popupNode, target)) {
       this.setPopupVisible(false);
@@ -196,7 +196,7 @@ const Trigger = React.createClass({
     if (!this.popupContainer) {
       this.popupContainer = document.createElement('div');
       if (this.props.getPopupContainer) {
-        const mountNode = this.props.getPopupContainer();
+        const mountNode = this.props.getPopupContainer(findDOMNode(this));
         mountNode.appendChild(this.popupContainer);
       } else {
         document.body.appendChild(this.popupContainer);

@@ -82,10 +82,47 @@ describe('rc-trigger', function () {
   this.timeout(40000);
   var div = document.createElement('div');
   div.style.margin = '100px';
+  div.style.position = 'relative';
   document.body.insertBefore(div, document.body.firstChild);
 
   afterEach(()=> {
     ReactDOM.unmountComponentAtNode(div);
+  });
+
+  describe('getPopupContainer', () => {
+    it('defaults to document.body', (done) => {
+      var trigger = ReactDOM.render(<Trigger action={['click']} popupAlign={placementAlignMap.left}
+                                             popup={<strong className='x-content'>tooltip2</strong>}>
+        <div className="target">click</div>
+      </Trigger>, div);
+      var domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      async.series([timeout(20), (next)=> {
+        var popupDomNode = trigger.getPopupDomNode();
+        expect(popupDomNode.parentNode.parentNode).to.be(document.body);
+        next();
+      }], done);
+    });
+
+    it('can change', (done) => {
+      function getPopupContainer(node) {
+        return node.parentNode;
+      }
+
+      var trigger = ReactDOM.render(<Trigger action={['click']}
+                                             getPopupContainer={getPopupContainer}
+                                             popupAlign={placementAlignMap.left}
+                                             popup={<strong className='x-content'>tooltip2</strong>}>
+        <div className="target">click</div>
+      </Trigger>, div);
+      var domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      async.series([timeout(20), (next)=> {
+        var popupDomNode = trigger.getPopupDomNode();
+        expect(popupDomNode.parentNode.parentNode).to.be(div);
+        next();
+      }], done);
+    });
   });
 
   describe('action', ()=> {
@@ -361,8 +398,8 @@ describe('rc-trigger', function () {
     });
   });
 
-  describe('destroyPopupOnHide', function(){
-    it('defaults to false', function(){
+  describe('destroyPopupOnHide', function () {
+    it('defaults to false', function () {
       var trigger = ReactDOM.render(<Trigger action={['click']}
                                              popupAlign={placementAlignMap.topRight}
                                              popup={<strong>trigger</strong>}>
@@ -375,7 +412,7 @@ describe('rc-trigger', function () {
       expect(trigger.getPopupDomNode()).to.be.ok();
     });
 
-    it('set true will destroy tooltip on hide', function(){
+    it('set true will destroy tooltip on hide', function () {
       var trigger = ReactDOM.render(<Trigger action={['click']}
                                              destroyPopupOnHide
                                              popupAlign={placementAlignMap.topRight}
