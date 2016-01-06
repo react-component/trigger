@@ -239,7 +239,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
 <div class="container">
   <div class="header">
-    <h1>rc-trigger@1.0.6</h1>
+    <h1>rc-trigger@1.1.0</h1>
 
     <p>base abstract trigger component for react</p>
   </div>
@@ -279,6 +279,11 @@ const builtinPlacements = {
     points: ['tl', 'bl'],
   },
 };
+
+
+function getPopupContainer(trigger){
+  return trigger.parentNode;
+}
 
 const Test = React.createClass({
   getInitialState() {
@@ -390,8 +395,10 @@ const Test = React.createClass({
           <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'text'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onOffsetYChange}</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">width</span>:50}}</span><span class="xml"><span class="hljs-tag">/&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">margin</span>: 100}}</span><span class="xml"><span class="hljs-tag">&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span> <span class="hljs-attribute">popupAlign</span>=</span></span><span class="hljs-expression">{{
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">margin</span>: 100, <span class="hljs-variable">position</span>: '<span class="hljs-variable">relative</span>'}}</span><span class="xml"><span class="hljs-tag">&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
+          <span class="hljs-attribute">getPopupContainer</span>=<span class="hljs-value">{null</span> &amp;&amp; <span class="hljs-attribute">getPopupContainer</span>}
+          <span class="hljs-attribute">popupAlign</span>=</span></span><span class="hljs-expression">{{
       <span class="hljs-variable">offset</span>: [<span class="hljs-variable">state.offsetX</span>, <span class="hljs-variable">state.offsetY</span>],
       <span class="hljs-variable">overflow</span>: {
         <span class="hljs-variable">adjustX</span>: 1,

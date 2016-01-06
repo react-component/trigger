@@ -58,6 +58,10 @@ webpackJsonp([0,1],[
 	  }
 	};
 	
+	function getPopupContainer(trigger) {
+	  return trigger.parentNode;
+	}
+	
 	var Test = _react2['default'].createClass({
 	  displayName: 'Test',
 	
@@ -220,10 +224,12 @@ webpackJsonp([0,1],[
 	      ),
 	      _react2['default'].createElement(
 	        'div',
-	        { style: { margin: 100 } },
+	        { style: { margin: 100, position: 'relative' } },
 	        _react2['default'].createElement(
 	          _rcTrigger2['default'],
-	          { popupAlign: {
+	          {
+	            getPopupContainer: null && getPopupContainer,
+	            popupAlign: {
 	              offset: [state.offsetX, state.offsetY],
 	              overflow: {
 	                adjustX: 1,
@@ -19982,7 +19988,7 @@ webpackJsonp([0,1],[
 	        var self = _this;
 	        _reactDom2['default'].unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
 	          if (this.isMounted()) {
-	            self.popupDomNode = _reactDom2['default'].findDOMNode(this);
+	            self.popupDomNode = (0, _reactDom.findDOMNode)(this);
 	          } else {
 	            self.popupDomNode = null;
 	          }
@@ -20018,7 +20024,7 @@ webpackJsonp([0,1],[
 	    if (popupContainer) {
 	      _reactDom2['default'].unmountComponentAtNode(popupContainer);
 	      if (this.props.getPopupContainer) {
-	        var mountNode = this.props.getPopupContainer();
+	        var mountNode = this.props.getPopupContainer((0, _reactDom.findDOMNode)(this));
 	        mountNode.removeChild(popupContainer);
 	      } else {
 	        document.body.removeChild(popupContainer);
@@ -20086,7 +20092,7 @@ webpackJsonp([0,1],[
 	
 	  onDocumentClick: function onDocumentClick(event) {
 	    var target = event.target;
-	    var root = _reactDom2['default'].findDOMNode(this);
+	    var root = (0, _reactDom.findDOMNode)(this);
 	    var popupNode = this.getPopupDomNode();
 	    if (!_rcUtil.Dom.contains(root, target) && !_rcUtil.Dom.contains(popupNode, target)) {
 	      this.setPopupVisible(false);
@@ -20102,7 +20108,7 @@ webpackJsonp([0,1],[
 	    if (!this.popupContainer) {
 	      this.popupContainer = document.createElement('div');
 	      if (this.props.getPopupContainer) {
-	        var mountNode = this.props.getPopupContainer();
+	        var mountNode = this.props.getPopupContainer((0, _reactDom.findDOMNode)(this));
 	        mountNode.appendChild(this.popupContainer);
 	      } else {
 	        document.body.appendChild(this.popupContainer);
