@@ -167,6 +167,49 @@ describe('rc-trigger', function main() {
         next();
       }], done);
     });
+
+    it('nested action works', (done)=> {
+      const Test = React.createClass({
+        render() {
+          return (
+            <Trigger action={['click']}
+              popupAlign={placementAlignMap.left}
+              ref="clickTrigger"
+              popup={<strong>click trigger</strong>}>
+              <Trigger action={['hover']}
+                popupAlign={placementAlignMap.left}
+                ref="hoverTrigger"
+                popup={<strong>hover trigger</strong>}>
+                <div className="target">trigger</div>
+              </Trigger>
+            </Trigger>
+          );
+        },
+      });
+      const trigger = ReactDOM.render(<Test />, div);
+
+      const target = scryRenderedDOMComponentsWithClass(trigger, 'target')[0];
+      // can not simulate mouseenter
+      Simulate.mouseEnter(target);
+      Simulate.click(target);
+      async.series([timeout(100), (next)=> {
+        const clickPopupDomNode = trigger.refs.clickTrigger.getPopupDomNode();
+        const hoverPopupDomNode = trigger.refs.hoverTrigger.getPopupDomNode();
+        expect(clickPopupDomNode).to.be.ok();
+        expect(hoverPopupDomNode).to.be.ok();
+        Simulate.mouseLeave(target);
+        next();
+      }, timeout(100), (next)=> {
+        const hoverPopupDomNode = trigger.refs.hoverTrigger.getPopupDomNode();
+        expect($(hoverPopupDomNode).css('display')).to.be('none');
+        Simulate.click(target);
+        next();
+      }, timeout(100), (next)=> {
+        const clickPopupDomNode = trigger.refs.clickTrigger.getPopupDomNode();
+        expect($(clickPopupDomNode).css('display')).to.be('none');
+        next();
+      }], done);
+    });
   });
 
   describe('placement', ()=> {
