@@ -300,6 +300,11 @@ const Trigger = React.createClass({
       newChildProps.onBlur = createChainedFunction(this.onBlur, childProps.onBlur);
     }
 
+    ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
+     'onMouseLeave', 'onFocus', 'onBlur'].forEach(handler => {
+       newChildProps[handler] = createChainedFunction(props[handler], newChildProps[handler]);
+     });
+
     return React.cloneElement(child, newChildProps);
   },
 });
