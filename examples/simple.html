@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <title>simple.js - example - rc-trigger@1.1.1</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -42,153 +43,170 @@
       hyphens: none;
       color: #E5E5C2;
     }
+  </style>
+  <style>
+/*
 
-    /*
 Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-license.org/
+
 */
 
-    .hljs {
-      display: block;
-      overflow-x: auto;
-      padding: 0.5em;
-      background: #23241f;
-      -webkit-text-size-adjust: none;
-    }
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #23241f;
+  -webkit-text-size-adjust: none;
+}
 
-    .hljs,
-    .hljs-tag,
-    .css .hljs-rules,
-    .css .hljs-value,
-    .css .hljs-function
-    .hljs-preprocessor,
-    .hljs-pragma {
-      color: #f8f8f2;
-    }
+.hljs,
+.hljs-tag,
+.css .hljs-rule,
+.css .hljs-value,
+.aspectj .hljs-function,
+.css .hljs-function
+.hljs-preprocessor,
+.hljs-pragma {
+  color: #f8f8f2;
+}
 
-    .hljs-strongemphasis,
-    .hljs-strong,
-    .hljs-emphasis {
-      color: #a8a8a2;
-    }
+.hljs-strongemphasis,
+.hljs-strong,
+.hljs-emphasis {
+  color: #a8a8a2;
+}
 
-    .hljs-bullet,
-    .hljs-blockquote,
-    .hljs-horizontal_rule,
-    .hljs-number,
-    .hljs-regexp,
-    .alias .hljs-keyword,
-    .hljs-literal,
-    .hljs-hexcolor {
-      color: #ae81ff;
-    }
+.hljs-bullet,
+.hljs-blockquote,
+.hljs-horizontal_rule,
+.hljs-number,
+.hljs-regexp,
+.alias .hljs-keyword,
+.hljs-literal,
+.hljs-hexcolor {
+  color: #ae81ff;
+}
 
-    .hljs-tag .hljs-value,
-    .hljs-code,
-    .hljs-title,
-    .css .hljs-class,
-    .hljs-class .hljs-title:last-child {
-      color: #a6e22e;
-    }
+.hljs-code,
+.hljs-title,
+.css .hljs-class,
+.hljs-class .hljs-title:last-child {
+  color: #a6e22e;
+  /*color: #e6db74;*/
+}
 
-    .hljs-link_url {
-      font-size: 80%;
-    }
+.hljs-link_url {
+  font-size: 80%;
+}
 
-    .hljs-strong,
-    .hljs-strongemphasis {
-      font-weight: bold;
-    }
+.hljs-strong,
+.hljs-strongemphasis {
+  font-weight: bold;
+}
 
-    .hljs-emphasis,
-    .hljs-strongemphasis,
-    .hljs-class .hljs-title:last-child {
-      font-style: italic;
-    }
+.hljs-emphasis,
+.hljs-strongemphasis,
+.hljs-class .hljs-title:last-child,
+.hljs-typename {
+  font-style: italic;
+}
 
-    .hljs-keyword,
-    .hljs-function,
-    .hljs-change,
-    .hljs-winutils,
-    .hljs-flow,
-    .nginx .hljs-title,
-    .tex .hljs-special,
-    .hljs-header,
-    .hljs-attribute,
-    .hljs-symbol,
-    .hljs-symbol .hljs-string,
-    .hljs-tag .hljs-title,
-    .hljs-value,
-    .alias .hljs-keyword:first-child,
-    .css .hljs-tag,
-    .css .unit,
-    .css .hljs-important {
-      color: #f92672;
-    }
+.hljs-keyword,
+.ruby .hljs-class .hljs-keyword:first-child,
+.ruby .hljs-function .hljs-keyword,
+.hljs-function,
+.hljs-change,
+.hljs-winutils,
+.hljs-flow,
+.nginx .hljs-title,
+.tex .hljs-special,
+.hljs-header,
+.hljs-symbol,
+.hljs-symbol .hljs-string,
+.hljs-tag .hljs-title,
+.hljs-value,
+.alias .hljs-keyword:first-child,
+.css .hljs-tag,
+.css .unit,
+.css .hljs-important {
+  color: #f92672;
+}
 
-    .hljs-function .hljs-keyword,
-    .hljs-class .hljs-keyword:first-child,
-    .hljs-constant,
-    .css .hljs-attribute {
-      color: #66d9ef;
-    }
+.hljs-function .hljs-keyword,
+.hljs-class .hljs-keyword:first-child,
+.hljs-aspect .hljs-keyword:first-child,
+.hljs-constant,
+.hljs-typename,
+.hljs-name,
+.css .hljs-attribute {
+  color: #66d9ef;
+}
 
-    .hljs-variable,
-    .hljs-params,
-    .hljs-class .hljs-title {
-      color: #f8f8f2;
-    }
+.hljs-variable,
+.hljs-params,
+.hljs-class .hljs-title,
+.hljs-aspect .hljs-title {
+  color: #f8f8f2;
+}
 
-    .hljs-string,
-    .css .hljs-id,
-    .hljs-subst,
-    .hljs-type,
-    .ruby .hljs-class .hljs-parent,
-    .hljs-built_in,
-    .django .hljs-template_tag,
-    .django .hljs-variable,
-    .smalltalk .hljs-class,
-    .django .hljs-filter .hljs-argument,
-    .smalltalk .hljs-localvars,
-    .smalltalk .hljs-array,
-    .hljs-attr_selector,
-    .hljs-pseudo,
-    .hljs-addition,
-    .hljs-stream,
-    .hljs-envvar,
-    .apache .hljs-tag,
-    .apache .hljs-cbracket,
-    .tex .hljs-command,
-    .hljs-prompt,
-    .hljs-link_label,
-    .hljs-link_url {
-      color: #e6db74;
-    }
+.hljs-tag .hljs-value,
+.hljs-string,
+.css .hljs-id,
+.hljs-subst,
+.hljs-type,
+.ruby .hljs-class .hljs-parent,
+.django .hljs-template_tag,
+.django .hljs-variable,
+.smalltalk .hljs-class,
+.django .hljs-filter .hljs-argument,
+.smalltalk .hljs-localvars,
+.smalltalk .hljs-array,
+.hljs-attr_selector,
+.hljs-pseudo,
+.hljs-addition,
+.hljs-stream,
+.hljs-envvar,
+.apache .hljs-tag,
+.apache .hljs-cbracket,
+.tex .hljs-command,
+.hljs-prompt,
+.hljs-link_label,
+.hljs-link_url {
+  color: #e6db74;
+}
 
-    .hljs-comment,
-    .hljs-javadoc,
-    .hljs-annotation,
-    .hljs-decorator,
-    .hljs-template_comment,
-    .hljs-pi,
-    .hljs-doctype,
-    .hljs-deletion,
-    .hljs-shebang,
-    .apache .hljs-sqbracket,
-    .tex .hljs-formula {
-      color: #75715e;
-    }
+.hljs-comment,
+.hljs-annotation,
+.hljs-decorator,
+.hljs-pi,
+.hljs-doctype,
+.hljs-deletion,
+.hljs-shebang,
+.apache .hljs-sqbracket,
+.tex .hljs-formula {
+  color: #75715e;
+}
 
-    .coffeescript .javascript,
-    .javascript .xml,
-    .tex .hljs-formula,
-    .xml .javascript,
-    .xml .vbscript,
-    .xml .css,
-    .xml .hljs-cdata,
-    .xml .php,
-    .php .xml {
-      opacity: 0.5;
-    }
+.coffeescript .javascript,
+.javascript .xml,
+.tex .hljs-formula,
+.xml .javascript,
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata,
+.xml .php,
+.php .xml {
+  opacity: 0.5;
+}
+/***********/
+.hljs-attribute{
+  color: #a6e22e;
+}
+/***** node keyword ******/
+.hljs-built_in{
+  color: #3396dc;
+  font-weight: bold;
+}
   </style>
   <style>
     .container {
@@ -233,121 +251,131 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   <!--[if lt IE 9]>
   <script src="https://a.alipayobjects.com/??es5-shim/4.0.5/es5-shim.js,es5-shim/4.0.5/es5-sham.js,html5shiv/3.7.2/src/html5shiv.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="simple.css" />
+  <link rel="stylesheet" href="common.css" />
 </head>
 
 <body>
 <div class="container">
   <div class="header">
-    <h1>rc-trigger@1.1.0</h1>
+    <h1>rc-trigger@1.1.1</h1>
 
     <p>base abstract trigger component for react</p>
   </div>
   <div class="example" id="__react-content"></div>
   <script src="common.js?nowrap"></script>
   <script src="simple.js?nowrap"></script>
-  <div class="highlight">
-    <pre><code><span class="xml">import React from 'react';
-import ReactDOM from 'react-dom';
-import Trigger from 'rc-trigger';
-import 'rc-trigger/assets/index.css';
-import assign from 'object-assign';
+  <div class="highlight"><pre><code language="js"><span class="hljs-comment">/* eslint no-console:0 */</span>
 
-const builtinPlacements = {
+import React from <span class="hljs-string">'react'</span>;
+import ReactDOM from <span class="hljs-string">'react-dom'</span>;
+import Trigger from <span class="hljs-string">'rc-trigger'</span>;
+import <span class="hljs-string">'rc-trigger/assets/index.css'</span>;
+import assign from <span class="hljs-string">'object-assign'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPopupAlign</span><span class="hljs-params">(state)</span> </span>{
+  <span class="hljs-keyword">return</span> {
+    offset: [state.offsetX, state.offsetY],
+    overflow: {
+      adjustX: <span class="hljs-number">1</span>,
+      adjustY: <span class="hljs-number">1</span>,
+    },
+  };
+}
+
+<span class="hljs-keyword">const</span> builtinPlacements = {
   left: {
-    points: ['cr', 'cl'],
+    points: [<span class="hljs-string">'cr'</span>, <span class="hljs-string">'cl'</span>],
   },
   right: {
-    points: ['cl', 'cr'],
+    points: [<span class="hljs-string">'cl'</span>, <span class="hljs-string">'cr'</span>],
   },
   top: {
-    points: ['bc', 'tc'],
+    points: [<span class="hljs-string">'bc'</span>, <span class="hljs-string">'tc'</span>],
   },
   bottom: {
-    points: ['tc', 'bc'],
+    points: [<span class="hljs-string">'tc'</span>, <span class="hljs-string">'bc'</span>],
   },
   topLeft: {
-    points: ['bl', 'tl'],
+    points: [<span class="hljs-string">'bl'</span>, <span class="hljs-string">'tl'</span>],
   },
   topRight: {
-    points: ['br', 'tr'],
+    points: [<span class="hljs-string">'br'</span>, <span class="hljs-string">'tr'</span>],
   },
   bottomRight: {
-    points: ['tr', 'br'],
+    points: [<span class="hljs-string">'tr'</span>, <span class="hljs-string">'br'</span>],
   },
   bottomLeft: {
-    points: ['tl', 'bl'],
+    points: [<span class="hljs-string">'tl'</span>, <span class="hljs-string">'bl'</span>],
   },
 };
 
-
-function getPopupContainer(trigger){
-  return trigger.parentNode;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">preventDefault</span><span class="hljs-params">(e)</span> </span>{
+  e.preventDefault();
 }
 
-const Test = React.createClass({
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPopupContainer</span><span class="hljs-params">(trigger)</span> </span>{
+  <span class="hljs-keyword">return</span> trigger.parentNode;
+}
+
+<span class="hljs-keyword">const</span> Test = React.createClass({
   getInitialState() {
-    return {
-      placement: 'right',
+    <span class="hljs-keyword">return</span> {
+      placement: <span class="hljs-string">'right'</span>,
       trigger: {
-        hover: 1
+        hover: <span class="hljs-number">1</span>,
       },
-      offsetX: undefined,
-      offsetY: undefined
+      offsetX: <span class="hljs-literal">undefined</span>,
+      offsetY: <span class="hljs-literal">undefined</span>,
     };
   },
 
   onPlacementChange(e) {
-    this.setState({
-      placement: e.target.value
+    <span class="hljs-keyword">this</span>.setState({
+      placement: e.target.value,
     });
   },
 
   onTransitionChange(e) {
-    this.setState({
-      transitionName: e.target.checked ? e.target.value : ''
+    <span class="hljs-keyword">this</span>.setState({
+      transitionName: e.target.checked ? e.target.value : <span class="hljs-string">''</span>,
     });
   },
 
   onTriggerChange(e) {
-    var trigger = assign({}, this.state.trigger);
-    if (e.target.checked) {
-      trigger[e.target.value] = 1;
-    } else {
-      delete trigger[e.target.value];
+    <span class="hljs-keyword">const</span> trigger = assign({}, <span class="hljs-keyword">this</span>.state.trigger);
+    <span class="hljs-keyword">if</span> (e.target.checked) {
+      trigger[e.target.value] = <span class="hljs-number">1</span>;
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">delete</span> trigger[e.target.value];
     }
-    this.setState({
-      trigger: trigger
+    <span class="hljs-keyword">this</span>.setState({
+      trigger: trigger,
     });
   },
 
   onOffsetXChange(e) {
-    var targetValue = e.target.value;
-    this.setState({
-      offsetX: targetValue ? targetValue : undefined,
+    <span class="hljs-keyword">const</span> targetValue = e.target.value;
+    <span class="hljs-keyword">this</span>.setState({
+      offsetX: targetValue ? targetValue : <span class="hljs-literal">undefined</span>,
     });
   },
 
   onOffsetYChange(e) {
-    var targetValue = e.target.value;
-    this.setState({
-      offsetY: targetValue ? targetValue : undefined,
+    <span class="hljs-keyword">const</span> targetValue = e.target.value;
+    <span class="hljs-keyword">this</span>.setState({
+      offsetY: targetValue ? targetValue : <span class="hljs-literal">undefined</span>,
     });
   },
 
-  preventDefault(e) {
-    e.preventDefault();
-  },
-
   onVisibleChange(visible) {
-    console.log('tooltip', visible);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'tooltip'</span>, visible);
   },
 
   render() {
-    var state = this.state;
-    var trigger = state.trigger;
-    return <span class="hljs-tag">&lt;<span class="hljs-title">div</span> &gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">margin</span>: '10<span class="hljs-variable">px</span> 20<span class="hljs-variable">px</span>'}}</span><span class="xml"><span class="hljs-tag">&gt;</span>
+    <span class="hljs-keyword">const</span> state = <span class="hljs-keyword">this</span>.state;
+    <span class="hljs-keyword">const</span> trigger = state.trigger;
+    <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> &gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{margin:</span> '<span class="hljs-attribute">10px</span> <span class="hljs-attribute">20px</span>'}}&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
           placement:
           <span class="hljs-tag">&lt;<span class="hljs-title">select</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">{state.placement}</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onPlacementChange}</span>&gt;</span>
@@ -363,7 +391,7 @@ const Test = React.createClass({
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
         &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">'rc-trigger-popup-zoom'</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'checkbox'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTransitionChange}</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"rc-trigger-popup-zoom"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"checkbox"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTransitionChange}</span>
                  <span class="hljs-attribute">checked</span>=<span class="hljs-value">{state.transitionName</span> =<span class="hljs-value">==</span> '<span class="hljs-attribute">rc-trigger-popup-zoom</span>'}/&gt;</span>
           transitionName
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
@@ -373,63 +401,58 @@ const Test = React.createClass({
         trigger:
 
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">'hover'</span> <span class="hljs-attribute">checked</span>=<span class="hljs-value">{trigger.hover}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'checkbox'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTriggerChange}</span>/&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"hover"</span> <span class="hljs-attribute">checked</span>=<span class="hljs-value">{trigger.hover}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"checkbox"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTriggerChange}</span>/&gt;</span>
           hover
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">'focus'</span> <span class="hljs-attribute">checked</span>=<span class="hljs-value">{trigger.focus}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'checkbox'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTriggerChange}</span>/&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"focus"</span> <span class="hljs-attribute">checked</span>=<span class="hljs-value">{trigger.focus}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"checkbox"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTriggerChange}</span>/&gt;</span>
           focus
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">'click'</span> <span class="hljs-attribute">checked</span>=<span class="hljs-value">{trigger.click}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'checkbox'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTriggerChange}</span>/&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"click"</span> <span class="hljs-attribute">checked</span>=<span class="hljs-value">{trigger.click}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"checkbox"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onTriggerChange}</span>/&gt;</span>
           click
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">br</span>/&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
           offsetX:
-          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'text'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onOffsetXChange}</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">width</span>:50}}</span><span class="xml"><span class="hljs-tag">/&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onOffsetXChange}</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{width:</span> <span class="hljs-attribute">50</span>}}/&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
         &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
           offsetY:
-          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">'text'</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onOffsetYChange}</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">width</span>:50}}</span><span class="xml"><span class="hljs-tag">/&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onOffsetYChange}</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{width:</span> <span class="hljs-attribute">50</span>}}/&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">margin</span>: 100, <span class="hljs-variable">position</span>: '<span class="hljs-variable">relative</span>'}}</span><span class="xml"><span class="hljs-tag">&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{margin:</span> <span class="hljs-attribute">100</span>, <span class="hljs-attribute">position:</span> '<span class="hljs-attribute">relative</span>'}}&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
           <span class="hljs-attribute">getPopupContainer</span>=<span class="hljs-value">{null</span> &amp;&amp; <span class="hljs-attribute">getPopupContainer</span>}
-          <span class="hljs-attribute">popupAlign</span>=</span></span><span class="hljs-expression">{{
-      <span class="hljs-variable">offset</span>: [<span class="hljs-variable">state.offsetX</span>, <span class="hljs-variable">state.offsetY</span>],
-      <span class="hljs-variable">overflow</span>: {
-        <span class="hljs-variable">adjustX</span>: 1,
-        <span class="hljs-variable">adjustY</span>: 1
-      }
-    }}</span><span class="xml"><span class="hljs-tag">
-                 <span class="hljs-attribute">mouseEnterDelay</span>=<span class="hljs-value">{0}</span>
-                 <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">{state.placement}</span>
-                 //<span class="hljs-attribute">destroyPopupOnHide</span>
-                 <span class="hljs-attribute">mouseLeaveDelay</span>=<span class="hljs-value">{0.1}</span>
-                 <span class="hljs-attribute">action</span>=<span class="hljs-value">{Object.keys(state.trigger)}</span>
-                 <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
-                 <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;div</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">border</span>:'1<span class="hljs-variable">px</span> <span class="hljs-variable">solid</span> <span class="hljs-variable">red</span>',<span class="hljs-variable">padding</span>:10}}</span><span class="xml"><span class="hljs-tag">&gt;</span>i am a popup<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>}
-                 popupTransitionName={state.transitionName}&gt;
-          <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">'#'</span> <span class="hljs-attribute">style</span>=</span></span><span class="hljs-expression">{{<span class="hljs-variable">margin</span>: 20}}</span><span class="xml"><span class="hljs-tag"> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{this.preventDefault}</span>&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+          <span class="hljs-attribute">popupAlign</span>=<span class="hljs-value">{getPopupAlign(state)}</span>
+          <span class="hljs-attribute">mouseEnterDelay</span>=<span class="hljs-value">{0}</span>
+          <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">{state.placement}</span>
+          // <span class="hljs-attribute">destroyPopupOnHide</span>
+          <span class="hljs-attribute">mouseLeaveDelay</span>=<span class="hljs-value">{0.1}</span>
+          <span class="hljs-attribute">action</span>=<span class="hljs-value">{Object.keys(state.trigger)}</span>
+          <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
+          <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{border:</span> '<span class="hljs-attribute">1px</span> <span class="hljs-attribute">solid</span> <span class="hljs-attribute">red</span>', <span class="hljs-attribute">padding:</span> <span class="hljs-attribute">10</span>}}&gt;</span>i am a popup<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>}
+          popupTransitionName={state.transitionName}&gt;
+          <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{margin:</span> <span class="hljs-attribute">20</span>}} <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{preventDefault}</span>&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>;
-  }
+    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>);
+  },
 });
 
 ReactDOM.render(<span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-title">Test</span> /&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>, document.getElementById("__react-content"));
-</span></code></pre>
-  </div>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>, document.getElementById('__react-content'));
+</span></code></pre></div>
 </div>
-<a href="https://github.com/react-component/trigger"><img style="position: absolute; top: 0; right: 0; border: 0;"
-                            src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
-                            alt="Fork me on GitHub"
-                            data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<a href="https://github.com/react-component/trigger">
+  <img style="position: absolute; top: 0; right: 0; border: 0;"
+       src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+       alt="Fork me on GitHub"
+       data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
 </body>
 
 </html>
