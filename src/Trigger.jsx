@@ -11,6 +11,9 @@ function returnEmptyString() {
   return '';
 }
 
+const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
+  'onMouseLeave', 'onFocus', 'onBlur'];
+
 const Trigger = React.createClass({
   propTypes: {
     action: PropTypes.any,
@@ -300,10 +303,17 @@ const Trigger = React.createClass({
       newChildProps.onBlur = createChainedFunction(this.onBlur, childProps.onBlur);
     }
 
-    ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
-     'onMouseLeave', 'onFocus', 'onBlur'].forEach(handler => {
-       newChildProps[handler] = createChainedFunction(props[handler], newChildProps[handler]);
-     });
+    ALL_HANDLERS.forEach(handler => {
+      let newFn;
+      if (props[handler] && newChildProps[handler]) {
+        newFn = createChainedFunction(props[handler], newChildProps[handler]);
+      } else {
+        newFn = props[handler] || newChildProps[handler];
+      }
+      if (newFn) {
+        newChildProps[handler] = newFn;
+      }
+    });
 
     return React.cloneElement(child, newChildProps);
   },
