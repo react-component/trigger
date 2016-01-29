@@ -156,6 +156,37 @@ describe('rc-trigger', function main() {
       }], done);
     });
 
+    it('click works with function', (done) => {
+      let rendered = 42;
+      const popup = function renderPopup() {
+        rendered += 2;
+        return <strong className="x-content">tooltip3</strong>;
+      };
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={popup}
+        >
+          <div className="target">click</div>
+        </Trigger>), div);
+      expect(rendered).to.be(42);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      async.series([timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect(rendered).to.be(44);
+        expect($(popupDomNode).find('.x-content').html()).to.be('tooltip3');
+        expect(popupDomNode).to.be.ok();
+        Simulate.click(domNode);
+        next();
+      }, timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect($(popupDomNode).css('display')).to.be('none');
+        next();
+      }], done);
+    });
+
     it('hover works', (done) => {
       const trigger = ReactDOM.render((
         <Trigger
