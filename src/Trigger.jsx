@@ -17,6 +17,8 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
 const Trigger = React.createClass({
   propTypes: {
     action: PropTypes.any,
+    showAction: PropTypes.any,
+    hideAction: PropTypes.any,
     getPopupClassNameFromAlign: PropTypes.any,
     onPopupVisibleChange: PropTypes.func,
     afterPopupVisibleChange: PropTypes.func,
@@ -29,6 +31,8 @@ const Trigger = React.createClass({
     popupAnimation: PropTypes.any,
     mouseEnterDelay: PropTypes.number,
     mouseLeaveDelay: PropTypes.number,
+    focusDelay: PropTypes.number,
+    blurDelay: PropTypes.number,
     getPopupContainer: PropTypes.func,
     destroyPopupOnHide: PropTypes.bool,
     popupAlign: PropTypes.object,
@@ -44,11 +48,15 @@ const Trigger = React.createClass({
       popupClassName: '',
       mouseEnterDelay: 0,
       mouseLeaveDelay: 0.1,
+      focusDelay: 0,
+      blurDelay: 0.15,
       popupStyle: {},
       destroyPopupOnHide: false,
       popupAlign: {},
       defaultPopupVisible: false,
       action: [],
+      showAction: [],
+      hideAction: [],
     };
   },
 
@@ -122,10 +130,7 @@ const Trigger = React.createClass({
       }
       this.popupContainer = null;
     }
-    if (this.delayTimer) {
-      clearTimeout(this.delayTimer);
-      this.delayTimer = null;
-    }
+    this.clearDelayTimer();
     if (this.clickOutsideHandler) {
       this.clickOutsideHandler.remove();
       this.touchOutsideHandler.remove();
@@ -144,7 +149,7 @@ const Trigger = React.createClass({
 
   onFocus() {
     this.focusTime = Date.now();
-    this.setPopupVisible(true);
+    this.delaySetPopupVisible(true, this.props.focusDelay);
   },
 
   onMouseDown() {
@@ -156,7 +161,7 @@ const Trigger = React.createClass({
   },
 
   onBlur() {
-    this.setPopupVisible(false);
+    this.delaySetPopupVisible(false, this.props.blurDelay);
   },
 
   onClick(event) {
@@ -178,7 +183,10 @@ const Trigger = React.createClass({
     this.preClickTime = 0;
     this.preTouchTime = 0;
     event.preventDefault();
-    this.setPopupVisible(!this.state.popupVisible);
+    const nextVisible = !this.state.popupVisible;
+    if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
+      this.setPopupVisible(!this.state.popupVisible);
+    }
   },
 
   onDocumentClick(event) {
@@ -255,6 +263,7 @@ const Trigger = React.createClass({
   },
 
   setPopupVisible(popupVisible) {
+    this.clearDelayTimer();
     if (this.state.popupVisible !== popupVisible) {
       if (!('popupVisible' in this.props)) {
         this.setState({
@@ -267,18 +276,52 @@ const Trigger = React.createClass({
 
   delaySetPopupVisible(visible, delayS) {
     const delay = delayS * 1000;
-    if (this.delayTimer) {
-      clearTimeout(this.delayTimer);
-      this.delayTimer = null;
-    }
+    this.clearDelayTimer();
     if (delay) {
       this.delayTimer = setTimeout(() => {
         this.setPopupVisible(visible);
-        this.delayTimer = null;
+        this.clearDelayTimer();
       }, delay);
     } else {
       this.setPopupVisible(visible);
     }
+  },
+
+  clearDelayTimer() {
+    if (this.delayTimer) {
+      clearTimeout(this.delayTimer);
+      this.delayTimer = null;
+    }
+  },
+
+  isClickToShow() {
+    const {action, showAction} = this.props;
+    return action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1;
+  },
+
+  isClickToHide() {
+    const {action, hideAction} = this.props;
+    return action.indexOf('click') !== -1 || hideAction.indexOf('click') !== -1;
+  },
+
+  isMouseEnterToShow() {
+    const {action, showAction} = this.props;
+    return action.indexOf('hover') !== -1 || showAction.indexOf('mouseEnter') !== -1;
+  },
+
+  isMouseLeaveToHide() {
+    const {action, hideAction} = this.props;
+    return action.indexOf('hover') !== -1 || hideAction.indexOf('mouseLeave') !== -1;
+  },
+
+  isFocusToShow() {
+    const {action, showAction} = this.props;
+    return action.indexOf('focus') !== -1 || showAction.indexOf('focus') !== -1;
+  },
+
+  isBlurToHide() {
+    const {action, hideAction} = this.props;
+    return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
   },
 
   render() {
@@ -288,18 +331,22 @@ const Trigger = React.createClass({
     const child = React.Children.only(children);
     const childProps = child.props || {};
     const newChildProps = {};
-    const trigger = props.action;
-    if (trigger.indexOf('click') !== -1) {
+
+    if (this.isClickToHide() || this.isClickToShow()) {
       newChildProps.onClick = createChainedFunction(this.onClick, childProps.onClick);
       newChildProps.onMouseDown = createChainedFunction(this.onMouseDown, childProps.onMouseDown);
       newChildProps.onTouchStart = createChainedFunction(this.onTouchStart, childProps.onTouchStart);
     }
-    if (trigger.indexOf('hover') !== -1) {
+    if (this.isMouseEnterToShow()) {
       newChildProps.onMouseEnter = createChainedFunction(this.onMouseEnter, childProps.onMouseEnter);
+    }
+    if (this.isMouseLeaveToHide()) {
       newChildProps.onMouseLeave = createChainedFunction(this.onMouseLeave, childProps.onMouseLeave);
     }
-    if (trigger.indexOf('focus') !== -1) {
+    if (this.isFocusToShow()) {
       newChildProps.onFocus = createChainedFunction(this.onFocus, childProps.onFocus);
+    }
+    if (this.isBlurToHide()) {
       newChildProps.onBlur = createChainedFunction(this.onBlur, childProps.onBlur);
     }
 
