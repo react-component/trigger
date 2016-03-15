@@ -9,11 +9,7 @@ webpackJsonp([0],[
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* eslint no-console:0 */
-	
 	'use strict';
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	var _react = __webpack_require__(2);
 	
@@ -28,6 +24,10 @@ webpackJsonp([0],[
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
 	__webpack_require__(208);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/* eslint no-console:0 */
 	
 	var builtinPlacements = {
 	  left: {
@@ -56,36 +56,37 @@ webpackJsonp([0],[
 	  }
 	};
 	
-	var Test = _react2['default'].createClass({
+	var Test = _react2.default.createClass({
 	  displayName: 'Test',
-	
 	  render: function render() {
-	    return _react2['default'].createElement(
+	    return _react2.default.createElement(
 	      'div',
 	      null,
-	      _react2['default'].createElement(
-	        _rcTrigger2['default'],
+	      _react2.default.createElement(
+	        _rcTrigger2.default,
 	        {
 	          popupPlacement: 'right',
 	          action: ['click'],
 	          builtinPlacements: builtinPlacements,
-	          popup: _react2['default'].createElement(
+	          popup: _react2.default.createElement(
 	            'div',
 	            { style: { border: '1px solid red', padding: 10 } },
 	            'i am a click popup'
-	          ) },
-	        _react2['default'].createElement(
-	          _rcTrigger2['default'],
+	          )
+	        },
+	        _react2.default.createElement(
+	          _rcTrigger2.default,
 	          {
 	            popupPlacement: 'bottom',
 	            action: ['hover'],
 	            builtinPlacements: builtinPlacements,
-	            popup: _react2['default'].createElement(
+	            popup: _react2.default.createElement(
 	              'div',
 	              { style: { border: '1px solid red', padding: 10 } },
 	              'i am a hover popup'
-	            ) },
-	          _react2['default'].createElement(
+	            )
+	          },
+	          _react2.default.createElement(
 	            'span',
 	            { href: '#', style: { margin: 20 } },
 	            'trigger'
@@ -96,10 +97,10 @@ webpackJsonp([0],[
 	  }
 	});
 	
-	_reactDom2['default'].render(_react2['default'].createElement(
+	_reactDom2.default.render(_react2.default.createElement(
 	  'div',
-	  null,
-	  _react2['default'].createElement(Test, null)
+	  { style: { margin: 200 } },
+	  _react2.default.createElement(Test, null)
 	), document.getElementById('__react-content'));
 
 /***/ }
