@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
+import LazyRenderBox from './LazyRenderBox';
 
 const PopupInner = React.createClass({
   propTypes: {
@@ -12,13 +13,17 @@ const PopupInner = React.createClass({
     const props = this.props;
     let className = props.className;
     if (!props.visible) {
-      className += ' ' + props.hiddenClassName;
+      className += ` ${props.hiddenClassName}`;
     }
-    return (<div className={className}
-                 onMouseEnter={props.onMouseEnter}
-                 onMouseLeave={props.onMouseLeave}
-                 style={props.style}>
-      {props.children}
+    return (<div
+      className={className}
+      onMouseEnter={props.onMouseEnter}
+      onMouseLeave={props.onMouseLeave}
+      style={props.style}
+    >
+      <LazyRenderBox visible={props.visible}>
+        {props.children}
+      </LazyRenderBox>
     </div>);
   },
 });

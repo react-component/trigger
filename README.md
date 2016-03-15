@@ -8,7 +8,6 @@ React Trigger Component
 [![build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 [![gemnasium deps][gemnasium-image]][gemnasium-url]
-[![node version][node-image]][node-url]
 [![npm download][download-image]][download-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-trigger.svg?style=flat-square
@@ -192,11 +191,18 @@ ReactDOM.render(<Trigger align={{
 
 ## Test Case
 
-http://localhost:8200/tests/runner.html?coverage
+```
+npm test
+npm run chrome-test
+```
 
 ## Coverage
 
-http://localhost:8200/node_modules/rc-server/node_modules/node-jscover/lib/front-end/jscoverage.html?w=http://localhost:8200/tests/runner.html?coverage
+```
+npm run coverage
+```
+
+open coverage/ dir
 
 ## License
 

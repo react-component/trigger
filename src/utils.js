@@ -4,7 +4,10 @@ function isPointsEq(a1, a2) {
 
 export function getAlignFromPlacement(builtinPlacements, placementStr, align) {
   const baseAlign = builtinPlacements[placementStr] || {};
-  return {...baseAlign, ...align};
+  return {
+    ...baseAlign,
+    ...align,
+  };
 }
 
 export function getPopupClassNameFromAlign(builtinPlacements, prefixCls, align) {

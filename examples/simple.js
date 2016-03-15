@@ -83,21 +83,21 @@ const Test = React.createClass({
       delete trigger[e.target.value];
     }
     this.setState({
-      trigger: trigger,
+      trigger,
     });
   },
 
   onOffsetXChange(e) {
     const targetValue = e.target.value;
     this.setState({
-      offsetX: targetValue ? targetValue : undefined,
+      offsetX: targetValue || undefined,
     });
   },
 
   onOffsetYChange(e) {
     const targetValue = e.target.value;
     this.setState({
-      offsetY: targetValue ? targetValue : undefined,
+      offsetY: targetValue || undefined,
     });
   },
 
@@ -109,7 +109,7 @@ const Test = React.createClass({
     const state = this.state;
     const trigger = state.trigger;
     return (<div >
-      <div style={{margin: '10px 20px'}}>
+      <div style={{ margin: '10px 20px' }}>
         <label>
           placement:
           <select value={state.placement} onChange={this.onPlacementChange}>
@@ -125,8 +125,12 @@ const Test = React.createClass({
         </label>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label>
-          <input value="rc-trigger-popup-zoom" type="checkbox" onChange={this.onTransitionChange}
-                 checked={state.transitionName === 'rc-trigger-popup-zoom'}/>
+          <input
+            value="rc-trigger-popup-zoom"
+            type="checkbox"
+            onChange={this.onTransitionChange}
+            checked={state.transitionName === 'rc-trigger-popup-zoom'}
+          />
           transitionName
         </label>
 
@@ -135,29 +139,52 @@ const Test = React.createClass({
         trigger:
 
         <label>
-          <input value="hover" checked={trigger.hover} type="checkbox" onChange={this.onTriggerChange}/>
+          <input
+            value="hover"
+            checked={trigger.hover}
+            type="checkbox"
+            onChange={this.onTriggerChange}
+          />
           hover
         </label>
         <label>
-          <input value="focus" checked={trigger.focus} type="checkbox" onChange={this.onTriggerChange}/>
+          <input
+            value="focus"
+            checked={trigger.focus}
+            type="checkbox"
+            onChange={this.onTriggerChange}
+          />
           focus
         </label>
         <label>
-          <input value="click" checked={trigger.click} type="checkbox" onChange={this.onTriggerChange}/>
+          <input
+            value="click"
+            checked={trigger.click}
+            type="checkbox"
+            onChange={this.onTriggerChange}
+          />
           click
         </label>
         <br/>
         <label>
           offsetX:
-          <input type="text" onChange={this.onOffsetXChange} style={{width: 50}}/>
+          <input
+            type="text"
+            onChange={this.onOffsetXChange}
+            style={{ width: 50 }}
+          />
         </label>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label>
           offsetY:
-          <input type="text" onChange={this.onOffsetYChange} style={{width: 50}}/>
+          <input
+            type="text"
+            onChange={this.onOffsetYChange}
+            style={{ width: 50 }}
+          />
         </label>
       </div>
-      <div style={{margin: 100, position: 'relative'}}>
+      <div style={{ margin: 100, position: 'relative' }}>
         <Trigger
           getPopupContainer={null && getPopupContainer}
           popupAlign={getPopupAlign(state)}
@@ -167,15 +194,17 @@ const Test = React.createClass({
           mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}
           builtinPlacements={builtinPlacements}
-          popup={<div style={{border: '1px solid red', padding: 10}}>i am a popup</div>}
-          popupTransitionName={state.transitionName}>
-          <a href="#" style={{margin: 20}} onClick={preventDefault}>trigger</a>
+          popup={<div style={{ border: '1px solid red', padding: 10 }}>i am a popup</div>}
+          popupTransitionName={state.transitionName}
+        >
+          <a href="#" style={{ margin: 20 }} onClick={preventDefault}>trigger</a>
         </Trigger>
       </div>
     </div>);
   },
 });
 
-ReactDOM.render(<div>
-  <Test />
-</div>, document.getElementById('__react-content'));
+ReactDOM.render(
+  <div>
+    <Test />
+  </div>, document.getElementById('__react-content'));
