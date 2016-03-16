@@ -19707,11 +19707,11 @@
 	var _src = __webpack_require__(161);
 	
 	var _src2 = _interopRequireDefault(_src);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _src2.default; // export this package's api
-
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	
+	exports["default"] = _src2["default"]; // export this package's api
+	
 	module.exports = exports['default'];
 
 /***/ },
@@ -19752,7 +19752,7 @@
 	
 	var _utils = __webpack_require__(207);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
 	function noop() {}
 	
@@ -19762,7 +19762,7 @@
 	
 	var ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter', 'onMouseLeave', 'onFocus', 'onBlur'];
 	
-	var Trigger = _react2.default.createClass({
+	var Trigger = _react2["default"].createClass({
 	  displayName: 'Trigger',
 	
 	  propTypes: {
@@ -19842,7 +19842,7 @@
 	    if (this.popupRendered) {
 	      var _ret = function () {
 	        var self = _this;
-	        _reactDom2.default.unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
+	        _reactDom2["default"].unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
 	          /* eslint react/no-is-mounted:0 */
 	          if (this.isMounted()) {
 	            self.popupDomNode = (0, _reactDom.findDOMNode)(this);
@@ -19878,7 +19878,7 @@
 	  componentWillUnmount: function componentWillUnmount() {
 	    var popupContainer = this.popupContainer;
 	    if (popupContainer) {
-	      _reactDom2.default.unmountComponentAtNode(popupContainer);
+	      _reactDom2["default"].unmountComponentAtNode(popupContainer);
 	      if (this.props.getPopupContainer) {
 	        var mountNode = this.props.getPopupContainer((0, _reactDom.findDOMNode)(this));
 	        mountNode.removeChild(popupContainer);
@@ -19996,8 +19996,8 @@
 	      mouseProps.onMouseEnter = this.onMouseEnter;
 	      mouseProps.onMouseLeave = this.onMouseLeave;
 	    }
-	    return _react2.default.createElement(
-	      _Popup2.default,
+	    return _react2["default"].createElement(
+	      _Popup2["default"],
 	      _extends({
 	        prefixCls: props.prefixCls,
 	        destroyPopupOnHide: props.destroyPopupOnHide,
@@ -20092,7 +20092,7 @@
 	    this.popupRendered = this.popupRendered || this.state.popupVisible;
 	    var props = this.props;
 	    var children = props.children;
-	    var child = _react2.default.Children.only(children);
+	    var child = _react2["default"].Children.only(children);
 	    var childProps = child.props || {};
 	    var newChildProps = {};
 	
@@ -20126,11 +20126,11 @@
 	      }
 	    });
 	
-	    return _react2.default.cloneElement(child, newChildProps);
+	    return _react2["default"].cloneElement(child, newChildProps);
 	  }
 	});
 	
-	exports.default = Trigger;
+	exports["default"] = Trigger;
 	module.exports = exports['default'];
 
 /***/ },
@@ -22333,9 +22333,9 @@
 	
 	var _PopupInner2 = _interopRequireDefault(_PopupInner);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
-	var Popup = _react2.default.createClass({
+	var Popup = _react2["default"].createClass({
 	  displayName: 'Popup',
 	
 	  propTypes: {
@@ -22364,10 +22364,10 @@
 	    }
 	  },
 	  getPopupDomNode: function getPopupDomNode() {
-	    return _reactDom2.default.findDOMNode(this);
+	    return _reactDom2["default"].findDOMNode(this);
 	  },
 	  getTarget: function getTarget() {
-	    return _reactDom2.default.findDOMNode(this.props.wrap);
+	    return _reactDom2["default"].findDOMNode(this.props.wrap);
 	  },
 	  getTransitionName: function getTransitionName() {
 	    var props = this.props;
@@ -22394,16 +22394,16 @@
 	      this.currentAlignClassName = null;
 	    }
 	    if (destroyPopupOnHide) {
-	      return _react2.default.createElement(
-	        _rcAnimate2.default,
+	      return _react2["default"].createElement(
+	        _rcAnimate2["default"],
 	        {
 	          component: '',
 	          exclusive: true,
 	          transitionAppear: true,
 	          transitionName: this.getTransitionName()
 	        },
-	        visible ? _react2.default.createElement(
-	          _rcAlign2.default,
+	        visible ? _react2["default"].createElement(
+	          _rcAlign2["default"],
 	          {
 	            target: this.getTarget,
 	            key: 'popup',
@@ -22411,8 +22411,8 @@
 	            align: align,
 	            onAlign: this.onAlign
 	          },
-	          _react2.default.createElement(
-	            _PopupInner2.default,
+	          _react2["default"].createElement(
+	            _PopupInner2["default"],
 	            {
 	              className: className,
 	              visible: true,
@@ -22425,8 +22425,8 @@
 	        ) : null
 	      );
 	    }
-	    return _react2.default.createElement(
-	      _rcAnimate2.default,
+	    return _react2["default"].createElement(
+	      _rcAnimate2["default"],
 	      {
 	        component: '',
 	        exclusive: true,
@@ -22434,8 +22434,8 @@
 	        transitionName: this.getTransitionName(),
 	        showProp: 'xVisible'
 	      },
-	      _react2.default.createElement(
-	        _rcAlign2.default,
+	      _react2["default"].createElement(
+	        _rcAlign2["default"],
 	        {
 	          target: this.getTarget,
 	          key: 'popup',
@@ -22446,8 +22446,8 @@
 	          align: align,
 	          onAlign: this.onAlign
 	        },
-	        _react2.default.createElement(
-	          _PopupInner2.default,
+	        _react2["default"].createElement(
+	          _PopupInner2["default"],
 	          {
 	            className: className,
 	            hiddenClassName: hiddenClassName,
@@ -22462,7 +22462,7 @@
 	  }
 	});
 	
-	exports.default = Popup;
+	exports["default"] = Popup;
 	module.exports = exports['default'];
 
 /***/ },
@@ -24576,9 +24576,9 @@
 	
 	var _LazyRenderBox2 = _interopRequireDefault(_LazyRenderBox);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
-	var PopupInner = _react2.default.createClass({
+	var PopupInner = _react2["default"].createClass({
 	  displayName: 'PopupInner',
 	
 	  propTypes: {
@@ -24594,7 +24594,7 @@
 	    if (!props.visible) {
 	      className += ' ' + props.hiddenClassName;
 	    }
-	    return _react2.default.createElement(
+	    return _react2["default"].createElement(
 	      'div',
 	      {
 	        className: className,
@@ -24602,8 +24602,8 @@
 	        onMouseLeave: props.onMouseLeave,
 	        style: props.style
 	      },
-	      _react2.default.createElement(
-	        _LazyRenderBox2.default,
+	      _react2["default"].createElement(
+	        _LazyRenderBox2["default"],
 	        { visible: props.visible },
 	        props.children
 	      )
@@ -24611,7 +24611,7 @@
 	  }
 	});
 	
-	exports.default = PopupInner;
+	exports["default"] = PopupInner;
 	module.exports = exports['default'];
 
 /***/ },
@@ -24628,9 +24628,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
-	var LazyRenderBox = _react2.default.createClass({
+	var LazyRenderBox = _react2["default"].createClass({
 	  displayName: 'LazyRenderBox',
 	
 	  propTypes: {
@@ -24641,7 +24641,7 @@
 	    return nextProps.visible;
 	  },
 	  render: function render() {
-	    return _react2.default.createElement(
+	    return _react2["default"].createElement(
 	      'div',
 	      null,
 	      this.props.children
@@ -24649,7 +24649,7 @@
 	  }
 	});
 	
-	exports.default = LazyRenderBox;
+	exports["default"] = LazyRenderBox;
 	module.exports = exports['default'];
 
 /***/ },
