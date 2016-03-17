@@ -24641,11 +24641,7 @@
 	    return nextProps.visible;
 	  },
 	  render: function render() {
-	    return _react2["default"].createElement(
-	      'div',
-	      null,
-	      this.props.children
-	    );
+	    return _react2["default"].Children.only(this.props.children);
 	  }
 	});
 	
