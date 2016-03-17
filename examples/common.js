@@ -24641,6 +24641,13 @@
 	    return nextProps.visible;
 	  },
 	  render: function render() {
+	    if (_react2["default"].Children.count(this.props.children) > 1) {
+	      return _react2["default"].createElement(
+	        'div',
+	        null,
+	        this.props.children
+	      );
+	    }
 	    return _react2["default"].Children.only(this.props.children);
 	  }
 	});
