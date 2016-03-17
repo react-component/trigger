@@ -9,9 +9,7 @@ const LazyRenderBox = React.createClass({
     return nextProps.visible;
   },
   render() {
-    return (<div>
-      {this.props.children}
-    </div>);
+    return React.Children.only(this.props.children);
   },
 });
 
