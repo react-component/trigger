@@ -22415,6 +22415,7 @@
 	            _PopupInner2["default"],
 	            {
 	              className: className,
+	              prefixCls: prefixCls,
 	              visible: true,
 	              onMouseEnter: props.onMouseEnter,
 	              onMouseLeave: props.onMouseLeave,
@@ -22451,6 +22452,7 @@
 	          {
 	            className: className,
 	            hiddenClassName: hiddenClassName,
+	            prefixCls: prefixCls,
 	            onMouseEnter: props.onMouseEnter,
 	            onMouseLeave: props.onMouseLeave,
 	            style: style
@@ -24584,6 +24586,7 @@
 	  propTypes: {
 	    hiddenClassName: _react.PropTypes.string,
 	    className: _react.PropTypes.string,
+	    prefixCls: _react.PropTypes.string,
 	    onMouseEnter: _react.PropTypes.func,
 	    onMouseLeave: _react.PropTypes.func,
 	    children: _react.PropTypes.any
@@ -24604,7 +24607,7 @@
 	      },
 	      _react2["default"].createElement(
 	        _LazyRenderBox2["default"],
-	        { visible: props.visible },
+	        { prefixCls: props.prefixCls, visible: props.visible },
 	        props.children
 	      )
 	    );
@@ -24635,7 +24638,8 @@
 	
 	  propTypes: {
 	    children: _react.PropTypes.any,
-	    visible: _react.PropTypes.bool
+	    visible: _react.PropTypes.bool,
+	    prefixCls: _react.PropTypes.string
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    return nextProps.visible;
@@ -24644,7 +24648,7 @@
 	    if (_react2["default"].Children.count(this.props.children) > 1) {
 	      return _react2["default"].createElement(
 	        'div',
-	        null,
+	        { className: this.props.prefixCls + '-content' },
 	        this.props.children
 	      );
 	    }
