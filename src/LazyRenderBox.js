@@ -4,13 +4,14 @@ const LazyRenderBox = React.createClass({
   propTypes: {
     children: PropTypes.any,
     visible: PropTypes.bool,
+    prefixCls: PropTypes.string,
   },
   shouldComponentUpdate(nextProps) {
     return nextProps.visible;
   },
   render() {
     if (React.Children.count(this.props.children) > 1) {
-      return <div>{this.props.children}</div>;
+      return <div className={`${this.props.prefixCls}-content`}>{this.props.children}</div>;
     }
     return React.Children.only(this.props.children);
   },

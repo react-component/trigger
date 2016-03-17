@@ -78,6 +78,7 @@ const Popup = React.createClass({
         >
           <PopupInner
             className={className}
+            prefixCls={ prefixCls }
             visible
             onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseLeave}
@@ -108,6 +109,7 @@ const Popup = React.createClass({
         <PopupInner
           className={className}
           hiddenClassName={hiddenClassName}
+          prefixCls={ prefixCls }
           onMouseEnter={props.onMouseEnter}
           onMouseLeave={props.onMouseLeave}
           style={style}
