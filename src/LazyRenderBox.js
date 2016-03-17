@@ -9,6 +9,9 @@ const LazyRenderBox = React.createClass({
     return nextProps.visible;
   },
   render() {
+    if (React.Children.count(this.props.children) > 1) {
+      return <div>{this.props.children}</div>;
+    }
     return React.Children.only(this.props.children);
   },
 });
