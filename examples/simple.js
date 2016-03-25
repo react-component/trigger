@@ -190,11 +190,18 @@ const Test = React.createClass({
           popupAlign={getPopupAlign(state)}
           mouseEnterDelay={0}
           popupPlacement={state.placement}
+          // zIndex={40}
+          // mask
+          // maskAnimation="fade"
           // destroyPopupOnHide
           mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}
           builtinPlacements={builtinPlacements}
-          popup={<div style={{ border: '1px solid red', padding: 10 }}>i am a popup</div>}
+          popup={
+          <div style={{ border: '1px solid red', padding: 10, background: 'white' }}>
+          i am a popup
+          </div>
+          }
           popupTransitionName={state.transitionName}
         >
           <a href="#" style={{ margin: 20 }} onClick={preventDefault}>trigger</a>

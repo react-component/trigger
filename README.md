@@ -135,7 +135,13 @@ ReactDOM.render(<Trigger align={{
           <td>popupTransitionName</td>
           <td>String</td>
           <td></td>
-          <td>same as https://github.com/react-component/animate</td>
+          <td>https://github.com/react-component/animate</td>
+        </tr>
+        <tr>
+          <td>maskTransitionName</td>
+          <td>String</td>
+          <td></td>
+          <td>https://github.com/react-component/animate</td>
         </tr>
         <tr>
           <td>onPopupVisibleChange</td>
@@ -144,10 +150,22 @@ ReactDOM.render(<Trigger align={{
           <td>call when popup visible is changed</td>
         </tr>
         <tr>
+          <td>mask</td>
+          <td>boolean</td>
+          <td></td>
+          <td>whether to support mask</td>
+        </tr>
+        <tr>
           <td>popupVisible</td>
           <td>boolean</td>
           <td></td>
           <td>whether popup is visible</td>
+        </tr>
+        <tr>
+          <td>zIndex</td>
+          <td>number</td>
+          <td></td>
+          <td>popup's zIndex</td>
         </tr>
         <tr>
           <td>defaultPopupVisible</td>

@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.3.0 / 2016-03-25
+
+- support mask/maskTransitionName/zIndex
+
 ## 1.2.0 / 2016-03-01
 
 - add showAction/hideAction

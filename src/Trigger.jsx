@@ -32,12 +32,16 @@ const Trigger = React.createClass({
     popupAnimation: PropTypes.any,
     mouseEnterDelay: PropTypes.number,
     mouseLeaveDelay: PropTypes.number,
+    zIndex: PropTypes.number,
     focusDelay: PropTypes.number,
     blurDelay: PropTypes.number,
     getPopupContainer: PropTypes.func,
     destroyPopupOnHide: PropTypes.bool,
+    mask: PropTypes.bool,
     popupAlign: PropTypes.object,
     popupVisible: PropTypes.bool,
+    maskTransitionName: PropTypes.string,
+    maskAnimation: PropTypes.string,
   },
 
   getDefaultProps() {
@@ -55,6 +59,7 @@ const Trigger = React.createClass({
       destroyPopupOnHide: false,
       popupAlign: {},
       defaultPopupVisible: false,
+      mask: false,
       action: [],
       showAction: [],
       hideAction: [],
@@ -97,7 +102,7 @@ const Trigger = React.createClass({
         this.getPopupContainer(), function renderPopup() {
           /* eslint react/no-is-mounted:0 */
           if (this.isMounted()) {
-            self.popupDomNode = findDOMNode(this);
+            self.popupDomNode = this.getPopupDomNode();
           } else {
             self.popupDomNode = null;
           }
@@ -210,6 +215,10 @@ const Trigger = React.createClass({
     return this.popupDomNode;
   },
 
+  getRootDomNode() {
+    return ReactDOM.findDOMNode(this);
+  },
+
   getPopupContainer() {
     if (!this.popupContainer) {
       this.popupContainer = document.createElement('div');
@@ -263,9 +272,13 @@ const Trigger = React.createClass({
       animation={props.popupAnimation}
       getClassNameFromAlign={this.getPopupClassNameFromAlign}
       {...mouseProps}
-      wrap={this}
+      getRootDomNode={this.getRootDomNode}
       style={props.popupStyle}
+      mask={props.mask}
+      zIndex={props.zIndex}
       transitionName={props.popupTransitionName}
+      maskAnimation={props.maskAnimation}
+      maskTransitionName={props.maskTransitionName}
     >
       {props.popup}
     </Popup>);

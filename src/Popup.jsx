@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
 import PopupInner from './PopupInner';
+import LazyRenderBox from './LazyRenderBox';
 
 const Popup = React.createClass({
   propTypes: {
     visible: PropTypes.bool,
-    wrap: PropTypes.object,
     style: PropTypes.object,
     getClassNameFromAlign: PropTypes.func,
+    getRootDomNode: PropTypes.func,
     onMouseEnter: PropTypes.func,
     align: PropTypes.any,
     destroyPopupOnHide: PropTypes.bool,
@@ -33,11 +34,21 @@ const Popup = React.createClass({
   },
 
   getPopupDomNode() {
-    return ReactDOM.findDOMNode(this);
+    return ReactDOM.findDOMNode(this.refs.popup);
   },
 
   getTarget() {
-    return ReactDOM.findDOMNode(this.props.wrap);
+    return this.props.getRootDomNode();
+  },
+
+  getMaskTransitionName() {
+    const props = this.props;
+    let transitionName = props.maskTransitionName;
+    const animation = props.maskAnimation;
+    if (!transitionName && animation) {
+      transitionName = `${props.prefixCls}-${animation}`;
+    }
+    return transitionName;
   },
 
   getTransitionName() {
@@ -53,7 +64,7 @@ const Popup = React.createClass({
     return `${this.props.prefixCls} ${this.props.className} ${currentAlignClassName}`;
   },
 
-  render() {
+  getPopupElement() {
     const props = this.props;
     const { align, style, visible, prefixCls, destroyPopupOnHide } = props;
     const className = this.getClassName(this.currentAlignClassName ||
@@ -62,6 +73,18 @@ const Popup = React.createClass({
     if (!visible) {
       this.currentAlignClassName = null;
     }
+    const newStyle = {
+      ...style,
+      ...this.getZIndexStyle(),
+    };
+    const popupInnerProps = {
+      className,
+      prefixCls,
+      ref: 'popup',
+      onMouseEnter: props.onMouseEnter,
+      onMouseLeave: props.onMouseLeave,
+      style: newStyle,
+    };
     if (destroyPopupOnHide) {
       return (<Animate
         component=""
@@ -77,12 +100,8 @@ const Popup = React.createClass({
           onAlign={this.onAlign}
         >
           <PopupInner
-            className={className}
-            prefixCls={ prefixCls }
             visible
-            onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave}
-            style={style}
+            {...popupInnerProps}
           >
             {props.children}
           </PopupInner>
@@ -107,17 +126,60 @@ const Popup = React.createClass({
         onAlign={this.onAlign}
       >
         <PopupInner
-          className={className}
           hiddenClassName={hiddenClassName}
-          prefixCls={ prefixCls }
-          onMouseEnter={props.onMouseEnter}
-          onMouseLeave={props.onMouseLeave}
-          style={style}
+          {...popupInnerProps}
         >
           {props.children}
         </PopupInner>
       </Align>
     </Animate>);
+  },
+
+  getZIndexStyle() {
+    const style = {};
+    const props = this.props;
+    if (props.zIndex !== undefined) {
+      style.zIndex = props.zIndex;
+    }
+    return style;
+  },
+
+  getMaskElement() {
+    const props = this.props;
+    let maskElement;
+    if (props.mask) {
+      const maskTransition = this.getMaskTransitionName();
+      maskElement = (
+        <LazyRenderBox
+          style={this.getZIndexStyle()}
+          key="mask"
+          className={`${props.prefixCls}-mask`}
+          hiddenClassName={`${props.prefixCls}-mask-hidden`}
+          visible={props.visible}
+        />
+      );
+      if (maskTransition) {
+        maskElement = (
+          <Animate
+            key="mask"
+            showProp="visible"
+            transitionAppear
+            component=""
+            transitionName={maskTransition}
+          >
+            {maskElement}
+          </Animate>
+        );
+      }
+    }
+    return maskElement;
+  },
+
+  render() {
+    return (<div>
+      {this.getMaskElement()}
+      {this.getPopupElement()}
+    </div>);
   },
 });
 

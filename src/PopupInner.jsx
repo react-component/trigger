@@ -22,7 +22,7 @@ const PopupInner = React.createClass({
       onMouseLeave={props.onMouseLeave}
       style={props.style}
     >
-      <LazyRenderBox prefixCls={props.prefixCls} visible={props.visible}>
+      <LazyRenderBox className={`${props.prefixCls}-content`} visible={props.visible}>
         {props.children}
       </LazyRenderBox>
     </div>);

@@ -102,7 +102,7 @@ describe('rc-trigger', function main() {
       Simulate.click(domNode);
       async.series([timeout(20), (next) => {
         const popupDomNode = trigger.getPopupDomNode();
-        expect(popupDomNode.parentNode.parentNode).to.be(document.body);
+        expect(popupDomNode.parentNode.parentNode.parentNode).to.be(document.body);
         next();
       }], done);
     });
@@ -125,7 +125,7 @@ describe('rc-trigger', function main() {
       Simulate.click(domNode);
       async.series([timeout(20), (next) => {
         const popupDomNode = trigger.getPopupDomNode();
-        expect(popupDomNode.parentNode.parentNode).to.be(div);
+        expect(popupDomNode.parentNode.parentNode.parentNode).to.be(div);
         next();
       }], done);
     });
