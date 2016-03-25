@@ -19782,12 +19782,16 @@
 	    popupAnimation: _react.PropTypes.any,
 	    mouseEnterDelay: _react.PropTypes.number,
 	    mouseLeaveDelay: _react.PropTypes.number,
+	    zIndex: _react.PropTypes.number,
 	    focusDelay: _react.PropTypes.number,
 	    blurDelay: _react.PropTypes.number,
 	    getPopupContainer: _react.PropTypes.func,
 	    destroyPopupOnHide: _react.PropTypes.bool,
+	    mask: _react.PropTypes.bool,
 	    popupAlign: _react.PropTypes.object,
-	    popupVisible: _react.PropTypes.bool
+	    popupVisible: _react.PropTypes.bool,
+	    maskTransitionName: _react.PropTypes.string,
+	    maskAnimation: _react.PropTypes.string
 	  },
 	
 	  getDefaultProps: function getDefaultProps() {
@@ -19805,6 +19809,7 @@
 	      destroyPopupOnHide: false,
 	      popupAlign: {},
 	      defaultPopupVisible: false,
+	      mask: false,
 	      action: [],
 	      showAction: [],
 	      hideAction: []
@@ -19845,7 +19850,7 @@
 	        _reactDom2["default"].unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
 	          /* eslint react/no-is-mounted:0 */
 	          if (this.isMounted()) {
-	            self.popupDomNode = (0, _reactDom.findDOMNode)(this);
+	            self.popupDomNode = this.getPopupDomNode();
 	          } else {
 	            self.popupDomNode = null;
 	          }
@@ -19950,6 +19955,9 @@
 	    // for test
 	    return this.popupDomNode;
 	  },
+	  getRootDomNode: function getRootDomNode() {
+	    return _reactDom2["default"].findDOMNode(this);
+	  },
 	  getPopupContainer: function getPopupContainer() {
 	    if (!this.popupContainer) {
 	      this.popupContainer = document.createElement('div');
@@ -20008,9 +20016,13 @@
 	        animation: props.popupAnimation,
 	        getClassNameFromAlign: this.getPopupClassNameFromAlign
 	      }, mouseProps, {
-	        wrap: this,
+	        getRootDomNode: this.getRootDomNode,
 	        style: props.popupStyle,
-	        transitionName: props.popupTransitionName
+	        mask: props.mask,
+	        zIndex: props.zIndex,
+	        transitionName: props.popupTransitionName,
+	        maskAnimation: props.maskAnimation,
+	        maskTransitionName: props.maskTransitionName
 	      }),
 	      props.popup
 	    );
@@ -22313,6 +22325,8 @@
 	  value: true
 	});
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -22333,6 +22347,10 @@
 	
 	var _PopupInner2 = _interopRequireDefault(_PopupInner);
 	
+	var _LazyRenderBox = __webpack_require__(206);
+	
+	var _LazyRenderBox2 = _interopRequireDefault(_LazyRenderBox);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
 	var Popup = _react2["default"].createClass({
@@ -22340,9 +22358,9 @@
 	
 	  propTypes: {
 	    visible: _react.PropTypes.bool,
-	    wrap: _react.PropTypes.object,
 	    style: _react.PropTypes.object,
 	    getClassNameFromAlign: _react.PropTypes.func,
+	    getRootDomNode: _react.PropTypes.func,
 	    onMouseEnter: _react.PropTypes.func,
 	    align: _react.PropTypes.any,
 	    destroyPopupOnHide: _react.PropTypes.bool,
@@ -22364,10 +22382,19 @@
 	    }
 	  },
 	  getPopupDomNode: function getPopupDomNode() {
-	    return _reactDom2["default"].findDOMNode(this);
+	    return _reactDom2["default"].findDOMNode(this.refs.popup);
 	  },
 	  getTarget: function getTarget() {
-	    return _reactDom2["default"].findDOMNode(this.props.wrap);
+	    return this.props.getRootDomNode();
+	  },
+	  getMaskTransitionName: function getMaskTransitionName() {
+	    var props = this.props;
+	    var transitionName = props.maskTransitionName;
+	    var animation = props.maskAnimation;
+	    if (!transitionName && animation) {
+	      transitionName = props.prefixCls + '-' + animation;
+	    }
+	    return transitionName;
 	  },
 	  getTransitionName: function getTransitionName() {
 	    var props = this.props;
@@ -22380,7 +22407,7 @@
 	  getClassName: function getClassName(currentAlignClassName) {
 	    return this.props.prefixCls + ' ' + this.props.className + ' ' + currentAlignClassName;
 	  },
-	  render: function render() {
+	  getPopupElement: function getPopupElement() {
 	    var props = this.props;
 	    var align = props.align;
 	    var style = props.style;
@@ -22393,6 +22420,15 @@
 	    if (!visible) {
 	      this.currentAlignClassName = null;
 	    }
+	    var newStyle = _extends({}, style, this.getZIndexStyle());
+	    var popupInnerProps = {
+	      className: className,
+	      prefixCls: prefixCls,
+	      ref: 'popup',
+	      onMouseEnter: props.onMouseEnter,
+	      onMouseLeave: props.onMouseLeave,
+	      style: newStyle
+	    };
 	    if (destroyPopupOnHide) {
 	      return _react2["default"].createElement(
 	        _rcAnimate2["default"],
@@ -22413,14 +22449,9 @@
 	          },
 	          _react2["default"].createElement(
 	            _PopupInner2["default"],
-	            {
-	              className: className,
-	              prefixCls: prefixCls,
-	              visible: true,
-	              onMouseEnter: props.onMouseEnter,
-	              onMouseLeave: props.onMouseLeave,
-	              style: style
-	            },
+	            _extends({
+	              visible: true
+	            }, popupInnerProps),
 	            props.children
 	          )
 	        ) : null
@@ -22449,17 +22480,56 @@
 	        },
 	        _react2["default"].createElement(
 	          _PopupInner2["default"],
-	          {
-	            className: className,
-	            hiddenClassName: hiddenClassName,
-	            prefixCls: prefixCls,
-	            onMouseEnter: props.onMouseEnter,
-	            onMouseLeave: props.onMouseLeave,
-	            style: style
-	          },
+	          _extends({
+	            hiddenClassName: hiddenClassName
+	          }, popupInnerProps),
 	          props.children
 	        )
 	      )
+	    );
+	  },
+	  getZIndexStyle: function getZIndexStyle() {
+	    var style = {};
+	    var props = this.props;
+	    if (props.zIndex !== undefined) {
+	      style.zIndex = props.zIndex;
+	    }
+	    return style;
+	  },
+	  getMaskElement: function getMaskElement() {
+	    var props = this.props;
+	    var maskElement = void 0;
+	    if (props.mask) {
+	      var maskTransition = this.getMaskTransitionName();
+	      maskElement = _react2["default"].createElement(_LazyRenderBox2["default"], {
+	        style: this.getZIndexStyle(),
+	        key: 'mask',
+	        className: props.prefixCls + '-mask',
+	        hiddenClassName: props.prefixCls + '-mask-hidden',
+	        visible: props.visible
+	      });
+	      if (maskTransition) {
+	        maskElement = _react2["default"].createElement(
+	          _rcAnimate2["default"],
+	          {
+	            key: 'mask',
+	            showProp: 'visible',
+	            transitionAppear: true,
+	            component: '',
+	            transitionName: maskTransition
+	          },
+	          maskElement
+	        );
+	      }
+	    }
+	    return maskElement;
+	  },
+	  render: function render() {
+	    return _react2["default"].createElement(
+	      'div',
+	      null,
+	      this.getMaskElement(),
+	      this.getPopupElement()
 	    );
 	  }
 	});
@@ -24607,7 +24677,7 @@
 	      },
 	      _react2["default"].createElement(
 	        _LazyRenderBox2["default"],
-	        { prefixCls: props.prefixCls, visible: props.visible },
+	        { className: props.prefixCls + '-content', visible: props.visible },
 	        props.children
 	      )
 	    );
@@ -24627,6 +24697,8 @@
 	  value: true
 	});
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -24638,19 +24710,23 @@
 	
 	  propTypes: {
 	    children: _react.PropTypes.any,
+	    className: _react.PropTypes.string,
 	    visible: _react.PropTypes.bool,
-	    prefixCls: _react.PropTypes.string
+	    hiddenClassName: _react.PropTypes.string
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return nextProps.visible;
+	    return nextProps.hiddenClassName || nextProps.visible;
 	  },
 	  render: function render() {
+	    if (this.props.hiddenClassName) {
+	      var className = this.props.className;
+	      if (!this.props.visible) {
+	        className += ' ' + this.props.hiddenClassName;
+	      }
+	      return _react2["default"].createElement('div', _extends({}, this.props, { className: className }));
+	    }
 	    if (_react2["default"].Children.count(this.props.children) > 1) {
-	      return _react2["default"].createElement(
-	        'div',
-	        { className: this.props.prefixCls + '-content' },
-	        this.props.children
-	      );
+	      return _react2["default"].createElement('div', this.props);
 	    }
 	    return _react2["default"].Children.only(this.props.children);
 	  }

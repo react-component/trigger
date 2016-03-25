@@ -263,13 +263,16 @@ webpackJsonp([1],{
 	            popupAlign: getPopupAlign(state),
 	            mouseEnterDelay: 0,
 	            popupPlacement: state.placement
+	            // zIndex={40}
+	            // mask
+	            // maskAnimation="fade"
 	            // destroyPopupOnHide
 	            , mouseLeaveDelay: 0.1,
 	            action: Object.keys(state.trigger),
 	            builtinPlacements: builtinPlacements,
 	            popup: _react2["default"].createElement(
 	              'div',
-	              { style: { border: '1px solid red', padding: 10 } },
+	              { style: { border: '1px solid red', padding: 10, background: 'white' } },
 	              'i am a popup'
 	            ),
 	            popupTransitionName: state.transitionName

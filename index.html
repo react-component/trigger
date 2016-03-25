@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-trigger@1.2.5 - base abstract trigger component for react</title>
+  <title>rc-trigger@1.3.0 - base abstract trigger component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,7 +737,7 @@
 
 <body>
 <div class="header">
-  <h1>rc-trigger@1.2.5</h1>
+  <h1>rc-trigger@1.3.0</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
@@ -858,7 +858,13 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-t
           <td>popupTransitionName</td>
           <td>String</td>
           <td></td>
-          <td>same as <a href="https://github.com/react-component/animate" title="null">https://github.com/react-component/animate</a></td>
+          <td><a href="https://github.com/react-component/animate" title="null">https://github.com/react-component/animate</a></td>
+        </tr>
+        <tr>
+          <td>maskTransitionName</td>
+          <td>String</td>
+          <td></td>
+          <td><a href="https://github.com/react-component/animate" title="null">https://github.com/react-component/animate</a></td>
         </tr>
         <tr>
           <td>onPopupVisibleChange</td>
@@ -867,10 +873,22 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-t
           <td>call when popup visible is changed</td>
         </tr>
         <tr>
+          <td>mask</td>
+          <td>boolean</td>
+          <td></td>
+          <td>whether to support mask</td>
+        </tr>
+        <tr>
           <td>popupVisible</td>
           <td>boolean</td>
           <td></td>
           <td>whether popup is visible</td>
+        </tr>
+        <tr>
+          <td>zIndex</td>
+          <td>number</td>
+          <td></td>
+          <td>popup&#39;s zIndex</td>
         </tr>
         <tr>
           <td>defaultPopupVisible</td>
