@@ -259,7 +259,7 @@ webpackJsonp([1],{
 	        _react2["default"].createElement(
 	          _rcTrigger2["default"],
 	          {
-	            getPopupContainer: null && getPopupContainer,
+	            getPopupContainer: undefined && getPopupContainer,
 	            popupAlign: getPopupAlign(state),
 	            mouseEnterDelay: 0,
 	            popupPlacement: state.placement
