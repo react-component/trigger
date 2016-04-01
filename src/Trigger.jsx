@@ -134,12 +134,7 @@ const Trigger = React.createClass({
     const popupContainer = this.popupContainer;
     if (popupContainer) {
       ReactDOM.unmountComponentAtNode(popupContainer);
-      if (this.props.getPopupContainer) {
-        const mountNode = this.props.getPopupContainer(findDOMNode(this));
-        mountNode.removeChild(popupContainer);
-      } else {
-        document.body.removeChild(popupContainer);
-      }
+      popupContainer.parentNode.removeChild(popupContainer);
       this.popupContainer = null;
     }
     this.clearDelayTimer();
@@ -222,12 +217,9 @@ const Trigger = React.createClass({
   getPopupContainer() {
     if (!this.popupContainer) {
       this.popupContainer = document.createElement('div');
-      if (this.props.getPopupContainer) {
-        const mountNode = this.props.getPopupContainer(findDOMNode(this));
-        mountNode.appendChild(this.popupContainer);
-      } else {
-        document.body.appendChild(this.popupContainer);
-      }
+      const mountNode = this.props.getPopupContainer ?
+        this.props.getPopupContainer(findDOMNode(this)) : document.body;
+      mountNode.appendChild(this.popupContainer);
     }
     return this.popupContainer;
   },
