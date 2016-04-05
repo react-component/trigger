@@ -42,6 +42,7 @@ const Trigger = React.createClass({
     popupVisible: PropTypes.bool,
     maskTransitionName: PropTypes.string,
     maskAnimation: PropTypes.string,
+    onAlign: PropTypes.func,
   },
 
   getDefaultProps() {
@@ -63,6 +64,7 @@ const Trigger = React.createClass({
       action: [],
       showAction: [],
       hideAction: [],
+      onAlign: noop,
     };
   },
 
@@ -271,6 +273,7 @@ const Trigger = React.createClass({
       transitionName={props.popupTransitionName}
       maskAnimation={props.maskAnimation}
       maskTransitionName={props.maskTransitionName}
+      onAlign={props.onAlign}
     >
       {props.popup}
     </Popup>);
