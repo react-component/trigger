@@ -203,6 +203,12 @@ ReactDOM.render(<Trigger align={{
           <td></td>
           <td>builtin placement align map. used by placement prop</td>
         </tr>        
+        <tr>
+          <td>onAlign</td>
+          <td>function(popupDomNode, align)</td>
+          <td></td>
+          <td>callback when popup node is aligned</td>
+        </tr>
     </tbody>
 </table>
 

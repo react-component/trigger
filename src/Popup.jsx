@@ -17,6 +17,7 @@ const Popup = React.createClass({
     className: PropTypes.string,
     prefixCls: PropTypes.string,
     onMouseLeave: PropTypes.func,
+    onAlign: PropTypes.func,
   },
 
   componentDidMount() {
@@ -30,6 +31,9 @@ const Popup = React.createClass({
     if (alignClassName !== currentAlignClassName) {
       this.currentAlignClassName = currentAlignClassName;
       popupDomNode.className = this.getClassName(currentAlignClassName);
+    }
+    if (typeof props.onAlign === 'function') {
+      props.onAlign(popupDomNode, align);
     }
   },
 
