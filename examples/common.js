@@ -19788,6 +19788,7 @@
 	    getPopupContainer: _react.PropTypes.func,
 	    destroyPopupOnHide: _react.PropTypes.bool,
 	    mask: _react.PropTypes.bool,
+	    onPopupAlign: _react.PropTypes.func,
 	    popupAlign: _react.PropTypes.object,
 	    popupVisible: _react.PropTypes.bool,
 	    maskTransitionName: _react.PropTypes.string,
@@ -19800,6 +19801,7 @@
 	      getPopupClassNameFromAlign: returnEmptyString,
 	      onPopupVisibleChange: noop,
 	      afterPopupVisibleChange: noop,
+	      onPopupAlign: noop,
 	      popupClassName: '',
 	      mouseEnterDelay: 0,
 	      mouseLeaveDelay: 0.1,
@@ -20004,6 +20006,7 @@
 	        className: props.popupClassName,
 	        action: props.action,
 	        align: this.getPopupAlign(),
+	        onAlign: props.onPopupAlign,
 	        animation: props.popupAnimation,
 	        getClassNameFromAlign: this.getPopupClassNameFromAlign
 	      }, mouseProps, {
@@ -22351,6 +22354,7 @@
 	    visible: _react.PropTypes.bool,
 	    style: _react.PropTypes.object,
 	    getClassNameFromAlign: _react.PropTypes.func,
+	    onAlign: _react.PropTypes.func,
 	    getRootDomNode: _react.PropTypes.func,
 	    onMouseEnter: _react.PropTypes.func,
 	    align: _react.PropTypes.any,
@@ -22371,6 +22375,7 @@
 	      this.currentAlignClassName = currentAlignClassName;
 	      popupDomNode.className = this.getClassName(currentAlignClassName);
 	    }
+	    props.onAlign(popupDomNode, align);
 	  },
 	  getPopupDomNode: function getPopupDomNode() {
 	    return _reactDom2["default"].findDOMNode(this.refs.popup);
