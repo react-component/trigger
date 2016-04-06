@@ -38,6 +38,7 @@ const Trigger = React.createClass({
     getPopupContainer: PropTypes.func,
     destroyPopupOnHide: PropTypes.bool,
     mask: PropTypes.bool,
+    onPopupAlign: PropTypes.func,
     popupAlign: PropTypes.object,
     popupVisible: PropTypes.bool,
     maskTransitionName: PropTypes.string,
@@ -50,6 +51,7 @@ const Trigger = React.createClass({
       getPopupClassNameFromAlign: returnEmptyString,
       onPopupVisibleChange: noop,
       afterPopupVisibleChange: noop,
+      onPopupAlign: noop,
       popupClassName: '',
       mouseEnterDelay: 0,
       mouseLeaveDelay: 0.1,
@@ -261,6 +263,7 @@ const Trigger = React.createClass({
       className={props.popupClassName}
       action={props.action}
       align={this.getPopupAlign()}
+      onAlign={props.onPopupAlign}
       animation={props.popupAnimation}
       getClassNameFromAlign={this.getPopupClassNameFromAlign}
       {...mouseProps}

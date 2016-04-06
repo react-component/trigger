@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.4.0 / 2016-04-06
+
+- support onPopupAlign
+
 ## 1.3.0 / 2016-03-25
 
 - support mask/maskTransitionName/zIndex

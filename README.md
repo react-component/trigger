@@ -180,6 +180,12 @@ ReactDOM.render(<Trigger align={{
           <td>popup 's align config</td>
         </tr>
         <tr>
+          <td>onPopupAlign</td>
+          <td>function(popupDomNode, align)</td>
+          <td></td>
+          <td>callback when popup node is aligned</td>
+        </tr>
+        <tr>
           <td>popup</td>
           <td>React.Element</td>
           <td></td>

@@ -10,6 +10,7 @@ const Popup = React.createClass({
     visible: PropTypes.bool,
     style: PropTypes.object,
     getClassNameFromAlign: PropTypes.func,
+    onAlign: PropTypes.func,
     getRootDomNode: PropTypes.func,
     onMouseEnter: PropTypes.func,
     align: PropTypes.any,
@@ -31,6 +32,7 @@ const Popup = React.createClass({
       this.currentAlignClassName = currentAlignClassName;
       popupDomNode.className = this.getClassName(currentAlignClassName);
     }
+    props.onAlign(popupDomNode, align);
   },
 
   getPopupDomNode() {
