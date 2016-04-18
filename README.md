@@ -61,7 +61,7 @@ online example: http://react-component.github.io/trigger/examples/
 var Trigger = require('rc-trigger');
 var React = require('react');
 var ReactDOM = require('react-dom')
-ReactDOM.render(<Trigger align={{
+ReactDOM.render(<Trigger popupAlign={{
   points: ['tl', 'bl'],
   offset: [0, 3]
 }} trigger={['click']} popup={<span>popup</span>}>
