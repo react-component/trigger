@@ -112,7 +112,7 @@ const Trigger = React.createClass({
             props.afterPopupVisibleChange(state.popupVisible);
           }
         });
-      if (props.action.indexOf('click') !== -1) {
+      if (this.isClickToHide()) {
         if (state.popupVisible) {
           if (!this.clickOutsideHandler) {
             this.clickOutsideHandler = Dom.addEventListener(document,
