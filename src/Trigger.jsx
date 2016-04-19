@@ -157,8 +157,12 @@ const Trigger = React.createClass({
   },
 
   onFocus() {
-    this.focusTime = Date.now();
-    this.delaySetPopupVisible(true, this.props.focusDelay);
+    // incase focusin and focusout
+    this.clearDelayTimer();
+    if (this.isFocusToShow()) {
+      this.focusTime = Date.now();
+      this.delaySetPopupVisible(true, this.props.focusDelay);
+    }
   },
 
   onMouseDown() {
@@ -170,7 +174,10 @@ const Trigger = React.createClass({
   },
 
   onBlur() {
-    this.delaySetPopupVisible(false, this.props.blurDelay);
+    this.clearDelayTimer();
+    if (this.isBlurToHide()) {
+      this.delaySetPopupVisible(false, this.props.blurDelay);
+    }
   },
 
   onClick(event) {
@@ -364,11 +371,9 @@ const Trigger = React.createClass({
       newChildProps.onMouseLeave = createChainedFunction(this.onMouseLeave,
         childProps.onMouseLeave);
     }
-    if (this.isFocusToShow()) {
+    if (this.isFocusToShow() || this.isBlurToHide()) {
       newChildProps.onFocus = createChainedFunction(this.onFocus,
         childProps.onFocus);
-    }
-    if (this.isBlurToHide()) {
       newChildProps.onBlur = createChainedFunction(this.onBlur,
         childProps.onBlur);
     }
