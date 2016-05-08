@@ -12,14 +12,14 @@ function returnEmptyString() {
 }
 
 function closest(element, selector) {
-    var parent = element;
+  let parent = element;
 
-    while (parent && parent !== document) {
-        if (parent.matches(selector)) {
-            return parent;
-        }
-        parent = parent.parentNode;
+  while (parent && parent !== document) {
+    if (parent.matches(selector)) {
+      return parent;
     }
+    parent = parent.parentNode;
+  }
 }
 
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
@@ -167,7 +167,11 @@ const Trigger = React.createClass({
   onMouseLeave(e) {
     const relatedTarget = e.relatedTarget;
     const popupContainer = this.getPopupContainer();
-    if (relatedTarget === window || !popupContainer.contains(relatedTarget) && !this.isWithinPopupSelector(relatedTarget)) {
+    if (
+        relatedTarget === window ||
+        !popupContainer.contains(relatedTarget) &&
+        !this.isWithinPopupSelector(relatedTarget)
+    ) {
       this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
     }
   },
@@ -225,17 +229,13 @@ const Trigger = React.createClass({
     const target = event.target;
     const root = findDOMNode(this);
     const popupNode = this.getPopupDomNode();
-    if (!Dom.contains(root, target) && !Dom.contains(popupNode, target) && !this.isWithinPopupSelector(target)) {
+    if (
+        !Dom.contains(root, target) &&
+        !Dom.contains(popupNode, target) &&
+        !this.isWithinPopupSelector(target)
+    ) {
       this.setPopupVisible(false);
     }
-  },
-
-  isWithinPopupSelector(target) {
-    const { withinPopupSelector } = this.props;
-    if (!withinPopupSelector) {
-      return false;
-    }
-    return !!closest(target, withinPopupSelector);
   },
 
   getPopupDomNode() {
@@ -320,6 +320,14 @@ const Trigger = React.createClass({
       }
       this.props.onPopupVisibleChange(popupVisible);
     }
+  },
+
+  isWithinPopupSelector(target) {
+    const { withinPopupSelector } = this.props;
+    if (!withinPopupSelector) {
+      return false;
+    }
+    return !!closest(target, withinPopupSelector);
   },
 
   delaySetPopupVisible(visible, delayS) {
