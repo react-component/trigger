@@ -11,6 +11,17 @@ function returnEmptyString() {
   return '';
 }
 
+function closest(element, selector) {
+  let parent = element;
+
+  while (parent && parent !== document) {
+    if (parent.matches(selector)) {
+      return parent;
+    }
+    parent = parent.parentNode;
+  }
+}
+
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
@@ -43,6 +54,7 @@ const Trigger = React.createClass({
     popupVisible: PropTypes.bool,
     maskTransitionName: PropTypes.string,
     maskAnimation: PropTypes.string,
+    withinPopupSelector: PropTypes.string,
   },
 
   getDefaultProps() {
@@ -152,8 +164,16 @@ const Trigger = React.createClass({
     this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
   },
 
-  onMouseLeave() {
-    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+  onMouseLeave(e) {
+    const relatedTarget = e.relatedTarget;
+    const popupContainer = this.getPopupContainer();
+    if (
+        relatedTarget === window ||
+        !popupContainer.contains(relatedTarget) &&
+        !this.isWithinPopupSelector(relatedTarget)
+    ) {
+      this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+    }
   },
 
   onFocus() {
@@ -209,7 +229,11 @@ const Trigger = React.createClass({
     const target = event.target;
     const root = findDOMNode(this);
     const popupNode = this.getPopupDomNode();
-    if (!Dom.contains(root, target) && !Dom.contains(popupNode, target)) {
+    if (
+        !Dom.contains(root, target) &&
+        !Dom.contains(popupNode, target) &&
+        !this.isWithinPopupSelector(target)
+    ) {
       this.setPopupVisible(false);
     }
   },
@@ -296,6 +320,14 @@ const Trigger = React.createClass({
       }
       this.props.onPopupVisibleChange(popupVisible);
     }
+  },
+
+  isWithinPopupSelector(target) {
+    const { withinPopupSelector } = this.props;
+    if (!withinPopupSelector) {
+      return false;
+    }
+    return !!closest(target, withinPopupSelector);
   },
 
   delaySetPopupVisible(visible, delayS) {
