@@ -152,7 +152,13 @@ const Trigger = React.createClass({
     this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
   },
 
-  onMouseLeave() {
+  onMouseLeave(e) {
+    // https://github.com/react-component/trigger/pull/13
+    // react bug?
+    if (e.relatedTarget && !e.relatedTarget.setTimeout &&
+      Dom.contains(this.popupContainer, e.relatedTarget)) {
+      return;
+    }
     this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
   },
 
@@ -256,11 +262,12 @@ const Trigger = React.createClass({
   },
 
   getPopupElement() {
-    const props = this.props;
-    const state = this.state;
+    const { props, state } = this;
     const mouseProps = {};
-    if (props.action.indexOf('hover') !== -1) {
+    if (this.isMouseEnterToShow()) {
       mouseProps.onMouseEnter = this.onMouseEnter;
+    }
+    if (this.isMouseLeaveToHide()) {
       mouseProps.onMouseLeave = this.onMouseLeave;
     }
     return (<Popup
