@@ -227,7 +227,6 @@ describe('rc-trigger', function main() {
       }], done);
     });
   });
-
   describe('placement', () => {
     it('left works', (done) => {
       const trigger = ReactDOM.render((

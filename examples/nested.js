@@ -34,10 +34,23 @@ const builtinPlacements = {
 
 const Test = React.createClass({
   render() {
+    const me = this;
+    const innerTrigger = (<div>
+      <div ref="container"></div>
+      <Trigger
+        popupPlacement="bottom"
+        action={['click']}
+        builtinPlacements={builtinPlacements}
+        getPopupContainer={() => {return me.refs.container;}}
+        popup={<div style={{ border: '1px solid red', padding: 10 }}>I am inner Trigger Popup</div>}
+      >
+        <span href="#" style={{ margin: 20 }}>clickToShowInnerTrigger</span>
+      </Trigger>
+    </div>);
     return (
       <div>
         <Trigger
-          popupPlacement="right"
+          popupPlacement="left"
           action={['click']}
           builtinPlacements={builtinPlacements}
           popup={<div style={{ border: '1px solid red', padding: 10 }}>i am a click popup</div>}
@@ -50,6 +63,14 @@ const Test = React.createClass({
           >
             <span href="#" style={{ margin: 20 }}>trigger</span>
           </Trigger>
+        </Trigger>
+        <Trigger
+          popupPlacement="right"
+          action={['hover']}
+          builtinPlacements={builtinPlacements}
+          popup={innerTrigger}
+        >
+          <span href="#" style={{ margin: 20 }}>trigger</span>
         </Trigger>
       </div>
     );

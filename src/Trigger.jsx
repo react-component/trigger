@@ -152,8 +152,12 @@ const Trigger = React.createClass({
     this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
   },
 
-  onMouseLeave() {
-    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+  onMouseLeave(e) {
+    const relatedTarget = e.relatedTarget;
+    const popupContainer = this.getPopupContainer();
+    if (relatedTarget === window || !popupContainer.contains(relatedTarget)) {
+      this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+    }
   },
 
   onFocus() {
