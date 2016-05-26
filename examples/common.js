@@ -20292,7 +20292,7 @@
 	    if (this.popupRendered) {
 	      var _ret = function () {
 	        var self = _this;
-	        _reactDom2["default"].unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
+	        self.popupInstance = _reactDom2["default"].unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function renderPopup() {
 	          /* eslint react/no-is-mounted:0 */
 	          if (this.isMounted()) {
 	            self.popupDomNode = this.getPopupDomNode();
@@ -20551,6 +20551,11 @@
 	    var hideAction = _props6.hideAction;
 	
 	    return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
+	  },
+	  forcePopupAlign: function forcePopupAlign() {
+	    if (this.state.popupVisible && this.popupInstance && this.popupInstance.alignInstance) {
+	      this.popupInstance.alignInstance.forceAlign();
+	    }
 	  },
 	  render: function render() {
 	    this.popupRendered = this.popupRendered || this.state.popupVisible;
@@ -22850,6 +22855,7 @@
 	          {
 	            target: this.getTarget,
 	            key: 'popup',
+	            ref: this.saveAlign,
 	            monitorWindowResize: true,
 	            align: align,
 	            onAlign: this.onAlign
@@ -22878,6 +22884,7 @@
 	        {
 	          target: this.getTarget,
 	          key: 'popup',
+	          ref: this.saveAlign,
 	          monitorWindowResize: true,
 	          xVisible: visible,
 	          childrenProps: { visible: 'xVisible' },
@@ -22930,6 +22937,9 @@
 	      }
 	    }
 	    return maskElement;
+	  },
+	  saveAlign: function saveAlign(align) {
+	    this.alignInstance = align;
 	  },
 	  render: function render() {
 	    return _react2["default"].createElement(
