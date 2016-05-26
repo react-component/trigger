@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.5.0 / 2016-05-26
+
+- add forcePopupAlign method
+
 ## 1.4.0 / 2016-04-06
 
 - support onPopupAlign

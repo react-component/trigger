@@ -100,7 +100,8 @@ const Trigger = React.createClass({
     const state = this.state;
     if (this.popupRendered) {
       const self = this;
-      ReactDOM.unstable_renderSubtreeIntoContainer(this, this.getPopupElement(),
+      self.popupInstance = ReactDOM.unstable_renderSubtreeIntoContainer(this,
+        this.getPopupElement(),
         this.getPopupContainer(), function renderPopup() {
           /* eslint react/no-is-mounted:0 */
           if (this.isMounted()) {
@@ -353,6 +354,11 @@ const Trigger = React.createClass({
   isBlurToHide() {
     const { action, hideAction } = this.props;
     return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
+  },
+  forcePopupAlign() {
+    if (this.state.popupVisible && this.popupInstance && this.popupInstance.alignInstance) {
+      this.popupInstance.alignInstance.forceAlign();
+    }
   },
 
   render() {

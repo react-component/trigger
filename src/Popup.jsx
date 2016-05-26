@@ -97,6 +97,7 @@ const Popup = React.createClass({
         {visible ? (<Align
           target={this.getTarget}
           key="popup"
+          ref={this.saveAlign}
           monitorWindowResize
           align={align}
           onAlign={this.onAlign}
@@ -120,6 +121,7 @@ const Popup = React.createClass({
       <Align
         target={this.getTarget}
         key="popup"
+        ref={this.saveAlign}
         monitorWindowResize
         xVisible={visible}
         childrenProps={{ visible: 'xVisible' }}
@@ -175,6 +177,9 @@ const Popup = React.createClass({
       }
     }
     return maskElement;
+  },
+  saveAlign(align) {
+    this.alignInstance = align;
   },
 
   render() {
