@@ -206,6 +206,7 @@ const Trigger = React.createClass({
     this.preClickTime = 0;
     this.preTouchTime = 0;
     event.preventDefault();
+    event.stopPropagation();
     const nextVisible = !this.state.popupVisible;
     if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
       this.setPopupVisible(!this.state.popupVisible);
