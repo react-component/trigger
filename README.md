@@ -44,29 +44,33 @@ http://localhost:8200/examples/
 
 online example: http://react-component.github.io/trigger/examples/
 
-
 ## Feature
 
 * support ie8,ie8+,chrome,firefox,safari
-
 
 ## install
 
 [![rc-trigger](https://nodei.co/npm/rc-trigger.png)](https://npmjs.org/package/rc-trigger)
 
-
 ## Usage
 
 ```js
-var Trigger = require('rc-trigger');
-var React = require('react');
-var ReactDOM = require('react-dom')
-ReactDOM.render(<Trigger popupAlign={{
-  points: ['tl', 'bl'],
-  offset: [0, 3]
-}} trigger={['click']} popup={<span>popup</span>}>
-<a href='#'>hover</a>
-</Trigger>, container);
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Trigger from 'rc-trigger';
+
+ReactDOM.render((
+  <Trigger 
+    action={['click']}
+    popup={<span>popup</span>}
+    popupAlign={{
+      points: ['tl', 'bl'],
+      offset: [0, 3]
+    }}
+  >
+    <a href='#'>hover</a>
+  </Trigger>
+), container);
 ```
 
 ## API
