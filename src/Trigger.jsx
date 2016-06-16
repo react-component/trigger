@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import ReactDOM, { findDOMNode } from 'react-dom';
-import { createChainedFunction, Dom } from 'rc-util';
+import createChainedFunction from 'rc-util/lib/createChainedFunction';
+import contains from 'rc-util/lib/Dom/contains';
+import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
 import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
 
@@ -116,9 +118,9 @@ const Trigger = React.createClass({
       if (this.isClickToHide()) {
         if (state.popupVisible) {
           if (!this.clickOutsideHandler) {
-            this.clickOutsideHandler = Dom.addEventListener(document,
+            this.clickOutsideHandler = addEventListener(document,
               'mousedown', this.onDocumentClick);
-            this.touchOutsideHandler = Dom.addEventListener(document,
+            this.touchOutsideHandler = addEventListener(document,
               'touchstart', this.onDocumentClick);
           }
           return;
@@ -157,7 +159,7 @@ const Trigger = React.createClass({
     // https://github.com/react-component/trigger/pull/13
     // react bug?
     if (e.relatedTarget && !e.relatedTarget.setTimeout &&
-      Dom.contains(this.popupContainer, e.relatedTarget)) {
+      contains(this.popupContainer, e.relatedTarget)) {
       return;
     }
     this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
@@ -216,7 +218,7 @@ const Trigger = React.createClass({
     const target = event.target;
     const root = findDOMNode(this);
     const popupNode = this.getPopupDomNode();
-    if (!Dom.contains(root, target) && !Dom.contains(popupNode, target)) {
+    if (!contains(root, target) && !contains(popupNode, target)) {
       this.setPopupVisible(false);
     }
   },
