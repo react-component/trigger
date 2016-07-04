@@ -24,7 +24,10 @@ const Trigger = React.createClass({
     getPopupClassNameFromAlign: PropTypes.any,
     onPopupVisibleChange: PropTypes.func,
     afterPopupVisibleChange: PropTypes.func,
-    popup: PropTypes.node.isRequired,
+    popup: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.func,
+    ]).isRequired,
     popupStyle: PropTypes.object,
     prefixCls: PropTypes.string,
     popupClassName: PropTypes.string,
@@ -292,7 +295,7 @@ const Trigger = React.createClass({
       maskAnimation={props.maskAnimation}
       maskTransitionName={props.maskTransitionName}
     >
-      {props.popup}
+      {typeof props.popup === 'function' ? props.popup.call() : props.popup}
     </Popup>);
   },
 
