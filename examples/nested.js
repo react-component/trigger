@@ -60,6 +60,7 @@ const Test = React.createClass({
             builtinPlacements={builtinPlacements}
             popup={<div style={popupBorderStyle}>i am a click popup</div>}
           >
+            <span>
             <Trigger
               popupPlacement="bottom"
               action={['hover']}
@@ -68,6 +69,7 @@ const Test = React.createClass({
             >
               <span href="#" style={{ margin: 20 }}>trigger</span>
             </Trigger>
+            </span>
           </Trigger>
         </div>
         <div style={{ margin: 50 }}>

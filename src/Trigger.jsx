@@ -107,13 +107,7 @@ const Trigger = React.createClass({
       const self = this;
       self.popupInstance = ReactDOM.unstable_renderSubtreeIntoContainer(this,
         this.getPopupElement(),
-        this.getPopupContainer(), function renderPopup() {
-          /* eslint react/no-is-mounted:0 */
-          if (this.isMounted()) {
-            self.popupDomNode = this.getPopupDomNode();
-          } else {
-            self.popupDomNode = null;
-          }
+        this.getPopupContainer(), () => {
           if (prevState.popupVisible !== state.popupVisible) {
             props.afterPopupVisibleChange(state.popupVisible);
           }
@@ -228,7 +222,7 @@ const Trigger = React.createClass({
 
   getPopupDomNode() {
     // for test
-    return this.popupDomNode;
+    return this.popupInstance.isMounted() ? this.popupInstance.getPopupDomNode() : null;
   },
 
   getRootDomNode() {

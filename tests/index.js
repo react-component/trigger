@@ -239,19 +239,19 @@ describe('rc-trigger', function main() {
       // can not simulate mouseenter
       Simulate.mouseEnter(target);
       Simulate.click(target);
-      async.series([timeout(100), (next) => {
+      async.series([timeout(200), (next) => {
         const clickPopupDomNode = trigger.refs.clickTrigger.getPopupDomNode();
         const hoverPopupDomNode = trigger.refs.hoverTrigger.getPopupDomNode();
         expect(clickPopupDomNode).to.be.ok();
         expect(hoverPopupDomNode).to.be.ok();
         Simulate.mouseLeave(target);
         next();
-      }, timeout(100), (next) => {
+      }, timeout(200), (next) => {
         const hoverPopupDomNode = trigger.refs.hoverTrigger.getPopupDomNode();
         expect($(hoverPopupDomNode).css('display')).to.be('none');
         Simulate.click(target);
         next();
-      }, timeout(100), (next) => {
+      }, timeout(200), (next) => {
         const clickPopupDomNode = trigger.refs.clickTrigger.getPopupDomNode();
         expect($(clickPopupDomNode).css('display')).to.be('none');
         next();
@@ -521,7 +521,7 @@ describe('rc-trigger', function main() {
   });
 
   describe('destroyPopupOnHide', () => {
-    it('defaults to false', () => {
+    it('defaults to false', (done) => {
       const trigger = ReactDOM.render(
         <Trigger
           action={['click']}
@@ -534,10 +534,13 @@ describe('rc-trigger', function main() {
       Simulate.click(domNode);
       expect(trigger.getPopupDomNode()).to.be.ok();
       Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).to.be.ok();
+      setTimeout(() => {
+        expect(trigger.getPopupDomNode()).to.be.ok();
+        done();
+      }, 0);
     });
 
-    it('set true will destroy tooltip on hide', () => {
+    it('set true will destroy tooltip on hide', (done) => {
       const trigger = ReactDOM.render(
         <Trigger
           action={['click']}
@@ -551,7 +554,10 @@ describe('rc-trigger', function main() {
       Simulate.click(domNode);
       expect(trigger.getPopupDomNode()).to.be.ok();
       Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).not.to.be.ok();
+      setTimeout(() => {
+        expect(trigger.getPopupDomNode()).not.to.be.ok();
+        done();
+      }, 0);
     });
   });
 
