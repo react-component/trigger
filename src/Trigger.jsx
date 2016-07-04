@@ -295,7 +295,7 @@ const Trigger = React.createClass({
       maskAnimation={props.maskAnimation}
       maskTransitionName={props.maskTransitionName}
     >
-      {typeof props.popup === 'function' ? props.popup.call() : props.popup}
+      {typeof props.popup === 'function' ? props.popup() : props.popup}
     </Popup>);
   },
 

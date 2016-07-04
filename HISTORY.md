@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.6.0 / 2016-05-26
+
+- support popup as function
+
 ## 1.5.0 / 2016-05-26
 
 - add forcePopupAlign method

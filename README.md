@@ -191,7 +191,7 @@ ReactDOM.render((
         </tr>
         <tr>
           <td>popup</td>
-          <td>React.Element</td>
+          <td>React.Element | function() => React.Element</td>
           <td></td>
           <td>popup content</td>
         </tr>
