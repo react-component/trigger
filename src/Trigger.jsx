@@ -222,7 +222,10 @@ const Trigger = React.createClass({
 
   getPopupDomNode() {
     // for test
-    return this.popupInstance.isMounted() ? this.popupInstance.getPopupDomNode() : null;
+    if (this.popupInstance) {
+      return this.popupInstance.isMounted() ? this.popupInstance.getPopupDomNode() : null;
+    }
+    return null;
   },
 
   getRootDomNode() {
