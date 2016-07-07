@@ -11,21 +11,16 @@ const LazyRenderBox = React.createClass({
     return nextProps.hiddenClassName || nextProps.visible;
   },
   render() {
-    if (this.props.hiddenClassName) {
-      const props = { ...this.props };
-      let className = props.className;
-      if (!props.visible) {
-        className += ` ${props.hiddenClassName}`;
+    const { hiddenClassName, visible, ...props } = this.props;
+
+    if (hiddenClassName || React.Children.count(props.children) > 1) {
+      if (!visible) {
+        props.className += ` ${hiddenClassName}`;
       }
-      props.className = className;
-      delete props.hiddenClassName;
-      delete props.visible;
       return <div {...props}/>;
     }
-    if (React.Children.count(this.props.children) > 1) {
-      return <div {...this.props}/>;
-    }
-    return React.Children.only(this.props.children);
+
+    return React.Children.only(props.children);
   },
 });
 
