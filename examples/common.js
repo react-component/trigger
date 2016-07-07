@@ -21270,7 +21270,10 @@
 	  },
 	  getPopupDomNode: function getPopupDomNode() {
 	    // for test
-	    return this.popupInstance.isMounted() ? this.popupInstance.getPopupDomNode() : null;
+	    if (this.popupInstance) {
+	      return this.popupInstance.isMounted() ? this.popupInstance.getPopupDomNode() : null;
+	    }
+	    return null;
 	  },
 	  getRootDomNode: function getRootDomNode() {
 	    return _reactDom2.default.findDOMNode(this);
