@@ -105,9 +105,10 @@ const Trigger = React.createClass({
     const state = this.state;
     if (this.popupRendered) {
       const self = this;
-      self.popupInstance = ReactDOM.unstable_renderSubtreeIntoContainer(this,
+      ReactDOM.unstable_renderSubtreeIntoContainer(this,
         this.getPopupElement(),
-        this.getPopupContainer(), () => {
+        this.getPopupContainer(), function mounted() {
+          self.popupInstance = this;
           if (prevState.popupVisible !== state.popupVisible) {
             props.afterPopupVisibleChange(state.popupVisible);
           }
