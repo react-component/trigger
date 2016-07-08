@@ -21048,6 +21048,8 @@
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -21164,30 +21166,39 @@
 	    }
 	  },
 	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	    var _this = this;
+	
 	    var props = this.props;
 	    var state = this.state;
 	    if (this.popupRendered) {
-	      var self = this;
-	      self.popupInstance = _reactDom2.default.unstable_renderSubtreeIntoContainer(this, this.getPopupElement(), this.getPopupContainer(), function () {
-	        if (prevState.popupVisible !== state.popupVisible) {
-	          props.afterPopupVisibleChange(state.popupVisible);
-	        }
-	      });
-	      if (this.isClickToHide()) {
-	        if (state.popupVisible) {
-	          if (!this.clickOutsideHandler) {
-	            this.clickOutsideHandler = (0, _addEventListener2.default)(document, 'mousedown', this.onDocumentClick);
-	            this.touchOutsideHandler = (0, _addEventListener2.default)(document, 'touchstart', this.onDocumentClick);
+	      var _ret = function () {
+	        var self = _this;
+	        _reactDom2.default.unstable_renderSubtreeIntoContainer(_this, _this.getPopupElement(), _this.getPopupContainer(), function mounted() {
+	          self.popupInstance = this;
+	          if (prevState.popupVisible !== state.popupVisible) {
+	            props.afterPopupVisibleChange(state.popupVisible);
 	          }
-	          return;
+	        });
+	        if (_this.isClickToHide()) {
+	          if (state.popupVisible) {
+	            if (!_this.clickOutsideHandler) {
+	              _this.clickOutsideHandler = (0, _addEventListener2.default)(document, 'mousedown', _this.onDocumentClick);
+	              _this.touchOutsideHandler = (0, _addEventListener2.default)(document, 'touchstart', _this.onDocumentClick);
+	            }
+	            return {
+	              v: void 0
+	            };
+	          }
 	        }
-	      }
-	      if (this.clickOutsideHandler) {
-	        this.clickOutsideHandler.remove();
-	        this.touchOutsideHandler.remove();
-	        this.clickOutsideHandler = null;
-	        this.touchOutsideHandler = null;
-	      }
+	        if (_this.clickOutsideHandler) {
+	          _this.clickOutsideHandler.remove();
+	          _this.touchOutsideHandler.remove();
+	          _this.clickOutsideHandler = null;
+	          _this.touchOutsideHandler = null;
+	        }
+	      }();
+	
+	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	    }
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
@@ -21359,14 +21370,14 @@
 	    }
 	  },
 	  delaySetPopupVisible: function delaySetPopupVisible(visible, delayS) {
-	    var _this = this;
+	    var _this2 = this;
 	
 	    var delay = delayS * 1000;
 	    this.clearDelayTimer();
 	    if (delay) {
 	      this.delayTimer = setTimeout(function () {
-	        _this.setPopupVisible(visible);
-	        _this.clearDelayTimer();
+	        _this2.setPopupVisible(visible);
+	        _this2.clearDelayTimer();
 	      }, delay);
 	    } else {
 	      this.setPopupVisible(visible);
