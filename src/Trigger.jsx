@@ -5,6 +5,7 @@ import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
 import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
+import getContainerRenderMixin from 'rc-util/lib/getContainerRenderMixin';
 
 function noop() {
 }
@@ -50,6 +51,56 @@ const Trigger = React.createClass({
     maskAnimation: PropTypes.string,
   },
 
+  mixins: [
+    getContainerRenderMixin({
+      autoMount: false,
+
+      isVisible(instance) {
+        return instance.state.popupVisible;
+      },
+
+      getContainer(instance) {
+        const popupContainer = document.createElement('div');
+        const mountNode = instance.props.getPopupContainer ?
+          instance.props.getPopupContainer(findDOMNode(instance)) : document.body;
+        mountNode.appendChild(popupContainer);
+        return popupContainer;
+      },
+
+      getComponent(instance) {
+        const { props, state } = instance;
+        const mouseProps = {};
+        if (instance.isMouseEnterToShow()) {
+          mouseProps.onMouseEnter = instance.onMouseEnter;
+        }
+        if (instance.isMouseLeaveToHide()) {
+          mouseProps.onMouseLeave = instance.onMouseLeave;
+        }
+        return (<Popup
+          prefixCls={props.prefixCls}
+          destroyPopupOnHide={props.destroyPopupOnHide}
+          visible={state.popupVisible}
+          className={props.popupClassName}
+          action={props.action}
+          align={instance.getPopupAlign()}
+          onAlign={props.onPopupAlign}
+          animation={props.popupAnimation}
+          getClassNameFromAlign={instance.getPopupClassNameFromAlign}
+          {...mouseProps}
+          getRootDomNode={instance.getRootDomNode}
+          style={props.popupStyle}
+          mask={props.mask}
+          zIndex={props.zIndex}
+          transitionName={props.popupTransitionName}
+          maskAnimation={props.maskAnimation}
+          maskTransitionName={props.maskTransitionName}
+        >
+          {typeof props.popup === 'function' ? props.popup() : props.popup}
+        </Popup>);
+      },
+    }),
+  ],
+
   getDefaultProps() {
     return {
       prefixCls: 'rc-trigger-popup',
@@ -92,54 +143,42 @@ const Trigger = React.createClass({
     });
   },
 
-  componentWillReceiveProps(nextProps) {
-    if ('popupVisible' in nextProps) {
+  componentWillReceiveProps({ popupVisible }) {
+    if (popupVisible !== undefined) {
       this.setState({
-        popupVisible: !!nextProps.popupVisible,
+        popupVisible,
       });
     }
   },
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const props = this.props;
     const state = this.state;
-    if (this.popupRendered) {
-      const self = this;
-      ReactDOM.unstable_renderSubtreeIntoContainer(this,
-        this.getPopupElement(),
-        this.getPopupContainer(), function mounted() {
-          self.popupInstance = this;
-          if (prevState.popupVisible !== state.popupVisible) {
-            props.afterPopupVisibleChange(state.popupVisible);
-          }
-        });
-      if (this.isClickToHide()) {
-        if (state.popupVisible) {
-          if (!this.clickOutsideHandler) {
-            this.clickOutsideHandler = addEventListener(document,
-              'mousedown', this.onDocumentClick);
-            this.touchOutsideHandler = addEventListener(document,
-              'touchstart', this.onDocumentClick);
-          }
-          return;
+    this.renderComponent(() => {
+      if (prevState.popupVisible !== state.popupVisible) {
+        props.afterPopupVisibleChange(state.popupVisible);
+      }
+    });
+    if (this.isClickToHide()) {
+      if (state.popupVisible) {
+        if (!this.clickOutsideHandler) {
+          this.clickOutsideHandler = addEventListener(document,
+            'mousedown', this.onDocumentClick);
+          this.touchOutsideHandler = addEventListener(document,
+            'touchstart', this.onDocumentClick);
         }
+        return;
       }
-      if (this.clickOutsideHandler) {
-        this.clickOutsideHandler.remove();
-        this.touchOutsideHandler.remove();
-        this.clickOutsideHandler = null;
-        this.touchOutsideHandler = null;
-      }
+    }
+    if (this.clickOutsideHandler) {
+      this.clickOutsideHandler.remove();
+      this.touchOutsideHandler.remove();
+      this.clickOutsideHandler = null;
+      this.touchOutsideHandler = null;
     }
   },
 
   componentWillUnmount() {
-    const popupContainer = this.popupContainer;
-    if (popupContainer) {
-      ReactDOM.unmountComponentAtNode(popupContainer);
-      popupContainer.parentNode.removeChild(popupContainer);
-      this.popupContainer = null;
-    }
     this.clearDelayTimer();
     if (this.clickOutsideHandler) {
       this.clickOutsideHandler.remove();
@@ -223,24 +262,14 @@ const Trigger = React.createClass({
 
   getPopupDomNode() {
     // for test
-    if (this.popupInstance) {
-      return this.popupInstance.isMounted() ? this.popupInstance.getPopupDomNode() : null;
+    if (this._component) {
+      return this._component.isMounted() ? this._component.getPopupDomNode() : null;
     }
     return null;
   },
 
   getRootDomNode() {
     return ReactDOM.findDOMNode(this);
-  },
-
-  getPopupContainer() {
-    if (!this.popupContainer) {
-      this.popupContainer = document.createElement('div');
-      const mountNode = this.props.getPopupContainer ?
-        this.props.getPopupContainer(findDOMNode(this)) : document.body;
-      mountNode.appendChild(this.popupContainer);
-    }
-    return this.popupContainer;
   },
 
   getPopupClassNameFromAlign(align) {
@@ -263,38 +292,6 @@ const Trigger = React.createClass({
       return getAlignFromPlacement(builtinPlacements, popupPlacement, popupAlign);
     }
     return popupAlign;
-  },
-
-  getPopupElement() {
-    const { props, state } = this;
-    const mouseProps = {};
-    if (this.isMouseEnterToShow()) {
-      mouseProps.onMouseEnter = this.onMouseEnter;
-    }
-    if (this.isMouseLeaveToHide()) {
-      mouseProps.onMouseLeave = this.onMouseLeave;
-    }
-    return (<Popup
-      prefixCls={props.prefixCls}
-      destroyPopupOnHide={props.destroyPopupOnHide}
-      visible={state.popupVisible}
-      className={props.popupClassName}
-      action={props.action}
-      align={this.getPopupAlign()}
-      onAlign={props.onPopupAlign}
-      animation={props.popupAnimation}
-      getClassNameFromAlign={this.getPopupClassNameFromAlign}
-      {...mouseProps}
-      getRootDomNode={this.getRootDomNode}
-      style={props.popupStyle}
-      mask={props.mask}
-      zIndex={props.zIndex}
-      transitionName={props.popupTransitionName}
-      maskAnimation={props.maskAnimation}
-      maskTransitionName={props.maskTransitionName}
-    >
-      {typeof props.popup === 'function' ? props.popup() : props.popup}
-    </Popup>);
   },
 
   setPopupVisible(popupVisible) {
@@ -365,7 +362,6 @@ const Trigger = React.createClass({
   },
 
   render() {
-    this.popupRendered = this.popupRendered || this.state.popupVisible;
     const props = this.props;
     const children = props.children;
     const child = React.Children.only(children);

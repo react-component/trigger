@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.7.0 / 2016-07-18
+
+- use getContainerRenderMixin from 'rc-util'
+
 ## 1.6.0 / 2016-05-26
 
 - support popup as function

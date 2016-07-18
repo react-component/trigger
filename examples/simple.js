@@ -105,9 +105,24 @@ const Test = React.createClass({
     console.log('tooltip', visible);
   },
 
+  destroy() {
+    this.setState({
+      destroyed: true,
+    });
+  },
+
+  destroyPopupOnHide(e) {
+    this.setState({
+      destroyPopupOnHide: e.target.checked,
+    });
+  },
+
   render() {
     const state = this.state;
     const trigger = state.trigger;
+    if (state.destroyed) {
+      return null;
+    }
     return (<div >
       <div style={{ margin: '10px 20px' }}>
         <label>
@@ -165,6 +180,15 @@ const Test = React.createClass({
           />
           click
         </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <input
+            checked={!!this.state.destroyPopupOnHide}
+            type="checkbox"
+            onChange={this.destroyPopupOnHide}
+          />
+          destroyPopupOnHide
+        </label>
         <br/>
         <label>
           offsetX:
@@ -183,6 +207,8 @@ const Test = React.createClass({
             style={{ width: 50 }}
           />
         </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button onClick={this.destroy}>destroy</button>
       </div>
       <div style={{ margin: 100, position: 'relative' }}>
         <Trigger
@@ -190,10 +216,10 @@ const Test = React.createClass({
           popupAlign={getPopupAlign(state)}
           mouseEnterDelay={0}
           popupPlacement={state.placement}
+          destroyPopupOnHide={this.state.destroyPopupOnHide}
           // zIndex={40}
           // mask
           // maskAnimation="fade"
-          // destroyPopupOnHide
           mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}
           builtinPlacements={builtinPlacements}
