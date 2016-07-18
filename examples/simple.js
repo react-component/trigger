@@ -3,12 +3,12 @@ webpackJsonp([1],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(206);
+	module.exports = __webpack_require__(207);
 
 
 /***/ },
 
-/***/ 206:
+/***/ 207:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25,7 +25,7 @@ webpackJsonp([1],{
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(205);
+	__webpack_require__(206);
 	
 	var _objectAssign = __webpack_require__(180);
 	
@@ -126,9 +126,22 @@ webpackJsonp([1],{
 	  onVisibleChange: function onVisibleChange(visible) {
 	    console.log('tooltip', visible);
 	  },
+	  destroy: function destroy() {
+	    this.setState({
+	      destroyed: true
+	    });
+	  },
+	  destroyPopupOnHide: function destroyPopupOnHide(e) {
+	    this.setState({
+	      destroyPopupOnHide: e.target.checked
+	    });
+	  },
 	  render: function render() {
 	    var state = this.state;
 	    var trigger = state.trigger;
+	    if (state.destroyed) {
+	      return null;
+	    }
 	    return _react2.default.createElement(
 	      'div',
 	      null,
@@ -230,6 +243,17 @@ webpackJsonp([1],{
 	          }),
 	          'click'
 	        ),
+	        '    ',
+	        _react2.default.createElement(
+	          'label',
+	          null,
+	          _react2.default.createElement('input', {
+	            checked: !!this.state.destroyPopupOnHide,
+	            type: 'checkbox',
+	            onChange: this.destroyPopupOnHide
+	          }),
+	          'destroyPopupOnHide'
+	        ),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
 	          'label',
@@ -251,6 +275,12 @@ webpackJsonp([1],{
 	            onChange: this.onOffsetYChange,
 	            style: { width: 50 }
 	          })
+	        ),
+	        '    ',
+	        _react2.default.createElement(
+	          'button',
+	          { onClick: this.destroy },
+	          'destroy'
 	        )
 	      ),
 	      _react2.default.createElement(
@@ -262,11 +292,11 @@ webpackJsonp([1],{
 	            getPopupContainer: undefined && getPopupContainer,
 	            popupAlign: getPopupAlign(state),
 	            mouseEnterDelay: 0,
-	            popupPlacement: state.placement
+	            popupPlacement: state.placement,
+	            destroyPopupOnHide: this.state.destroyPopupOnHide
 	            // zIndex={40}
 	            // mask
 	            // maskAnimation="fade"
-	            // destroyPopupOnHide
 	            , mouseLeaveDelay: 0.1,
 	            action: Object.keys(state.trigger),
 	            builtinPlacements: builtinPlacements,
