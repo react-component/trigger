@@ -188,26 +188,26 @@ const Trigger = React.createClass({
     }
   },
 
-  onMouseEnter(event) {
-    this.delaySetPopupVisible(true, this.props.mouseEnterDelay, event);
+  onMouseEnter() {
+    this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
   },
 
-  onMouseLeave(event) {
+  onMouseLeave(e) {
     // https://github.com/react-component/trigger/pull/13
     // react bug?
-    if (event.relatedTarget && !event.relatedTarget.setTimeout &&
-      contains(this.popupContainer, event.relatedTarget)) {
+    if (e.relatedTarget && !e.relatedTarget.setTimeout &&
+      contains(this.popupContainer, e.relatedTarget)) {
       return;
     }
-    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay, event);
+    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
   },
 
-  onFocus(event) {
+  onFocus() {
     // incase focusin and focusout
     this.clearDelayTimer();
     if (this.isFocusToShow()) {
       this.focusTime = Date.now();
-      this.delaySetPopupVisible(true, this.props.focusDelay, event);
+      this.delaySetPopupVisible(true, this.props.focusDelay);
     }
   },
 
@@ -219,10 +219,10 @@ const Trigger = React.createClass({
     this.preTouchTime = Date.now();
   },
 
-  onBlur(event) {
+  onBlur() {
     this.clearDelayTimer();
     if (this.isBlurToHide()) {
-      this.delaySetPopupVisible(false, this.props.blurDelay, event);
+      this.delaySetPopupVisible(false, this.props.blurDelay);
     }
   },
 
@@ -247,7 +247,7 @@ const Trigger = React.createClass({
     event.preventDefault();
     const nextVisible = !this.state.popupVisible;
     if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
-      this.setPopupVisible(!this.state.popupVisible, event);
+      this.setPopupVisible(!this.state.popupVisible);
     }
   },
 
@@ -256,7 +256,7 @@ const Trigger = React.createClass({
     const root = findDOMNode(this);
     const popupNode = this.getPopupDomNode();
     if (!contains(root, target) && !contains(popupNode, target)) {
-      this.setPopupVisible(false, event);
+      this.setPopupVisible(false);
     }
   },
 
@@ -294,7 +294,7 @@ const Trigger = React.createClass({
     return popupAlign;
   },
 
-  setPopupVisible(popupVisible, event) {
+  setPopupVisible(popupVisible) {
     this.clearDelayTimer();
     if (this.state.popupVisible !== popupVisible) {
       if (!('popupVisible' in this.props)) {
@@ -302,20 +302,20 @@ const Trigger = React.createClass({
           popupVisible,
         });
       }
-      this.props.onPopupVisibleChange(popupVisible, event);
+      this.props.onPopupVisibleChange(popupVisible);
     }
   },
 
-  delaySetPopupVisible(visible, delayS, event) {
+  delaySetPopupVisible(visible, delayS) {
     const delay = delayS * 1000;
     this.clearDelayTimer();
     if (delay) {
       this.delayTimer = setTimeout(() => {
-        this.setPopupVisible(visible, event);
+        this.setPopupVisible(visible);
         this.clearDelayTimer();
       }, delay);
     } else {
-      this.setPopupVisible(visible, event);
+      this.setPopupVisible(visible);
     }
   },
 
