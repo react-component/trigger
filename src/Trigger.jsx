@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import ReactDOM, { findDOMNode } from 'react-dom';
-import createChainedFunction from 'rc-util/lib/createChainedFunction';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
@@ -14,12 +13,14 @@ function returnEmptyString() {
   return '';
 }
 
+
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
 const Trigger = React.createClass({
   propTypes: {
-    action: PropTypes.any,
+    children: PropTypes.any,
+    action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     showAction: PropTypes.any,
     hideAction: PropTypes.any,
     getPopupClassNameFromAlign: PropTypes.any,
@@ -71,10 +72,10 @@ const Trigger = React.createClass({
         const { props, state } = instance;
         const mouseProps = {};
         if (instance.isMouseEnterToShow()) {
-          mouseProps.onMouseEnter = instance.onMouseEnter;
+          mouseProps.onMouseEnter = instance.onPopupMouseEnter;
         }
         if (instance.isMouseLeaveToHide()) {
-          mouseProps.onMouseLeave = instance.onMouseLeave;
+          mouseProps.onMouseLeave = instance.onPopupMouseLeave;
         }
         return (<Popup
           prefixCls={props.prefixCls}
@@ -137,6 +138,14 @@ const Trigger = React.createClass({
     };
   },
 
+  componentWillMount() {
+    ALL_HANDLERS.forEach((h) => {
+      this[`fire${h}`] = (e) => {
+        this.fireEvents(h, e);
+      };
+    });
+  },
+
   componentDidMount() {
     this.componentDidUpdate({}, {
       popupVisible: this.state.popupVisible,
@@ -188,21 +197,33 @@ const Trigger = React.createClass({
     }
   },
 
-  onMouseEnter() {
+  onMouseEnter(e) {
+    this.fireEvents('onMouseEnter', e);
     this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
   },
 
   onMouseLeave(e) {
+    this.fireEvents('onMouseLeave', e);
+    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+  },
+
+  onPopupMouseEnter() {
+    this.clearDelayTimer();
+  },
+
+  onPopupMouseLeave(e) {
     // https://github.com/react-component/trigger/pull/13
     // react bug?
     if (e.relatedTarget && !e.relatedTarget.setTimeout &&
-      contains(this.popupContainer, e.relatedTarget)) {
+      this._component &&
+      contains(this._component.getPopupDomNode(), e.relatedTarget)) {
       return;
     }
     this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
   },
 
-  onFocus() {
+  onFocus(e) {
+    this.fireEvents('onFocus', e);
     // incase focusin and focusout
     this.clearDelayTimer();
     if (this.isFocusToShow()) {
@@ -211,15 +232,18 @@ const Trigger = React.createClass({
     }
   },
 
-  onMouseDown() {
+  onMouseDown(e) {
+    this.fireEvents('onMouseDown', e);
     this.preClickTime = Date.now();
   },
 
-  onTouchStart() {
+  onTouchStart(e) {
+    this.fireEvents('onTouchStart', e);
     this.preTouchTime = Date.now();
   },
 
-  onBlur() {
+  onBlur(e) {
+    this.fireEvents('onBlur', e);
     this.clearDelayTimer();
     if (this.isBlurToHide()) {
       this.delaySetPopupVisible(false, this.props.blurDelay);
@@ -227,6 +251,7 @@ const Trigger = React.createClass({
   },
 
   onClick(event) {
+    this.fireEvents('onClick', event);
     // focus will trigger click
     if (this.focusTime) {
       let preTime;
@@ -326,6 +351,15 @@ const Trigger = React.createClass({
     }
   },
 
+  createTwoChains(event) {
+    const childPros = this.props.children.props;
+    const props = this.props;
+    if (childPros[event] && props[event]) {
+      return this[`fire${event}`];
+    }
+    return childPros[event] || props[event];
+  },
+
   isClickToShow() {
     const { action, showAction } = this.props;
     return action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1;
@@ -361,46 +395,49 @@ const Trigger = React.createClass({
     }
   },
 
+  fireEvents(type, e) {
+    const childCallback = this.props.children.props[type];
+    if (childCallback) {
+      childCallback(e);
+    }
+    const callback = this.props[type];
+    if (callback) {
+      callback(e);
+    }
+  },
+
   render() {
     const props = this.props;
     const children = props.children;
     const child = React.Children.only(children);
-    const childProps = child.props || {};
     const newChildProps = {};
 
     if (this.isClickToHide() || this.isClickToShow()) {
-      newChildProps.onClick = createChainedFunction(this.onClick, childProps.onClick);
-      newChildProps.onMouseDown = createChainedFunction(this.onMouseDown,
-        childProps.onMouseDown);
-      newChildProps.onTouchStart = createChainedFunction(this.onTouchStart,
-        childProps.onTouchStart);
+      newChildProps.onClick = this.onClick;
+      newChildProps.onMouseDown = this.onMouseDown;
+      newChildProps.onTouchStart = this.onTouchStart;
+    } else {
+      newChildProps.onClick = this.createTwoChains('onClick');
+      newChildProps.onMouseDown = this.createTwoChains('onMouseDown');
+      newChildProps.onTouchStart = this.createTwoChains('onTouchStart');
     }
     if (this.isMouseEnterToShow()) {
-      newChildProps.onMouseEnter = createChainedFunction(this.onMouseEnter,
-        childProps.onMouseEnter);
+      newChildProps.onMouseEnter = this.onMouseEnter;
+    } else {
+      newChildProps.onMouseEnter = this.createTwoChains('onMouseEnter');
     }
     if (this.isMouseLeaveToHide()) {
-      newChildProps.onMouseLeave = createChainedFunction(this.onMouseLeave,
-        childProps.onMouseLeave);
+      newChildProps.onMouseLeave = this.onMouseLeave;
+    } else {
+      newChildProps.onMouseLeave = this.createTwoChains('onMouseLeave');
     }
     if (this.isFocusToShow() || this.isBlurToHide()) {
-      newChildProps.onFocus = createChainedFunction(this.onFocus,
-        childProps.onFocus);
-      newChildProps.onBlur = createChainedFunction(this.onBlur,
-        childProps.onBlur);
+      newChildProps.onFocus = this.onFocus;
+      newChildProps.onBlur = this.onBlur;
+    } else {
+      newChildProps.onFocus = this.createTwoChains('onFocus');
+      newChildProps.onBlur = this.createTwoChains('onBlur');
     }
-
-    ALL_HANDLERS.forEach(handler => {
-      let newFn;
-      if (props[handler] && newChildProps[handler]) {
-        newFn = createChainedFunction(props[handler], newChildProps[handler]);
-      } else {
-        newFn = props[handler] || newChildProps[handler];
-      }
-      if (newFn) {
-        newChildProps[handler] = newFn;
-      }
-    });
 
     return React.cloneElement(child, newChildProps);
   },

@@ -214,13 +214,13 @@ const Test = React.createClass({
         <Trigger
           getPopupContainer={undefined && getPopupContainer}
           popupAlign={getPopupAlign(state)}
-          mouseEnterDelay={0}
           popupPlacement={state.placement}
           destroyPopupOnHide={this.state.destroyPopupOnHide}
           // zIndex={40}
           // mask
           // maskAnimation="fade"
-          mouseLeaveDelay={0.1}
+          // mouseEnterDelay={0.1}
+          // mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}
           builtinPlacements={builtinPlacements}
           popup={
