@@ -3,12 +3,12 @@ webpackJsonp([1],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(207);
+	module.exports = __webpack_require__(206);
 
 
 /***/ },
 
-/***/ 207:
+/***/ 206:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25,9 +25,9 @@ webpackJsonp([1],{
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(206);
+	__webpack_require__(205);
 	
-	var _objectAssign = __webpack_require__(180);
+	var _objectAssign = __webpack_require__(179);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -291,14 +291,14 @@ webpackJsonp([1],{
 	          {
 	            getPopupContainer: undefined && getPopupContainer,
 	            popupAlign: getPopupAlign(state),
-	            mouseEnterDelay: 0,
 	            popupPlacement: state.placement,
 	            destroyPopupOnHide: this.state.destroyPopupOnHide
 	            // zIndex={40}
 	            // mask
 	            // maskAnimation="fade"
-	            , mouseLeaveDelay: 0.1,
-	            action: Object.keys(state.trigger),
+	            // mouseEnterDelay={0.1}
+	            // mouseLeaveDelay={0.1}
+	            , action: Object.keys(state.trigger),
 	            builtinPlacements: builtinPlacements,
 	            popup: _react2.default.createElement(
 	              'div',
