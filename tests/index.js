@@ -211,6 +211,27 @@ describe('rc-trigger', function main() {
       }], done);
     });
 
+    it('afterPopupVisibleChange can be triggered', (done) => {
+      let triggered = 0;
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          afterPopupVisibleChange={() => {
+            triggered = 1;
+          }}
+          popup={<strong>trigger</strong>}
+        >
+          <div className="target">click</div>
+        </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      async.series([timeout(200), (next) => {
+        expect(triggered).to.be(1);
+        next();
+      }], done);
+    });
+
     it('nested action works', (done) => {
       const Test = React.createClass({
         render() {
