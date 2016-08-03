@@ -163,7 +163,7 @@ const Trigger = React.createClass({
   componentDidUpdate(_, prevState) {
     const props = this.props;
     const state = this.state;
-    this.renderComponent({}, () => {
+    this.renderComponent(null, () => {
       if (prevState.popupVisible !== state.popupVisible) {
         props.afterPopupVisibleChange(state.popupVisible);
       }
