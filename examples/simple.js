@@ -3,12 +3,12 @@ webpackJsonp([1],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(206);
+	module.exports = __webpack_require__(248);
 
 
 /***/ },
 
-/***/ 206:
+/***/ 248:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17,17 +17,17 @@ webpackJsonp([1],{
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(34);
+	var _reactDom = __webpack_require__(35);
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _rcTrigger = __webpack_require__(171);
+	var _rcTrigger = __webpack_require__(173);
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(205);
+	__webpack_require__(247);
 	
-	var _objectAssign = __webpack_require__(179);
+	var _objectAssign = __webpack_require__(219);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -82,6 +82,8 @@ webpackJsonp([1],{
 	  displayName: 'Test',
 	  getInitialState: function getInitialState() {
 	    return {
+	      mask: false,
+	      maskClosable: false,
 	      placement: 'right',
 	      trigger: {
 	        hover: 1
@@ -125,6 +127,16 @@ webpackJsonp([1],{
 	  },
 	  onVisibleChange: function onVisibleChange(visible) {
 	    console.log('tooltip', visible);
+	  },
+	  onMask: function onMask(e) {
+	    this.setState({
+	      mask: e.target.checked
+	    });
+	  },
+	  onMaskClosable: function onMaskClosable(e) {
+	    this.setState({
+	      maskClosable: e.target.checked
+	    });
 	  },
 	  destroy: function destroy() {
 	    this.setState({
@@ -215,7 +227,7 @@ webpackJsonp([1],{
 	          null,
 	          _react2.default.createElement('input', {
 	            value: 'hover',
-	            checked: trigger.hover,
+	            checked: !!trigger.hover,
 	            type: 'checkbox',
 	            onChange: this.onTriggerChange
 	          }),
@@ -226,7 +238,7 @@ webpackJsonp([1],{
 	          null,
 	          _react2.default.createElement('input', {
 	            value: 'focus',
-	            checked: trigger.focus,
+	            checked: !!trigger.focus,
 	            type: 'checkbox',
 	            onChange: this.onTriggerChange
 	          }),
@@ -237,7 +249,7 @@ webpackJsonp([1],{
 	          null,
 	          _react2.default.createElement('input', {
 	            value: 'click',
-	            checked: trigger.click,
+	            checked: !!trigger.click,
 	            type: 'checkbox',
 	            onChange: this.onTriggerChange
 	          }),
@@ -253,6 +265,28 @@ webpackJsonp([1],{
 	            onChange: this.destroyPopupOnHide
 	          }),
 	          'destroyPopupOnHide'
+	        ),
+	        '    ',
+	        _react2.default.createElement(
+	          'label',
+	          null,
+	          _react2.default.createElement('input', {
+	            checked: !!this.state.mask,
+	            type: 'checkbox',
+	            onChange: this.onMask
+	          }),
+	          'mask'
+	        ),
+	        '    ',
+	        _react2.default.createElement(
+	          'label',
+	          null,
+	          _react2.default.createElement('input', {
+	            checked: !!this.state.maskClosable,
+	            type: 'checkbox',
+	            onChange: this.onMaskClosable
+	          }),
+	          'maskClosable'
 	        ),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
@@ -294,7 +328,8 @@ webpackJsonp([1],{
 	            popupPlacement: state.placement,
 	            destroyPopupOnHide: this.state.destroyPopupOnHide
 	            // zIndex={40}
-	            // mask
+	            , mask: this.state.mask,
+	            maskClosable: this.state.maskClosable
 	            // maskAnimation="fade"
 	            // mouseEnterDelay={0.1}
 	            // mouseLeaveDelay={0.1}
