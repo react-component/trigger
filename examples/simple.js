@@ -54,6 +54,8 @@ function getPopupContainer(trigger) {
 const Test = React.createClass({
   getInitialState() {
     return {
+      mask: false,
+      maskClosable: false,
       placement: 'right',
       trigger: {
         hover: 1,
@@ -103,6 +105,18 @@ const Test = React.createClass({
 
   onVisibleChange(visible) {
     console.log('tooltip', visible);
+  },
+
+  onMask(e) {
+    this.setState({
+      mask: e.target.checked,
+    });
+  },
+
+  onMaskClosable(e) {
+    this.setState({
+      maskClosable: e.target.checked,
+    });
   },
 
   destroy() {
@@ -156,7 +170,7 @@ const Test = React.createClass({
         <label>
           <input
             value="hover"
-            checked={trigger.hover}
+            checked={!!trigger.hover}
             type="checkbox"
             onChange={this.onTriggerChange}
           />
@@ -165,7 +179,7 @@ const Test = React.createClass({
         <label>
           <input
             value="focus"
-            checked={trigger.focus}
+            checked={!!trigger.focus}
             type="checkbox"
             onChange={this.onTriggerChange}
           />
@@ -174,7 +188,7 @@ const Test = React.createClass({
         <label>
           <input
             value="click"
-            checked={trigger.click}
+            checked={!!trigger.click}
             type="checkbox"
             onChange={this.onTriggerChange}
           />
@@ -189,7 +203,28 @@ const Test = React.createClass({
           />
           destroyPopupOnHide
         </label>
-        <br/>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <input
+            checked={!!this.state.mask}
+            type="checkbox"
+            onChange={this.onMask}
+          />
+          mask
+        </label>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <input
+            checked={!!this.state.maskClosable}
+            type="checkbox"
+            onChange={this.onMaskClosable}
+          />
+          maskClosable
+        </label>
+
+        <br />
         <label>
           offsetX:
           <input
@@ -217,16 +252,17 @@ const Test = React.createClass({
           popupPlacement={state.placement}
           destroyPopupOnHide={this.state.destroyPopupOnHide}
           // zIndex={40}
-          // mask
+          mask={this.state.mask}
+          maskClosable={this.state.maskClosable}
           // maskAnimation="fade"
           // mouseEnterDelay={0.1}
           // mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}
           builtinPlacements={builtinPlacements}
           popup={
-          <div style={{ border: '1px solid red', padding: 10, background: 'white' }}>
-          i am a popup
-          </div>
+            <div style={{ border: '1px solid red', padding: 10, background: 'white' }}>
+              i am a popup
+            </div>
           }
           popupTransitionName={state.transitionName}
         >

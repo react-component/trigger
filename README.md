@@ -156,8 +156,14 @@ ReactDOM.render((
         <tr>
           <td>mask</td>
           <td>boolean</td>
-          <td></td>
+          <td>false</td>
           <td>whether to support mask</td>
+        </tr>
+        <tr>
+          <td>maskClosable</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>whether to support click mask to hide</td>
         </tr>
         <tr>
           <td>popupVisible</td>

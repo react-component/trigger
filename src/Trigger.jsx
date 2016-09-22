@@ -13,7 +13,6 @@ function returnEmptyString() {
   return '';
 }
 
-
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
@@ -45,6 +44,7 @@ const Trigger = React.createClass({
     getPopupContainer: PropTypes.func,
     destroyPopupOnHide: PropTypes.bool,
     mask: PropTypes.bool,
+    maskClosable: PropTypes.bool,
     onPopupAlign: PropTypes.func,
     popupAlign: PropTypes.object,
     popupVisible: PropTypes.bool,
@@ -77,27 +77,29 @@ const Trigger = React.createClass({
         if (instance.isMouseLeaveToHide()) {
           mouseProps.onMouseLeave = instance.onPopupMouseLeave;
         }
-        return (<Popup
-          prefixCls={props.prefixCls}
-          destroyPopupOnHide={props.destroyPopupOnHide}
-          visible={state.popupVisible}
-          className={props.popupClassName}
-          action={props.action}
-          align={instance.getPopupAlign()}
-          onAlign={props.onPopupAlign}
-          animation={props.popupAnimation}
-          getClassNameFromAlign={instance.getPopupClassNameFromAlign}
-          {...mouseProps}
-          getRootDomNode={instance.getRootDomNode}
-          style={props.popupStyle}
-          mask={props.mask}
-          zIndex={props.zIndex}
-          transitionName={props.popupTransitionName}
-          maskAnimation={props.maskAnimation}
-          maskTransitionName={props.maskTransitionName}
-        >
-          {typeof props.popup === 'function' ? props.popup() : props.popup}
-        </Popup>);
+        return (
+          <Popup
+            prefixCls={props.prefixCls}
+            destroyPopupOnHide={props.destroyPopupOnHide}
+            visible={state.popupVisible}
+            className={props.popupClassName}
+            action={props.action}
+            align={instance.getPopupAlign()}
+            onAlign={props.onPopupAlign}
+            animation={props.popupAnimation}
+            getClassNameFromAlign={instance.getPopupClassNameFromAlign}
+            {...mouseProps}
+            getRootDomNode={instance.getRootDomNode}
+            style={props.popupStyle}
+            mask={props.mask}
+            zIndex={props.zIndex}
+            transitionName={props.popupTransitionName}
+            maskAnimation={props.maskAnimation}
+            maskTransitionName={props.maskTransitionName}
+          >
+            {typeof props.popup === 'function' ? props.popup() : props.popup}
+          </Popup>
+        );
       },
     }),
   ],
@@ -119,6 +121,7 @@ const Trigger = React.createClass({
       popupAlign: {},
       defaultPopupVisible: false,
       mask: false,
+      maskClosable: true,
       action: [],
       showAction: [],
       hideAction: [],
@@ -277,11 +280,14 @@ const Trigger = React.createClass({
   },
 
   onDocumentClick(event) {
+    if (this.props.mask && !this.props.maskClosable) {
+      return;
+    }
     const target = event.target;
     const root = findDOMNode(this);
     const popupNode = this.getPopupDomNode();
     if (!contains(root, target) && !contains(popupNode, target)) {
-      this.setPopupVisible(false);
+      this.close();
     }
   },
 
@@ -404,6 +410,10 @@ const Trigger = React.createClass({
     if (callback) {
       callback(e);
     }
+  },
+
+  close() {
+    this.setPopupVisible(false);
   },
 
   render() {
