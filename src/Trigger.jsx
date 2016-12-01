@@ -67,40 +67,6 @@ const Trigger = React.createClass({
         mountNode.appendChild(popupContainer);
         return popupContainer;
       },
-
-      getComponent(instance) {
-        const { props, state } = instance;
-        const mouseProps = {};
-        if (instance.isMouseEnterToShow()) {
-          mouseProps.onMouseEnter = instance.onPopupMouseEnter;
-        }
-        if (instance.isMouseLeaveToHide()) {
-          mouseProps.onMouseLeave = instance.onPopupMouseLeave;
-        }
-        return (
-          <Popup
-            prefixCls={props.prefixCls}
-            destroyPopupOnHide={props.destroyPopupOnHide}
-            visible={state.popupVisible}
-            className={props.popupClassName}
-            action={props.action}
-            align={instance.getPopupAlign()}
-            onAlign={props.onPopupAlign}
-            animation={props.popupAnimation}
-            getClassNameFromAlign={instance.getPopupClassNameFromAlign}
-            {...mouseProps}
-            getRootDomNode={instance.getRootDomNode}
-            style={props.popupStyle}
-            mask={props.mask}
-            zIndex={props.zIndex}
-            transitionName={props.popupTransitionName}
-            maskAnimation={props.maskAnimation}
-            maskTransitionName={props.maskTransitionName}
-          >
-            {typeof props.popup === 'function' ? props.popup() : props.popup}
-          </Popup>
-        );
-      },
     }),
   ],
 
@@ -323,6 +289,40 @@ const Trigger = React.createClass({
       return getAlignFromPlacement(builtinPlacements, popupPlacement, popupAlign);
     }
     return popupAlign;
+  },
+
+  getComponent() {
+    const { props, state } = this;
+    const mouseProps = {};
+    if (this.isMouseEnterToShow()) {
+      mouseProps.onMouseEnter = this.onPopupMouseEnter;
+    }
+    if (this.isMouseLeaveToHide()) {
+      mouseProps.onMouseLeave = this.onPopupMouseLeave;
+    }
+    return (
+      <Popup
+        prefixCls={props.prefixCls}
+        destroyPopupOnHide={props.destroyPopupOnHide}
+        visible={state.popupVisible}
+        className={props.popupClassName}
+        action={props.action}
+        align={this.getPopupAlign()}
+        onAlign={props.onPopupAlign}
+        animation={props.popupAnimation}
+        getClassNameFromAlign={this.getPopupClassNameFromAlign}
+        {...mouseProps}
+        getRootDomNode={this.getRootDomNode}
+        style={props.popupStyle}
+        mask={props.mask}
+        zIndex={props.zIndex}
+        transitionName={props.popupTransitionName}
+        maskAnimation={props.maskAnimation}
+        maskTransitionName={props.maskTransitionName}
+      >
+        {typeof props.popup === 'function' ? props.popup() : props.popup}
+      </Popup>
+    );
   },
 
   setPopupVisible(popupVisible) {
