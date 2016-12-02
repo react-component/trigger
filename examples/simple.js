@@ -3,12 +3,12 @@ webpackJsonp([1],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(248);
+	module.exports = __webpack_require__(256);
 
 
 /***/ },
 
-/***/ 248:
+/***/ 256:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17,17 +17,17 @@ webpackJsonp([1],{
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(35);
+	var _reactDom = __webpack_require__(33);
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _rcTrigger = __webpack_require__(173);
+	var _rcTrigger = __webpack_require__(180);
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(247);
+	__webpack_require__(255);
 	
-	var _objectAssign = __webpack_require__(219);
+	var _objectAssign = __webpack_require__(257);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -209,7 +209,7 @@ webpackJsonp([1],{
 	            )
 	          )
 	        ),
-	        '    ',
+	        '\xA0\xA0\xA0\xA0',
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -221,7 +221,7 @@ webpackJsonp([1],{
 	          }),
 	          'transitionName'
 	        ),
-	        '     trigger:',
+	        '\xA0\xA0\xA0\xA0 trigger:',
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -255,7 +255,7 @@ webpackJsonp([1],{
 	          }),
 	          'click'
 	        ),
-	        '    ',
+	        '\xA0\xA0\xA0\xA0',
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -266,7 +266,7 @@ webpackJsonp([1],{
 	          }),
 	          'destroyPopupOnHide'
 	        ),
-	        '    ',
+	        '\xA0\xA0\xA0\xA0',
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -277,7 +277,7 @@ webpackJsonp([1],{
 	          }),
 	          'mask'
 	        ),
-	        '    ',
+	        '\xA0\xA0\xA0\xA0',
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -299,7 +299,7 @@ webpackJsonp([1],{
 	            style: { width: 50 }
 	          })
 	        ),
-	        '    ',
+	        '\xA0\xA0\xA0\xA0',
 	        _react2.default.createElement(
 	          'label',
 	          null,
@@ -310,7 +310,7 @@ webpackJsonp([1],{
 	            style: { width: 50 }
 	          })
 	        ),
-	        '    ',
+	        '\xA0\xA0\xA0\xA0',
 	        _react2.default.createElement(
 	          'button',
 	          { onClick: this.destroy },
@@ -358,6 +358,52 @@ webpackJsonp([1],{
 	  null,
 	  _react2.default.createElement(Test, null)
 	), document.getElementById('__react-content'));
+
+/***/ },
+
+/***/ 257:
+/***/ function(module, exports) {
+
+	/* eslint-disable no-unused-vars */
+	'use strict';
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+	
+	function toObject(val) {
+		if (val === null || val === undefined) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+	
+		return Object(val);
+	}
+	
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var to = toObject(target);
+		var symbols;
+	
+		for (var s = 1; s < arguments.length; s++) {
+			from = Object(arguments[s]);
+	
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+	
+			if (Object.getOwnPropertySymbols) {
+				symbols = Object.getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
+			}
+		}
+	
+		return to;
+	};
+
 
 /***/ }
 
