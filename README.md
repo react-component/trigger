@@ -54,7 +54,7 @@ online example: http://react-component.github.io/trigger/examples/
 
 ## Usage
 
-Include the default [styling](https://github.com/react-component/trigger/blob/master/assets/index.less#L4:L11)
+Include the default [styling](https://github.com/react-component/trigger/blob/master/assets/index.less#L4:L11) and then:
 
 ```js
 import React from 'react';
