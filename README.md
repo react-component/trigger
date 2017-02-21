@@ -210,6 +210,12 @@ ReactDOM.render((
           <td>function returning html node which will act as popup container</td>
         </tr>
         <tr>
+          <td>getDocument</td>
+          <td>getDocument(): HTMLElement</td>
+          <td></td>
+          <td>function returning document node which will be attached click event to close trigger</td>
+        </tr>
+        <tr>
           <td>popupPlacement</td>
           <td>string</td>
           <td></td>
