@@ -62,6 +62,11 @@ const Trigger = React.createClass({
 
       getContainer(instance) {
         const popupContainer = document.createElement('div');
+        // Make sure default popup container will never cause scrollbar appearing
+        // https://github.com/react-component/trigger/issues/41
+        popupContainer.style.position = 'absolute';
+        popupContainer.style.top = '-9999px';
+        popupContainer.style.left = '-9999px';
         const mountNode = instance.props.getPopupContainer ?
           instance.props.getPopupContainer(findDOMNode(instance)) : document.body;
         mountNode.appendChild(popupContainer);
