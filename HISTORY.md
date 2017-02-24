@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.8.2 / 2017-02-24
+
+- change default container to absolute to fix scrollbar change problem
+
 ## 1.7.0 / 2016-07-18
 
 - use getContainerRenderMixin from 'rc-util'
