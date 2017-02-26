@@ -622,4 +622,37 @@ describe('rc-trigger', function main() {
       });
     });
   }
+
+  describe('github issues', () => {
+    // https://github.com/ant-design/ant-design/issues/5047
+    // https://github.com/react-component/trigger/pull/43
+    it('render text without break lines', () => {
+      const trigger = ReactDOM.render(
+        <Trigger
+          popupVisible
+          popupAlign={placementAlignMap.top}
+          popup={<span>i am a pop up</span>}
+          popupClassName="no-fix-width"
+        >
+          <div>trigger</div>
+        </Trigger>
+      , div);
+      const popupNodeHeightOfSeveralWords = trigger.getPopupDomNode().offsetHeight;
+
+      const trigger2 = ReactDOM.render(
+        <Trigger
+          popupVisible
+          popupAlign={placementAlignMap.top}
+          popup={<span>iamapopup</span>}
+          popupClassName="no-fix-width"
+        >
+          <div>trigger</div>
+        </Trigger>
+      , div);
+      const popupNodeHeightOfOneWord = trigger2.getPopupDomNode().offsetHeight;
+
+      // height should be same, should not have break lines inside words
+      expect(popupNodeHeightOfOneWord).to.equal(popupNodeHeightOfSeveralWords);
+    });
+  });
 });
