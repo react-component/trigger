@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.9.0 / 2017-02-27
+
+- add getDocument prop
+
 ## 1.8.2 / 2017-02-24
 
 - change default container to absolute to fix scrollbar change problem
