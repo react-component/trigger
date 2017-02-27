@@ -21186,8 +21186,9 @@
 	      // Make sure default popup container will never cause scrollbar appearing
 	      // https://github.com/react-component/trigger/issues/41
 	      popupContainer.style.position = 'absolute';
-	      popupContainer.style.top = '-9999px';
-	      popupContainer.style.left = '-9999px';
+	      popupContainer.style.top = '0';
+	      popupContainer.style.left = '0';
+	      popupContainer.style.width = '100%';
 	      var mountNode = instance.props.getPopupContainer ? instance.props.getPopupContainer((0, _reactDom.findDOMNode)(instance)) : document.body;
 	      mountNode.appendChild(popupContainer);
 	      return popupContainer;
