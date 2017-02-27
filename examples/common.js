@@ -21138,6 +21138,10 @@
 	  return '';
 	}
 	
+	function returnDocument() {
+	  return window.document;
+	}
+	
 	var ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter', 'onMouseLeave', 'onFocus', 'onBlur'];
 	
 	var Trigger = _react2.default.createClass({
@@ -21165,6 +21169,7 @@
 	    focusDelay: _react.PropTypes.number,
 	    blurDelay: _react.PropTypes.number,
 	    getPopupContainer: _react.PropTypes.func,
+	    getDocument: _react.PropTypes.func,
 	    destroyPopupOnHide: _react.PropTypes.bool,
 	    mask: _react.PropTypes.bool,
 	    maskClosable: _react.PropTypes.bool,
@@ -21182,6 +21187,8 @@
 	      return instance.state.popupVisible;
 	    },
 	    getContainer: function getContainer(instance) {
+	      var props = instance.props;
+	
 	      var popupContainer = document.createElement('div');
 	      // Make sure default popup container will never cause scrollbar appearing
 	      // https://github.com/react-component/trigger/issues/41
@@ -21189,7 +21196,7 @@
 	      popupContainer.style.top = '0';
 	      popupContainer.style.left = '0';
 	      popupContainer.style.width = '100%';
-	      var mountNode = instance.props.getPopupContainer ? instance.props.getPopupContainer((0, _reactDom.findDOMNode)(instance)) : document.body;
+	      var mountNode = props.getPopupContainer ? props.getPopupContainer((0, _reactDom.findDOMNode)(instance)) : props.getDocument().body;
 	      mountNode.appendChild(popupContainer);
 	      return popupContainer;
 	    }
@@ -21199,6 +21206,7 @@
 	    return {
 	      prefixCls: 'rc-trigger-popup',
 	      getPopupClassNameFromAlign: returnEmptyString,
+	      getDocument: returnDocument,
 	      onPopupVisibleChange: noop,
 	      afterPopupVisibleChange: noop,
 	      onPopupAlign: noop,
@@ -21264,8 +21272,9 @@
 	    if (this.isClickToHide()) {
 	      if (state.popupVisible) {
 	        if (!this.clickOutsideHandler) {
-	          this.clickOutsideHandler = (0, _addEventListener2.default)(document, 'mousedown', this.onDocumentClick);
-	          this.touchOutsideHandler = (0, _addEventListener2.default)(document, 'touchstart', this.onDocumentClick);
+	          var currentDocument = props.getDocument();
+	          this.clickOutsideHandler = (0, _addEventListener2.default)(currentDocument, 'mousedown', this.onDocumentClick);
+	          this.touchOutsideHandler = (0, _addEventListener2.default)(currentDocument, 'touchstart', this.onDocumentClick);
 	        }
 	        return;
 	      }

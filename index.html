@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-trigger@1.8.3 - base abstract trigger component for react</title>
+  <title>rc-trigger@1.9.0 - base abstract trigger component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,7 +737,7 @@
 
 <body>
 <div class="header">
-  <h1>rc-trigger@1.8.3</h1>
+  <h1>rc-trigger@1.9.0</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
@@ -933,6 +933,12 @@ ReactDOM.render((
           <td>getPopupContainer(): HTMLElement</td>
           <td></td>
           <td>function returning html node which will act as popup container</td>
+        </tr>
+        <tr>
+          <td>getDocument</td>
+          <td>getDocument(): HTMLElement</td>
+          <td></td>
+          <td>function returning document node which will be attached click event to close trigger</td>
         </tr>
         <tr>
           <td>popupPlacement</td>
