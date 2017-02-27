@@ -13,6 +13,10 @@ function returnEmptyString() {
   return '';
 }
 
+function returnDocument() {
+  return window.document;
+}
+
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
@@ -42,6 +46,7 @@ const Trigger = React.createClass({
     focusDelay: PropTypes.number,
     blurDelay: PropTypes.number,
     getPopupContainer: PropTypes.func,
+    getDocument: PropTypes.func,
     destroyPopupOnHide: PropTypes.bool,
     mask: PropTypes.bool,
     maskClosable: PropTypes.bool,
@@ -61,6 +66,7 @@ const Trigger = React.createClass({
       },
 
       getContainer(instance) {
+        const { props } = instance;
         const popupContainer = document.createElement('div');
         // Make sure default popup container will never cause scrollbar appearing
         // https://github.com/react-component/trigger/issues/41
@@ -68,8 +74,8 @@ const Trigger = React.createClass({
         popupContainer.style.top = '0';
         popupContainer.style.left = '0';
         popupContainer.style.width = '100%';
-        const mountNode = instance.props.getPopupContainer ?
-          instance.props.getPopupContainer(findDOMNode(instance)) : document.body;
+        const mountNode = props.getPopupContainer ?
+                props.getPopupContainer(findDOMNode(instance)) : props.getDocument().body;
         mountNode.appendChild(popupContainer);
         return popupContainer;
       },
@@ -80,6 +86,7 @@ const Trigger = React.createClass({
     return {
       prefixCls: 'rc-trigger-popup',
       getPopupClassNameFromAlign: returnEmptyString,
+      getDocument: returnDocument,
       onPopupVisibleChange: noop,
       afterPopupVisibleChange: noop,
       onPopupAlign: noop,
@@ -146,9 +153,10 @@ const Trigger = React.createClass({
     if (this.isClickToHide()) {
       if (state.popupVisible) {
         if (!this.clickOutsideHandler) {
-          this.clickOutsideHandler = addEventListener(document,
+          const currentDocument = props.getDocument();
+          this.clickOutsideHandler = addEventListener(currentDocument,
             'mousedown', this.onDocumentClick);
-          this.touchOutsideHandler = addEventListener(document,
+          this.touchOutsideHandler = addEventListener(currentDocument,
             'touchstart', this.onDocumentClick);
         }
         return;
