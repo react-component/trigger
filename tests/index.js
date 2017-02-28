@@ -624,6 +624,53 @@ describe('rc-trigger', function main() {
   }
 
   describe('github issues', () => {
+    // https://github.com/react-component/trigger/issues/42
+    // just working on `npm run chrome-test` when scrollbar is on
+    it('popup node position should not be affected by scrollbar', () => {
+      document.documentElement.style.width = '100%';
+      document.documentElement.style.height = '100%';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+      document.body.style.margin = '0px';
+      document.body.style.padding = '0px';
+      div.style.position = '';
+      div.style.height = '100%';
+      div.style.margin = '0px';
+      div.style.padding = '0px';
+
+      const trigger = ReactDOM.render(
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.top}
+          popup={<span>1</span>}
+          mouseEnterDelay={0}
+          mouseLeaveDelay={0}
+        >
+          <div style={{ position: 'absolute', right: 150, display: 'inline-block', top: 150 }}>
+            trigger
+          </div>
+        </Trigger>
+      , div);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      const firstLeft = trigger.getPopupDomNode().style.left;
+      Simulate.click(domNode);
+      Simulate.click(domNode);
+      const secondLeft = trigger.getPopupDomNode().style.left;
+      expect(firstLeft).to.equal(secondLeft);
+
+      document.documentElement.style.width = '';
+      document.documentElement.style.height = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      div.style.position = 'relative';
+      div.style.height = '100%';
+      div.style.margin = '0';
+      div.style.padding = '0';
+    });
+
     // https://github.com/ant-design/ant-design/issues/5047
     // https://github.com/react-component/trigger/pull/43
     it('render text without break lines', () => {
@@ -653,6 +700,23 @@ describe('rc-trigger', function main() {
 
       // height should be same, should not have break lines inside words
       expect(popupNodeHeightOfOneWord).to.equal(popupNodeHeightOfSeveralWords);
+    });
+
+    // https://github.com/ant-design/ant-design/issues/5092
+    it('popup node height should be 100% as body', () => {
+      const trigger = ReactDOM.render(
+        <Trigger
+          popupVisible
+          popupAlign={placementAlignMap.top}
+          popup={<span>i am a pop up</span>}
+          popupStyle={{ height: '100%' }}
+        >
+          <div>trigger</div>
+        </Trigger>
+      , div);
+
+      // height should be same, should not have break lines inside words
+      expect(trigger.getPopupDomNode().offsetHeight).to.above(0);
     });
   });
 });
