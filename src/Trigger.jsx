@@ -150,17 +150,15 @@ const Trigger = React.createClass({
         props.afterPopupVisibleChange(state.popupVisible);
       }
     });
-    if (this.isClickToHide()) {
-      if (state.popupVisible) {
-        if (!this.clickOutsideHandler) {
-          const currentDocument = props.getDocument();
-          this.clickOutsideHandler = addEventListener(currentDocument,
-            'mousedown', this.onDocumentClick);
-          this.touchOutsideHandler = addEventListener(currentDocument,
-            'touchstart', this.onDocumentClick);
-        }
-        return;
+    if (state.popupVisible) {
+      if (!this.clickOutsideHandler) {
+        const currentDocument = props.getDocument();
+        this.clickOutsideHandler =
+          addEventListener(currentDocument, 'mousedown', this.onDocumentClick);
+        this.touchOutsideHandler =
+          addEventListener(currentDocument, 'touchstart', this.onDocumentClick);
       }
+      return;
     }
     if (this.clickOutsideHandler) {
       this.clickOutsideHandler.remove();
