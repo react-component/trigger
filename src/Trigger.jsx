@@ -75,7 +75,7 @@ const Trigger = React.createClass({
         popupContainer.style.left = '0';
         popupContainer.style.width = '100%';
         const mountNode = props.getPopupContainer ?
-                props.getPopupContainer(findDOMNode(instance)) : props.getDocument().body;
+          props.getPopupContainer(findDOMNode(instance)) : props.getDocument().body;
         mountNode.appendChild(popupContainer);
         return popupContainer;
       },
@@ -150,34 +150,29 @@ const Trigger = React.createClass({
         props.afterPopupVisibleChange(state.popupVisible);
       }
     });
-    if (this.isClickToHide()) {
-      if (state.popupVisible) {
-        if (!this.clickOutsideHandler) {
-          const currentDocument = props.getDocument();
-          this.clickOutsideHandler = addEventListener(currentDocument,
-            'mousedown', this.onDocumentClick);
-          this.touchOutsideHandler = addEventListener(currentDocument,
-            'touchstart', this.onDocumentClick);
-        }
-        return;
+
+    if (state.popupVisible) {
+      let currentDocument;
+      if (!this.clickOutsideHandler && this.isClickToHide()) {
+        currentDocument = props.getDocument();
+        this.clickOutsideHandler = addEventListener(currentDocument,
+          'mousedown', this.onDocumentClick);
       }
+      // always hide on mobile
+      if (!this.touchOutsideHandler) {
+        currentDocument = currentDocument || props.getDocument();
+        this.touchOutsideHandler = addEventListener(currentDocument,
+          'touchstart', this.onDocumentClick);
+      }
+      return;
     }
-    if (this.clickOutsideHandler) {
-      this.clickOutsideHandler.remove();
-      this.touchOutsideHandler.remove();
-      this.clickOutsideHandler = null;
-      this.touchOutsideHandler = null;
-    }
+
+    this.clearOutsideHandler();
   },
 
   componentWillUnmount() {
     this.clearDelayTimer();
-    if (this.clickOutsideHandler) {
-      this.clickOutsideHandler.remove();
-      this.touchOutsideHandler.remove();
-      this.clickOutsideHandler = null;
-      this.touchOutsideHandler = null;
-    }
+    this.clearOutsideHandler();
   },
 
   onMouseEnter(e) {
@@ -371,6 +366,18 @@ const Trigger = React.createClass({
     }
   },
 
+  clearOutsideHandler() {
+    if (this.clickOutsideHandler) {
+      this.clickOutsideHandler.remove();
+      this.clickOutsideHandler = null;
+    }
+
+    if (this.touchOutsideHandler) {
+      this.touchOutsideHandler.remove();
+      this.touchOutsideHandler = null;
+    }
+  },
+
   createTwoChains(event) {
     const childPros = this.props.children.props;
     const props = this.props;
@@ -435,7 +442,6 @@ const Trigger = React.createClass({
     const children = props.children;
     const child = React.Children.only(children);
     const newChildProps = {};
-
     if (this.isClickToHide() || this.isClickToShow()) {
       newChildProps.onClick = this.onClick;
       newChildProps.onMouseDown = this.onMouseDown;
