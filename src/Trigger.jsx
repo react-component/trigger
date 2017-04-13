@@ -17,7 +17,8 @@ function returnDocument() {
   return window.document;
 }
 
-const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
+// use fastclick for mobile touch
+const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
 const Trigger = React.createClass({
@@ -162,13 +163,7 @@ const Trigger = React.createClass({
       if (!this.clickOutsideHandler && this.isClickToHide()) {
         currentDocument = props.getDocument();
         this.clickOutsideHandler = addEventListener(currentDocument,
-          'mousedown', this.onDocumentClick);
-      }
-      // always hide on mobile
-      if (!this.touchOutsideHandler) {
-        currentDocument = currentDocument || props.getDocument();
-        this.touchOutsideHandler = addEventListener(currentDocument,
-          'touchstart', this.onDocumentClick);
+          'click', this.onDocumentClick);
       }
       return;
     }
@@ -221,11 +216,6 @@ const Trigger = React.createClass({
     this.preClickTime = Date.now();
   },
 
-  onTouchStart(e) {
-    this.fireEvents('onTouchStart', e);
-    this.preTouchTime = Date.now();
-  },
-
   onBlur(e) {
     this.fireEvents('onBlur', e);
     this.clearDelayTimer();
@@ -239,12 +229,8 @@ const Trigger = React.createClass({
     // focus will trigger click
     if (this.focusTime) {
       let preTime;
-      if (this.preClickTime && this.preTouchTime) {
-        preTime = Math.min(this.preClickTime, this.preTouchTime);
-      } else if (this.preClickTime) {
+      if (this.preClickTime) {
         preTime = this.preClickTime;
-      } else if (this.preTouchTime) {
-        preTime = this.preTouchTime;
       }
       if (Math.abs(preTime - this.focusTime) < 20) {
         return;
@@ -252,7 +238,6 @@ const Trigger = React.createClass({
       this.focusTime = 0;
     }
     this.preClickTime = 0;
-    this.preTouchTime = 0;
     event.preventDefault();
     const nextVisible = !this.state.popupVisible;
     if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
@@ -377,11 +362,6 @@ const Trigger = React.createClass({
       this.clickOutsideHandler.remove();
       this.clickOutsideHandler = null;
     }
-
-    if (this.touchOutsideHandler) {
-      this.touchOutsideHandler.remove();
-      this.touchOutsideHandler = null;
-    }
   },
 
   createTwoChains(event) {
@@ -451,11 +431,9 @@ const Trigger = React.createClass({
     if (this.isClickToHide() || this.isClickToShow()) {
       newChildProps.onClick = this.onClick;
       newChildProps.onMouseDown = this.onMouseDown;
-      newChildProps.onTouchStart = this.onTouchStart;
     } else {
       newChildProps.onClick = this.createTwoChains('onClick');
       newChildProps.onMouseDown = this.createTwoChains('onMouseDown');
-      newChildProps.onTouchStart = this.createTwoChains('onTouchStart');
     }
     if (this.isMouseEnterToShow()) {
       newChildProps.onMouseEnter = this.onMouseEnter;
