@@ -38,7 +38,10 @@ const Trigger = React.createClass({
     popupClassName: PropTypes.string,
     popupPlacement: PropTypes.string,
     builtinPlacements: PropTypes.object,
-    popupTransitionName: PropTypes.string,
+    popupTransitionName: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
     popupAnimation: PropTypes.any,
     mouseEnterDelay: PropTypes.number,
     mouseLeaveDelay: PropTypes.number,
@@ -53,7 +56,10 @@ const Trigger = React.createClass({
     onPopupAlign: PropTypes.func,
     popupAlign: PropTypes.object,
     popupVisible: PropTypes.bool,
-    maskTransitionName: PropTypes.string,
+    maskTransitionName: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
     maskAnimation: PropTypes.string,
   },
 
