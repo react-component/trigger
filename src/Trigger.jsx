@@ -168,7 +168,7 @@ const Trigger = React.createClass({
       if (!this.touchOutsideHandler) {
         currentDocument = currentDocument || props.getDocument();
         this.touchOutsideHandler = addEventListener(currentDocument,
-          'touchstart', this.onDocumentClick);
+          'click', this.onDocumentClick);
       }
       return;
     }
