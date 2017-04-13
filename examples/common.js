@@ -21142,7 +21142,8 @@
 	  return window.document;
 	}
 	
-	var ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter', 'onMouseLeave', 'onFocus', 'onBlur'];
+	// use fastclick for mobile touch
+	var ALL_HANDLERS = ['onClick', 'onMouseDown', 'onMouseEnter', 'onMouseLeave', 'onFocus', 'onBlur'];
 	
 	var Trigger = _react2.default.createClass({
 	  displayName: 'Trigger',
@@ -21161,7 +21162,7 @@
 	    popupClassName: _react.PropTypes.string,
 	    popupPlacement: _react.PropTypes.string,
 	    builtinPlacements: _react.PropTypes.object,
-	    popupTransitionName: _react.PropTypes.string,
+	    popupTransitionName: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.object]),
 	    popupAnimation: _react.PropTypes.any,
 	    mouseEnterDelay: _react.PropTypes.number,
 	    mouseLeaveDelay: _react.PropTypes.number,
@@ -21176,7 +21177,7 @@
 	    onPopupAlign: _react.PropTypes.func,
 	    popupAlign: _react.PropTypes.object,
 	    popupVisible: _react.PropTypes.bool,
-	    maskTransitionName: _react.PropTypes.string,
+	    maskTransitionName: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.object]),
 	    maskAnimation: _react.PropTypes.string
 	  },
 	
@@ -21274,12 +21275,7 @@
 	      var currentDocument = void 0;
 	      if (!this.clickOutsideHandler && this.isClickToHide()) {
 	        currentDocument = props.getDocument();
-	        this.clickOutsideHandler = (0, _addEventListener2.default)(currentDocument, 'mousedown', this.onDocumentClick);
-	      }
-	      // always hide on mobile
-	      if (!this.touchOutsideHandler) {
-	        currentDocument = currentDocument || props.getDocument();
-	        this.touchOutsideHandler = (0, _addEventListener2.default)(currentDocument, 'touchstart', this.onDocumentClick);
+	        this.clickOutsideHandler = (0, _addEventListener2.default)(currentDocument, 'click', this.onDocumentClick);
 	      }
 	      return;
 	    }
@@ -21322,10 +21318,6 @@
 	    this.fireEvents('onMouseDown', e);
 	    this.preClickTime = Date.now();
 	  },
-	  onTouchStart: function onTouchStart(e) {
-	    this.fireEvents('onTouchStart', e);
-	    this.preTouchTime = Date.now();
-	  },
 	  onBlur: function onBlur(e) {
 	    this.fireEvents('onBlur', e);
 	    this.clearDelayTimer();
@@ -21338,12 +21330,8 @@
 	    // focus will trigger click
 	    if (this.focusTime) {
 	      var preTime = void 0;
-	      if (this.preClickTime && this.preTouchTime) {
-	        preTime = Math.min(this.preClickTime, this.preTouchTime);
-	      } else if (this.preClickTime) {
+	      if (this.preClickTime) {
 	        preTime = this.preClickTime;
-	      } else if (this.preTouchTime) {
-	        preTime = this.preTouchTime;
 	      }
 	      if (Math.abs(preTime - this.focusTime) < 20) {
 	        return;
@@ -21351,7 +21339,6 @@
 	      this.focusTime = 0;
 	    }
 	    this.preClickTime = 0;
-	    this.preTouchTime = 0;
 	    event.preventDefault();
 	    var nextVisible = !this.state.popupVisible;
 	    if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
@@ -21476,11 +21463,6 @@
 	      this.clickOutsideHandler.remove();
 	      this.clickOutsideHandler = null;
 	    }
-	
-	    if (this.touchOutsideHandler) {
-	      this.touchOutsideHandler.remove();
-	      this.touchOutsideHandler = null;
-	    }
 	  },
 	  createTwoChains: function createTwoChains(event) {
 	    var childPros = this.props.children.props;
@@ -21558,11 +21540,9 @@
 	    if (this.isClickToHide() || this.isClickToShow()) {
 	      newChildProps.onClick = this.onClick;
 	      newChildProps.onMouseDown = this.onMouseDown;
-	      newChildProps.onTouchStart = this.onTouchStart;
 	    } else {
 	      newChildProps.onClick = this.createTwoChains('onClick');
 	      newChildProps.onMouseDown = this.createTwoChains('onMouseDown');
-	      newChildProps.onTouchStart = this.createTwoChains('onTouchStart');
 	    }
 	    if (this.isMouseEnterToShow()) {
 	      newChildProps.onMouseEnter = this.onMouseEnter;
