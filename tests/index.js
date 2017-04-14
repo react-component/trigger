@@ -3,7 +3,7 @@
 const expect = require('expect.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
+const TestUtils = require('react-dom/test-utils');
 const Simulate = TestUtils.Simulate;
 const $ = require('jquery');
 window.$ = $;
@@ -233,7 +233,7 @@ describe('rc-trigger', function main() {
     });
 
     it('nested action works', (done) => {
-      const Test = React.createClass({
+      class Test extends React.Component {
         render() {
           return (
             <Trigger
@@ -252,8 +252,8 @@ describe('rc-trigger', function main() {
               </Trigger>
             </Trigger>
           );
-        },
-      });
+        }
+      }
       const trigger = ReactDOM.render(<Test />, div);
 
       const target = scryRenderedDOMComponentsWithClass(trigger, 'target')[0];

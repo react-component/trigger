@@ -51,33 +51,31 @@ function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
 
-const Test = React.createClass({
-  getInitialState() {
-    return {
-      mask: false,
-      maskClosable: false,
-      placement: 'right',
-      trigger: {
-        hover: 1,
-      },
-      offsetX: undefined,
-      offsetY: undefined,
-    };
-  },
+class Test extends React.Component {
+  state = {
+    mask: false,
+    maskClosable: false,
+    placement: 'right',
+    trigger: {
+      hover: 1,
+    },
+    offsetX: undefined,
+    offsetY: undefined,
+  };
 
-  onPlacementChange(e) {
+  onPlacementChange = (e) => {
     this.setState({
       placement: e.target.value,
     });
-  },
+  }
 
-  onTransitionChange(e) {
+  onTransitionChange = (e) => {
     this.setState({
       transitionName: e.target.checked ? e.target.value : '',
     });
-  },
+  }
 
-  onTriggerChange(e) {
+  onTriggerChange = (e) => {
     const trigger = assign({}, this.state.trigger);
     if (e.target.checked) {
       trigger[e.target.value] = 1;
@@ -87,49 +85,49 @@ const Test = React.createClass({
     this.setState({
       trigger,
     });
-  },
+  }
 
-  onOffsetXChange(e) {
+  onOffsetXChange = (e) => {
     const targetValue = e.target.value;
     this.setState({
       offsetX: targetValue || undefined,
     });
-  },
+  }
 
-  onOffsetYChange(e) {
+  onOffsetYChange = (e) => {
     const targetValue = e.target.value;
     this.setState({
       offsetY: targetValue || undefined,
     });
-  },
+  }
 
-  onVisibleChange(visible) {
+  onVisibleChange = (visible) => {
     console.log('tooltip', visible);
-  },
+  }
 
-  onMask(e) {
+  onMask = (e) => {
     this.setState({
       mask: e.target.checked,
     });
-  },
+  }
 
-  onMaskClosable(e) {
+  onMaskClosable = (e) => {
     this.setState({
       maskClosable: e.target.checked,
     });
-  },
+  }
 
-  destroy() {
+  destroy = () => {
     this.setState({
       destroyed: true,
     });
-  },
+  }
 
-  destroyPopupOnHide(e) {
+  destroyPopupOnHide = (e) => {
     this.setState({
       destroyPopupOnHide: e.target.checked,
     });
-  },
+  }
 
   render() {
     const state = this.state;
@@ -270,10 +268,7 @@ const Test = React.createClass({
         </Trigger>
       </div>
     </div>);
-  },
-});
+  }
+}
 
-ReactDOM.render(
-  <div>
-    <Test />
-  </div>, document.getElementById('__react-content'));
+ReactDOM.render(<Test />, document.getElementById('__react-content'));

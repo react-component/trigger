@@ -1,12 +1,13 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
 
-const Popup = React.createClass({
-  propTypes: {
+class Popup extends Component {
+  static propTypes = {
     visible: PropTypes.bool,
     style: PropTypes.object,
     getClassNameFromAlign: PropTypes.func,
@@ -18,13 +19,13 @@ const Popup = React.createClass({
     className: PropTypes.string,
     prefixCls: PropTypes.string,
     onMouseLeave: PropTypes.func,
-  },
+  };
 
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
-  },
+  }
 
-  onAlign(popupDomNode, align) {
+  onAlign = (popupDomNode, align) => {
     const props = this.props;
     const alignClassName = props.getClassNameFromAlign(props.align);
     const currentAlignClassName = props.getClassNameFromAlign(align);
@@ -33,15 +34,15 @@ const Popup = React.createClass({
       popupDomNode.className = this.getClassName(currentAlignClassName);
     }
     props.onAlign(popupDomNode, align);
-  },
+  }
 
   getPopupDomNode() {
     return ReactDOM.findDOMNode(this.refs.popup);
-  },
+  }
 
-  getTarget() {
+  getTarget = () => {
     return this.props.getRootDomNode();
-  },
+  }
 
   getMaskTransitionName() {
     const props = this.props;
@@ -51,7 +52,7 @@ const Popup = React.createClass({
       transitionName = `${props.prefixCls}-${animation}`;
     }
     return transitionName;
-  },
+  }
 
   getTransitionName() {
     const props = this.props;
@@ -60,11 +61,11 @@ const Popup = React.createClass({
       transitionName = `${props.prefixCls}-${props.animation}`;
     }
     return transitionName;
-  },
+  }
 
   getClassName(currentAlignClassName) {
     return `${this.props.prefixCls} ${this.props.className} ${currentAlignClassName}`;
-  },
+  }
 
   getPopupElement() {
     const props = this.props;
@@ -137,7 +138,7 @@ const Popup = React.createClass({
         </PopupInner>
       </Align>
     </Animate>);
-  },
+  }
 
   getZIndexStyle() {
     const style = {};
@@ -146,7 +147,7 @@ const Popup = React.createClass({
       style.zIndex = props.zIndex;
     }
     return style;
-  },
+  }
 
   getMaskElement() {
     const props = this.props;
@@ -177,17 +178,20 @@ const Popup = React.createClass({
       }
     }
     return maskElement;
-  },
-  saveAlign(align) {
+  }
+
+  saveAlign = (align) => {
     this.alignInstance = align;
-  },
+  }
 
   render() {
-    return (<div>
-      {this.getMaskElement()}
-      {this.getPopupElement()}
-    </div>);
-  },
-});
+    return (
+      <div>
+        {this.getMaskElement()}
+        {this.getPopupElement()}
+      </div>
+    );
+  }
+}
 
 export default Popup;
