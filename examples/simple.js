@@ -1,33 +1,45 @@
 webpackJsonp([1],{
 
 /***/ 0:
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(255);
+	module.exports = __webpack_require__(309);
 
 
-/***/ },
+/***/ }),
 
-/***/ 255:
-/***/ function(module, exports, __webpack_require__) {
+/***/ 309:
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
+	
+	var _classCallCheck2 = __webpack_require__(237);
+	
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+	
+	var _possibleConstructorReturn2 = __webpack_require__(238);
+	
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+	
+	var _inherits2 = __webpack_require__(274);
+	
+	var _inherits3 = _interopRequireDefault(_inherits2);
 	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(33);
+	var _reactDom = __webpack_require__(37);
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _rcTrigger = __webpack_require__(180);
+	var _rcTrigger = __webpack_require__(184);
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(254);
+	__webpack_require__(308);
 	
-	var _objectAssign = __webpack_require__(256);
+	var _objectAssign = __webpack_require__(310);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -78,10 +90,19 @@ webpackJsonp([1],{
 	  return trigger.parentNode;
 	}
 	
-	var Test = _react2.default.createClass({
-	  displayName: 'Test',
-	  getInitialState: function getInitialState() {
-	    return {
+	var Test = function (_React$Component) {
+	  (0, _inherits3.default)(Test, _React$Component);
+	
+	  function Test() {
+	    var _temp, _this, _ret;
+	
+	    (0, _classCallCheck3.default)(this, Test);
+	
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
 	      mask: false,
 	      maskClosable: false,
 	      placement: 'right',
@@ -90,65 +111,56 @@ webpackJsonp([1],{
 	      },
 	      offsetX: undefined,
 	      offsetY: undefined
-	    };
-	  },
-	  onPlacementChange: function onPlacementChange(e) {
-	    this.setState({
-	      placement: e.target.value
-	    });
-	  },
-	  onTransitionChange: function onTransitionChange(e) {
-	    this.setState({
-	      transitionName: e.target.checked ? e.target.value : ''
-	    });
-	  },
-	  onTriggerChange: function onTriggerChange(e) {
-	    var trigger = (0, _objectAssign2.default)({}, this.state.trigger);
-	    if (e.target.checked) {
-	      trigger[e.target.value] = 1;
-	    } else {
-	      delete trigger[e.target.value];
-	    }
-	    this.setState({
-	      trigger: trigger
-	    });
-	  },
-	  onOffsetXChange: function onOffsetXChange(e) {
-	    var targetValue = e.target.value;
-	    this.setState({
-	      offsetX: targetValue || undefined
-	    });
-	  },
-	  onOffsetYChange: function onOffsetYChange(e) {
-	    var targetValue = e.target.value;
-	    this.setState({
-	      offsetY: targetValue || undefined
-	    });
-	  },
-	  onVisibleChange: function onVisibleChange(visible) {
-	    console.log('tooltip', visible);
-	  },
-	  onMask: function onMask(e) {
-	    this.setState({
-	      mask: e.target.checked
-	    });
-	  },
-	  onMaskClosable: function onMaskClosable(e) {
-	    this.setState({
-	      maskClosable: e.target.checked
-	    });
-	  },
-	  destroy: function destroy() {
-	    this.setState({
-	      destroyed: true
-	    });
-	  },
-	  destroyPopupOnHide: function destroyPopupOnHide(e) {
-	    this.setState({
-	      destroyPopupOnHide: e.target.checked
-	    });
-	  },
-	  render: function render() {
+	    }, _this.onPlacementChange = function (e) {
+	      _this.setState({
+	        placement: e.target.value
+	      });
+	    }, _this.onTransitionChange = function (e) {
+	      _this.setState({
+	        transitionName: e.target.checked ? e.target.value : ''
+	      });
+	    }, _this.onTriggerChange = function (e) {
+	      var trigger = (0, _objectAssign2.default)({}, _this.state.trigger);
+	      if (e.target.checked) {
+	        trigger[e.target.value] = 1;
+	      } else {
+	        delete trigger[e.target.value];
+	      }
+	      _this.setState({
+	        trigger: trigger
+	      });
+	    }, _this.onOffsetXChange = function (e) {
+	      var targetValue = e.target.value;
+	      _this.setState({
+	        offsetX: targetValue || undefined
+	      });
+	    }, _this.onOffsetYChange = function (e) {
+	      var targetValue = e.target.value;
+	      _this.setState({
+	        offsetY: targetValue || undefined
+	      });
+	    }, _this.onVisibleChange = function (visible) {
+	      console.log('tooltip', visible);
+	    }, _this.onMask = function (e) {
+	      _this.setState({
+	        mask: e.target.checked
+	      });
+	    }, _this.onMaskClosable = function (e) {
+	      _this.setState({
+	        maskClosable: e.target.checked
+	      });
+	    }, _this.destroy = function () {
+	      _this.setState({
+	        destroyed: true
+	      });
+	    }, _this.destroyPopupOnHide = function (e) {
+	      _this.setState({
+	        destroyPopupOnHide: e.target.checked
+	      });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+	
+	  Test.prototype.render = function render() {
 	    var state = this.state;
 	    var trigger = state.trigger;
 	    if (state.destroyed) {
@@ -350,19 +362,17 @@ webpackJsonp([1],{
 	        )
 	      )
 	    );
-	  }
-	});
+	  };
 	
-	_reactDom2.default.render(_react2.default.createElement(
-	  'div',
-	  null,
-	  _react2.default.createElement(Test, null)
-	), document.getElementById('__react-content'));
+	  return Test;
+	}(_react2.default.Component);
+	
+	_reactDom2.default.render(_react2.default.createElement(Test, null), document.getElementById('__react-content'));
 
-/***/ },
+/***/ }),
 
-/***/ 256:
-/***/ function(module, exports) {
+/***/ 310:
+/***/ (function(module, exports) {
 
 	/* eslint-disable no-unused-vars */
 	'use strict';
@@ -405,7 +415,7 @@ webpackJsonp([1],{
 	};
 
 
-/***/ }
+/***/ })
 
 });
 //# sourceMappingURL=simple.js.map

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-trigger@1.10.0</title>
+  <title>simple.js - example - rc-trigger@1.10.1</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -263,7 +263,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-trigger@1.10.0</h1>
+      <h1>rc-trigger@1.10.1</h1>
 
       <p>base abstract trigger component for react</p>
     </div>
@@ -322,33 +322,31 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   <span class="hljs-keyword">return</span> trigger.parentNode;
 }
 
-<span class="hljs-keyword">const</span> Test = React.createClass({
-  getInitialState() {
-    <span class="hljs-keyword">return</span> {
-      mask: <span class="hljs-literal">false</span>,
-      maskClosable: <span class="hljs-literal">false</span>,
-      placement: <span class="hljs-string">'right'</span>,
-      trigger: {
-        hover: <span class="hljs-number">1</span>,
-      },
-      offsetX: <span class="hljs-literal">undefined</span>,
-      offsetY: <span class="hljs-literal">undefined</span>,
-    };
-  },
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  state = {
+    mask: <span class="hljs-literal">false</span>,
+    maskClosable: <span class="hljs-literal">false</span>,
+    placement: <span class="hljs-string">'right'</span>,
+    trigger: {
+      hover: <span class="hljs-number">1</span>,
+    },
+    offsetX: <span class="hljs-literal">undefined</span>,
+    offsetY: <span class="hljs-literal">undefined</span>,
+  };
 
-  onPlacementChange(e) {
+  onPlacementChange = (e) =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       placement: e.target.value,
     });
-  },
+  }
 
-  onTransitionChange(e) {
+  onTransitionChange = (e) =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       transitionName: e.target.checked ? e.target.value : <span class="hljs-string">''</span>,
     });
-  },
+  }
 
-  onTriggerChange(e) {
+  onTriggerChange = (e) =&gt; {
     <span class="hljs-keyword">const</span> trigger = assign({}, <span class="hljs-keyword">this</span>.state.trigger);
     <span class="hljs-keyword">if</span> (e.target.checked) {
       trigger[e.target.value] = <span class="hljs-number">1</span>;
@@ -358,49 +356,49 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     <span class="hljs-keyword">this</span>.setState({
       trigger,
     });
-  },
+  }
 
-  onOffsetXChange(e) {
+  onOffsetXChange = (e) =&gt; {
     <span class="hljs-keyword">const</span> targetValue = e.target.value;
     <span class="hljs-keyword">this</span>.setState({
       offsetX: targetValue || <span class="hljs-literal">undefined</span>,
     });
-  },
+  }
 
-  onOffsetYChange(e) {
+  onOffsetYChange = (e) =&gt; {
     <span class="hljs-keyword">const</span> targetValue = e.target.value;
     <span class="hljs-keyword">this</span>.setState({
       offsetY: targetValue || <span class="hljs-literal">undefined</span>,
     });
-  },
+  }
 
-  onVisibleChange(visible) {
+  onVisibleChange = (visible) =&gt; {
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'tooltip'</span>, visible);
-  },
+  }
 
-  onMask(e) {
+  onMask = (e) =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       mask: e.target.checked,
     });
-  },
+  }
 
-  onMaskClosable(e) {
+  onMaskClosable = (e) =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       maskClosable: e.target.checked,
     });
-  },
+  }
 
-  destroy() {
+  destroy = () =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       destroyed: <span class="hljs-literal">true</span>,
     });
-  },
+  }
 
-  destroyPopupOnHide(e) {
+  destroyPopupOnHide = (e) =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       destroyPopupOnHide: e.target.checked,
     });
-  },
+  }
 
   render() {
     <span class="hljs-keyword">const</span> state = <span class="hljs-keyword">this</span>.state;
@@ -541,13 +539,10 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>)</span>;
-  },
-});
+  }
+}
 
-ReactDOM.render(
-  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-title">Test</span> /&gt;</span>
-  <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>, document.getElementById('__react-content'));
+ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Test</span> /&gt;</span>, document.getElementById('__react-content'));
 </span></code></pre></div>
   </div>
   <a href="https://github.com/react-component/trigger">

@@ -1,13 +1,13 @@
 webpackJsonp([0],[
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1);
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -15,15 +15,15 @@ webpackJsonp([0],[
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(33);
+	var _reactDom = __webpack_require__(37);
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _rcTrigger = __webpack_require__(180);
+	var _rcTrigger = __webpack_require__(184);
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(254);
+	__webpack_require__(308);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -61,100 +61,95 @@ webpackJsonp([0],[
 	  padding: 10
 	};
 	
-	var Test = _react2.default.createClass({
-	  displayName: 'Test',
-	  render: function render() {
-	    var _this = this;
-	
-	    var innerTrigger = _react2.default.createElement(
+	var Test = function Test() {
+	  var innerTrigger = _react2.default.createElement(
+	    'div',
+	    { style: popupBorderStyle },
+	    _react2.default.createElement('div', { ref: 'container' }),
+	    _react2.default.createElement(
+	      _rcTrigger2.default,
+	      {
+	        popupPlacement: 'bottom',
+	        action: ['click'],
+	        builtinPlacements: builtinPlacements,
+	        getPopupContainer: function getPopupContainer() {
+	          return undefined.refs.container;
+	        },
+	        popup: _react2.default.createElement(
+	          'div',
+	          { style: popupBorderStyle },
+	          'I am inner Trigger Popup'
+	        )
+	      },
+	      _react2.default.createElement(
+	        'span',
+	        { href: '#', style: { margin: 20 } },
+	        'clickToShowInnerTrigger'
+	      )
+	    )
+	  );
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
 	      'div',
-	      { style: popupBorderStyle },
-	      _react2.default.createElement('div', { ref: 'container' }),
+	      null,
 	      _react2.default.createElement(
 	        _rcTrigger2.default,
 	        {
-	          popupPlacement: 'bottom',
+	          popupPlacement: 'left',
 	          action: ['click'],
 	          builtinPlacements: builtinPlacements,
-	          getPopupContainer: function getPopupContainer() {
-	            return _this.refs.container;
-	          },
 	          popup: _react2.default.createElement(
 	            'div',
 	            { style: popupBorderStyle },
-	            'I am inner Trigger Popup'
+	            'i am a click popup'
 	          )
 	        },
 	        _react2.default.createElement(
 	          'span',
-	          { href: '#', style: { margin: 20 } },
-	          'clickToShowInnerTrigger'
-	        )
-	      )
-	    );
-	    return _react2.default.createElement(
-	      'div',
-	      null,
-	      _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          _rcTrigger2.default,
-	          {
-	            popupPlacement: 'left',
-	            action: ['click'],
-	            builtinPlacements: builtinPlacements,
-	            popup: _react2.default.createElement(
-	              'div',
-	              { style: popupBorderStyle },
-	              'i am a click popup'
-	            )
-	          },
+	          null,
 	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement(
-	              _rcTrigger2.default,
-	              {
-	                popupPlacement: 'bottom',
-	                action: ['hover'],
-	                builtinPlacements: builtinPlacements,
-	                popup: _react2.default.createElement(
-	                  'div',
-	                  { style: popupBorderStyle },
-	                  'i am a hover popup'
-	                )
-	              },
-	              _react2.default.createElement(
-	                'span',
-	                { href: '#', style: { margin: 20 } },
-	                'trigger'
+	            _rcTrigger2.default,
+	            {
+	              popupPlacement: 'bottom',
+	              action: ['hover'],
+	              builtinPlacements: builtinPlacements,
+	              popup: _react2.default.createElement(
+	                'div',
+	                { style: popupBorderStyle },
+	                'i am a hover popup'
 	              )
+	            },
+	            _react2.default.createElement(
+	              'span',
+	              { href: '#', style: { margin: 20 } },
+	              'trigger'
 	            )
 	          )
 	        )
-	      ),
+	      )
+	    ),
+	    _react2.default.createElement(
+	      'div',
+	      { style: { margin: 50 } },
 	      _react2.default.createElement(
-	        'div',
-	        { style: { margin: 50 } },
+	        _rcTrigger2.default,
+	        {
+	          popupPlacement: 'right',
+	          action: ['hover'],
+	          builtinPlacements: builtinPlacements,
+	          popup: innerTrigger
+	        },
 	        _react2.default.createElement(
-	          _rcTrigger2.default,
-	          {
-	            popupPlacement: 'right',
-	            action: ['hover'],
-	            builtinPlacements: builtinPlacements,
-	            popup: innerTrigger
-	          },
-	          _react2.default.createElement(
-	            'span',
-	            { href: '#', style: { margin: 20 } },
-	            'trigger'
-	          )
+	          'span',
+	          { href: '#', style: { margin: 20 } },
+	          'trigger'
 	        )
 	      )
-	    );
-	  }
-	});
+	    )
+	  );
+	};
 	
 	_reactDom2.default.render(_react2.default.createElement(
 	  'div',
@@ -162,6 +157,6 @@ webpackJsonp([0],[
 	  _react2.default.createElement(Test, null)
 	), document.getElementById('__react-content'));
 
-/***/ }
+/***/ })
 ]);
 //# sourceMappingURL=nested.js.map
