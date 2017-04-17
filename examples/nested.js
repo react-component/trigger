@@ -37,10 +37,10 @@ const popupBorderStyle = {
   padding: 10,
 };
 
-const Test = React.createClass({
-  render() {
-    const innerTrigger = (<div style={popupBorderStyle}>
-      <div ref="container"/>
+const Test = () => {
+  const innerTrigger = (
+    <div style={popupBorderStyle}>
+      <div ref="container" />
       <Trigger
         popupPlacement="bottom"
         action={['click']}
@@ -50,43 +50,45 @@ const Test = React.createClass({
       >
         <span href="#" style={{ margin: 20 }}>clickToShowInnerTrigger</span>
       </Trigger>
-    </div>);
-    return (
+    </div>
+  );
+  return (
+    <div>
       <div>
-        <div>
+        <Trigger
+          popupPlacement="left"
+          action={['click']}
+          builtinPlacements={builtinPlacements}
+          popup={<div style={popupBorderStyle}>i am a click popup</div>}
+        >
+          <span>
           <Trigger
-            popupPlacement="left"
-            action={['click']}
-            builtinPlacements={builtinPlacements}
-            popup={<div style={popupBorderStyle}>i am a click popup</div>}
-          >
-            <span>
-            <Trigger
-              popupPlacement="bottom"
-              action={['hover']}
-              builtinPlacements={builtinPlacements}
-              popup={<div style={popupBorderStyle}>i am a hover popup</div>}
-            >
-              <span href="#" style={{ margin: 20 }}>trigger</span>
-            </Trigger>
-            </span>
-          </Trigger>
-        </div>
-        <div style={{ margin: 50 }}>
-          <Trigger
-            popupPlacement="right"
+            popupPlacement="bottom"
             action={['hover']}
             builtinPlacements={builtinPlacements}
-            popup={innerTrigger}
+            popup={<div style={popupBorderStyle}>i am a hover popup</div>}
           >
             <span href="#" style={{ margin: 20 }}>trigger</span>
           </Trigger>
-        </div>
+          </span>
+        </Trigger>
       </div>
-    );
-  },
-});
+      <div style={{ margin: 50 }}>
+        <Trigger
+          popupPlacement="right"
+          action={['hover']}
+          builtinPlacements={builtinPlacements}
+          popup={innerTrigger}
+        >
+          <span href="#" style={{ margin: 20 }}>trigger</span>
+        </Trigger>
+      </div>
+    </div>
+  );
+};
 
-ReactDOM.render(<div style={{ margin: 200 }}>
-  <Test />
-</div>, document.getElementById('__react-content'));
+ReactDOM.render(
+  <div style={{ margin: 200 }}>
+    <Test />
+  </div>
+, document.getElementById('__react-content'));

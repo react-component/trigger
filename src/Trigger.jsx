@@ -1,5 +1,7 @@
-import React, { PropTypes } from 'react';
-import ReactDOM, { findDOMNode } from 'react-dom';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { findDOMNode } from 'react-dom';
+import createReactClass from 'create-react-class';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
@@ -21,7 +23,7 @@ function returnDocument() {
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
-const Trigger = React.createClass({
+const Trigger = createReactClass({
   propTypes: {
     children: PropTypes.any,
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -259,14 +261,14 @@ const Trigger = React.createClass({
 
   getPopupDomNode() {
     // for test
-    if (this._component) {
-      return this._component.isMounted() ? this._component.getPopupDomNode() : null;
+    if (this._component && this._component.getPopupDomNode) {
+      return this._component.getPopupDomNode();
     }
     return null;
   },
 
   getRootDomNode() {
-    return ReactDOM.findDOMNode(this);
+    return findDOMNode(this);
   },
 
   getPopupClassNameFromAlign(align) {
