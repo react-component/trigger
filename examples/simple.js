@@ -3,25 +3,25 @@ webpackJsonp([1],{
 /***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(309);
+	module.exports = __webpack_require__(307);
 
 
 /***/ }),
 
-/***/ 309:
+/***/ 307:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _classCallCheck2 = __webpack_require__(237);
+	var _classCallCheck2 = __webpack_require__(235);
 	
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 	
-	var _possibleConstructorReturn2 = __webpack_require__(238);
+	var _possibleConstructorReturn2 = __webpack_require__(236);
 	
 	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 	
-	var _inherits2 = __webpack_require__(274);
+	var _inherits2 = __webpack_require__(272);
 	
 	var _inherits3 = _interopRequireDefault(_inherits2);
 	
@@ -33,13 +33,13 @@ webpackJsonp([1],{
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _rcTrigger = __webpack_require__(184);
+	var _rcTrigger = __webpack_require__(183);
 	
 	var _rcTrigger2 = _interopRequireDefault(_rcTrigger);
 	
-	__webpack_require__(308);
+	__webpack_require__(306);
 	
-	var _objectAssign = __webpack_require__(310);
+	var _objectAssign = __webpack_require__(233);
 	
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 	
@@ -368,52 +368,6 @@ webpackJsonp([1],{
 	}(_react2.default.Component);
 	
 	_reactDom2.default.render(_react2.default.createElement(Test, null), document.getElementById('__react-content'));
-
-/***/ }),
-
-/***/ 310:
-/***/ (function(module, exports) {
-
-	/* eslint-disable no-unused-vars */
-	'use strict';
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-	
-	function toObject(val) {
-		if (val === null || val === undefined) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-	
-		return Object(val);
-	}
-	
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var to = toObject(target);
-		var symbols;
-	
-		for (var s = 1; s < arguments.length; s++) {
-			from = Object(arguments[s]);
-	
-			for (var key in from) {
-				if (hasOwnProperty.call(from, key)) {
-					to[key] = from[key];
-				}
-			}
-	
-			if (Object.getOwnPropertySymbols) {
-				symbols = Object.getOwnPropertySymbols(from);
-				for (var i = 0; i < symbols.length; i++) {
-					if (propIsEnumerable.call(from, symbols[i])) {
-						to[symbols[i]] = from[symbols[i]];
-					}
-				}
-			}
-		}
-	
-		return to;
-	};
-
 
 /***/ })
 
