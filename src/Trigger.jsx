@@ -24,6 +24,7 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
 
 const Trigger = createReactClass({
+  displayName: 'Trigger',
   propTypes: {
     children: PropTypes.any,
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
