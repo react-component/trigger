@@ -160,6 +160,10 @@ const Trigger = createReactClass({
       }
     });
 
+    // We must listen to `mousedown` or `touchstart`, edge case:
+    // https://github.com/ant-design/ant-design/issues/5804
+    // https://github.com/react-component/calendar/issues/250
+    // https://github.com/react-component/trigger/issues/50
     if (state.popupVisible) {
       let currentDocument;
       if (!this.clickOutsideHandler && this.isClickToHide()) {
