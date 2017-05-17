@@ -430,8 +430,8 @@ const Trigger = createReactClass({
     return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
   },
   forcePopupAlign() {
-    if (this.state.popupVisible && this.popupInstance && this.popupInstance.alignInstance) {
-      this.popupInstance.alignInstance.forceAlign();
+    if (this.state.popupVisible && this._component && this._component.alignInstance) {
+      this._component.alignInstance.forceAlign();
     }
   },
 
