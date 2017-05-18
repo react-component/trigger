@@ -365,7 +365,6 @@ const Trigger = createReactClass({
     if (delay) {
       this.delayTimer = setTimeout(() => {
         this.setPopupVisible(visible);
-        this.clearDelayTimer();
       }, delay);
     } else {
       this.setPopupVisible(visible);
