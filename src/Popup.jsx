@@ -77,6 +77,8 @@ class Popup extends Component {
       this.currentAlignClassName = null;
     }
     const newStyle = {
+      top: 0,
+      left: 0,
       ...style,
       ...this.getZIndexStyle(),
     };
