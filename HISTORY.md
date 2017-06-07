@@ -1,6 +1,10 @@
 # History
 ----
 
+## 1.11.0 / 2017-06-07
+
+- add es
+
 ## 1.9.0 / 2017-02-27
 
 - add getDocument prop
