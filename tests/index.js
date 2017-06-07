@@ -1,17 +1,18 @@
 /* eslint no-console:0 */
 
-const expect = require('expect.js');
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-dom/test-utils');
+import expect from 'expect.js';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-dom/test-utils';
+import $ from 'jquery';
+import '../assets/index.less';
+import Trigger from '../index';
+import './test.less';
+import async from 'async';
+
 const Simulate = TestUtils.Simulate;
-const $ = require('jquery');
 window.$ = $;
-require('../assets/index.less');
-const Trigger = require('../index');
 const scryRenderedDOMComponentsWithClass = TestUtils.scryRenderedDOMComponentsWithClass;
-require('./test.less');
-const async = require('async');
 
 function timeout(ms) {
   return (done) => {
@@ -636,7 +637,7 @@ describe('rc-trigger', function main() {
         >
           <div>trigger</div>
         </Trigger>
-      , div);
+        , div);
       const popupNodeHeightOfSeveralWords = trigger.getPopupDomNode().offsetHeight;
 
       const trigger2 = ReactDOM.render(
@@ -648,7 +649,7 @@ describe('rc-trigger', function main() {
         >
           <div>trigger</div>
         </Trigger>
-      , div);
+        , div);
       const popupNodeHeightOfOneWord = trigger2.getPopupDomNode().offsetHeight;
 
       // height should be same, should not have break lines inside words
