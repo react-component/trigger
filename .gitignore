@@ -22,5 +22,6 @@ node_modules
 *.css
 build
 lib
+es
 coverage
 yarn.lock

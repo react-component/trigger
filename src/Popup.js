@@ -27,9 +27,10 @@ class Popup extends Component {
 
   onAlign = (popupDomNode, align) => {
     const props = this.props;
-    const alignClassName = props.getClassNameFromAlign(props.align);
     const currentAlignClassName = props.getClassNameFromAlign(align);
-    if (alignClassName !== currentAlignClassName) {
+    // FIX: https://github.com/react-component/trigger/issues/56
+    // FIX: https://github.com/react-component/tooltip/issues/79
+    if (this.currentAlignClassName !== currentAlignClassName) {
       this.currentAlignClassName = currentAlignClassName;
       popupDomNode.className = this.getClassName(currentAlignClassName);
     }
