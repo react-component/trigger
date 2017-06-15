@@ -268,7 +268,7 @@ const Trigger = createReactClass({
   },
 
   onDocumentClick(event) {
-    if (this.props.mask && !this.props.maskClosable) {
+    if (this.props.mask && !this.props.maskClosable && this.isClickedOnScrollBar(event.clientX)) {
       return;
     }
     const target = event.target;
@@ -398,6 +398,10 @@ const Trigger = createReactClass({
       return this[`fire${event}`];
     }
     return childPros[event] || props[event];
+  },
+    
+  isClickedOnScrollBar(clientX) {
+    return clientX >= document.documentElement.offsetWidth;
   },
 
   isClickToShow() {
