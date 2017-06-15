@@ -46,7 +46,7 @@ online example: http://react-component.github.io/trigger/examples/
 
 ## Feature
 
-* support ie8,ie8+,chrome,firefox,safari
+* supported on IE 8+, Chrome, Firefox, and Safari
 
 ## install
 
