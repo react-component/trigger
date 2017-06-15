@@ -399,7 +399,7 @@ const Trigger = createReactClass({
     }
     return childPros[event] || props[event];
   },
-    
+
   isClickedOnScrollBar(clientX) {
     return clientX >= document.documentElement.offsetWidth;
   },
