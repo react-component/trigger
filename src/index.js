@@ -401,7 +401,7 @@ const Trigger = createReactClass({
   },
 
   isClickedOnScrollBar(clientX) {
-    return clientX >= document.documentElement.offsetWidth;
+    return clientX >= document.documentElement.offsetWidth || event.clientY >= document.documentElement.clientHeight;
   },
 
   isClickToShow() {
