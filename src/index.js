@@ -268,7 +268,7 @@ const Trigger = createReactClass({
   },
 
   onDocumentClick(event) {
-    if (this.props.mask && !this.props.maskClosable && this.isClickedOnScrollBar(event.clientX)) {
+    if (this.props.mask && !this.props.maskClosable && this.isClickedOnScrollBar(event.clientX, event.clientY)) {
       return;
     }
     const target = event.target;
@@ -400,9 +400,9 @@ const Trigger = createReactClass({
     return childPros[event] || props[event];
   },
 
-  isClickedOnScrollBar(clientX) {
+  isClickedOnScrollBar(clientX, clientY) {
     return clientX >= document.documentElement.offsetWidth ||
-      event.clientY >= document.documentElement.clientHeight;
+      clientY >= document.documentElement.clientHeight;
   },
 
   isClickToShow() {
