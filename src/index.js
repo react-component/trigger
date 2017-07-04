@@ -268,9 +268,9 @@ const Trigger = createReactClass({
   },
 
   onDocumentClick(event) {
-    if (this.props.mask &&
-        !this.props.maskClosable &&
-        this.isClickedOnScrollBar(event.clientX, event.clientY)) {
+    if ((this.props.mask &&
+        !this.props.maskClosable) ||
+        (this.isClickedOnScrollBar(event.clientX, event.clientY))) {
       return;
     }
     const target = event.target;
