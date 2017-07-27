@@ -1,6 +1,6 @@
 webpackJsonp([1],{
 
-/***/ 143:
+/***/ 144:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18,7 +18,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_dom__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_react_dom__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rc_trigger__ = __webpack_require__(89);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__ = __webpack_require__(108);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__);
 
 
@@ -63,13 +63,20 @@ var popupBorderStyle = {
   padding: 10
 };
 
+function saveRef(name, component) {
+  this[name] = component;
+}
+
 var Test = function (_React$Component) {
   __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits___default()(Test, _React$Component);
 
-  function Test() {
+  function Test(props) {
     __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_classCallCheck___default()(this, Test);
 
-    return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default()(this, (Test.__proto__ || Object.getPrototypeOf(Test)).apply(this, arguments));
+    var _this = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default()(this, (Test.__proto__ || Object.getPrototypeOf(Test)).call(this, props));
+
+    _this.saveContainerRef = saveRef.bind(_this, 'containerInstance');
+    return _this;
   }
 
   __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_createClass___default()(Test, [{
@@ -80,7 +87,7 @@ var Test = function (_React$Component) {
       var innerTrigger = __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
         'div',
         { style: popupBorderStyle },
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('div', { ref: 'container' }),
+        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('div', { ref: this.saveContainerRef }),
         __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_6_rc_trigger__["a" /* default */],
           {
@@ -88,7 +95,7 @@ var Test = function (_React$Component) {
             action: ['click'],
             builtinPlacements: builtinPlacements,
             getPopupContainer: function getPopupContainer() {
-              return _this2.refs.container;
+              return _this2.containerInstance;
             },
             popup: __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
               'div',
@@ -181,7 +188,7 @@ __WEBPACK_IMPORTED_MODULE_5_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 /***/ 311:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(143);
+module.exports = __webpack_require__(144);
 
 
 /***/ })
