@@ -392,12 +392,15 @@ const Trigger = createReactClass({
   },
 
   createTwoChains(event) {
-    const childPros = this.props.children.props;
+    const children = this.props.children;
+
+    const childProps = children instanceof Array ? children[0].props : children.props;
+
     const props = this.props;
-    if (childPros[event] && props[event]) {
+    if (childProps[event] && props[event]) {
       return this[`fire${event}`];
     }
-    return childPros[event] || props[event];
+    return childProps[event] || props[event];
   },
 
   isClickToShow() {
@@ -436,7 +439,11 @@ const Trigger = createReactClass({
   },
 
   fireEvents(type, e) {
-    const childCallback = this.props.children.props[type];
+    const children = this.props.children;
+
+    const childProps = children instanceof Array ? children[0].props : children.props;
+
+    const childCallback = childProps[type];
     if (childCallback) {
       childCallback(e);
     }
