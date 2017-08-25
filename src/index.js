@@ -439,7 +439,11 @@ const Trigger = createReactClass({
   },
 
   fireEvents(type, e) {
-    const childCallback = this.props.children.props[type];
+    const children = this.props.children;
+
+    const childProps = children instanceof Array ? children[0].props : children.props;
+
+    const childCallback = childProps[type];
     if (childCallback) {
       childCallback(e);
     }
