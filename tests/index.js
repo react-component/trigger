@@ -157,6 +157,31 @@ describe('rc-trigger', function main() {
         next();
       }], done);
     });
+    
+    it('doesnt close on click in scrollbar', (done) => {
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+        >
+          <div className="target">click</div>
+        </Trigger>), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+      async.series([timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect($(popupDomNode).find('.x-content').html()).to.be('tooltip2');
+        expect(popupDomNode).to.be.ok();
+        
+        trigger.onDocumentClick({ clientX: 10000, clientY: 10000 });// simulates the click in the document
+        next();
+      }, timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect($(popupDomNode).css('display')).to.be('block');
+        next();
+      }], done);
+    });
 
     it('click works with function', (done) => {
       let rendered = 42;
