@@ -37,16 +37,26 @@ const popupBorderStyle = {
   padding: 10,
 };
 
+function saveRef(name, component) {
+  this[name] = component;
+}
+
 class Test extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.saveContainerRef = saveRef.bind(this, 'containerInstance');
+  }
+
   render() {
     const innerTrigger = (
       <div style={popupBorderStyle}>
-        <div ref="container" />
+        <div ref={this.saveContainerRef} />
         <Trigger
           popupPlacement="bottom"
           action={['click']}
           builtinPlacements={builtinPlacements}
-          getPopupContainer={() => this.refs.container}
+          getPopupContainer={() => this.containerInstance}
           popup={<div style={popupBorderStyle}>I am inner Trigger Popup</div>}
         >
           <span href="#" style={{ margin: 20 }}>clickToShowInnerTrigger</span>

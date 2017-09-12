@@ -5,6 +5,7 @@ import Align from 'rc-align';
 import Animate from 'rc-animate';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
+import { saveRef } from './utils';
 
 class Popup extends Component {
   static propTypes = {
@@ -20,6 +21,13 @@ class Popup extends Component {
     prefixCls: PropTypes.string,
     onMouseLeave: PropTypes.func,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.savePopupRef = saveRef.bind(this, 'popupInstance');
+    this.saveAlignRef = saveRef.bind(this, 'alignInstance');
+  }
 
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
@@ -38,7 +46,7 @@ class Popup extends Component {
   }
 
   getPopupDomNode() {
-    return ReactDOM.findDOMNode(this.refs.popup);
+    return ReactDOM.findDOMNode(this.popupInstance);
   }
 
   getTarget = () => {
@@ -69,7 +77,7 @@ class Popup extends Component {
   }
 
   getPopupElement() {
-    const props = this.props;
+    const { savePopupRef, props } = this;
     const { align, style, visible, prefixCls, destroyPopupOnHide } = props;
     const className = this.getClassName(this.currentAlignClassName ||
       props.getClassNameFromAlign(align));
@@ -84,7 +92,7 @@ class Popup extends Component {
     const popupInnerProps = {
       className,
       prefixCls,
-      ref: 'popup',
+      ref: savePopupRef,
       onMouseEnter: props.onMouseEnter,
       onMouseLeave: props.onMouseLeave,
       style: newStyle,
@@ -99,7 +107,7 @@ class Popup extends Component {
         {visible ? (<Align
           target={this.getTarget}
           key="popup"
-          ref={this.saveAlign}
+          ref={this.saveAlignRef}
           monitorWindowResize
           align={align}
           onAlign={this.onAlign}
@@ -123,7 +131,7 @@ class Popup extends Component {
       <Align
         target={this.getTarget}
         key="popup"
-        ref={this.saveAlign}
+        ref={this.saveAlignRef}
         monitorWindowResize
         xVisible={visible}
         childrenProps={{ visible: 'xVisible' }}
@@ -179,10 +187,6 @@ class Popup extends Component {
       }
     }
     return maskElement;
-  }
-
-  saveAlign = (align) => {
-    this.alignInstance = align;
   }
 
   render() {

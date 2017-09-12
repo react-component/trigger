@@ -9,6 +9,7 @@ import '../assets/index.less';
 import Trigger from '../index';
 import './test.less';
 import async from 'async';
+import { saveRef } from '../src/utils';
 
 const Simulate = TestUtils.Simulate;
 window.$ = $;
@@ -260,18 +261,24 @@ describe('rc-trigger', function main() {
 
     it('nested action works', (done) => {
       class Test extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.saveClickTriggerRef = saveRef.bind(this, 'clickTriggerInstance');
+          this.saveHoverTriggerRef = saveRef.bind(this, 'hoverTriggerInstance');
+        }
         render() {
           return (
             <Trigger
               action={['click']}
               popupAlign={placementAlignMap.left}
-              ref="clickTrigger"
+              ref={this.saveClickTriggerRef}
               popup={<strong>click trigger</strong>}
             >
               <Trigger
                 action={['hover']}
                 popupAlign={placementAlignMap.left}
-                ref="hoverTrigger"
+                ref={this.saveHoverTriggerRef}
                 popup={<strong>hover trigger</strong>}
               >
                 <div className="target">trigger</div>
@@ -287,19 +294,19 @@ describe('rc-trigger', function main() {
       Simulate.mouseEnter(target);
       Simulate.click(target);
       async.series([timeout(200), (next) => {
-        const clickPopupDomNode = trigger.refs.clickTrigger.getPopupDomNode();
-        const hoverPopupDomNode = trigger.refs.hoverTrigger.getPopupDomNode();
+        const clickPopupDomNode = trigger.clickTriggerInstance.getPopupDomNode();
+        const hoverPopupDomNode = trigger.hoverTriggerInstance.getPopupDomNode();
         expect(clickPopupDomNode).to.be.ok();
         expect(hoverPopupDomNode).to.be.ok();
         Simulate.mouseLeave(target);
         next();
       }, timeout(200), (next) => {
-        const hoverPopupDomNode = trigger.refs.hoverTrigger.getPopupDomNode();
+        const hoverPopupDomNode = trigger.hoverTriggerInstance.getPopupDomNode();
         expect($(hoverPopupDomNode).css('display')).to.be('none');
         Simulate.click(target);
         next();
       }, timeout(200), (next) => {
-        const clickPopupDomNode = trigger.refs.clickTrigger.getPopupDomNode();
+        const clickPopupDomNode = trigger.clickTriggerInstance.getPopupDomNode();
         expect($(clickPopupDomNode).css('display')).to.be('none');
         next();
       }], done);
@@ -679,6 +686,17 @@ describe('rc-trigger', function main() {
 
       // height should be same, should not have break lines inside words
       expect(popupNodeHeightOfOneWord).to.equal(popupNodeHeightOfSeveralWords);
+    });
+  });
+
+  describe('utils/saveRef', () => {
+    const mock = {};
+    const saveTestRef = saveRef.bind(mock, 'testInstance');
+
+    it('adds a property with the given name to context', () => {
+      expect(mock.testInstance).to.be(undefined);
+      saveTestRef('bar');
+      expect(mock.testInstance).to.be('bar');
     });
   });
 });
