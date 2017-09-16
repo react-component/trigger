@@ -207,6 +207,7 @@ const Trigger = createReactClass({
     // react bug?
     if (e.relatedTarget && !e.relatedTarget.setTimeout &&
       this._component &&
+      this._component.getPopupDomNode &&
       contains(this._component.getPopupDomNode(), e.relatedTarget)) {
       return;
     }
