@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { findDOMNode } from 'react-dom';
+import { findDOMNode, createPortal } from 'react-dom';
 import createReactClass from 'create-react-class';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
 import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
 import getContainerRenderMixin from 'rc-util/lib/getContainerRenderMixin';
+import Portal from './Portal';
 
 function noop() {
 }
@@ -21,6 +22,26 @@ function returnDocument() {
 
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur'];
+
+const IS_REACT_16 = !!createPortal;
+
+const mixins = [];
+
+if (!IS_REACT_16) {
+  mixins.push(
+    getContainerRenderMixin({
+      autoMount: false,
+
+      isVisible(instance) {
+        return instance.state.popupVisible;
+      },
+
+      getContainer(instance) {
+        return instance.getContainer();
+      },
+    })
+  );
+}
 
 const Trigger = createReactClass({
   displayName: 'Trigger',
@@ -66,30 +87,7 @@ const Trigger = createReactClass({
     maskAnimation: PropTypes.string,
   },
 
-  mixins: [
-    getContainerRenderMixin({
-      autoMount: false,
-
-      isVisible(instance) {
-        return instance.state.popupVisible;
-      },
-
-      getContainer(instance) {
-        const { props } = instance;
-        const popupContainer = document.createElement('div');
-        // Make sure default popup container will never cause scrollbar appearing
-        // https://github.com/react-component/trigger/issues/41
-        popupContainer.style.position = 'absolute';
-        popupContainer.style.top = '0';
-        popupContainer.style.left = '0';
-        popupContainer.style.width = '100%';
-        const mountNode = props.getPopupContainer ?
-          props.getPopupContainer(findDOMNode(instance)) : props.getDocument().body;
-        mountNode.appendChild(popupContainer);
-        return popupContainer;
-      },
-    }),
-  ],
+  mixins,
 
   getDefaultProps() {
     return {
@@ -154,11 +152,16 @@ const Trigger = createReactClass({
   componentDidUpdate(_, prevState) {
     const props = this.props;
     const state = this.state;
-    this.renderComponent(null, () => {
+    const triggerAfterPopupVisibleChange = () => {
       if (prevState.popupVisible !== state.popupVisible) {
         props.afterPopupVisibleChange(state.popupVisible);
       }
-    });
+    };
+    if (!IS_REACT_16) {
+      this.renderComponent(null, triggerAfterPopupVisibleChange);
+    } else {
+      triggerAfterPopupVisibleChange();
+    }
 
     // We must listen to `mousedown` or `touchstart`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
@@ -341,10 +344,26 @@ const Trigger = createReactClass({
         transitionName={props.popupTransitionName}
         maskAnimation={props.maskAnimation}
         maskTransitionName={props.maskTransitionName}
+        ref={this.savePopup}
       >
         {typeof props.popup === 'function' ? props.popup() : props.popup}
       </Popup>
     );
+  },
+
+  getContainer() {
+    const { props } = this;
+    const popupContainer = document.createElement('div');
+    // Make sure default popup container will never cause scrollbar appearing
+    // https://github.com/react-component/trigger/issues/41
+    popupContainer.style.position = 'absolute';
+    popupContainer.style.top = '0';
+    popupContainer.style.left = '0';
+    popupContainer.style.width = '100%';
+    const mountNode = props.getPopupContainer ?
+      props.getPopupContainer(findDOMNode(this)) : props.getDocument().body;
+    mountNode.appendChild(popupContainer);
+    return popupContainer;
   },
 
   setPopupVisible(popupVisible) {
@@ -450,11 +469,18 @@ const Trigger = createReactClass({
     this.setPopupVisible(false);
   },
 
+  savePopup(node) {
+    if (IS_REACT_16) {
+      this._component = node;
+    }
+  },
+
   render() {
+    const { popupVisible } = this.state;
     const props = this.props;
     const children = props.children;
     const child = React.Children.only(children);
-    const newChildProps = {};
+    const newChildProps = { key: 'trigger' };
     if (this.isClickToHide() || this.isClickToShow()) {
       newChildProps.onClick = this.onClick;
       newChildProps.onMouseDown = this.onMouseDown;
@@ -482,7 +508,29 @@ const Trigger = createReactClass({
       newChildProps.onBlur = this.createTwoChains('onBlur');
     }
 
-    return React.cloneElement(child, newChildProps);
+    const trigger = React.cloneElement(child, newChildProps);
+
+    if (!IS_REACT_16) {
+      return trigger;
+    }
+
+    let portal;
+    // prevent unmounting after it's rendered
+    if (popupVisible || this._component) {
+      portal = (
+        <Portal
+          key="portal"
+          getContainer={this.getContainer}
+        >
+          {this.getComponent()}
+        </Portal>
+      );
+    }
+
+    return [
+      trigger,
+      portal,
+    ];
   },
 });
 
