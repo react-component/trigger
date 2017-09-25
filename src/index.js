@@ -7,7 +7,7 @@ import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
 import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
 import getContainerRenderMixin from 'rc-util/lib/getContainerRenderMixin';
-import Portal from './Portal';
+import Portal from 'rc-util/lib/Portal';
 
 function noop() {
 }

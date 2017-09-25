@@ -62,6 +62,6 @@
     "prop-types": "15.x",
     "rc-align": "2.x",
     "rc-animate": "2.x",
-    "rc-util": "4.x"
+    "rc-util": "^4.1.0"
   }
 }
