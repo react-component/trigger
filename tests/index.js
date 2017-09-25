@@ -1,5 +1,7 @@
 /* eslint no-console:0 */
 
+import 'core-js/es6/map';
+import 'core-js/es6/set';
 import expect from 'expect.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
