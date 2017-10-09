@@ -62,7 +62,7 @@ import ReactDOM from 'react-dom';
 import Trigger from 'rc-trigger';
 
 ReactDOM.render((
-  <Trigger 
+  <Trigger
     action={['click']}
     popup={<span>popup</span>}
     popupAlign={{
@@ -139,13 +139,13 @@ ReactDOM.render((
         </tr>
         <tr>
           <td>popupTransitionName</td>
-          <td>String</td>
+          <td>String|Object</td>
           <td></td>
           <td>https://github.com/react-component/animate</td>
         </tr>
         <tr>
           <td>maskTransitionName</td>
-          <td>String</td>
+          <td>String|Object</td>
           <td></td>
           <td>https://github.com/react-component/animate</td>
         </tr>
@@ -220,13 +220,13 @@ ReactDOM.render((
           <td>string</td>
           <td></td>
           <td>use preset popup align config from builtinPlacements, can be merged by popupAlign prop</td>
-        </tr>   
+        </tr>
         <tr>
           <td>builtinPlacements</td>
           <td>object</td>
           <td></td>
           <td>builtin placement align map. used by placement prop</td>
-        </tr>        
+        </tr>
     </tbody>
 </table>
 
