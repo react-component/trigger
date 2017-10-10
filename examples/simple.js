@@ -57,7 +57,7 @@ class Test extends React.Component {
     maskClosable: false,
     placement: 'right',
     trigger: {
-      hover: 1,
+      contextMenu: 1,
     },
     offsetX: undefined,
     offsetY: undefined,
@@ -164,6 +164,16 @@ class Test extends React.Component {
         &nbsp;&nbsp;&nbsp;&nbsp;
 
         trigger:
+
+        <label>
+          <input
+            value="contextMenu"
+            checked={!!trigger.contextMenu}
+            type="checkbox"
+            onChange={this.onTriggerChange}
+          />
+          contextMenu
+        </label>
 
         <label>
           <input
