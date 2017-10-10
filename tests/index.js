@@ -215,6 +215,28 @@ describe('rc-trigger', function main() {
       }], done);
     });
 
+    it('contextMenu works', done => {
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['contextMenu']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong>trigger</strong>}
+        >
+          <div className="target">contextMenu</div>
+        </Trigger>
+      ), div);
+
+      const target = scryRenderedDOMComponentsWithClass(trigger, 'target')[0];
+      // can not simulate mouseenter
+      Simulate.contextMenu(target);
+      async.series([timeout(200), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect(popupDomNode).to.be.ok();
+        expect($(popupDomNode).css('display')).to.be('block');
+        next();
+      }], done);
+    });
+
     it('afterPopupVisibleChange can be triggered', (done) => {
       let triggered = 0;
       const trigger = ReactDOM.render((
@@ -601,33 +623,33 @@ describe('rc-trigger', function main() {
         const domNode = ReactDOM.findDOMNode(trigger);
         Simulate.click(domNode);
         async.series([timeout(100),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).not.to.be('1');
-              next();
-            },
-            timeout(500),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).to.be('1');
-              Simulate.click(domNode);
-              next();
-            },
-            timeout(100),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).not.to.be('1');
-              next();
-            },
-            timeout(500),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect($(popupDomNode).css('display')).to.be('none');
-              next();
-            }],
+        (next) => {
+          const popupDomNode = trigger.getPopupDomNode();
+          expect(popupDomNode).to.be.ok();
+          expect($(popupDomNode).css('opacity')).not.to.be('1');
+          next();
+        },
+        timeout(500),
+        (next) => {
+          const popupDomNode = trigger.getPopupDomNode();
+          expect(popupDomNode).to.be.ok();
+          expect($(popupDomNode).css('opacity')).to.be('1');
+          Simulate.click(domNode);
+          next();
+        },
+        timeout(100),
+        (next) => {
+          const popupDomNode = trigger.getPopupDomNode();
+          expect(popupDomNode).to.be.ok();
+          expect($(popupDomNode).css('opacity')).not.to.be('1');
+          next();
+        },
+        timeout(500),
+        (next) => {
+          const popupDomNode = trigger.getPopupDomNode();
+          expect($(popupDomNode).css('display')).to.be('none');
+          next();
+        }],
           done);
       });
     });
