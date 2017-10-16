@@ -1,6 +1,14 @@
 # History
 ----
 
+## 2.1.0 / 2017-10-16
+
+- add action `contextMenu`
+
+## 2.0.0
+
+- support React 16
+
 ## 1.11.0 / 2017-06-07
 
 - add es
