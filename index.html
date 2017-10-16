@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-trigger@1.11.5 - base abstract trigger component for react</title>
+  <title>rc-trigger@2.1.0 - base abstract trigger component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,7 +737,7 @@
 
 <body>
 <div class="header">
-  <h1>rc-trigger@1.11.5</h1>
+  <h1>rc-trigger@2.1.0</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
@@ -794,7 +794,7 @@ npm start</code></pre></div><h2>Example<a id="user-content-example" name="exampl
 <span class="hljs-keyword">import</span> Trigger <span class="hljs-keyword">from</span> <span class="hljs-string">'rc-trigger'</span>;
 
 ReactDOM.render((
-  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span> 
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
     <span class="hljs-attribute">action</span>=<span class="hljs-value">{['click']}</span>
     <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;span</span>&gt;</span>popup<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>}
     popupAlign={{
@@ -836,7 +836,7 @@ ReactDOM.render((
           <td>action</td>
           <td>string[]</td>
           <td>[&#39;hover&#39;]</td>
-          <td>which actions cause popup shown. enum of &#39;hover&#39;,&#39;click&#39;,&#39;focus&#39;</td>
+          <td>which actions cause popup shown. enum of &#39;hover&#39;,&#39;click&#39;,&#39;focus&#39;,&#39;contextMenu&#39;</td>
         </tr>
         <tr>
           <td>mouseEnterDelay</td>
@@ -864,13 +864,13 @@ ReactDOM.render((
         </tr>
         <tr>
           <td>popupTransitionName</td>
-          <td>String</td>
+          <td>String|Object</td>
           <td></td>
           <td><a href="https://github.com/react-component/animate" title="null">https://github.com/react-component/animate</a></td>
         </tr>
         <tr>
           <td>maskTransitionName</td>
-          <td>String</td>
+          <td>String|Object</td>
           <td></td>
           <td><a href="https://github.com/react-component/animate" title="null">https://github.com/react-component/animate</a></td>
         </tr>
@@ -945,12 +945,14 @@ ReactDOM.render((
           <td>string</td>
           <td></td>
           <td>use preset popup align config from builtinPlacements, can be merged by popupAlign prop</td>
-        </tr><br>        <tr>
+        </tr>
+        <tr>
           <td>builtinPlacements</td>
           <td>object</td>
           <td></td>
           <td>builtin placement align map. used by placement prop</td>
-        </tr><br>    </tbody>
+        </tr>
+    </tbody>
 </table>
 
 
