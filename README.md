@@ -248,7 +248,7 @@ open coverage/ dir
 
 ## React 16 Note
 
-If you are using React 16, you won't access popup element's ref in parent component's componentDidMount, which means following code won't work.
+After React 16, you won't access popup element's ref in parent component's componentDidMount, which means following code won't work.
 
 ```javascript
 class App extends React.Component {
@@ -274,7 +274,7 @@ Consider wrap your popup element to a separate component:
 ```javascript
 class InputPopup extends React.Component {
   componentDidMount() {
-    this.onMount();
+    this.props.onMount();
   }
 
   render() {
