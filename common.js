@@ -3549,6 +3549,8 @@ var ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter', 'o
 
 var IS_REACT_16 = !!__WEBPACK_IMPORTED_MODULE_3_react_dom__["createPortal"];
 
+var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
+
 var mixins = [];
 
 if (!IS_REACT_16) {
@@ -3674,7 +3676,7 @@ var Trigger = __WEBPACK_IMPORTED_MODULE_4_create_react_class___default()({
       triggerAfterPopupVisibleChange();
     }
 
-    // We must listen to `mousedown` or `touchstart`, edge case:
+    // We must listen to `mousedown`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
     // https://github.com/react-component/calendar/issues/250
     // https://github.com/react-component/trigger/issues/50
@@ -3685,9 +3687,12 @@ var Trigger = __WEBPACK_IMPORTED_MODULE_4_create_react_class___default()({
         this.clickOutsideHandler = __WEBPACK_IMPORTED_MODULE_6_rc_util_lib_Dom_addEventListener___default()(currentDocument, 'mousedown', this.onDocumentClick);
       }
       // always hide on mobile
-      if (!this.touchOutsideHandler) {
+      // `isMobile` fix: mask clicked will cause below element events triggered
+      // https://github.com/ant-design/ant-design-mobile/issues/1909
+      // https://github.com/ant-design/ant-design-mobile/issues/1928
+      if (!this.touchOutsideHandler && isMobile) {
         currentDocument = currentDocument || props.getDocument();
-        this.touchOutsideHandler = __WEBPACK_IMPORTED_MODULE_6_rc_util_lib_Dom_addEventListener___default()(currentDocument, 'touchstart', this.onDocumentClick);
+        this.touchOutsideHandler = __WEBPACK_IMPORTED_MODULE_6_rc_util_lib_Dom_addEventListener___default()(currentDocument, 'click', this.onDocumentClick);
       }
       return;
     }
