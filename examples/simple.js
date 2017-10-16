@@ -192,6 +192,15 @@ class Test extends React.Component {
           />
           click
         </label>
+        <label>
+          <input
+            value="contextMenu"
+            checked={!!trigger.contextMenu}
+            type="checkbox"
+            onChange={this.onTriggerChange}
+          />
+          contextMenu
+        </label>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label>
           <input

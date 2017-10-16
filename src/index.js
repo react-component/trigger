@@ -21,7 +21,7 @@ function returnDocument() {
 }
 
 const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
-  'onMouseLeave', 'onFocus', 'onBlur'];
+  'onMouseLeave', 'onFocus', 'onBlur', 'onContextMenu'];
 
 const IS_REACT_16 = !!createPortal;
 
@@ -173,7 +173,7 @@ const Trigger = createReactClass({
     // https://github.com/react-component/trigger/issues/50
     if (state.popupVisible) {
       let currentDocument;
-      if (!this.clickOutsideHandler && this.isClickToHide()) {
+      if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
         currentDocument = props.getDocument();
         this.clickOutsideHandler = addEventListener(currentDocument,
           'mousedown', this.onDocumentClick);
@@ -186,6 +186,17 @@ const Trigger = createReactClass({
         currentDocument = currentDocument || props.getDocument();
         this.touchOutsideHandler = addEventListener(currentDocument,
           'click', this.onDocumentClick);
+      }
+      // close popup when trigger type contains 'onContextMenu' and document is scrolling.
+      if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
+        currentDocument = currentDocument || props.getDocument();
+        this.contextMenuOutsideHandler1 = addEventListener(currentDocument,
+          'scroll', this.onContextMenuClose);
+      }
+      // close popup when trigger type contains 'onContextMenu' and window is blur.
+      if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
+        this.contextMenuOutsideHandler2 = addEventListener(window,
+          'blur', this.onContextMenuClose);
       }
       return;
     }
@@ -249,6 +260,18 @@ const Trigger = createReactClass({
     this.clearDelayTimer();
     if (this.isBlurToHide()) {
       this.delaySetPopupVisible(false, this.props.blurDelay);
+    }
+  },
+
+  onContextMenu(e) {
+    e.preventDefault();
+    this.fireEvents('onContextMenu', e);
+    this.setPopupVisible(true);
+  },
+
+  onContextMenuClose() {
+    if (this.isContextMenuToShow()) {
+      this.close();
     }
   },
 
@@ -412,6 +435,16 @@ const Trigger = createReactClass({
       this.clickOutsideHandler = null;
     }
 
+    if (this.contextMenuOutsideHandler1) {
+      this.contextMenuOutsideHandler1.remove();
+      this.contextMenuOutsideHandler1 = null;
+    }
+
+    if (this.contextMenuOutsideHandler2) {
+      this.contextMenuOutsideHandler2.remove();
+      this.contextMenuOutsideHandler2 = null;
+    }
+
     if (this.touchOutsideHandler) {
       this.touchOutsideHandler.remove();
       this.touchOutsideHandler = null;
@@ -430,6 +463,11 @@ const Trigger = createReactClass({
   isClickToShow() {
     const { action, showAction } = this.props;
     return action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1;
+  },
+
+  isContextMenuToShow() {
+    const { action, showAction } = this.props;
+    return action.indexOf('contextMenu') !== -1 || showAction.indexOf('contextMenu') !== -1;
   },
 
   isClickToHide() {
@@ -489,6 +527,13 @@ const Trigger = createReactClass({
     const children = props.children;
     const child = React.Children.only(children);
     const newChildProps = { key: 'trigger' };
+
+    if (this.isContextMenuToShow()) {
+      newChildProps.onContextMenu = this.onContextMenu;
+    } else {
+      newChildProps.onContextMenu = this.createTwoChains('onContextMenu');
+    }
+
     if (this.isClickToHide() || this.isClickToShow()) {
       newChildProps.onClick = this.onClick;
       newChildProps.onMouseDown = this.onMouseDown;
