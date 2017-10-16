@@ -5,7 +5,7 @@
 
 - add action `contextMenu`
 
-## 2.0.0
+## 2.0.0 / 2017-09-25
 
 - support React 16
 
