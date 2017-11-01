@@ -7,7 +7,7 @@
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" rel="stylesheet"/>
-  <title>rc-trigger@2.1.0 - base abstract trigger component for react</title>
+  <title>rc-trigger@2.2.0 - base abstract trigger component for react</title>
   <style>
     @font-face {
       font-family: octicons-anchor;
@@ -737,7 +737,7 @@
 
 <body>
 <div class="header">
-  <h1>rc-trigger@2.1.0</h1>
+  <h1>rc-trigger@2.2.0</h1>
 </div>
 <div class="examples">
   <h3>EXAMPLES</h3>
@@ -958,7 +958,53 @@ ReactDOM.render((
 
 <h2>Test Case<a id="user-content-test-case" name="test-case" class="anchor" aria-hidden="true" href="#test-case"><span class="octicon octicon-link"></span></a></h2><div class="highlight"><pre><code language="undefined">npm test
 npm run chrome-test</code></pre></div><h2>Coverage<a id="user-content-coverage" name="coverage" class="anchor" aria-hidden="true" href="#coverage"><span class="octicon octicon-link"></span></a></h2><div class="highlight"><pre><code language="undefined">npm run coverage</code></pre></div><p>open coverage/ dir</p>
-<h2>License<a id="user-content-license" name="license" class="anchor" aria-hidden="true" href="#license"><span class="octicon octicon-link"></span></a></h2><p>rc-trigger is released under the MIT license.</p>
+<h2>React 16 Note<a id="user-content-react-16-note" name="react-16-note" class="anchor" aria-hidden="true" href="#react-16-note"><span class="octicon octicon-link"></span></a></h2><p>After React 16, you won&#39;t access popup element&#39;s ref in parent component&#39;s componentDidMount, which means following code won&#39;t work.</p>
+<div class="highlight"><pre><code language="javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  componentDidMount() {
+    <span class="hljs-keyword">this</span>.input.focus(); <span class="hljs-comment">// error, this.input is undefined.</span>
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
+        <span class="hljs-attribute">action</span>=<span class="hljs-value">{['click']}</span>
+        <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">ref</span>=<span class="hljs-value">{node</span> =&gt;</span> this.input = node} type="text" /&gt;<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>}
+      &gt;
+        <span class="hljs-tag">&lt;<span class="hljs-title">button</span>&gt;</span>click<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
+    )</span>
+  }
+}</code></pre></div><p>Consider wrap your popup element to a separate component:</p>
+<div class="highlight"><pre><code language="javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InputPopup</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  componentDidMount() {
+    <span class="hljs-keyword">this</span>.props.onMount();
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">ref</span>=<span class="hljs-value">{this.props.inputRef}</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> /&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    )</span>;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  handlePopupMount() {
+    <span class="hljs-keyword">this</span>.input.focus(); <span class="hljs-comment">// error, this.input is undefined.</span>
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
+        <span class="hljs-attribute">action</span>=<span class="hljs-value">{['click']}</span>
+        <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;InputPopup</span> <span class="hljs-attribute">inputRef</span>=<span class="hljs-value">{node</span> =&gt;</span> this.input = node} onMount={this.handlePopupMount} /&gt;}
+      &gt;
+        <span class="hljs-tag">&lt;<span class="hljs-title">button</span>&gt;</span>click<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
+    )</span>
+  }
+}</code></pre></div><h2>License<a id="user-content-license" name="license" class="anchor" aria-hidden="true" href="#license"><span class="octicon octicon-link"></span></a></h2><p>rc-trigger is released under the MIT license.</p>
 
   </div>
 </div>
