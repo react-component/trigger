@@ -10,7 +10,7 @@ const render = Trigger.prototype.render;
 Trigger.prototype.render = function () { // eslint-disable-line
   const tree = render.call(this);
 
-  if (this.state.popupVisible) {
+  if (this.state.popupVisible && this._component) {
     return tree;
   }
 
