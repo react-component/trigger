@@ -126,6 +126,9 @@ const Trigger = createReactClass({
     } else {
       popupVisible = !!props.defaultPopupVisible;
     }
+
+    this.prevPopupVisible = popupVisible;
+
     return {
       popupVisible,
     };
@@ -163,9 +166,9 @@ const Trigger = createReactClass({
     };
     if (!IS_REACT_16) {
       this.renderComponent(null, triggerAfterPopupVisibleChange);
-    } else {
-      triggerAfterPopupVisibleChange();
     }
+
+    this.prevPopupVisible = prevState.popupVisible;
 
     // We must listen to `mousedown`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
@@ -310,6 +313,12 @@ const Trigger = createReactClass({
     const popupNode = this.getPopupDomNode();
     if (!contains(root, target) && !contains(popupNode, target)) {
       this.close();
+    }
+  },
+
+  handlePortalUpdate() {
+    if (this.prevPopupVisible !== this.state.popupVisible) {
+      this.props.afterPopupVisibleChange(this.state.popupVisible);
     }
   },
 
@@ -574,6 +583,7 @@ const Trigger = createReactClass({
         <Portal
           key="portal"
           getContainer={this.getContainer}
+          didUpdate={this.handlePortalUpdate}
         >
           {this.getComponent()}
         </Portal>
