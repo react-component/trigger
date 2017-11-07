@@ -3635,6 +3635,9 @@ var Trigger = __WEBPACK_IMPORTED_MODULE_4_create_react_class___default()({
     } else {
       popupVisible = !!props.defaultPopupVisible;
     }
+
+    this.prevPopupVisible = popupVisible;
+
     return {
       popupVisible: popupVisible
     };
@@ -3672,9 +3675,9 @@ var Trigger = __WEBPACK_IMPORTED_MODULE_4_create_react_class___default()({
     };
     if (!IS_REACT_16) {
       this.renderComponent(null, triggerAfterPopupVisibleChange);
-    } else {
-      triggerAfterPopupVisibleChange();
     }
+
+    this.prevPopupVisible = prevState.popupVisible;
 
     // We must listen to `mousedown`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
@@ -3799,6 +3802,11 @@ var Trigger = __WEBPACK_IMPORTED_MODULE_4_create_react_class___default()({
     var popupNode = this.getPopupDomNode();
     if (!__WEBPACK_IMPORTED_MODULE_5_rc_util_lib_Dom_contains___default()(root, target) && !__WEBPACK_IMPORTED_MODULE_5_rc_util_lib_Dom_contains___default()(popupNode, target)) {
       this.close();
+    }
+  },
+  handlePortalUpdate: function handlePortalUpdate() {
+    if (this.prevPopupVisible !== this.state.popupVisible) {
+      this.props.afterPopupVisibleChange(this.state.popupVisible);
     }
   },
   getPopupDomNode: function getPopupDomNode() {
@@ -4073,7 +4081,8 @@ var Trigger = __WEBPACK_IMPORTED_MODULE_4_create_react_class___default()({
         __WEBPACK_IMPORTED_MODULE_10_rc_util_lib_Portal___default.a,
         {
           key: 'portal',
-          getContainer: this.getContainer
+          getContainer: this.getContainer,
+          didUpdate: this.handlePortalUpdate
         },
         this.getComponent()
       );
@@ -8762,6 +8771,15 @@ var Portal = function (_React$Component) {
       this.createContainer();
     }
   }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps) {
+      var didUpdate = this.props.didUpdate;
+
+      if (didUpdate) {
+        didUpdate(prevProps);
+      }
+    }
+  }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this.removeContainer();
@@ -8793,7 +8811,8 @@ var Portal = function (_React$Component) {
 
 Portal.propTypes = {
   getContainer: _propTypes2['default'].func.isRequired,
-  children: _propTypes2['default'].node.isRequired
+  children: _propTypes2['default'].node.isRequired,
+  didUpdate: _propTypes2['default'].func
 };
 exports['default'] = Portal;
 module.exports = exports['default'];
