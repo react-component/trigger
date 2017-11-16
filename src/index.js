@@ -40,6 +40,10 @@ if (!IS_REACT_16) {
         return instance.state.popupVisible;
       },
 
+      isForceRender(instance) {
+        return instance.props.forceRender;
+      },
+
       getContainer(instance) {
         return instance.getContainer();
       },
@@ -78,6 +82,7 @@ const Trigger = createReactClass({
     blurDelay: PropTypes.number,
     getPopupContainer: PropTypes.func,
     getDocument: PropTypes.func,
+    forceRender: PropTypes.bool,
     destroyPopupOnHide: PropTypes.bool,
     mask: PropTypes.bool,
     maskClosable: PropTypes.bool,
@@ -578,7 +583,7 @@ const Trigger = createReactClass({
 
     let portal;
     // prevent unmounting after it's rendered
-    if (popupVisible || this._component) {
+    if (popupVisible || this._component || props.forceRender) {
       portal = (
         <Portal
           key="portal"

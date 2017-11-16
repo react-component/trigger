@@ -96,6 +96,12 @@ ReactDOM.render((
           <td>additional className added to popup</td>
         </tr>
         <tr>
+          <td>forceRender</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>whether render popup before first show</td>
+        </tr>
+        <tr>
           <td>destroyPopupOnHide</td>
           <td>boolean</td>
           <td>false</td>
