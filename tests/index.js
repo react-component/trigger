@@ -1,4 +1,4 @@
-/* eslint no-console:0 */
+/* eslint no-console:0, react/no-multi-comp:0 */
 
 import 'core-js/es6/map';
 import 'core-js/es6/set';
@@ -570,6 +570,35 @@ describe('rc-trigger', function main() {
         Simulate.click(domNode);
         done();
       }, 20);
+    });
+  });
+
+  describe('forceRender', () => {
+    it('doesn\'t render at first time when forceRender=false', () => {
+      const trigger = ReactDOM.render(
+        <Trigger popup={<span>Hello!</span>}>
+          <span>Hey!</span>
+        </Trigger>
+      , div);
+      expect(trigger.getPopupDomNode()).not.to.be.ok();
+    });
+    it('render at first time when forceRender=true', () => {
+      class Test extends React.Component {
+        saveTrigger = (trigger) => this.trigger = trigger;
+        render() {
+          return (
+            <Trigger
+              ref={this.saveTrigger}
+              forceRender
+              popup={<span>Hello!</span>}
+            >
+              <span>Hey!</span>
+            </Trigger>
+          );
+        }
+      }
+      const test = ReactDOM.render(<Test />, div);
+      expect(test.trigger.getPopupDomNode()).to.be.ok();
     });
   });
 
