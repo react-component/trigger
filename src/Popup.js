@@ -98,55 +98,61 @@ class Popup extends Component {
       style: newStyle,
     };
     if (destroyPopupOnHide) {
-      return (<Animate
+      return (
+        <Animate
+          component=""
+          exclusive
+          transitionAppear
+          transitionName={this.getTransitionName()}
+        >
+          {visible ? (
+            <Align
+              target={this.getTarget}
+              key="popup"
+              ref={this.saveAlignRef}
+              monitorWindowResize
+              align={align}
+              onAlign={this.onAlign}
+            >
+              <PopupInner
+                visible
+                {...popupInnerProps}
+              >
+                {props.children}
+              </PopupInner>
+            </Align>
+          ) : null}
+        </Animate>
+      );
+    }
+    return (
+      <Animate
         component=""
         exclusive
         transitionAppear
         transitionName={this.getTransitionName()}
+        showProp="xVisible"
       >
-        {visible ? (<Align
+        <Align
           target={this.getTarget}
           key="popup"
           ref={this.saveAlignRef}
           monitorWindowResize
+          xVisible={visible}
+          childrenProps={{ visible: 'xVisible' }}
+          disabled={!visible}
           align={align}
           onAlign={this.onAlign}
         >
           <PopupInner
-            visible
+            hiddenClassName={hiddenClassName}
             {...popupInnerProps}
           >
             {props.children}
           </PopupInner>
-        </Align>) : null}
-      </Animate>);
-    }
-    return (<Animate
-      component=""
-      exclusive
-      transitionAppear
-      transitionName={this.getTransitionName()}
-      showProp="xVisible"
-    >
-      <Align
-        target={this.getTarget}
-        key="popup"
-        ref={this.saveAlignRef}
-        monitorWindowResize
-        xVisible={visible}
-        childrenProps={{ visible: 'xVisible' }}
-        disabled={!visible}
-        align={align}
-        onAlign={this.onAlign}
-      >
-        <PopupInner
-          hiddenClassName={hiddenClassName}
-          {...popupInnerProps}
-        >
-          {props.children}
-        </PopupInner>
-      </Align>
-    </Animate>);
+        </Align>
+      </Animate>
+    );
   }
 
   getZIndexStyle() {
