@@ -639,7 +639,7 @@ describe('rc-trigger', function main() {
 
   if (window.TransitionEvent) {
     describe('transitionName', () => {
-      it('works', (done) => {
+      it.skip('works', (done) => {
         const trigger = ReactDOM.render(
           <Trigger
             action={['click']}
