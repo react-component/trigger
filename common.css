@@ -10,100 +10,48 @@
 .rc-trigger-popup-zoom-enter,
 .rc-trigger-popup-zoom-appear {
   opacity: 0;
-  -webkit-animation-duration: 0.3s;
-          animation-duration: 0.3s;
-  -webkit-animation-fill-mode: both;
-          animation-fill-mode: both;
-  -webkit-animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
-          animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
-  -webkit-animation-play-state: paused;
-          animation-play-state: paused;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  animation-play-state: paused;
 }
 .rc-trigger-popup-zoom-leave {
-  -webkit-animation-duration: 0.3s;
-          animation-duration: 0.3s;
-  -webkit-animation-fill-mode: both;
-          animation-fill-mode: both;
-  -webkit-animation-timing-function: cubic-bezier(0.6, -0.3, 0.74, 0.05);
-          animation-timing-function: cubic-bezier(0.6, -0.3, 0.74, 0.05);
-  -webkit-animation-play-state: paused;
-          animation-play-state: paused;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.6, -0.3, 0.74, 0.05);
+  animation-play-state: paused;
 }
 .rc-trigger-popup-zoom-enter.rc-trigger-popup-zoom-enter-active,
 .rc-trigger-popup-zoom-appear.rc-trigger-popup-zoom-appear-active {
-  -webkit-animation-name: rcTriggerZoomIn;
-          animation-name: rcTriggerZoomIn;
-  -webkit-animation-play-state: running;
-          animation-play-state: running;
+  animation-name: rcTriggerZoomIn;
+  animation-play-state: running;
 }
 .rc-trigger-popup-zoom-leave.rc-trigger-popup-zoom-leave-active {
-  -webkit-animation-name: rcTriggerZoomOut;
-          animation-name: rcTriggerZoomOut;
-  -webkit-animation-play-state: running;
-          animation-play-state: running;
-}
-@-webkit-keyframes rcTriggerZoomIn {
-  0% {
-    opacity: 0;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(0, 0);
-            transform: scale(0, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(1, 1);
-            transform: scale(1, 1);
-  }
+  animation-name: rcTriggerZoomOut;
+  animation-play-state: running;
 }
 @keyframes rcTriggerZoomIn {
   0% {
     opacity: 0;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(0, 0);
-            transform: scale(0, 0);
+    transform-origin: 50% 50%;
+    transform: scale(0, 0);
   }
   100% {
     opacity: 1;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(1, 1);
-            transform: scale(1, 1);
-  }
-}
-@-webkit-keyframes rcTriggerZoomOut {
-  0% {
-    opacity: 1;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(1, 1);
-            transform: scale(1, 1);
-  }
-  100% {
-    opacity: 0;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(0, 0);
-            transform: scale(0, 0);
+    transform-origin: 50% 50%;
+    transform: scale(1, 1);
   }
 }
 @keyframes rcTriggerZoomOut {
   0% {
     opacity: 1;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(1, 1);
-            transform: scale(1, 1);
+    transform-origin: 50% 50%;
+    transform: scale(1, 1);
   }
   100% {
     opacity: 0;
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-    -webkit-transform: scale(0, 0);
-            transform: scale(0, 0);
+    transform-origin: 50% 50%;
+    transform: scale(0, 0);
   }
 }
 .rc-trigger-popup-mask {
@@ -124,45 +72,25 @@
 .rc-trigger-popup-fade-enter,
 .rc-trigger-popup-fade-appear {
   opacity: 0;
-  -webkit-animation-duration: 0.3s;
-          animation-duration: 0.3s;
-  -webkit-animation-fill-mode: both;
-          animation-fill-mode: both;
-  -webkit-animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
-          animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
-  -webkit-animation-play-state: paused;
-          animation-play-state: paused;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
 }
 .rc-trigger-popup-fade-leave {
-  -webkit-animation-duration: 0.3s;
-          animation-duration: 0.3s;
-  -webkit-animation-fill-mode: both;
-          animation-fill-mode: both;
-  -webkit-animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
-          animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
-  -webkit-animation-play-state: paused;
-          animation-play-state: paused;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
 }
 .rc-trigger-popup-fade-enter.rc-trigger-popup-fade-enter-active,
 .rc-trigger-popup-fade-appear.rc-trigger-popup-fade-appear-active {
-  -webkit-animation-name: rcTriggerMaskFadeIn;
-          animation-name: rcTriggerMaskFadeIn;
-  -webkit-animation-play-state: running;
-          animation-play-state: running;
+  animation-name: rcTriggerMaskFadeIn;
+  animation-play-state: running;
 }
 .rc-trigger-popup-fade-leave.rc-trigger-popup-fade-leave-active {
-  -webkit-animation-name: rcDialogFadeOut;
-          animation-name: rcDialogFadeOut;
-  -webkit-animation-play-state: running;
-          animation-play-state: running;
-}
-@-webkit-keyframes rcTriggerMaskFadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  animation-name: rcDialogFadeOut;
+  animation-play-state: running;
 }
 @keyframes rcTriggerMaskFadeIn {
   0% {
@@ -170,14 +98,6 @@
   }
   100% {
     opacity: 1;
-  }
-}
-@-webkit-keyframes rcDialogFadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
   }
 }
 @keyframes rcDialogFadeOut {
