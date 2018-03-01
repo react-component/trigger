@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from 'rc-trigger';
 import 'rc-trigger/assets/index.less';
-import assign from 'object-assign';
 
 function getPopupAlign(state) {
   return {
@@ -76,7 +75,7 @@ class Test extends React.Component {
   }
 
   onTriggerChange = (e) => {
-    const trigger = assign({}, this.state.trigger);
+    const trigger = { ...this.state.trigger };
     if (e.target.checked) {
       trigger[e.target.value] = 1;
     } else {
