@@ -20,7 +20,7 @@ class Popup extends Component {
     className: PropTypes.string,
     prefixCls: PropTypes.string,
     onMouseLeave: PropTypes.func,
-    stretch: PropTypes.bool,
+    stretch: PropTypes.string,
     children: PropTypes.node,
   };
 
@@ -137,8 +137,13 @@ class Popup extends Component {
     const sizeStyle = {};
     if (stretch) {
       if (stretchChecked) {
-        sizeStyle.minHeight = targetHeight;
-        sizeStyle.minWidth = targetWidth;
+        // Stretch with target
+        if (stretch.indexOf('h') !== -1) {
+          sizeStyle.minHeight = targetHeight;
+        }
+        if (stretch.indexOf('w') !== -1) {
+          sizeStyle.minWidth = targetWidth;
+        }
       } else {
         // Do nothing when stretch not ready
         return null;

@@ -67,7 +67,7 @@ export default class Trigger extends React.Component {
       PropTypes.object,
     ]),
     maskAnimation: PropTypes.string,
-    stretch: PropTypes.bool,
+    stretch: PropTypes.string,
   };
 
   static defaultProps = {
