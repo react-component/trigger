@@ -8,6 +8,19 @@ import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 
+import { contextTypes } from './Trigger';
+
+// export function withTrigger(Component) {
+//   return class Wrapper extends React.Component {
+//     static contextTypes = contextTypes;
+//
+//     render() {
+//       const { rcTrigger: { realign } = {} } = this.context;
+//       return <Component triggerRealign={realign} {...this.props} />;
+//     }
+//   };
+// }
+
 function noop() {
 }
 
@@ -69,6 +82,8 @@ export default class Trigger extends React.Component {
     maskAnimation: PropTypes.string,
   };
 
+  static childContextTypes = contextTypes;
+
   static defaultProps = {
     prefixCls: 'rc-trigger-popup',
     getPopupClassNameFromAlign: returnEmptyString,
@@ -106,6 +121,14 @@ export default class Trigger extends React.Component {
 
     this.state = {
       popupVisible,
+    };
+  }
+
+  getChildContext() {
+    return {
+      rcTrigger: {
+        realign: this.popupRealign,
+      },
     };
   }
 
@@ -500,6 +523,8 @@ export default class Trigger extends React.Component {
   savePopup = (node) => {
     this._component = node;
   }
+
+  popupRealign = () => {};
 
   render() {
     const { popupVisible } = this.state;
