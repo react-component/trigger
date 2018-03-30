@@ -745,7 +745,7 @@ describe('rc-trigger', function main() {
     ), div);
 
     it('width', (done) => {
-      const trigger = createTrigger('w');
+      const trigger = createTrigger('width');
       const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
 
@@ -757,7 +757,7 @@ describe('rc-trigger', function main() {
     });
 
     it('height', (done) => {
-      const trigger = createTrigger('h');
+      const trigger = createTrigger('height');
       const domNode = ReactDOM.findDOMNode(trigger);
       Simulate.click(domNode);
 

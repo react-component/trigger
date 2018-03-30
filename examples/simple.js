@@ -161,8 +161,10 @@ class Test extends React.Component {
           Stretch:
           <select value={state.stretch} onChange={this.onStretch}>
             <option value="">--NONE--</option>
-            <option value="w">by width</option>
-            <option value="h">by height</option>
+            <option value="width">width</option>
+            <option value="minWidth">minWidth</option>
+            <option value="height">height</option>
+            <option value="minHeight">minHeight</option>
           </select>
         </label>
         &nbsp;&nbsp;&nbsp;&nbsp;

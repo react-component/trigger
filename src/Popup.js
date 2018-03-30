@@ -74,8 +74,8 @@ class Popup extends Component {
     const $ele = getRootDomNode();
     if (!$ele) return;
 
-    const height = $ele.clientHeight;
-    const width = $ele.clientWidth;
+    const height = $ele.offsetHeight;
+    const width = $ele.offsetWidth;
 
     if (targetHeight !== height || targetWidth !== width || !stretchChecked) {
       this.setState({
@@ -138,10 +138,14 @@ class Popup extends Component {
     if (stretch) {
       if (stretchChecked) {
         // Stretch with target
-        if (stretch.indexOf('h') !== -1) {
+        if (stretch.indexOf('height') !== -1) {
+          sizeStyle.height = targetHeight;
+        } else if (stretch.indexOf('minHeight') !== -1) {
           sizeStyle.minHeight = targetHeight;
         }
-        if (stretch.indexOf('w') !== -1) {
+        if (stretch.indexOf('width') !== -1) {
+          sizeStyle.width = targetWidth;
+        } else if (stretch.indexOf('minWidth') !== -1) {
           sizeStyle.minWidth = targetWidth;
         }
       } else {

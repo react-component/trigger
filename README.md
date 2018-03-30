@@ -237,7 +237,7 @@ ReactDOM.render((
           <td>stretch</td>
           <td>string</td>
           <td></td>
-          <td>Let popup div stretch with trigger element. enums of 'w', 'h'</td>
+          <td>Let popup div stretch with trigger element. enums of 'width', 'minWidth', 'height', 'minHeight'. (You can also mixed with 'height minWidth')</td>
         </tr>
     </tbody>
 </table>
