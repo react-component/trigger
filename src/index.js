@@ -9,17 +9,7 @@ import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 
 import { contextTypes } from './Trigger';
-
-// export function withTrigger(Component) {
-//   return class Wrapper extends React.Component {
-//     static contextTypes = contextTypes;
-//
-//     render() {
-//       const { rcTrigger: { realign } = {} } = this.context;
-//       return <Component triggerRealign={realign} {...this.props} />;
-//     }
-//   };
-// }
+export withTrigger from './withTrigger';
 
 function noop() {
 }
@@ -524,7 +514,11 @@ export default class Trigger extends React.Component {
     this._component = node;
   }
 
-  popupRealign = () => {};
+  popupRealign = () => {
+    if (this._component) {
+      this._component.realign();
+    }
+  };
 
   render() {
     const { popupVisible } = this.state;

@@ -195,6 +195,14 @@ class Popup extends Component {
     return maskElement;
   }
 
+  realign = () => {
+    // Dom side effect.
+    // This should force update.
+    if (this.alignInstance) {
+      this.alignInstance.forceAlign();
+    }
+  };
+
   render() {
     return (
       <div>
