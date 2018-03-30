@@ -727,4 +727,45 @@ describe('rc-trigger', function main() {
       expect(mock.testInstance).to.be('bar');
     });
   });
+
+  describe.only('stretch', () => {
+    const createTrigger = (stretch) => ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+          stretch={stretch}
+        >
+          <div className="target">
+            click me to show trigger
+            <br />
+            react component trigger
+          </div>
+        </Trigger>
+    ), div);
+
+    it('width', (done) => {
+      const trigger = createTrigger('w');
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+
+      async.series([timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect($(popupDomNode).width()).to.be($(domNode).width());
+        next();
+      }], done);
+    });
+
+    it('height', (done) => {
+      const trigger = createTrigger('h');
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+
+      async.series([timeout(20), (next) => {
+        const popupDomNode = trigger.getPopupDomNode();
+        expect($(popupDomNode).height()).to.be($(domNode).height());
+        next();
+      }], done);
+    });
+  });
 });
