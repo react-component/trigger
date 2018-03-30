@@ -91,7 +91,6 @@ export default class Trigger extends React.Component {
     action: [],
     showAction: [],
     hideAction: [],
-    stretch: false,
   };
 
   constructor(props) {
