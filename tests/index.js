@@ -729,7 +729,7 @@ describe('rc-trigger', function main() {
     });
   });
 
-  describe.only('stretch', () => {
+  describe('stretch', () => {
     const createTrigger = (stretch) => ReactDOM.render((
         <Trigger
           action={['click']}
