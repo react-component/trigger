@@ -5,10 +5,11 @@ import 'core-js/es6/set';
 import expect from 'expect.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import TestUtils from 'react-dom/test-utils';
 import $ from 'jquery';
 import '../assets/index.less';
-import Trigger from '../index';
+import Trigger, { withTrigger } from '../index';
 import './test.less';
 import async from 'async';
 import { saveRef } from '../src/utils';
@@ -728,7 +729,7 @@ describe('rc-trigger', function main() {
     });
   });
 
-  describe.only('stretch', () => {
+  describe('stretch', () => {
     const createTrigger = (stretch) => ReactDOM.render((
         <Trigger
           action={['click']}
@@ -766,6 +767,106 @@ describe('rc-trigger', function main() {
         expect($(popupDomNode).height()).to.be($(domNode).height());
         next();
       }], done);
+    });
+  });
+
+  describe('withTrigger', () => {
+    class Div extends React.Component {
+      static propTypes = {
+        triggerRealign: PropTypes.func,
+        width: PropTypes.number,
+      };
+
+      componentDidUpdate() {
+        this.props.triggerRealign();
+      }
+
+      render() {
+        const { ...props } = this.props;
+        delete props.triggerRealign;
+        delete props.width;
+
+        return (
+          <div
+            {...props}
+            style={{
+              width: this.props.width,
+              minWidth: this.props.width,
+              maxWidth: this.props.width,
+              height: 66,
+              display: 'inline-block',
+            }}
+            data-id="666"
+          />
+        );
+      }
+    }
+
+    const WrapDiv = withTrigger(Div);
+
+    let $trigger;
+
+    class Demo extends React.Component {
+      state = {
+        contentWidth: 50,
+      };
+
+      updateWidth = () => {
+        this.setState({ contentWidth: 70 });
+      };
+
+      render() {
+        const { contentWidth } = this.state;
+        return (
+          <Trigger
+            ref={(node) => {
+              $trigger = node;
+            }}
+            action={['click']}
+            popupAlign={placementAlignMap.top}
+            popup={<span>I'm popup</span>}
+          >
+            <WrapDiv width={contentWidth}>I'm content</WrapDiv>
+          </Trigger>
+        );
+      }
+    }
+
+    let $demo;
+    const createTrigger = () => ReactDOM.render(
+      <Demo
+        ref={ele => {
+          $demo = ele;
+        }}
+      />
+    , div);
+
+    it('popup change', (done) => {
+      const trigger = createTrigger();
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+
+      async.series([
+        timeout(100),
+        (next) => {
+          const popupDomNode = $trigger.getPopupDomNode();
+          const { left: pl, right: pr } = popupDomNode.getBoundingClientRect();
+          const { left: dl, right: dr } = domNode.getBoundingClientRect();
+
+          expect((pl + pr) / 2).to.be((dl + dr) / 2);
+
+          $demo.updateWidth();
+          next();
+        },
+        (next) => {
+          const popupDomNode = $trigger.getPopupDomNode();
+          const { left: pl, right: pr } = popupDomNode.getBoundingClientRect();
+          const { left: dl, right: dr } = domNode.getBoundingClientRect();
+
+          expect((pl + pr) / 2).to.be((dl + dr) / 2);
+          next();
+        },
+      ], done);
     });
   });
 });
