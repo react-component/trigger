@@ -60,11 +60,18 @@ class Test extends React.Component {
     },
     offsetX: undefined,
     offsetY: undefined,
+    stretch: '',
   };
 
   onPlacementChange = (e) => {
     this.setState({
       placement: e.target.value,
+    });
+  }
+
+  onStretch = (e) => {
+    this.setState({
+      stretch: e.target.value,
     });
   }
 
@@ -147,6 +154,17 @@ class Test extends React.Component {
             <option>topRight</option>
             <option>bottomRight</option>
             <option>bottomLeft</option>
+          </select>
+        </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          Stretch:
+          <select value={state.stretch} onChange={this.onStretch}>
+            <option value="">--NONE--</option>
+            <option value="width">width</option>
+            <option value="minWidth">minWidth</option>
+            <option value="height">height</option>
+            <option value="minHeight">minHeight</option>
           </select>
         </label>
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -251,7 +269,7 @@ class Test extends React.Component {
         &nbsp;&nbsp;&nbsp;&nbsp;
         <button onClick={this.destroy}>destroy</button>
       </div>
-      <div style={{ margin: 100, position: 'relative' }}>
+      <div style={{ margin: 120, position: 'relative' }}>
         <Trigger
           getPopupContainer={undefined && getPopupContainer}
           popupAlign={getPopupAlign(state)}
@@ -260,19 +278,34 @@ class Test extends React.Component {
           // zIndex={40}
           mask={this.state.mask}
           maskClosable={this.state.maskClosable}
+          stretch={this.state.stretch}
           // maskAnimation="fade"
           // mouseEnterDelay={0.1}
           // mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}
           builtinPlacements={builtinPlacements}
+          popupStyle={{
+            border: '1px solid red',
+            padding: 10,
+            background: 'white',
+            boxSizing: 'border-box',
+          }}
           popup={
-            <div style={{ border: '1px solid red', padding: 10, background: 'white' }}>
+            <div>
               i am a popup
             </div>
           }
           popupTransitionName={state.transitionName}
         >
-          <a href="#" style={{ margin: 20 }} onClick={preventDefault}>trigger</a>
+          <a
+            style={{ margin: 20, display: 'inline-block', background: `rgba(255, 0, 0, 0.05)` }}
+            href="#"
+            onClick={preventDefault}
+          >
+            <p>This is a example of trigger usage.</p>
+            <p>You can adjust the value above</p>
+            <p>which will also change the behaviour of popup.</p>
+          </a>
         </Trigger>
       </div>
     </div>);
