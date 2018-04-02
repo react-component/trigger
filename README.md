@@ -233,6 +233,12 @@ ReactDOM.render((
           <td></td>
           <td>builtin placement align map. used by placement prop</td>
         </tr>
+        <tr>
+          <td>stretch</td>
+          <td>string</td>
+          <td></td>
+          <td>Let popup div stretch with trigger element. enums of 'width', 'minWidth', 'height', 'minHeight'. (You can also mixed with 'height minWidth')</td>
+        </tr>
     </tbody>
 </table>
 

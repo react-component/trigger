@@ -70,6 +70,7 @@ export default class Trigger extends React.Component {
       PropTypes.object,
     ]),
     maskAnimation: PropTypes.string,
+    stretch: PropTypes.string,
   };
 
   static childContextTypes = contextTypes;
@@ -336,7 +337,15 @@ export default class Trigger extends React.Component {
   }
 
   getComponent = () => {
-    const { props, state } = this;
+    const {
+      prefixCls, destroyPopupOnHide, popupClassName, action,
+      onPopupAlign, popupAnimation, popupTransitionName, popupStyle,
+      mask, maskAnimation, maskTransitionName, zIndex, popup, stretch,
+    } = this.props;
+    const { state } = this;
+
+    const align = this.getPopupAlign();
+
     const mouseProps = {};
     if (this.isMouseEnterToShow()) {
       mouseProps.onMouseEnter = this.onPopupMouseEnter;
@@ -344,28 +353,30 @@ export default class Trigger extends React.Component {
     if (this.isMouseLeaveToHide()) {
       mouseProps.onMouseLeave = this.onPopupMouseLeave;
     }
+
     return (
       <Popup
-        prefixCls={props.prefixCls}
-        destroyPopupOnHide={props.destroyPopupOnHide}
+        prefixCls={prefixCls}
+        destroyPopupOnHide={destroyPopupOnHide}
         visible={state.popupVisible}
-        className={props.popupClassName}
-        action={props.action}
-        align={this.getPopupAlign()}
-        onAlign={props.onPopupAlign}
-        animation={props.popupAnimation}
+        className={popupClassName}
+        action={action}
+        align={align}
+        onAlign={onPopupAlign}
+        animation={popupAnimation}
         getClassNameFromAlign={this.getPopupClassNameFromAlign}
         {...mouseProps}
+        stretch={stretch}
         getRootDomNode={this.getRootDomNode}
-        style={props.popupStyle}
-        mask={props.mask}
-        zIndex={props.zIndex}
-        transitionName={props.popupTransitionName}
-        maskAnimation={props.maskAnimation}
-        maskTransitionName={props.maskTransitionName}
+        style={popupStyle}
+        mask={mask}
+        zIndex={zIndex}
+        transitionName={popupTransitionName}
+        maskAnimation={maskAnimation}
+        maskTransitionName={maskTransitionName}
         ref={this.savePopup}
       >
-        {typeof props.popup === 'function' ? props.popup() : props.popup}
+        {typeof popup === 'function' ? popup() : popup}
       </Popup>
     );
   }

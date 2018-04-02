@@ -20,10 +20,19 @@ class Popup extends Component {
     className: PropTypes.string,
     prefixCls: PropTypes.string,
     onMouseLeave: PropTypes.func,
+    stretch: PropTypes.string,
+    children: PropTypes.node,
   };
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      // Used for stretch
+      stretchChecked: false,
+      targetWidth: undefined,
+      targetHeight: undefined,
+    };
 
     this.savePopupRef = saveRef.bind(this, 'popupInstance');
     this.saveAlignRef = saveRef.bind(this, 'alignInstance');
@@ -31,6 +40,11 @@ class Popup extends Component {
 
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
+    this.setStretchSize();
+  }
+
+  componentDidUpdate() {
+    this.setStretchSize();
   }
 
   onAlign = (popupDomNode, align) => {
@@ -44,6 +58,33 @@ class Popup extends Component {
     }
     props.onAlign(popupDomNode, align);
   }
+
+  // Record size if stretch needed
+  setStretchSize = () => {
+    const { stretch, getRootDomNode, visible } = this.props;
+    const { stretchChecked, targetHeight, targetWidth } = this.state;
+
+    if (!stretch || !visible) {
+      if (stretchChecked) {
+        this.setState({ stretchChecked: false });
+      }
+      return;
+    }
+
+    const $ele = getRootDomNode();
+    if (!$ele) return;
+
+    const height = $ele.offsetHeight;
+    const width = $ele.offsetWidth;
+
+    if (targetHeight !== height || targetWidth !== width || !stretchChecked) {
+      this.setState({
+        stretchChecked: true,
+        targetHeight: height,
+        targetWidth: width,
+      });
+    }
+  };
 
   getPopupDomNode() {
     return ReactDOM.findDOMNode(this.popupInstance);
@@ -77,24 +118,54 @@ class Popup extends Component {
   }
 
   getPopupElement() {
-    const { savePopupRef, props } = this;
-    const { align, style, visible, prefixCls, destroyPopupOnHide } = props;
+    const { savePopupRef } = this;
+    const { stretchChecked, targetHeight, targetWidth } = this.state;
+    const {
+      align, visible,
+      prefixCls, style, getClassNameFromAlign,
+      destroyPopupOnHide, stretch, children,
+      onMouseEnter, onMouseLeave,
+    } = this.props;
     const className = this.getClassName(this.currentAlignClassName ||
-      props.getClassNameFromAlign(align));
+      getClassNameFromAlign(align));
     const hiddenClassName = `${prefixCls}-hidden`;
+
     if (!visible) {
       this.currentAlignClassName = null;
     }
+
+    const sizeStyle = {};
+    if (stretch) {
+      if (stretchChecked) {
+        // Stretch with target
+        if (stretch.indexOf('height') !== -1) {
+          sizeStyle.height = targetHeight;
+        } else if (stretch.indexOf('minHeight') !== -1) {
+          sizeStyle.minHeight = targetHeight;
+        }
+        if (stretch.indexOf('width') !== -1) {
+          sizeStyle.width = targetWidth;
+        } else if (stretch.indexOf('minWidth') !== -1) {
+          sizeStyle.minWidth = targetWidth;
+        }
+      } else {
+        // Do nothing when stretch not ready
+        return null;
+      }
+    }
+
     const newStyle = {
+      ...sizeStyle,
       ...style,
       ...this.getZIndexStyle(),
     };
+
     const popupInnerProps = {
       className,
       prefixCls,
       ref: savePopupRef,
-      onMouseEnter: props.onMouseEnter,
-      onMouseLeave: props.onMouseLeave,
+      onMouseEnter,
+      onMouseLeave,
       style: newStyle,
     };
     if (destroyPopupOnHide) {
@@ -118,7 +189,7 @@ class Popup extends Component {
                 visible
                 {...popupInnerProps}
               >
-                {props.children}
+                {children}
               </PopupInner>
             </Align>
           ) : null}
@@ -148,7 +219,7 @@ class Popup extends Component {
             hiddenClassName={hiddenClassName}
             {...popupInnerProps}
           >
-            {props.children}
+            {children}
           </PopupInner>
         </Align>
       </Animate>
