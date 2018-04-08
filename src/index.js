@@ -152,7 +152,8 @@ export default class Trigger extends React.Component {
     // https://github.com/react-component/trigger/issues/50
     if (state.popupVisible) {
       let currentDocument;
-      if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
+      if (!this.clickOutsideHandler &&
+        (this.isClickToHide() || this.isBlurToHide() || this.isContextMenuToShow())) {
         currentDocument = props.getDocument();
         this.clickOutsideHandler = addEventListener(currentDocument,
           'mousedown', this.onDocumentClick);
@@ -209,6 +210,21 @@ export default class Trigger extends React.Component {
       return;
     }
     this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+  }
+
+  onPopupFocus = () => {
+    this.clearDelayTimer();
+  }
+
+  onPopupBlur = () => {
+    this.clearDelayTimer();
+    if (this.isBlurToHide()) {
+      this.delaySetPopupVisible(false, this.props.blurDelay);
+    }
+  }
+
+  onPopupClick = () => {
+    this.clearDelayTimer();
   }
 
   onFocus = (e) => {
@@ -333,12 +349,17 @@ export default class Trigger extends React.Component {
 
     const align = this.getPopupAlign();
 
-    const mouseProps = {};
+    const eventProps = {};
     if (this.isMouseEnterToShow()) {
-      mouseProps.onMouseEnter = this.onPopupMouseEnter;
+      eventProps.onMouseEnter = this.onPopupMouseEnter;
     }
     if (this.isMouseLeaveToHide()) {
-      mouseProps.onMouseLeave = this.onPopupMouseLeave;
+      eventProps.onMouseLeave = this.onPopupMouseLeave;
+    }
+    if (this.isBlurToHide()) {
+      eventProps.onFocus = this.onPopupFocus;
+      eventProps.onBlur = this.onPopupBlur;
+      eventProps.onClick = this.onPopupClick;
     }
 
     return (
@@ -352,7 +373,7 @@ export default class Trigger extends React.Component {
         onAlign={onPopupAlign}
         animation={popupAnimation}
         getClassNameFromAlign={this.getPopupClassNameFromAlign}
-        {...mouseProps}
+        {...eventProps}
         stretch={stretch}
         getRootDomNode={this.getRootDomNode}
         style={popupStyle}

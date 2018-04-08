@@ -22,6 +22,9 @@ class Popup extends Component {
     onMouseLeave: PropTypes.func,
     stretch: PropTypes.string,
     children: PropTypes.node,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
+    onClick: PropTypes.func,
   };
 
   constructor(props) {
@@ -124,7 +127,7 @@ class Popup extends Component {
       align, visible,
       prefixCls, style, getClassNameFromAlign,
       destroyPopupOnHide, stretch, children,
-      onMouseEnter, onMouseLeave,
+      onMouseEnter, onMouseLeave, onFocus, onBlur, onClick,
     } = this.props;
     const className = this.getClassName(this.currentAlignClassName ||
       getClassNameFromAlign(align));
@@ -166,6 +169,9 @@ class Popup extends Component {
       ref: savePopupRef,
       onMouseEnter,
       onMouseLeave,
+      onFocus,
+      onBlur,
+      onClick,
       style: newStyle,
     };
     if (destroyPopupOnHide) {

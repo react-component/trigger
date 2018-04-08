@@ -17,6 +17,46 @@ const Simulate = TestUtils.Simulate;
 window.$ = $;
 const scryRenderedDOMComponentsWithClass = TestUtils.scryRenderedDOMComponentsWithClass;
 
+// https://stackoverflow.com/questions/42929639/mouseeventconstructor-is-not-a-constructor
+/* eslint-disable */
+(function (window) {
+  try {
+    new MouseEvent('test');
+    return false; // No need to polyfill
+  } catch (e) {
+    // Need to polyfill - fall through
+  }
+
+  // Polyfills DOM4 MouseEvent
+  const MouseEvent = function (eventType, params) {
+    params = params || { bubbles: false, cancelable: false };
+    const mouseEvent = document.createEvent('MouseEvent');
+    mouseEvent.initMouseEvent(
+      eventType,
+      params.bubbles,
+      params.cancelable,
+      window,
+      0,
+      0,
+      0,
+      0,
+      0,
+      false,
+      false,
+      false,
+      false,
+      0,
+      null
+    );
+    return mouseEvent;
+  };
+
+  MouseEvent.prototype = Event.prototype;
+
+  window.MouseEvent = MouseEvent;
+})(window);
+/* eslint-enable */
+
 function timeout(ms) {
   return (done) => {
     setTimeout(done, ms);
@@ -728,7 +768,7 @@ describe('rc-trigger', function main() {
     });
   });
 
-  describe.only('stretch', () => {
+  describe('stretch', () => {
     const createTrigger = (stretch) => ReactDOM.render((
         <Trigger
           action={['click']}
@@ -766,6 +806,100 @@ describe('rc-trigger', function main() {
         expect($(popupDomNode).height()).to.be($(domNode).height());
         next();
       }], done);
+    });
+  });
+
+  describe('blur to hide', () => {
+    let trigger;
+    const popupElement = (
+      <div style={{ width: 200 }}>
+        <input className="popup-input" />
+        <div className="click-me">
+          Click me
+        </div>
+      </div>
+    );
+
+    beforeEach(() => {
+      trigger = ReactDOM.render((
+        <Trigger
+          showAction={['click']}
+          hideAction={['blur']}
+          popupAlign={placementAlignMap.left}
+          popup={popupElement}
+        >
+          <input className="trigger-input" />
+        </Trigger>
+      ), div);
+    });
+
+    it('handles popup focus correctly', (done) => {
+      const $domNode = $(ReactDOM.findDOMNode(trigger));
+      $domNode.click().focus();
+      async.series([
+        timeout(200),
+        (next) => {
+          const $popupDomNode = $(trigger.getPopupDomNode());
+          $popupDomNode.find('.popup-input').click().focus();
+          next();
+        },
+        timeout(200),
+        (next) => {
+          expect(
+            document.querySelector('.rc-trigger-popup')
+                    .classList
+                    .contains('rc-trigger-popup-hidden')
+          ).to.be(false);
+          next();
+        },
+      ], done);
+    });
+
+    it('handles popup click correctly', (done) => {
+      const $domNode = $(ReactDOM.findDOMNode(trigger));
+      $domNode.click().focus();
+      async.series([
+        timeout(200),
+        (next) => {
+          const $popupDomNode = $(trigger.getPopupDomNode());
+          $domNode.blur();
+          $popupDomNode.find('.click-me').click();
+          next();
+        },
+        timeout(200),
+        (next) => {
+          expect(
+            document.querySelector('.rc-trigger-popup')
+                    .classList
+                    .contains('rc-trigger-popup-hidden')
+          ).to.be(false);
+          next();
+        },
+      ], done);
+    });
+
+    it('handles document click correctly', (done) => {
+      const $domNode = $(ReactDOM.findDOMNode(trigger));
+      $domNode.click().focus();
+      async.series([
+        timeout(200),
+        (next) => {
+          const $popupDomNode = $(trigger.getPopupDomNode());
+          $domNode.blur();
+          $popupDomNode.find('.click-me').click();
+          document.dispatchEvent(new MouseEvent('mousedown'));
+          next();
+        },
+        timeout(200),
+        (next) => {
+          expect(
+            document.querySelector('.rc-trigger-popup')
+                    .classList
+                    .contains('rc-trigger-popup-hidden')
+          ).to.be(true);
+          next();
+        },
+      ], done);
     });
   });
 });
