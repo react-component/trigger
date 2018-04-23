@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { findDOMNode, createPortal } from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import { polyfill } from 'react-lifecycles-compat';
 import Popup from './Popup';
 import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
 import ContainerRender from 'rc-util/lib/ContainerRender';
@@ -24,7 +25,7 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
 
 const IS_REACT_16 = !!createPortal;
 
-export default class Trigger extends React.Component {
+class Trigger extends React.Component {
   static propTypes = {
     children: PropTypes.any,
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -93,24 +94,22 @@ export default class Trigger extends React.Component {
     hideAction: [],
   };
 
+  static getDerivedStateFromProps(nextProps) {
+    if ('popupVisible' in nextProps) {
+      return {
+        popupVisible: nextProps.popupVisible,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
 
-    let popupVisible;
-    if ('popupVisible' in props) {
-      popupVisible = !!props.popupVisible;
-    } else {
-      popupVisible = !!props.defaultPopupVisible;
-    }
-
-    this.prevPopupVisible = popupVisible;
-
     this.state = {
-      popupVisible,
+      popupVisible: !!props.defaultPopupVisible,
     };
-  }
 
-  componentWillMount() {
     ALL_HANDLERS.forEach((h) => {
       this[`fire${h}`] = (e) => {
         this.fireEvents(h, e);
@@ -119,65 +118,11 @@ export default class Trigger extends React.Component {
   }
 
   componentDidMount() {
-    this.componentDidUpdate({}, {
-      popupVisible: this.state.popupVisible,
-    });
-  }
-
-  componentWillReceiveProps({ popupVisible }) {
-    if (popupVisible !== undefined) {
-      this.setState({
-        popupVisible,
-      });
-    }
+    this.renderComponent(this.state.popupVisible);
   }
 
   componentDidUpdate(_, prevState) {
-    const props = this.props;
-    const state = this.state;
-    const triggerAfterPopupVisibleChange = () => {
-      if (prevState.popupVisible !== state.popupVisible) {
-        props.afterPopupVisibleChange(state.popupVisible);
-      }
-    };
-    if (!IS_REACT_16) {
-      this.renderComponent(null, triggerAfterPopupVisibleChange);
-    }
-
-    this.prevPopupVisible = prevState.popupVisible;
-
-    // We must listen to `mousedown` or `touchstart`, edge case:
-    // https://github.com/ant-design/ant-design/issues/5804
-    // https://github.com/react-component/calendar/issues/250
-    // https://github.com/react-component/trigger/issues/50
-    if (state.popupVisible) {
-      let currentDocument;
-      if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
-        currentDocument = props.getDocument();
-        this.clickOutsideHandler = addEventListener(currentDocument,
-          'mousedown', this.onDocumentClick);
-      }
-      // always hide on mobile
-      if (!this.touchOutsideHandler) {
-        currentDocument = currentDocument || props.getDocument();
-        this.touchOutsideHandler = addEventListener(currentDocument,
-          'touchstart', this.onDocumentClick);
-      }
-      // close popup when trigger type contains 'onContextMenu' and document is scrolling.
-      if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
-        currentDocument = currentDocument || props.getDocument();
-        this.contextMenuOutsideHandler1 = addEventListener(currentDocument,
-          'scroll', this.onContextMenuClose);
-      }
-      // close popup when trigger type contains 'onContextMenu' and window is blur.
-      if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
-        this.contextMenuOutsideHandler2 = addEventListener(window,
-          'blur', this.onContextMenuClose);
-      }
-      return;
-    }
-
-    this.clearOutsideHandler();
+    this.renderComponent(prevState.popupVisible);
   }
 
   componentWillUnmount() {
@@ -421,6 +366,37 @@ export default class Trigger extends React.Component {
     }
   }
 
+  bindOutsideHandler() {
+    const { getDocument } = this.props;
+    // We must listen to `mousedown` or `touchstart`, edge case:
+    // https://github.com/ant-design/ant-design/issues/5804
+    // https://github.com/react-component/calendar/issues/250
+    // https://github.com/react-component/trigger/issues/50
+    let currentDocument;
+    if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
+      currentDocument = getDocument();
+      this.clickOutsideHandler = addEventListener(currentDocument,
+        'mousedown', this.onDocumentClick);
+    }
+    // always hide on mobile
+    if (!this.touchOutsideHandler) {
+      currentDocument = currentDocument || getDocument();
+      this.touchOutsideHandler = addEventListener(currentDocument,
+        'touchstart', this.onDocumentClick);
+    }
+    // close popup when trigger type contains 'onContextMenu' and document is scrolling.
+    if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
+      currentDocument = currentDocument || getDocument();
+      this.contextMenuOutsideHandler1 = addEventListener(currentDocument,
+        'scroll', this.onContextMenuClose);
+    }
+    // close popup when trigger type contains 'onContextMenu' and window is blur.
+    if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
+      this.contextMenuOutsideHandler2 = addEventListener(window,
+        'blur', this.onContextMenuClose);
+    }
+  }
+
   clearOutsideHandler() {
     if (this.clickOutsideHandler) {
       this.clickOutsideHandler.remove();
@@ -512,6 +488,27 @@ export default class Trigger extends React.Component {
     this._component = node;
   }
 
+  renderComponent(prevPopupVisible) {
+    const { afterPopupVisibleChange } = this.props;
+    const { popupVisible } = this.state;
+    const triggerAfterPopupVisibleChange = () => {
+      if (prevPopupVisible !== popupVisible) {
+        afterPopupVisibleChange(popupVisible);
+      }
+    };
+    if (!IS_REACT_16) {
+      this.containerRenderComponent(null, triggerAfterPopupVisibleChange);
+    }
+
+    this.prevPopupVisible = prevPopupVisible;
+
+    if (!popupVisible) {
+      this.clearOutsideHandler();
+    } else {
+      this.bindOutsideHandler();
+    }
+  }
+
   render() {
     const { popupVisible } = this.state;
     const props = this.props;
@@ -565,7 +562,7 @@ export default class Trigger extends React.Component {
           getContainer={this.getContainer}
         >
           {({ renderComponent }) => {
-            this.renderComponent = renderComponent;
+            this.containerRenderComponent = renderComponent;
             return trigger;
           }}
         </ContainerRender>
@@ -592,3 +589,7 @@ export default class Trigger extends React.Component {
     ];
   }
 }
+
+polyfill(Trigger);
+
+export default Trigger;
