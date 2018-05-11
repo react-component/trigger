@@ -120,7 +120,7 @@ class Popup extends Component {
       align, visible,
       prefixCls, style, getClassNameFromAlign,
       destroyPopupOnHide, stretch, children,
-      onMouseEnter, onMouseLeave,
+      onMouseEnter, onMouseLeave, getTarget,
     } = this.props;
     const className = this.getClassName(this.currentAlignClassName ||
       getClassNameFromAlign(align));
@@ -162,7 +162,6 @@ class Popup extends Component {
       ref: savePopupRef,
       onMouseEnter,
       onMouseLeave,
-      getTarget,
       style: newStyle,
     };
     if (destroyPopupOnHide) {
