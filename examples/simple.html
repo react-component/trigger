@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-trigger@2.3.4</title>
+  <title>simple.js - example - rc-trigger@2.4.0</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -263,7 +263,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-trigger@2.3.4</h1>
+      <h1>rc-trigger@2.4.0</h1>
 
       <p>base abstract trigger component for react</p>
     </div>
@@ -275,7 +275,6 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> Trigger <span class="hljs-keyword">from</span> <span class="hljs-string">'rc-trigger'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-string">'rc-trigger/assets/index.css'</span>;
-<span class="hljs-keyword">import</span> assign <span class="hljs-keyword">from</span> <span class="hljs-string">'object-assign'</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPopupAlign</span>(<span class="hljs-params">state</span>) </span>{
   <span class="hljs-keyword">return</span> {
@@ -332,11 +331,18 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     },
     offsetX: <span class="hljs-literal">undefined</span>,
     offsetY: <span class="hljs-literal">undefined</span>,
+    stretch: <span class="hljs-string">''</span>,
   };
 
   onPlacementChange = (e) =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       placement: e.target.value,
+    });
+  }
+
+  onStretch = (e) =&gt; {
+    <span class="hljs-keyword">this</span>.setState({
+      stretch: e.target.value,
     });
   }
 
@@ -347,7 +353,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   }
 
   onTriggerChange = (e) =&gt; {
-    <span class="hljs-keyword">const</span> trigger = assign({}, <span class="hljs-keyword">this</span>.state.trigger);
+    <span class="hljs-keyword">const</span> trigger = { ...this.state.trigger };
     <span class="hljs-keyword">if</span> (e.target.checked) {
       trigger[e.target.value] = <span class="hljs-number">1</span>;
     } <span class="hljs-keyword">else</span> {
@@ -419,6 +425,17 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
             <span class="hljs-tag">&lt;<span class="hljs-title">option</span>&gt;</span>topRight<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-title">option</span>&gt;</span>bottomRight<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-title">option</span>&gt;</span>bottomLeft<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-title">select</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
+        &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+        <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
+          Stretch:
+          <span class="hljs-tag">&lt;<span class="hljs-title">select</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">{state.stretch}</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onStretch}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">""</span>&gt;</span>--NONE--<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"width"</span>&gt;</span>width<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"minWidth"</span>&gt;</span>minWidth<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"height"</span>&gt;</span>height<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">"minHeight"</span>&gt;</span>minHeight<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
           <span class="hljs-tag">&lt;/<span class="hljs-title">select</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
         &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
@@ -523,7 +540,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
         &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
         <span class="hljs-tag">&lt;<span class="hljs-title">button</span> <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{this.destroy}</span>&gt;</span>destroy<span class="hljs-tag">&lt;/<span class="hljs-title">button</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">100</span>, <span class="hljs-attribute">position:</span> '<span class="hljs-attribute">relative</span>' }}&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">120</span>, <span class="hljs-attribute">position:</span> '<span class="hljs-attribute">relative</span>' }}&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
           <span class="hljs-attribute">getPopupContainer</span>=<span class="hljs-value">{undefined</span> &amp;&amp; <span class="hljs-attribute">getPopupContainer</span>}
           <span class="hljs-attribute">popupAlign</span>=<span class="hljs-value">{getPopupAlign(state)}</span>
@@ -532,19 +549,34 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
           // <span class="hljs-attribute">zIndex</span>=<span class="hljs-value">{40}</span>
           <span class="hljs-attribute">mask</span>=<span class="hljs-value">{this.state.mask}</span>
           <span class="hljs-attribute">maskClosable</span>=<span class="hljs-value">{this.state.maskClosable}</span>
+          <span class="hljs-attribute">stretch</span>=<span class="hljs-value">{this.state.stretch}</span>
           // <span class="hljs-attribute">maskAnimation</span>=<span class="hljs-value">"fade"</span>
           // <span class="hljs-attribute">mouseEnterDelay</span>=<span class="hljs-value">{0.1}</span>
           // <span class="hljs-attribute">mouseLeaveDelay</span>=<span class="hljs-value">{0.1}</span>
           <span class="hljs-attribute">action</span>=<span class="hljs-value">{Object.keys(state.trigger)}</span>
           <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
+          <span class="hljs-attribute">popupStyle</span>=<span class="hljs-value">{{</span>
+            <span class="hljs-attribute">border:</span> '<span class="hljs-attribute">1px</span> <span class="hljs-attribute">solid</span> <span class="hljs-attribute">red</span>',
+            <span class="hljs-attribute">padding:</span> <span class="hljs-attribute">10</span>,
+            <span class="hljs-attribute">background:</span> '<span class="hljs-attribute">white</span>',
+            <span class="hljs-attribute">boxSizing:</span> '<span class="hljs-attribute">border-box</span>',
+          }}
           <span class="hljs-attribute">popup</span>=<span class="hljs-value">{</span>
-            &lt;<span class="hljs-attribute">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">border:</span> '<span class="hljs-attribute">1px</span> <span class="hljs-attribute">solid</span> <span class="hljs-attribute">red</span>', <span class="hljs-attribute">padding:</span> <span class="hljs-attribute">10</span>, <span class="hljs-attribute">background:</span> '<span class="hljs-attribute">white</span>' }}&gt;</span>
+            &lt;<span class="hljs-attribute">div</span>&gt;</span>
               i am a popup
             <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
           }
           popupTransitionName={state.transitionName}
         &gt;
-          <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">20</span> }} <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{preventDefault}</span>&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">a</span>
+            <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">20</span>, <span class="hljs-attribute">display:</span> '<span class="hljs-attribute">inline-block</span>', <span class="hljs-attribute">background:</span> `<span class="hljs-attribute">rgba</span>(<span class="hljs-attribute">255</span>, <span class="hljs-attribute">0</span>, <span class="hljs-attribute">0</span>, <span class="hljs-attribute">0.05</span>)` }}
+            <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span>
+            <span class="hljs-attribute">onClick</span>=<span class="hljs-value">{preventDefault}</span>
+          &gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>This is a example of trigger usage.<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>You can adjust the value above<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>which will also change the behaviour of popup.<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>)</span>;
