@@ -54,6 +54,7 @@ export default class Trigger extends React.Component {
     blurDelay: PropTypes.number,
     getPopupContainer: PropTypes.func,
     getDocument: PropTypes.func,
+    getTarget: PropTypes.func,
     forceRender: PropTypes.bool,
     destroyPopupOnHide: PropTypes.bool,
     mask: PropTypes.bool,
@@ -297,10 +298,6 @@ export default class Trigger extends React.Component {
     return null;
   }
 
-  getRootDomNode = () => {
-    return findDOMNode(this);
-  }
-
   getPopupClassNameFromAlign = (align) => {
     const className = [];
     const props = this.props;
@@ -327,7 +324,7 @@ export default class Trigger extends React.Component {
     const {
       prefixCls, destroyPopupOnHide, popupClassName, action,
       onPopupAlign, popupAnimation, popupTransitionName, popupStyle,
-      mask, maskAnimation, maskTransitionName, zIndex, popup, stretch,
+      mask, maskAnimation, maskTransitionName, zIndex, popup, stretch, getTarget,
     } = this.props;
     const { state } = this;
 
@@ -354,7 +351,7 @@ export default class Trigger extends React.Component {
         getClassNameFromAlign={this.getPopupClassNameFromAlign}
         {...mouseProps}
         stretch={stretch}
-        getRootDomNode={this.getRootDomNode}
+        getTarget={getTarget || this.getRootDomNode}
         style={popupStyle}
         mask={mask}
         zIndex={zIndex}
