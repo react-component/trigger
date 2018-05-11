@@ -298,6 +298,10 @@ export default class Trigger extends React.Component {
     return null;
   }
 
+  getRootDomNode = () => {
+    return findDOMNode(this);
+  }
+
   getPopupClassNameFromAlign = (align) => {
     const className = [];
     const props = this.props;
