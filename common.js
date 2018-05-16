@@ -23775,6 +23775,8 @@ var Popup = function (_Component) {
   };
 
   Popup.prototype.getPopupElement = function getPopupElement() {
+    var _this2 = this;
+
     var savePopupRef = this.savePopupRef;
     var _state = this.state,
         stretchChecked = _state.stretchChecked,
@@ -23801,21 +23803,24 @@ var Popup = function (_Component) {
 
     var sizeStyle = {};
     if (stretch) {
-      if (stretchChecked) {
-        // Stretch with target
-        if (stretch.indexOf('height') !== -1) {
-          sizeStyle.height = targetHeight;
-        } else if (stretch.indexOf('minHeight') !== -1) {
-          sizeStyle.minHeight = targetHeight;
-        }
-        if (stretch.indexOf('width') !== -1) {
-          sizeStyle.width = targetWidth;
-        } else if (stretch.indexOf('minWidth') !== -1) {
-          sizeStyle.minWidth = targetWidth;
-        }
-      } else {
-        // Do nothing when stretch not ready
-        return null;
+      // Stretch with target
+      if (stretch.indexOf('height') !== -1) {
+        sizeStyle.height = targetHeight;
+      } else if (stretch.indexOf('minHeight') !== -1) {
+        sizeStyle.minHeight = targetHeight;
+      }
+      if (stretch.indexOf('width') !== -1) {
+        sizeStyle.width = targetWidth;
+      } else if (stretch.indexOf('minWidth') !== -1) {
+        sizeStyle.minWidth = targetWidth;
+      }
+
+      // Delay force align to makes ui smooth
+      if (!stretchChecked) {
+        sizeStyle.visibility = 'hidden';
+        setTimeout(function () {
+          _this2.alignInstance.forceAlign();
+        }, 0);
       }
     }
 
@@ -23858,6 +23863,7 @@ var Popup = function (_Component) {
         ) : null
       );
     }
+
     return __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
       __WEBPACK_IMPORTED_MODULE_8_rc_animate__["a" /* default */],
       {
@@ -23958,26 +23964,26 @@ Popup.propTypes = {
 };
 
 var _initialiseProps = function _initialiseProps() {
-  var _this2 = this;
+  var _this3 = this;
 
   this.onAlign = function (popupDomNode, align) {
-    var props = _this2.props;
+    var props = _this3.props;
     var currentAlignClassName = props.getClassNameFromAlign(align);
     // FIX: https://github.com/react-component/trigger/issues/56
     // FIX: https://github.com/react-component/tooltip/issues/79
-    if (_this2.currentAlignClassName !== currentAlignClassName) {
-      _this2.currentAlignClassName = currentAlignClassName;
-      popupDomNode.className = _this2.getClassName(currentAlignClassName);
+    if (_this3.currentAlignClassName !== currentAlignClassName) {
+      _this3.currentAlignClassName = currentAlignClassName;
+      popupDomNode.className = _this3.getClassName(currentAlignClassName);
     }
     props.onAlign(popupDomNode, align);
   };
 
   this.setStretchSize = function () {
-    var _props2 = _this2.props,
+    var _props2 = _this3.props,
         stretch = _props2.stretch,
         getRootDomNode = _props2.getRootDomNode,
         visible = _props2.visible;
-    var _state2 = _this2.state,
+    var _state2 = _this3.state,
         stretchChecked = _state2.stretchChecked,
         targetHeight = _state2.targetHeight,
         targetWidth = _state2.targetWidth;
@@ -23985,7 +23991,7 @@ var _initialiseProps = function _initialiseProps() {
 
     if (!stretch || !visible) {
       if (stretchChecked) {
-        _this2.setState({ stretchChecked: false });
+        _this3.setState({ stretchChecked: false });
       }
       return;
     }
@@ -23997,7 +24003,7 @@ var _initialiseProps = function _initialiseProps() {
     var width = $ele.offsetWidth;
 
     if (targetHeight !== height || targetWidth !== width || !stretchChecked) {
-      _this2.setState({
+      _this3.setState({
         stretchChecked: true,
         targetHeight: height,
         targetWidth: width
@@ -24006,7 +24012,7 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this.getTarget = function () {
-    return _this2.props.getRootDomNode();
+    return _this3.props.getRootDomNode();
   };
 };
 
