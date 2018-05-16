@@ -136,21 +136,24 @@ class Popup extends Component {
 
     const sizeStyle = {};
     if (stretch) {
-      if (stretchChecked) {
-        // Stretch with target
-        if (stretch.indexOf('height') !== -1) {
-          sizeStyle.height = targetHeight;
-        } else if (stretch.indexOf('minHeight') !== -1) {
-          sizeStyle.minHeight = targetHeight;
-        }
-        if (stretch.indexOf('width') !== -1) {
-          sizeStyle.width = targetWidth;
-        } else if (stretch.indexOf('minWidth') !== -1) {
-          sizeStyle.minWidth = targetWidth;
-        }
-      } else {
-        // Do nothing when stretch not ready
-        return null;
+      // Stretch with target
+      if (stretch.indexOf('height') !== -1) {
+        sizeStyle.height = targetHeight;
+      } else if (stretch.indexOf('minHeight') !== -1) {
+        sizeStyle.minHeight = targetHeight;
+      }
+      if (stretch.indexOf('width') !== -1) {
+        sizeStyle.width = targetWidth;
+      } else if (stretch.indexOf('minWidth') !== -1) {
+        sizeStyle.minWidth = targetWidth;
+      }
+
+      // Delay force align to makes ui smooth
+      if (!stretchChecked) {
+        sizeStyle.visibility = 'hidden';
+        setTimeout(() => {
+          this.alignInstance.forceAlign();
+        }, 0);
       }
     }
 
@@ -196,6 +199,7 @@ class Popup extends Component {
         </Animate>
       );
     }
+
     return (
       <Animate
         component=""
