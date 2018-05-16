@@ -148,9 +148,14 @@ class Popup extends Component {
         } else if (stretch.indexOf('minWidth') !== -1) {
           sizeStyle.minWidth = targetWidth;
         }
-      } else {
-        // Do nothing when stretch not ready
-        return null;
+      }
+
+      // Delay force align to makes ui smooth
+      if (!stretchChecked) {
+        sizeStyle.visibility = 'hidden';
+        Promise.resolve().then(() => {
+          this.alignInstance.forceAlign();
+        });
       }
     }
 
