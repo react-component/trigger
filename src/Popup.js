@@ -152,7 +152,6 @@ class Popup extends Component {
 
       // Delay force align to makes ui smooth
       if (!stretchChecked) {
-        sizeStyle.visibility = 'hidden';
         Promise.resolve().then(() => {
           this.alignInstance.forceAlign();
         });
@@ -201,6 +200,7 @@ class Popup extends Component {
         </Animate>
       );
     }
+
     return (
       <Animate
         component=""
