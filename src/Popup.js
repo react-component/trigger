@@ -152,7 +152,9 @@ class Popup extends Component {
       if (!stretchChecked) {
         sizeStyle.visibility = 'hidden';
         setTimeout(() => {
-          this.alignInstance.forceAlign();
+          if (this.alignInstance) {
+            this.alignInstance.forceAlign();
+          }
         }, 0);
       }
     }
