@@ -23819,7 +23819,9 @@ var Popup = function (_Component) {
       if (!stretchChecked) {
         sizeStyle.visibility = 'hidden';
         setTimeout(function () {
-          _this2.alignInstance.forceAlign();
+          if (_this2.alignInstance) {
+            _this2.alignInstance.forceAlign();
+          }
         }, 0);
       }
     }
