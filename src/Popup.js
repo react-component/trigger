@@ -13,7 +13,7 @@ class Popup extends Component {
     style: PropTypes.object,
     getClassNameFromAlign: PropTypes.func,
     onAlign: PropTypes.func,
-    getRootDomNode: PropTypes.func,
+    getTarget: PropTypes.func,
     onMouseEnter: PropTypes.func,
     align: PropTypes.any,
     destroyPopupOnHide: PropTypes.bool,
@@ -61,7 +61,7 @@ class Popup extends Component {
 
   // Record size if stretch needed
   setStretchSize = () => {
-    const { stretch, getRootDomNode, visible } = this.props;
+    const { stretch, getTarget, visible } = this.props;
     const { stretchChecked, targetHeight, targetWidth } = this.state;
 
     if (!stretch || !visible) {
@@ -71,7 +71,7 @@ class Popup extends Component {
       return;
     }
 
-    const $ele = getRootDomNode();
+    const $ele = getTarget();
     if (!$ele) return;
 
     const height = $ele.offsetHeight;
@@ -88,10 +88,6 @@ class Popup extends Component {
 
   getPopupDomNode() {
     return ReactDOM.findDOMNode(this.popupInstance);
-  }
-
-  getTarget = () => {
-    return this.props.getRootDomNode();
   }
 
   getMaskTransitionName() {
@@ -124,7 +120,7 @@ class Popup extends Component {
       align, visible,
       prefixCls, style, getClassNameFromAlign,
       destroyPopupOnHide, stretch, children,
-      onMouseEnter, onMouseLeave,
+      onMouseEnter, onMouseLeave, getTarget,
     } = this.props;
     const className = this.getClassName(this.currentAlignClassName ||
       getClassNameFromAlign(align));
@@ -183,7 +179,7 @@ class Popup extends Component {
         >
           {visible ? (
             <Align
-              target={this.getTarget}
+              target={getTarget}
               key="popup"
               ref={this.saveAlignRef}
               monitorWindowResize
@@ -211,7 +207,7 @@ class Popup extends Component {
         showProp="xVisible"
       >
         <Align
-          target={this.getTarget}
+          target={getTarget}
           key="popup"
           ref={this.saveAlignRef}
           monitorWindowResize
