@@ -68,6 +68,7 @@ export default class Trigger extends React.Component {
     ]),
     maskAnimation: PropTypes.string,
     stretch: PropTypes.string,
+    alignPoint: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -187,12 +188,12 @@ export default class Trigger extends React.Component {
 
   onMouseEnter = (e) => {
     this.fireEvents('onMouseEnter', e);
-    this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
+    this.delaySetPopupVisible(true, this.props.mouseEnterDelay, e);
   }
 
   onMouseLeave = (e) => {
     this.fireEvents('onMouseLeave', e);
-    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay, e);
   }
 
   onPopupMouseEnter = () => {
@@ -208,7 +209,7 @@ export default class Trigger extends React.Component {
       contains(this._component.getPopupDomNode(), e.relatedTarget)) {
       return;
     }
-    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+    this.delaySetPopupVisible(false, this.props.mouseLeaveDelay, e);
   }
 
   onFocus = (e) => {
@@ -217,7 +218,7 @@ export default class Trigger extends React.Component {
     this.clearDelayTimer();
     if (this.isFocusToShow()) {
       this.focusTime = Date.now();
-      this.delaySetPopupVisible(true, this.props.focusDelay);
+      this.delaySetPopupVisible(true, this.props.focusDelay, e);
     }
   }
 
@@ -235,14 +236,14 @@ export default class Trigger extends React.Component {
     this.fireEvents('onBlur', e);
     this.clearDelayTimer();
     if (this.isBlurToHide()) {
-      this.delaySetPopupVisible(false, this.props.blurDelay);
+      this.delaySetPopupVisible(false, this.props.blurDelay, e);
     }
   }
 
   onContextMenu = (e) => {
     e.preventDefault();
     this.fireEvents('onContextMenu', e);
-    this.setPopupVisible(true);
+    this.setPopupVisible(true, e);
   }
 
   onContextMenuClose = () => {
@@ -273,7 +274,7 @@ export default class Trigger extends React.Component {
     event.preventDefault();
     const nextVisible = !this.state.popupVisible;
     if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
-      this.setPopupVisible(!this.state.popupVisible);
+      this.setPopupVisible(!this.state.popupVisible, event);
     }
   }
 
@@ -328,8 +329,9 @@ export default class Trigger extends React.Component {
       prefixCls, destroyPopupOnHide, popupClassName, action,
       onPopupAlign, popupAnimation, popupTransitionName, popupStyle,
       mask, maskAnimation, maskTransitionName, zIndex, popup, stretch,
+      alignPoint,
     } = this.props;
-    const { state } = this;
+    const { popupVisible, point } = this.state;
 
     const align = this.getPopupAlign();
 
@@ -345,7 +347,8 @@ export default class Trigger extends React.Component {
       <Popup
         prefixCls={prefixCls}
         destroyPopupOnHide={destroyPopupOnHide}
-        visible={state.popupVisible}
+        visible={popupVisible}
+        point={alignPoint && point}
         className={popupClassName}
         action={action}
         align={align}
@@ -383,13 +386,26 @@ export default class Trigger extends React.Component {
     return popupContainer;
   }
 
-  setPopupVisible(popupVisible) {
+  /**
+   * @param popupVisible    Show or not the popup element
+   * @param event           SyntheticEvent, used for `pointAlign`
+   */
+  setPopupVisible(popupVisible, event) {
     this.clearDelayTimer();
+
     if (this.state.popupVisible !== popupVisible) {
       if (!('popupVisible' in this.props)) {
-        this.setState({
-          popupVisible,
-        });
+        const newState = { popupVisible };
+
+        // Record point if visible
+        if (popupVisible && event) {
+          newState.point = {
+            pageX: event.pageX,
+            pageY: event.pageY,
+          };
+        }
+
+        this.setState(newState);
       }
       this.props.onPopupVisibleChange(popupVisible);
     }
@@ -401,16 +417,16 @@ export default class Trigger extends React.Component {
     }
   }
 
-  delaySetPopupVisible(visible, delayS) {
+  delaySetPopupVisible(visible, delayS, event) {
     const delay = delayS * 1000;
     this.clearDelayTimer();
     if (delay) {
       this.delayTimer = setTimeout(() => {
-        this.setPopupVisible(visible);
+        this.setPopupVisible(visible, event);
         this.clearDelayTimer();
       }, delay);
     } else {
-      this.setPopupVisible(visible);
+      this.setPopupVisible(visible, event);
     }
   }
 
