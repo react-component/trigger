@@ -6,7 +6,7 @@ import $ from 'jquery';
 import Trigger from '../index';
 import './point.less';
 
-describe.only('align by point', () => {
+describe('align by point', () => {
   let region;
 
   beforeEach(() => {

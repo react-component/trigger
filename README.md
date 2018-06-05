@@ -90,6 +90,12 @@ ReactDOM.render((
     </thead>
     <tbody>
         <tr>
+          <td>alignPoint</td>
+          <td>bool</td>
+          <td>false</td>
+          <td>Popup will align with mouse position (support action of 'click', 'hover' and 'contextMenu')</td>
+        </tr>
+        <tr>
           <td>popupClassName</td>
           <td>string</td>
           <td></td>
