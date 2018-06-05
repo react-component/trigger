@@ -58,7 +58,7 @@
   "dependencies": {
     "babel-runtime": "6.x",
     "prop-types": "15.x",
-    "rc-align": "2.x",
+    "rc-align": "^2.4.0",
     "rc-animate": "2.x",
     "rc-util": "^4.4.0"
   }

@@ -22,6 +22,10 @@ class Popup extends Component {
     onMouseLeave: PropTypes.func,
     stretch: PropTypes.string,
     children: PropTypes.node,
+    point: PropTypes.shape({
+      pageX: PropTypes.number,
+      pageY: PropTypes.number,
+    }),
   };
 
   constructor(props) {
@@ -90,8 +94,18 @@ class Popup extends Component {
     return ReactDOM.findDOMNode(this.popupInstance);
   }
 
-  getTarget = () => {
+  getTargetElement = () => {
     return this.props.getRootDomNode();
+  }
+
+  // `target` on `rc-align` can accept as a function to get the bind element or a point.
+  // ref: https://www.npmjs.com/package/rc-align
+  getAlignTarget = () => {
+    const { point } = this.props;
+    if (point) {
+      return point;
+    }
+    return this.getTargetElement;
   }
 
   getMaskTransitionName() {
@@ -183,7 +197,7 @@ class Popup extends Component {
         >
           {visible ? (
             <Align
-              target={this.getTarget}
+              target={this.getAlignTarget()}
               key="popup"
               ref={this.saveAlignRef}
               monitorWindowResize
@@ -211,7 +225,7 @@ class Popup extends Component {
         showProp="xVisible"
       >
         <Align
-          target={this.getTarget}
+          target={this.getAlignTarget()}
           key="popup"
           ref={this.saveAlignRef}
           monitorWindowResize

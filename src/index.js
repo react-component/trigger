@@ -68,6 +68,7 @@ export default class Trigger extends React.Component {
     ]),
     maskAnimation: PropTypes.string,
     stretch: PropTypes.string,
+    alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
   };
 
   static defaultProps = {
@@ -186,9 +187,15 @@ export default class Trigger extends React.Component {
   }
 
   onMouseEnter = (e) => {
+    const { mouseEnterDelay } = this.props;
     this.fireEvents('onMouseEnter', e);
-    this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
+    this.delaySetPopupVisible(true, mouseEnterDelay, mouseEnterDelay ? null : e);
   }
+
+  onMouseMove = (e) => {
+    this.fireEvents('onMouseMove', e);
+    this.setPoint(e);
+  };
 
   onMouseLeave = (e) => {
     this.fireEvents('onMouseLeave', e);
@@ -242,7 +249,7 @@ export default class Trigger extends React.Component {
   onContextMenu = (e) => {
     e.preventDefault();
     this.fireEvents('onContextMenu', e);
-    this.setPopupVisible(true);
+    this.setPopupVisible(true, e);
   }
 
   onContextMenuClose = () => {
@@ -273,7 +280,7 @@ export default class Trigger extends React.Component {
     event.preventDefault();
     const nextVisible = !this.state.popupVisible;
     if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
-      this.setPopupVisible(!this.state.popupVisible);
+      this.setPopupVisible(!this.state.popupVisible, event);
     }
   }
 
@@ -328,8 +335,9 @@ export default class Trigger extends React.Component {
       prefixCls, destroyPopupOnHide, popupClassName, action,
       onPopupAlign, popupAnimation, popupTransitionName, popupStyle,
       mask, maskAnimation, maskTransitionName, zIndex, popup, stretch,
+      alignPoint,
     } = this.props;
-    const { state } = this;
+    const { popupVisible, point } = this.state;
 
     const align = this.getPopupAlign();
 
@@ -345,7 +353,8 @@ export default class Trigger extends React.Component {
       <Popup
         prefixCls={prefixCls}
         destroyPopupOnHide={destroyPopupOnHide}
-        visible={state.popupVisible}
+        visible={popupVisible}
+        point={alignPoint && point}
         className={popupClassName}
         action={action}
         align={align}
@@ -383,16 +392,38 @@ export default class Trigger extends React.Component {
     return popupContainer;
   }
 
-  setPopupVisible(popupVisible) {
+  /**
+   * @param popupVisible    Show or not the popup element
+   * @param event           SyntheticEvent, used for `pointAlign`
+   */
+  setPopupVisible(popupVisible, event) {
+    const { alignPoint } = this.props;
+
     this.clearDelayTimer();
+
     if (this.state.popupVisible !== popupVisible) {
       if (!('popupVisible' in this.props)) {
-        this.setState({
-          popupVisible,
-        });
+        this.setState({ popupVisible });
       }
       this.props.onPopupVisibleChange(popupVisible);
     }
+
+    // Always record the point position since mouseEnterDelay will delay the show
+    if (alignPoint && event) {
+      this.setPoint(event);
+    }
+  }
+
+  setPoint = (point) => {
+    const { alignPoint } = this.props;
+    if (!alignPoint || !point) return;
+
+    this.setState({
+      point: {
+        pageX: point.pageX,
+        pageY: point.pageY,
+      },
+    });
   }
 
   handlePortalUpdate = () => {
@@ -401,16 +432,17 @@ export default class Trigger extends React.Component {
     }
   }
 
-  delaySetPopupVisible(visible, delayS) {
+  delaySetPopupVisible(visible, delayS, event) {
     const delay = delayS * 1000;
     this.clearDelayTimer();
     if (delay) {
+      const point = event ? { pageX: event.pageX, pageY: event.pageY } : null;
       this.delayTimer = setTimeout(() => {
-        this.setPopupVisible(visible);
+        this.setPopupVisible(visible, point);
         this.clearDelayTimer();
       }, delay);
     } else {
-      this.setPopupVisible(visible);
+      this.setPopupVisible(visible, event);
     }
   }
 
@@ -514,8 +546,7 @@ export default class Trigger extends React.Component {
 
   render() {
     const { popupVisible } = this.state;
-    const props = this.props;
-    const children = props.children;
+    const { children, forceRender, alignPoint } = this.props;
     const child = React.Children.only(children);
     const newChildProps = { key: 'trigger' };
 
@@ -536,6 +567,9 @@ export default class Trigger extends React.Component {
     }
     if (this.isMouseEnterToShow()) {
       newChildProps.onMouseEnter = this.onMouseEnter;
+      if (alignPoint) {
+        newChildProps.onMouseMove = this.onMouseMove;
+      }
     } else {
       newChildProps.onMouseEnter = this.createTwoChains('onMouseEnter');
     }
@@ -560,7 +594,7 @@ export default class Trigger extends React.Component {
           parent={this}
           visible={popupVisible}
           autoMount={false}
-          forceRender={props.forceRender}
+          forceRender={forceRender}
           getComponent={this.getComponent}
           getContainer={this.getContainer}
         >
@@ -574,7 +608,7 @@ export default class Trigger extends React.Component {
 
     let portal;
     // prevent unmounting after it's rendered
-    if (popupVisible || this._component || props.forceRender) {
+    if (popupVisible || this._component || forceRender) {
       portal = (
         <Portal
           key="portal"
