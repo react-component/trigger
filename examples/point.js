@@ -23,14 +23,19 @@ const innerTrigger = (
 class Test extends React.Component {
   state = {
     action: 'click',
+    mouseEnterDelay: 0,
   }
 
   onActionChange = ({ target: { value } }) => {
     this.setState({ action: value });
   }
 
+  onDelayChange = ({ target: { value } }) => {
+    this.setState({ mouseEnterDelay: Number(value) || 0 });
+  }
+
   render() {
-    const { action } = this.state;
+    const { action, mouseEnterDelay } = this.state;
 
     return (
       <div>
@@ -44,6 +49,14 @@ class Test extends React.Component {
           </select>
         </label>
 
+        {' '}
+
+        {action === 'hover' && <label>
+          Mouse enter delay:
+          {' '}
+          <input type="text" value={mouseEnterDelay} onChange={this.onDelayChange} />
+        </label>}
+
         <div style={{ margin: 50 }}>
           <Trigger
             popupPlacement="topLeft"
@@ -54,7 +67,7 @@ class Test extends React.Component {
                 adjustY: 1,
               },
             }}
-            mouseEnterDelay={1}
+            mouseEnterDelay={mouseEnterDelay}
             popupClassName="point-popup"
             builtinPlacements={builtinPlacements}
             popup={innerTrigger}

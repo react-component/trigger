@@ -194,9 +194,7 @@ export default class Trigger extends React.Component {
 
   onMouseMove = (e) => {
     this.fireEvents('onMouseMove', e);
-    if (this.state.popupVisible) {
-      this.setPopupVisible(true, e);
-    }
+    this.setPoint(e);
   };
 
   onMouseLeave = (e) => {
@@ -412,13 +410,20 @@ export default class Trigger extends React.Component {
 
     // Always record the point position since mouseEnterDelay will delay the show
     if (alignPoint && event) {
-      this.setState({
-        point: {
-          pageX: event.pageX,
-          pageY: event.pageY,
-        },
-      });
+      this.setPoint(event);
     }
+  }
+
+  setPoint = (point) => {
+    const { alignPoint } = this.props;
+    if (!alignPoint || !point) return;
+
+    this.setState({
+      point: {
+        pageX: point.pageX,
+        pageY: point.pageY,
+      },
+    });
   }
 
   handlePortalUpdate = () => {
