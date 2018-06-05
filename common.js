@@ -2898,12 +2898,15 @@ LazyRenderBox.propTypes = {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = getAlignFromPlacement;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getPopupClassNameFromAlign;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getAlignPopupClassName;
 /* harmony export (immutable) */ __webpack_exports__["c"] = saveRef;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__);
 
-function isPointsEq(a1, a2) {
+function isPointsEq(a1, a2, isAlignPoint) {
+  if (isAlignPoint) {
+    return a1[0] === a2[0];
+  }
   return a1[0] === a2[0] && a1[1] === a2[1];
 }
 
@@ -2912,11 +2915,11 @@ function getAlignFromPlacement(builtinPlacements, placementStr, align) {
   return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default()({}, baseAlign, align);
 }
 
-function getPopupClassNameFromAlign(builtinPlacements, prefixCls, align) {
+function getAlignPopupClassName(builtinPlacements, prefixCls, align, isAlignPoint) {
   var points = align.points;
   for (var placement in builtinPlacements) {
     if (builtinPlacements.hasOwnProperty(placement)) {
-      if (isPointsEq(builtinPlacements[placement].points, points)) {
+      if (isPointsEq(builtinPlacements[placement].points, points, isAlignPoint)) {
         return prefixCls + '-placement-' + placement;
       }
     }
@@ -23553,37 +23556,39 @@ var _initialiseProps = function _initialiseProps() {
 
   this.getPopupClassNameFromAlign = function (align) {
     var className = [];
-    var props = _this5.props;
-    var popupPlacement = props.popupPlacement,
-        builtinPlacements = props.builtinPlacements,
-        prefixCls = props.prefixCls;
+    var _props9 = _this5.props,
+        popupPlacement = _props9.popupPlacement,
+        builtinPlacements = _props9.builtinPlacements,
+        prefixCls = _props9.prefixCls,
+        alignPoint = _props9.alignPoint,
+        getPopupClassNameFromAlign = _props9.getPopupClassNameFromAlign;
 
     if (popupPlacement && builtinPlacements) {
-      className.push(Object(__WEBPACK_IMPORTED_MODULE_10__utils__["b" /* getPopupClassNameFromAlign */])(builtinPlacements, prefixCls, align));
+      className.push(Object(__WEBPACK_IMPORTED_MODULE_10__utils__["b" /* getAlignPopupClassName */])(builtinPlacements, prefixCls, align, alignPoint));
     }
-    if (props.getPopupClassNameFromAlign) {
-      className.push(props.getPopupClassNameFromAlign(align));
+    if (getPopupClassNameFromAlign) {
+      className.push(getPopupClassNameFromAlign(align));
     }
     return className.join(' ');
   };
 
   this.getComponent = function () {
-    var _props9 = _this5.props,
-        prefixCls = _props9.prefixCls,
-        destroyPopupOnHide = _props9.destroyPopupOnHide,
-        popupClassName = _props9.popupClassName,
-        action = _props9.action,
-        onPopupAlign = _props9.onPopupAlign,
-        popupAnimation = _props9.popupAnimation,
-        popupTransitionName = _props9.popupTransitionName,
-        popupStyle = _props9.popupStyle,
-        mask = _props9.mask,
-        maskAnimation = _props9.maskAnimation,
-        maskTransitionName = _props9.maskTransitionName,
-        zIndex = _props9.zIndex,
-        popup = _props9.popup,
-        stretch = _props9.stretch,
-        alignPoint = _props9.alignPoint;
+    var _props10 = _this5.props,
+        prefixCls = _props10.prefixCls,
+        destroyPopupOnHide = _props10.destroyPopupOnHide,
+        popupClassName = _props10.popupClassName,
+        action = _props10.action,
+        onPopupAlign = _props10.onPopupAlign,
+        popupAnimation = _props10.popupAnimation,
+        popupTransitionName = _props10.popupTransitionName,
+        popupStyle = _props10.popupStyle,
+        mask = _props10.mask,
+        maskAnimation = _props10.maskAnimation,
+        maskTransitionName = _props10.maskTransitionName,
+        zIndex = _props10.zIndex,
+        popup = _props10.popup,
+        stretch = _props10.stretch,
+        alignPoint = _props10.alignPoint;
     var _state = _this5.state,
         popupVisible = _state.popupVisible,
         point = _state.point;
