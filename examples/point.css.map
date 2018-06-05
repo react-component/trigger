@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./examples/point.less"],"names":[],"mappings":"AAAA;EACE;CACD","file":"examples/point.css","sourcesContent":[".point-popup {\n  pointer-events: none;\n}\n\n\n// WEBPACK FOOTER //\n// ./examples/point.less"],"sourceRoot":""}

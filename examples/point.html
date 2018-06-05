@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>nested.js - example - rc-trigger@2.5.0</title>
+  <title>point.js - example - rc-trigger@2.5.0</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -257,7 +257,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     document.writeln('<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"'+'>'+'<'+'/'+'script>');
   }
   </script>
-  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="../common.css" /><link rel="stylesheet" href="point.css" />
 </head>
 
 <body>
@@ -275,94 +275,84 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> Trigger <span class="hljs-keyword">from</span> <span class="hljs-string">'rc-trigger'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-string">'rc-trigger/assets/index.css'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./point.less'</span>;
 
 <span class="hljs-keyword">const</span> builtinPlacements = {
-  left: {
-    points: [<span class="hljs-string">'cr'</span>, <span class="hljs-string">'cl'</span>],
-  },
-  right: {
-    points: [<span class="hljs-string">'cl'</span>, <span class="hljs-string">'cr'</span>],
-  },
-  top: {
-    points: [<span class="hljs-string">'bc'</span>, <span class="hljs-string">'tc'</span>],
-  },
-  bottom: {
-    points: [<span class="hljs-string">'tc'</span>, <span class="hljs-string">'bc'</span>],
-  },
   topLeft: {
-    points: [<span class="hljs-string">'bl'</span>, <span class="hljs-string">'tl'</span>],
-  },
-  topRight: {
-    points: [<span class="hljs-string">'br'</span>, <span class="hljs-string">'tr'</span>],
-  },
-  bottomRight: {
-    points: [<span class="hljs-string">'tr'</span>, <span class="hljs-string">'br'</span>],
-  },
-  bottomLeft: {
-    points: [<span class="hljs-string">'tl'</span>, <span class="hljs-string">'bl'</span>],
+    points: [<span class="hljs-string">'tl'</span>, <span class="hljs-string">'tl'</span>],
   },
 };
 
-<span class="hljs-keyword">const</span> popupBorderStyle = {
-  border: <span class="hljs-string">'1px solid red'</span>,
-  padding: <span class="hljs-number">10</span>,
-};
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saveRef</span>(<span class="hljs-params">name, component</span>) </span>{
-  <span class="hljs-keyword">this</span>[name] = component;
-}
+<span class="hljs-keyword">const</span> innerTrigger = (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>
+    <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">padding:</span> <span class="hljs-attribute">20</span>, <span class="hljs-attribute">background:</span> '<span class="hljs-attribute">rgba</span>(<span class="hljs-attribute">0</span>, <span class="hljs-attribute">255</span>, <span class="hljs-attribute">0</span>, <span class="hljs-attribute">0.3</span>)' }}
+  &gt;</span>
+    This is popup
+  <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+)</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
-  constructor(props) {
-    <span class="hljs-keyword">super</span>(props);
+  state = {
+    action: <span class="hljs-string">'click'</span>,
+    mouseEnterDelay: <span class="hljs-number">0</span>,
+  }
 
-    <span class="hljs-keyword">this</span>.saveContainerRef = saveRef.bind(<span class="hljs-keyword">this</span>, <span class="hljs-string">'containerInstance'</span>);
+  onActionChange = ({ target: { value } }) =&gt; {
+    <span class="hljs-keyword">this</span>.setState({ action: value });
+  }
+
+  onDelayChange = ({ target: { value } }) =&gt; {
+    <span class="hljs-keyword">this</span>.setState({ mouseEnterDelay: <span class="hljs-built_in">Number</span>(value) || <span class="hljs-number">0</span> });
   }
 
   render() {
-    <span class="hljs-keyword">const</span> innerTrigger = (
-      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{popupBorderStyle}</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">ref</span>=<span class="hljs-value">{this.saveContainerRef}</span> /&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
-          <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">"bottom"</span>
-          <span class="hljs-attribute">action</span>=<span class="hljs-value">{['click']}</span>
-          <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
-          <span class="hljs-attribute">getPopupContainer</span>=<span class="hljs-value">{()</span> =&gt;</span> this.containerInstance}
-          popup={<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{popupBorderStyle}</span>&gt;</span>I am inner Trigger Popup<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>}
-        &gt;
-          <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">20</span> }}&gt;</span>clickToShowInnerTrigger<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
-      <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-    )</span>;
+    <span class="hljs-keyword">const</span> { action, mouseEnterDelay } = <span class="hljs-keyword">this</span>.state;
+
     <span class="hljs-keyword">return</span> (
       <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
-            <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">"left"</span>
-            <span class="hljs-attribute">action</span>=<span class="hljs-value">{['click']}</span>
-            <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
-            <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{popupBorderStyle}</span>&gt;</span>i am a click popup<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>}
-          &gt;
-            <span class="hljs-tag">&lt;<span class="hljs-title">span</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
-              <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">"bottom"</span>
-              <span class="hljs-attribute">action</span>=<span class="hljs-value">{['hover']}</span>
-              <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
-              <span class="hljs-attribute">popup</span>=<span class="hljs-value">{&lt;div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{popupBorderStyle}</span>&gt;</span>i am a hover popup<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>}
-            &gt;
-              <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">20</span> }}&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
-          <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
+          Trigger type:
+          {' '}
+          <span class="hljs-tag">&lt;<span class="hljs-title">select</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">{action}</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onActionChange}</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span>&gt;</span>click<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span>&gt;</span>hover<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">option</span>&gt;</span>contextMenu<span class="hljs-tag">&lt;/<span class="hljs-title">option</span>&gt;</span>
+          <span class="hljs-tag">&lt;/<span class="hljs-title">select</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
+
+        {' '}
+
+        {action === 'hover' &amp;&amp; <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
+          Mouse enter delay:
+          {' '}
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">value</span>=<span class="hljs-value">{mouseEnterDelay}</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onDelayChange}</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>}
+
         <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">50</span> }}&gt;</span>
           <span class="hljs-tag">&lt;<span class="hljs-title">Trigger</span>
-            <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">"right"</span>
-            <span class="hljs-attribute">action</span>=<span class="hljs-value">{['hover']}</span>
+            <span class="hljs-attribute">popupPlacement</span>=<span class="hljs-value">"topLeft"</span>
+            <span class="hljs-attribute">action</span>=<span class="hljs-value">{[action]}</span>
+            <span class="hljs-attribute">popupAlign</span>=<span class="hljs-value">{{</span>
+              <span class="hljs-attribute">overflow:</span> {
+                <span class="hljs-attribute">adjustX:</span> <span class="hljs-attribute">1</span>,
+                <span class="hljs-attribute">adjustY:</span> <span class="hljs-attribute">1</span>,
+              },
+            }}
+            <span class="hljs-attribute">mouseEnterDelay</span>=<span class="hljs-value">{mouseEnterDelay}</span>
+            <span class="hljs-attribute">popupClassName</span>=<span class="hljs-value">"point-popup"</span>
             <span class="hljs-attribute">builtinPlacements</span>=<span class="hljs-value">{builtinPlacements}</span>
             <span class="hljs-attribute">popup</span>=<span class="hljs-value">{innerTrigger}</span>
+            <span class="hljs-attribute">alignPoint</span>
           &gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"#"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">20</span> }}&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">div</span>
+              <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span>
+                <span class="hljs-attribute">border:</span> '<span class="hljs-attribute">1px</span> <span class="hljs-attribute">solid</span> <span class="hljs-attribute">red</span>',
+                <span class="hljs-attribute">padding:</span> '<span class="hljs-attribute">100px</span> <span class="hljs-attribute">0</span>',
+                <span class="hljs-attribute">textAlign:</span> '<span class="hljs-attribute">center</span>',
+              }}
+            &gt;</span>
+              Interactive region
+            <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
           <span class="hljs-tag">&lt;/<span class="hljs-title">Trigger</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
@@ -370,11 +360,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   }
 }
 
-ReactDOM.render(
-  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> <span class="hljs-attribute">200</span> }}&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-title">Test</span> /&gt;</span>
-  <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-, document.getElementById('__react-content'));
+
+ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Test</span> /&gt;</span>, document.getElementById('__react-content'));
 </span></code></pre></div>
   </div>
   <a href="https://github.com/react-component/trigger">
@@ -385,7 +372,7 @@ ReactDOM.render(
   </a>
   <script>FastClick.attach(document.body);</script>
   <script src="../common.js?nowrap"></script>
-  <script src="nested.js?nowrap"></script>
+  <script src="point.js?nowrap"></script>
 </body>
 
 </html>
