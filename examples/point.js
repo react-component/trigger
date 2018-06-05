@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from 'rc-trigger';
 import 'rc-trigger/assets/index.less';
+import './point.less';
 
 const builtinPlacements = {
   topLeft: {
@@ -20,19 +21,41 @@ const innerTrigger = (
 );
 
 class Test extends React.Component {
+  state = {
+    action: 'click',
+  }
+
+  onActionChange = ({ target: { value } }) => {
+    this.setState({ action: value });
+  }
+
   render() {
+    const { action } = this.state;
+
     return (
       <div>
+        <label>
+          Trigger type:
+          {' '}
+          <select value={action} onChange={this.onActionChange}>
+            <option>click</option>
+            <option>hover</option>
+            <option>contextMenu</option>
+          </select>
+        </label>
+
         <div style={{ margin: 50 }}>
           <Trigger
             popupPlacement="topLeft"
-            action={['click']}
+            action={[action]}
             popupAlign={{
               overflow: {
                 adjustX: 1,
                 adjustY: 1,
               },
             }}
+            mouseEnterDelay={1}
+            popupClassName="point-popup"
             builtinPlacements={builtinPlacements}
             popup={innerTrigger}
             alignPoint
