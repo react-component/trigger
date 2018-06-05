@@ -4,7 +4,7 @@ import { findDOMNode, createPortal } from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Popup from './Popup';
-import { getAlignFromPlacement, getPopupClassNameFromAlign } from './utils';
+import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 
@@ -310,13 +310,15 @@ export default class Trigger extends React.Component {
 
   getPopupClassNameFromAlign = (align) => {
     const className = [];
-    const props = this.props;
-    const { popupPlacement, builtinPlacements, prefixCls } = props;
+    const {
+      popupPlacement, builtinPlacements, prefixCls, alignPoint,
+      getPopupClassNameFromAlign,
+    } = this.props;
     if (popupPlacement && builtinPlacements) {
-      className.push(getPopupClassNameFromAlign(builtinPlacements, prefixCls, align));
+      className.push(getAlignPopupClassName(builtinPlacements, prefixCls, align, alignPoint));
     }
-    if (props.getPopupClassNameFromAlign) {
-      className.push(props.getPopupClassNameFromAlign(align));
+    if (getPopupClassNameFromAlign) {
+      className.push(getPopupClassNameFromAlign(align));
     }
     return className.join(' ');
   }
