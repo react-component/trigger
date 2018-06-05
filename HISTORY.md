@@ -1,6 +1,10 @@
 # History
 ----
 
+## 2.5.0 / 2018-06-05
+
+- support `alignPoint`
+
 ## 2.1.0 / 2017-10-16
 
 - add action `contextMenu`
