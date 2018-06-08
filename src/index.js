@@ -7,6 +7,7 @@ import Popup from './Popup';
 import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
+import classNames from 'classnames';
 
 function noop() {
 }
@@ -40,6 +41,7 @@ export default class Trigger extends React.Component {
     popupStyle: PropTypes.object,
     prefixCls: PropTypes.string,
     popupClassName: PropTypes.string,
+    className: PropTypes.string,
     popupPlacement: PropTypes.string,
     builtinPlacements: PropTypes.object,
     popupTransitionName: PropTypes.oneOfType([
@@ -548,7 +550,7 @@ export default class Trigger extends React.Component {
 
   render() {
     const { popupVisible } = this.state;
-    const { children, forceRender, alignPoint } = this.props;
+    const { children, forceRender, alignPoint, className } = this.props;
     const child = React.Children.only(children);
     const newChildProps = { key: 'trigger' };
 
@@ -588,7 +590,10 @@ export default class Trigger extends React.Component {
       newChildProps.onBlur = this.createTwoChains('onBlur');
     }
 
-    const trigger = React.cloneElement(child, newChildProps);
+    const trigger = React.cloneElement(child, {
+      ...newChildProps,
+      className: classNames(child.props.className, className),
+    });
 
     if (!IS_REACT_16) {
       return (

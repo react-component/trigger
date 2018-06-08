@@ -766,5 +766,42 @@ describe('rc-trigger', function main() {
         next();
       }], done);
     });
+
+    it('support className', () => {
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+          className="className-in-trigger"
+        >
+          <div className="target">click</div>
+        </Trigger>
+      ), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      expect(domNode.className).to.be('target className-in-trigger');
+    });
+
+    it('support className in nested Trigger', () => {
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+          className="className-in-trigger-2"
+        >
+          <Trigger
+            action={['click']}
+            popupAlign={placementAlignMap.left}
+            popup={<strong className="x-content">tooltip2</strong>}
+            className="className-in-trigger-1"
+          >
+            <div className="target">click</div>
+          </Trigger>
+        </Trigger>
+      ), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      expect(domNode.className).to.be('target className-in-trigger-1 className-in-trigger-2');
+    });
   });
 });

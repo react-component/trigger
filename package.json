@@ -57,6 +57,7 @@
   ],
   "dependencies": {
     "babel-runtime": "6.x",
+    "classnames": "^2.2.6",
     "prop-types": "15.x",
     "rc-align": "^2.4.0",
     "rc-animate": "2.x",
