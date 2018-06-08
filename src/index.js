@@ -590,10 +590,11 @@ export default class Trigger extends React.Component {
       newChildProps.onBlur = this.createTwoChains('onBlur');
     }
 
-    const trigger = React.cloneElement(child, {
-      ...newChildProps,
-      className: classNames(child.props.className, className),
-    });
+    const childrenClassName = classNames(child && child.props && child.props.className, className);
+    if (childrenClassName) {
+      newChildProps.className = childrenClassName;
+    }
+    const trigger = React.cloneElement(child, newChildProps);
 
     if (!IS_REACT_16) {
       return (

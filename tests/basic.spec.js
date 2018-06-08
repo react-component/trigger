@@ -767,6 +767,20 @@ describe('rc-trigger', function main() {
       }], done);
     });
 
+    it('className should be undefined by default', () => {
+      const trigger = ReactDOM.render((
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+        >
+          <div>click</div>
+        </Trigger>
+      ), div);
+      const domNode = ReactDOM.findDOMNode(trigger);
+      expect(domNode.getAttribute('class')).to.be(null);
+    });
+
     it('support className', () => {
       const trigger = ReactDOM.render((
         <Trigger
