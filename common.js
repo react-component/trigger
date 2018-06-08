@@ -22988,6 +22988,9 @@ module.exports = camelize;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__utils__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_rc_util_es_ContainerRender__ = __webpack_require__(154);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rc_util_es_Portal__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_classnames__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_classnames__);
+
 
 
 
@@ -23297,7 +23300,8 @@ var Trigger = function (_React$Component) {
     var _props8 = this.props,
         children = _props8.children,
         forceRender = _props8.forceRender,
-        alignPoint = _props8.alignPoint;
+        alignPoint = _props8.alignPoint,
+        className = _props8.className;
 
     var child = __WEBPACK_IMPORTED_MODULE_4_react___default.a.Children.only(children);
     var newChildProps = { key: 'trigger' };
@@ -23338,7 +23342,9 @@ var Trigger = function (_React$Component) {
       newChildProps.onBlur = this.createTwoChains('onBlur');
     }
 
-    var trigger = __WEBPACK_IMPORTED_MODULE_4_react___default.a.cloneElement(child, newChildProps);
+    var trigger = __WEBPACK_IMPORTED_MODULE_4_react___default.a.cloneElement(child, __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default()({}, newChildProps, {
+      className: __WEBPACK_IMPORTED_MODULE_13_classnames___default()(child.props.className, className)
+    }));
 
     if (!IS_REACT_16) {
       return __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
@@ -23392,6 +23398,7 @@ Trigger.propTypes = {
   popupStyle: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.object,
   prefixCls: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.string,
   popupClassName: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.string,
+  className: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.string,
   popupPlacement: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.string,
   builtinPlacements: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.object,
   popupTransitionName: __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.oneOfType([__WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.string, __WEBPACK_IMPORTED_MODULE_5_prop_types___default.a.object]),
@@ -27230,6 +27237,65 @@ Portal.propTypes = {
   didUpdate: __WEBPACK_IMPORTED_MODULE_6_prop_types___default.a.func
 };
 /* harmony default export */ __webpack_exports__["a"] = (Portal);
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
 
 /***/ })
 /******/ ]);
