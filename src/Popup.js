@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
+import raf from 'raf';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
 import { saveRef } from './utils';
@@ -63,17 +64,18 @@ class Popup extends Component {
     props.onAlign(popupDomNode, align);
   }
 
+  onAnimateLeaved = () => {
+    const { stretch } = this.props;
+    const { stretchChecked } = this.state;
+    if (stretch && stretchChecked) {
+      this.setState({ stretchChecked: false });
+    }
+  }
+
   // Record size if stretch needed
   setStretchSize = () => {
-    const { stretch, getRootDomNode, visible } = this.props;
+    const { getRootDomNode } = this.props;
     const { stretchChecked, targetHeight, targetWidth } = this.state;
-
-    if (!stretch || !visible) {
-      if (stretchChecked) {
-        this.setState({ stretchChecked: false });
-      }
-      return;
-    }
 
     const $ele = getRootDomNode();
     if (!$ele) return;
@@ -165,11 +167,11 @@ class Popup extends Component {
       // Delay force align to makes ui smooth
       if (!stretchChecked) {
         sizeStyle.visibility = 'hidden';
-        setTimeout(() => {
+        raf(() => {
           if (this.alignInstance) {
             this.alignInstance.forceAlign();
           }
-        }, 0);
+        });
       }
     }
 
@@ -187,6 +189,7 @@ class Popup extends Component {
       onMouseLeave,
       style: newStyle,
     };
+
     if (destroyPopupOnHide) {
       return (
         <Animate
@@ -194,6 +197,7 @@ class Popup extends Component {
           exclusive
           transitionAppear
           transitionName={this.getTransitionName()}
+          onLeave={this.onAnimateLeaved}
         >
           {visible ? (
             <Align
@@ -223,6 +227,7 @@ class Popup extends Component {
         transitionAppear
         transitionName={this.getTransitionName()}
         showProp="xVisible"
+        onLeave={this.onAnimateLeaved}
       >
         <Align
           target={this.getAlignTarget()}

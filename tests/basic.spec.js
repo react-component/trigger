@@ -618,7 +618,7 @@ describe('rc-trigger', function main() {
       expect(trigger.getPopupDomNode()).to.be.ok();
     });
 
-    it('set true will destroy tooltip on hide', () => {
+    it('set true will destroy tooltip on hide', (done) => {
       const trigger = ReactDOM.render(
         <Trigger
           action={['click']}
@@ -632,7 +632,10 @@ describe('rc-trigger', function main() {
       Simulate.click(domNode);
       expect(trigger.getPopupDomNode()).to.be.ok();
       Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).not.to.be.ok();
+      setTimeout(() => {
+        expect(trigger.getPopupDomNode()).not.to.be.ok();
+        done();
+      });
     });
   });
 
