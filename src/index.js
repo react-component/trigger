@@ -279,7 +279,9 @@ export default class Trigger extends React.Component {
     }
     this.preClickTime = 0;
     this.preTouchTime = 0;
-    event.preventDefault();
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
     const nextVisible = !this.state.popupVisible;
     if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
       this.setPopupVisible(!this.state.popupVisible, event);
