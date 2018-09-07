@@ -1,36 +1,32 @@
 webpackJsonp([1],{
 
-/***/ 159:
+/***/ 158:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(160);
+module.exports = __webpack_require__(159);
 
 
 /***/ }),
 
-/***/ 160:
+/***/ 159:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_dom__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_react_dom__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rc_trigger__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rc_trigger__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rc_trigger_assets_index_less__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rc_trigger_assets_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rc_trigger_assets_index_less__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /* eslint no-console:0 */
 
@@ -85,18 +81,18 @@ function getPopupContainer(trigger) {
 }
 
 var Test = function (_React$Component) {
-  __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits___default()(Test, _React$Component);
+  _inherits(Test, _React$Component);
 
   function Test() {
     var _temp, _this, _ret;
 
-    __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck___default()(this, Test);
+    _classCallCheck(this, Test);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default()(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
       mask: false,
       maskClosable: false,
       placement: 'right',
@@ -119,7 +115,7 @@ var Test = function (_React$Component) {
         transitionName: e.target.checked ? e.target.value : ''
       });
     }, _this.onTriggerChange = function (e) {
-      var trigger = __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default()({}, _this.state.trigger);
+      var trigger = _extends({}, _this.state.trigger);
       if (e.target.checked) {
         trigger[e.target.value] = 1;
       } else {
@@ -156,7 +152,7 @@ var Test = function (_React$Component) {
       _this.setState({
         destroyPopupOnHide: e.target.checked
       });
-    }, _temp), __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default()(_this, _ret);
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   Test.prototype.render = function render() {
@@ -165,55 +161,55 @@ var Test = function (_React$Component) {
     if (state.destroyed) {
       return null;
     }
-    return __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
-      __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
         { style: { margin: '10px 20px' } },
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
           'placement:',
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'select',
             { value: state.placement, onChange: this.onPlacementChange },
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'right'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'left'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'top'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'bottom'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'topLeft'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'topRight'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'bottomRight'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               null,
               'bottomLeft'
@@ -221,34 +217,34 @@ var Test = function (_React$Component) {
           )
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
           'Stretch:',
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'select',
             { value: state.stretch, onChange: this.onStretch },
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               { value: '' },
               '--NONE--'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               { value: 'width' },
               'width'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               { value: 'minWidth' },
               'minWidth'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               { value: 'height' },
               'height'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'option',
               { value: 'minHeight' },
               'minHeight'
@@ -256,10 +252,10 @@ var Test = function (_React$Component) {
           )
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             value: 'rc-trigger-popup-zoom',
             type: 'checkbox',
             onChange: this.onTransitionChange,
@@ -268,10 +264,10 @@ var Test = function (_React$Component) {
           'transitionName'
         ),
         '\xA0\xA0\xA0\xA0 trigger:',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             value: 'hover',
             checked: !!trigger.hover,
             type: 'checkbox',
@@ -279,10 +275,10 @@ var Test = function (_React$Component) {
           }),
           'hover'
         ),
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             value: 'focus',
             checked: !!trigger.focus,
             type: 'checkbox',
@@ -290,10 +286,10 @@ var Test = function (_React$Component) {
           }),
           'focus'
         ),
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             value: 'click',
             checked: !!trigger.click,
             type: 'checkbox',
@@ -301,10 +297,10 @@ var Test = function (_React$Component) {
           }),
           'click'
         ),
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             value: 'contextMenu',
             checked: !!trigger.contextMenu,
             type: 'checkbox',
@@ -313,10 +309,10 @@ var Test = function (_React$Component) {
           'contextMenu'
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             checked: !!this.state.destroyPopupOnHide,
             type: 'checkbox',
             onChange: this.destroyPopupOnHide
@@ -324,10 +320,10 @@ var Test = function (_React$Component) {
           'destroyPopupOnHide'
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             checked: !!this.state.mask,
             type: 'checkbox',
             onChange: this.onMask
@@ -335,50 +331,50 @@ var Test = function (_React$Component) {
           'mask'
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             checked: !!this.state.maskClosable,
             type: 'checkbox',
             onChange: this.onMaskClosable
           }),
           'maskClosable'
         ),
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('br', null),
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
           'offsetX:',
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             type: 'text',
             onChange: this.onOffsetXChange,
             style: { width: 50 }
           })
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'label',
           null,
           'offsetY:',
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
             type: 'text',
             onChange: this.onOffsetYChange,
             style: { width: 50 }
           })
         ),
         '\xA0\xA0\xA0\xA0',
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'button',
           { onClick: this.destroy },
           'destroy'
         )
       ),
-      __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
         { style: { margin: 120, position: 'relative' } },
-        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
-          __WEBPACK_IMPORTED_MODULE_6_rc_trigger__["a" /* default */],
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          __WEBPACK_IMPORTED_MODULE_2_rc_trigger__["a" /* default */],
           {
             getPopupContainer: undefined && getPopupContainer,
             popupAlign: getPopupAlign(state),
@@ -399,31 +395,31 @@ var Test = function (_React$Component) {
               background: 'white',
               boxSizing: 'border-box'
             },
-            popup: __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            popup: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'div',
               null,
               'i am a popup'
             ),
             popupTransitionName: state.transitionName
           },
-          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'a',
             {
               style: { margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' },
               href: '#',
               onClick: preventDefault
             },
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'p',
               null,
               'This is a example of trigger usage.'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'p',
               null,
               'You can adjust the value above'
             ),
-            __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'p',
               null,
               'which will also change the behaviour of popup.'
@@ -435,11 +431,11 @@ var Test = function (_React$Component) {
   };
 
   return Test;
-}(__WEBPACK_IMPORTED_MODULE_4_react___default.a.Component);
+}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
 
-__WEBPACK_IMPORTED_MODULE_5_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(Test, null), document.getElementById('__react-content'));
+__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Test, null), document.getElementById('__react-content'));
 
 /***/ })
 
-},[159]);
+},[158]);
 //# sourceMappingURL=simple.js.map
