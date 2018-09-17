@@ -17,6 +17,7 @@ class PopupInner extends Component {
     if (!props.visible) {
       className += ` ${props.hiddenClassName}`;
     }
+    console.log('CCCC>>>', className);
     return (
       <div
         className={className}

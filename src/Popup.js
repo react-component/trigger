@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Align from 'rc-align';
-import Animate from 'rc-animate';
+import classNames from 'classnames';
+import Animate, { CSSMotion } from 'rc-animate';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
 import { saveRef } from './utils';
@@ -36,6 +37,10 @@ class Popup extends Component {
       stretchChecked: false,
       targetWidth: undefined,
       targetHeight: undefined,
+
+      // Used for motion
+      motionEntered: false,
+      motionLeaved: false,
     };
 
     this.savePopupRef = saveRef.bind(this, 'popupInstance');
@@ -45,6 +50,12 @@ class Popup extends Component {
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
     this.setStretchSize();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible !== this.props.visible && nextProps.visible) {
+      this.setState({ motionLeaved: false, motionEntered: false });
+    }
   }
 
   componentDidUpdate() {
@@ -217,33 +228,83 @@ class Popup extends Component {
     }
 
     return (
-      <Animate
-        component=""
-        exclusive
-        transitionAppear
-        transitionName={this.getTransitionName()}
-        showProp="xVisible"
+      <CSSMotion
+        visible={visible}
+        motionName={this.getTransitionName()}
+        removeOnLeave={false}
+        onEnterStart={() => {
+          this.setState({
+            motionEntered: true,
+          });
+        }}
+        onAppearStart={() => {
+          this.setState({
+            motionEntered: true,
+          });
+        }}
+        onLeaveEnd={() => {
+          this.setState({
+            motionLeaved: true,
+          });
+        }}
       >
-        <Align
-          target={this.getAlignTarget()}
-          key="popup"
-          ref={this.saveAlignRef}
-          monitorWindowResize
-          xVisible={visible}
-          childrenProps={{ visible: 'xVisible' }}
-          disabled={!visible}
-          align={align}
-          onAlign={this.onAlign}
-        >
-          <PopupInner
-            hiddenClassName={hiddenClassName}
-            {...popupInnerProps}
-          >
-            {children}
-          </PopupInner>
-        </Align>
-      </Animate>
+        {({ className: motionClassName }) => {
+          const doAlign = visible && !this.state.motionEntered;
+          console.log('POPUP:', visible, this.state.motionLeaved, '>>>', doAlign);
+          return (
+            <Align
+              target={this.getAlignTarget()}
+              key="popup"
+              ref={this.saveAlignRef}
+              monitorWindowResize
+              // disabled={!visible}
+              disabled={!doAlign}
+              align={align}
+              onAlign={this.onAlign}
+              xVisible={!this.state.motionLeaved}
+              childrenProps={{ visible: 'xVisible' }}
+            >
+              <PopupInner
+                hiddenClassName={hiddenClassName}
+                {...popupInnerProps}
+                className={classNames(className, motionClassName)}
+              >
+                {children}
+              </PopupInner>
+            </Align>
+          );
+        }}
+      </CSSMotion>
     );
+
+    // return (
+    //   <Animate
+    //     component=""
+    //     exclusive
+    //     transitionAppear
+    //     transitionName={this.getTransitionName()}
+    //     showProp="xVisible"
+    //   >
+    //     <Align
+    //       target={this.getAlignTarget()}
+    //       key="popup"
+    //       ref={this.saveAlignRef}
+    //       monitorWindowResize
+    //       xVisible={visible}
+    //       childrenProps={{ visible: 'xVisible' }}
+    //       disabled={!visible}
+    //       align={align}
+    //       onAlign={this.onAlign}
+    //     >
+    //       <PopupInner
+    //         hiddenClassName={hiddenClassName}
+    //         {...popupInnerProps}
+    //       >
+    //         {children}
+    //       </PopupInner>
+    //     </Align>
+    //   </Animate>
+    // );
   }
 
   getZIndexStyle() {
