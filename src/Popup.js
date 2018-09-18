@@ -218,7 +218,7 @@ class Popup extends Component {
 
     const transitionName = supportTransition ? this.getTransitionName() : null;
 
-    let needAlign = !transitionName;
+    let needAlign = visible && !transitionName;
     if (transitionName) {
       needAlign = visible && !motionEntered;
     }
