@@ -3,25 +3,29 @@ import PropTypes from 'prop-types';
 
 class LazyRenderBox extends Component {
   static propTypes = {
-    children: PropTypes.any,
+    children: PropTypes.node,
     className: PropTypes.string,
     visible: PropTypes.bool,
-    hiddenClassName: PropTypes.string,
   };
   shouldComponentUpdate(nextProps) {
-    return nextProps.hiddenClassName || nextProps.visible;
+    return (
+      nextProps.visible ||
+      nextProps.visible !== this.props.visible ||
+      nextProps.className !== this.props.className
+    );
   }
   render() {
-    const { hiddenClassName, visible, ...props } = this.props;
+    const { visible, children, ...props } = this.props;
 
-    if (hiddenClassName || React.Children.count(props.children) > 1) {
-      if (!visible && hiddenClassName) {
-        props.className += ` ${hiddenClassName}`;
-      }
-      return <div {...props}/>;
+    if (!children || React.Children.count(children) > 1) {
+      return (
+        <div {...props}>
+          {children}
+        </div>
+      );
     }
 
-    return React.Children.only(props.children);
+    return React.Children.only(children);
   }
 }
 

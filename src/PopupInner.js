@@ -4,29 +4,31 @@ import LazyRenderBox from './LazyRenderBox';
 
 class PopupInner extends Component {
   static propTypes = {
-    hiddenClassName: PropTypes.string,
+    visible: PropTypes.bool,
     className: PropTypes.string,
+    style: PropTypes.object,
     prefixCls: PropTypes.string,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
-    children: PropTypes.any,
+    children: PropTypes.node,
   };
+
   render() {
-    const props = this.props;
-    let className = props.className;
-    if (!props.visible) {
-      className += ` ${props.hiddenClassName}`;
-    }
-    console.log('CCCC>>>', className);
+    const {
+      prefixCls, visible, style, className,
+      onMouseEnter, onMouseLeave,
+      children,
+    } = this.props;
+
     return (
       <div
         className={className}
-        onMouseEnter={props.onMouseEnter}
-        onMouseLeave={props.onMouseLeave}
-        style={props.style}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        style={style}
       >
-        <LazyRenderBox className={`${props.prefixCls}-content`} visible={props.visible}>
-          {props.children}
+        <LazyRenderBox className={`${prefixCls}-content`} visible={visible}>
+          {children}
         </LazyRenderBox>
       </div>
     );

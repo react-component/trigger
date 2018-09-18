@@ -409,7 +409,6 @@ export default class Trigger extends React.Component {
 
     if (this.state.popupVisible !== popupVisible) {
       if (!('popupVisible' in this.props)) {
-        console.warn('CHANGE VISIBLE!');
         this.setState({ popupVisible });
       }
       this.props.onPopupVisibleChange(popupVisible);

@@ -54,6 +54,7 @@ class Test extends React.Component {
   state = {
     mask: false,
     maskClosable: false,
+    maskAnimation: false,
     placement: 'right',
     trigger: {
       hover: 1,
@@ -123,6 +124,12 @@ class Test extends React.Component {
     });
   }
 
+  onMaskAnimation = (e) => {
+    this.setState({
+      maskAnimation: e.target.checked,
+    });
+  }
+
   destroy = () => {
     this.setState({
       destroyed: true,
@@ -141,6 +148,14 @@ class Test extends React.Component {
     if (state.destroyed) {
       return null;
     }
+
+    let maskAnimationProps = {};
+    if (this.state.maskAnimation) {
+      maskAnimationProps = {
+        maskAnimation: 'fade',
+      };
+    }
+
     return (<div >
       <div style={{ margin: '10px 20px' }}>
         <label>
@@ -248,6 +263,16 @@ class Test extends React.Component {
           maskClosable
         </label>
 
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <input
+            checked={!!this.state.maskAnimation}
+            type="checkbox"
+            onChange={this.onMaskAnimation}
+          />
+          maskAnimation
+        </label>
+
         <br />
         <label>
           offsetX:
@@ -279,7 +304,7 @@ class Test extends React.Component {
           mask={this.state.mask}
           maskClosable={this.state.maskClosable}
           stretch={this.state.stretch}
-          // maskAnimation="fade"
+          {...maskAnimationProps}
           // mouseEnterDelay={0.1}
           // mouseLeaveDelay={0.1}
           action={Object.keys(state.trigger)}

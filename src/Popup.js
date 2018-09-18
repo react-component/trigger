@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Align from 'rc-align';
 import classNames from 'classnames';
-import Animate, { CSSMotion } from 'rc-animate';
+import { CSSMotion } from 'rc-animate';
+import { supportTransition } from 'rc-animate/lib/util/motion';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
 import { saveRef } from './utils';
@@ -11,6 +12,7 @@ import { saveRef } from './utils';
 class Popup extends Component {
   static propTypes = {
     visible: PropTypes.bool,
+    mask: PropTypes.bool,
     style: PropTypes.object,
     getClassNameFromAlign: PropTypes.func,
     onAlign: PropTypes.func,
@@ -40,7 +42,6 @@ class Popup extends Component {
 
       // Used for motion
       motionEntered: false,
-      motionLeaved: false,
     };
 
     this.savePopupRef = saveRef.bind(this, 'popupInstance');
@@ -54,7 +55,9 @@ class Popup extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
-      this.setState({ motionLeaved: false, motionEntered: false });
+      this.setState({
+        motionEntered: false,
+      });
     }
   }
 
@@ -63,16 +66,24 @@ class Popup extends Component {
   }
 
   onAlign = (popupDomNode, align) => {
-    const props = this.props;
-    const currentAlignClassName = props.getClassNameFromAlign(align);
+    const { onAlign } = this.props;
+    // TODO: Double confirm this
+    // const currentAlignClassName = props.getClassNameFromAlign(align);
     // FIX: https://github.com/react-component/trigger/issues/56
     // FIX: https://github.com/react-component/tooltip/issues/79
-    if (this.currentAlignClassName !== currentAlignClassName) {
-      this.currentAlignClassName = currentAlignClassName;
-      popupDomNode.className = this.getClassName(currentAlignClassName);
-    }
-    props.onAlign(popupDomNode, align);
+    // console.log('on align:', this.currentAlignClassName, currentAlignClassName);
+    // if (this.currentAlignClassName !== currentAlignClassName) {
+    //   this.currentAlignClassName = currentAlignClassName;
+    //   popupDomNode.className = this.getClassName(currentAlignClassName);
+    // }
+    onAlign(popupDomNode, align);
   }
+
+  onMotionStart = () => {
+    this.setState({
+      motionEntered: true,
+    });
+  };
 
   // Record size if stretch needed
   setStretchSize = () => {
@@ -144,7 +155,7 @@ class Popup extends Component {
 
   getPopupElement() {
     const { savePopupRef } = this;
-    const { stretchChecked, targetHeight, targetWidth } = this.state;
+    const { stretchChecked, targetHeight, targetWidth, motionEntered } = this.state;
     const {
       align, visible,
       prefixCls, style, getClassNameFromAlign,
@@ -191,81 +202,43 @@ class Popup extends Component {
     };
 
     const popupInnerProps = {
-      className,
+      // className,
       prefixCls,
       ref: savePopupRef,
       onMouseEnter,
       onMouseLeave,
       style: newStyle,
+      visible,
     };
-    if (destroyPopupOnHide) {
-      return (
-        <Animate
-          component=""
-          exclusive
-          transitionAppear
-          transitionName={this.getTransitionName()}
-        >
-          {visible ? (
-            <Align
-              target={this.getAlignTarget()}
-              key="popup"
-              ref={this.saveAlignRef}
-              monitorWindowResize
-              align={align}
-              onAlign={this.onAlign}
-            >
-              <PopupInner
-                visible
-                {...popupInnerProps}
-              >
-                {children}
-              </PopupInner>
-            </Align>
-          ) : null}
-        </Animate>
-      );
+
+    const transitionName = supportTransition ? this.getTransitionName() : null;
+
+    let needAlign = !transitionName;
+    if (transitionName) {
+      needAlign = visible && !motionEntered;
     }
 
     return (
       <CSSMotion
         visible={visible}
-        motionName={this.getTransitionName()}
-        removeOnLeave={false}
-        onEnterStart={() => {
-          this.setState({
-            motionEntered: true,
-          });
-        }}
-        onAppearStart={() => {
-          this.setState({
-            motionEntered: true,
-          });
-        }}
-        onLeaveEnd={() => {
-          this.setState({
-            motionLeaved: true,
-          });
-        }}
+        motionName={transitionName}
+        removeOnLeave={destroyPopupOnHide}
+        leavedClassName={hiddenClassName}
+        onEnterStart={this.onMotionStart}
+        onAppearStart={this.onMotionStart}
       >
         {({ className: motionClassName }) => {
-          const doAlign = visible && !this.state.motionEntered;
-          console.log('POPUP:', visible, this.state.motionLeaved, '>>>', doAlign);
           return (
             <Align
               target={this.getAlignTarget()}
               key="popup"
               ref={this.saveAlignRef}
               monitorWindowResize
-              // disabled={!visible}
-              disabled={!doAlign}
+              disabled={!needAlign}
               align={align}
               onAlign={this.onAlign}
-              xVisible={!this.state.motionLeaved}
-              childrenProps={{ visible: 'xVisible' }}
             >
               <PopupInner
-                hiddenClassName={hiddenClassName}
                 {...popupInnerProps}
                 className={classNames(className, motionClassName)}
               >
@@ -276,35 +249,6 @@ class Popup extends Component {
         }}
       </CSSMotion>
     );
-
-    // return (
-    //   <Animate
-    //     component=""
-    //     exclusive
-    //     transitionAppear
-    //     transitionName={this.getTransitionName()}
-    //     showProp="xVisible"
-    //   >
-    //     <Align
-    //       target={this.getAlignTarget()}
-    //       key="popup"
-    //       ref={this.saveAlignRef}
-    //       monitorWindowResize
-    //       xVisible={visible}
-    //       childrenProps={{ visible: 'xVisible' }}
-    //       disabled={!visible}
-    //       align={align}
-    //       onAlign={this.onAlign}
-    //     >
-    //       <PopupInner
-    //         hiddenClassName={hiddenClassName}
-    //         {...popupInnerProps}
-    //       >
-    //         {children}
-    //       </PopupInner>
-    //     </Align>
-    //   </Animate>
-    // );
   }
 
   getZIndexStyle() {
@@ -317,32 +261,49 @@ class Popup extends Component {
   }
 
   getMaskElement() {
-    const props = this.props;
+    const { prefixCls, visible, mask } = this.props;
     let maskElement;
-    if (props.mask) {
+    if (mask) {
       const maskTransition = this.getMaskTransitionName();
+
+      const lazyRenderProps = {
+        style: this.getZIndexStyle(),
+        key: 'mask',
+        className: `${prefixCls}-mask`,
+        // hiddenClassName: `${props.prefixCls}-mask-hidden`,
+        visible,
+      };
+
       maskElement = (
-        <LazyRenderBox
-          style={this.getZIndexStyle()}
-          key="mask"
-          className={`${props.prefixCls}-mask`}
-          hiddenClassName={`${props.prefixCls}-mask-hidden`}
-          visible={props.visible}
-        />
+        <CSSMotion
+          motionName={maskTransition}
+          leavedClassName={`${prefixCls}-mask-hidden`}
+          visible={visible}
+        >
+          {({ className: motionClassName }) => {
+            return (
+              <LazyRenderBox
+                {...lazyRenderProps}
+                className={classNames(lazyRenderProps.className, motionClassName)}
+              />
+            );
+          }}
+        </CSSMotion>
       );
-      if (maskTransition) {
-        maskElement = (
-          <Animate
-            key="mask"
-            showProp="visible"
-            transitionAppear
-            component=""
-            transitionName={maskTransition}
-          >
-            {maskElement}
-          </Animate>
-        );
-      }
+
+      // if (maskTransition) {
+      //   maskElement = (
+      //     <Animate
+      //       key="mask"
+      //       showProp="visible"
+      //       transitionAppear
+      //       component=""
+      //       transitionName={maskTransition}
+      //     >
+      //       {maskElement}
+      //     </Animate>
+      //   );
+      // }
     }
     return maskElement;
   }
