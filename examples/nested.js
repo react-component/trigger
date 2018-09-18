@@ -73,14 +73,14 @@ class Test extends React.Component {
             popup={<div style={popupBorderStyle}>i am a click popup</div>}
           >
             <span>
-            <Trigger
-              popupPlacement="bottom"
-              action={['hover']}
-              builtinPlacements={builtinPlacements}
-              popup={<div style={popupBorderStyle}>i am a hover popup</div>}
-            >
-              <span href="#" style={{ margin: 20 }}>trigger</span>
-            </Trigger>
+              <Trigger
+                popupPlacement="bottom"
+                action={['hover']}
+                builtinPlacements={builtinPlacements}
+                popup={<div style={popupBorderStyle}>i am a hover popup</div>}
+              >
+                <span href="#" style={{ margin: 20 }}>trigger</span>
+              </Trigger>
             </span>
           </Trigger>
         </div>
@@ -103,4 +103,4 @@ ReactDOM.render(
   <div style={{ margin: 200 }}>
     <Test />
   </div>
-, document.getElementById('__react-content'));
+  , document.getElementById('__react-content'));

@@ -1,7 +1,8 @@
-/* eslint no-console:0, react/no-multi-comp:0 */
+/* eslint no-console:0, react/no-multi-comp:0, react/no-render-return-value:0, react/jsx-no-bind:0 */
 
 import 'core-js/es6/map';
 import 'core-js/es6/set';
+import async from 'async';
 import expect from 'expect.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -10,7 +11,6 @@ import $ from 'jquery';
 import '../assets/index.less';
 import Trigger from '../index';
 import './basic.less';
-import async from 'async';
 import { saveRef } from '../src/utils';
 
 const Simulate = TestUtils.Simulate;
@@ -583,7 +583,7 @@ describe('rc-trigger', function main() {
     });
     it('render at first time when forceRender=true', () => {
       class Test extends React.Component {
-        saveTrigger = (trigger) => this.trigger = trigger;
+        saveTrigger = (trigger) => { this.trigger = trigger; };
         render() {
           return (
             <Trigger
@@ -651,34 +651,34 @@ describe('rc-trigger', function main() {
         const domNode = ReactDOM.findDOMNode(trigger);
         Simulate.click(domNode);
         async.series([timeout(100),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).not.to.be('1');
-              next();
-            },
-            timeout(500),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).to.be('1');
-              Simulate.click(domNode);
-              next();
-            },
-            timeout(100),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).not.to.be('1');
-              next();
-            },
-            timeout(500),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect($(popupDomNode).css('display')).to.be('none');
-              next();
-            }],
-          done);
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect(popupDomNode).to.be.ok();
+            expect($(popupDomNode).css('opacity')).not.to.be('1');
+            next();
+          },
+          timeout(500),
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect(popupDomNode).to.be.ok();
+            expect($(popupDomNode).css('opacity')).to.be('1');
+            Simulate.click(domNode);
+            next();
+          },
+          timeout(100),
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect(popupDomNode).to.be.ok();
+            expect($(popupDomNode).css('opacity')).not.to.be('1');
+            next();
+          },
+          timeout(500),
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect($(popupDomNode).css('display')).to.be('none');
+            next();
+          }],
+        done);
       });
     });
   }

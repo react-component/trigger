@@ -1,3 +1,5 @@
+/* eslint react/no-render-return-value:0 */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';

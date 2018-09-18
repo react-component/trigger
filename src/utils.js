@@ -15,13 +15,17 @@ export function getAlignFromPlacement(builtinPlacements, placementStr, align) {
 
 export function getAlignPopupClassName(builtinPlacements, prefixCls, align, isAlignPoint) {
   const points = align.points;
-  for (const placement in builtinPlacements) {
-    if (builtinPlacements.hasOwnProperty(placement)) {
-      if (isPointsEq(builtinPlacements[placement].points, points, isAlignPoint)) {
-        return `${prefixCls}-placement-${placement}`;
-      }
+  const placementList = Object.keys(builtinPlacements);
+
+  const len = placementList.length;
+  for (let i = 0; i < len; i += 1) {
+    const placement = placementList[i];
+
+    if (isPointsEq(builtinPlacements[placement].points, points, isAlignPoint)) {
+      return `${prefixCls}-placement-${placement}`;
     }
   }
+
   return '';
 }
 

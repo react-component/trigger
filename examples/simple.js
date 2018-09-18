@@ -1,4 +1,4 @@
-/* eslint no-console:0 */
+/* eslint no-console:0, react/no-unused-state:0 */
 
 import React from 'react';
 import ReactDOM from 'react-dom';

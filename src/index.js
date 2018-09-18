@@ -5,10 +5,10 @@ import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import { polyfill } from 'react-lifecycles-compat';
 import ContainerRender from 'rc-util/lib/ContainerRender';
-import Popup from './Popup';
-import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
+import Popup from './Popup';
+import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 
 function noop() {
 }
