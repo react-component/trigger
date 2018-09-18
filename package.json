@@ -48,7 +48,7 @@
     "jquery": "~1.11.3",
     "pre-commit": "1.x",
     "rc-test": "6.x",
-    "rc-tools": "7.x",
+    "rc-tools": "8.x",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
@@ -61,6 +61,7 @@
     "prop-types": "15.x",
     "rc-align": "^2.4.0",
     "rc-animate": "^2.6.0-beta.1",
-    "rc-util": "^4.4.0"
+    "rc-util": "^4.4.0",
+    "react-lifecycles-compat": "^3.0.4"
   }
 }

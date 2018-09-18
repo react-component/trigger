@@ -5,6 +5,7 @@ import Align from 'rc-align';
 import classNames from 'classnames';
 import { CSSMotion } from 'rc-animate';
 import { supportTransition } from 'rc-animate/lib/util/motion';
+import { polyfill } from 'react-lifecycles-compat';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
 import { saveRef } from './utils';
@@ -48,17 +49,21 @@ class Popup extends Component {
     this.saveAlignRef = saveRef.bind(this, 'alignInstance');
   }
 
+  static getDerivedStateFromProps(nextProps, { prevProps = {} }) {
+    const newState = {
+      prevProps: nextProps,
+    };
+
+    if (nextProps.visible !== prevProps.visible && nextProps.visible) {
+      newState.motionEntered = false;
+    }
+
+    return newState;
+  }
+
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
     this.setStretchSize();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.visible !== this.props.visible && nextProps.visible) {
-      this.setState({
-        motionEntered: false,
-      });
-    }
   }
 
   componentDidUpdate() {
@@ -317,5 +322,7 @@ class Popup extends Component {
     );
   }
 }
+
+polyfill(Popup);
 
 export default Popup;

@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { findDOMNode, createPortal } from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import { polyfill } from 'react-lifecycles-compat';
+import ContainerRender from 'rc-util/lib/ContainerRender';
 import Popup from './Popup';
 import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
-import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
 
@@ -25,7 +26,7 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
 
 const IS_REACT_16 = !!createPortal;
 
-export default class Trigger extends React.Component {
+class Trigger extends React.Component {
   static propTypes = {
     children: PropTypes.any,
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -111,9 +112,8 @@ export default class Trigger extends React.Component {
     this.state = {
       popupVisible,
     };
-  }
 
-  componentWillMount() {
+    // [Legacy] Fire all events
     ALL_HANDLERS.forEach((h) => {
       this[`fire${h}`] = (e) => {
         this.fireEvents(h, e);
@@ -121,18 +121,17 @@ export default class Trigger extends React.Component {
     });
   }
 
+  static getDerivedStateFromProps({ popupVisible }) {
+    if (popupVisible !== undefined) {
+      return { popupVisible };
+    }
+    return {};
+  }
+
   componentDidMount() {
     this.componentDidUpdate({}, {
       popupVisible: this.state.popupVisible,
     });
-  }
-
-  componentWillReceiveProps({ popupVisible }) {
-    if (popupVisible !== undefined) {
-      this.setState({
-        popupVisible,
-      });
-    }
   }
 
   componentDidUpdate(_, prevState) {
@@ -636,3 +635,7 @@ export default class Trigger extends React.Component {
     ];
   }
 }
+
+polyfill(Trigger);
+
+export default Trigger;
