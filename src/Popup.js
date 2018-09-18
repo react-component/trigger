@@ -37,12 +37,12 @@ class Popup extends Component {
 
     this.state = {
       // Used for stretch
-      stretchChecked: false,
+      stretchUpdated: false,
       targetWidth: undefined,
       targetHeight: undefined,
 
       // Used for motion
-      motionEntered: false,
+      needAlign: true,
     };
 
     this.savePopupRef = saveRef.bind(this, 'popupInstance');
@@ -55,7 +55,8 @@ class Popup extends Component {
     };
 
     if (nextProps.visible !== prevProps.visible && nextProps.visible) {
-      newState.motionEntered = false;
+      newState.needAlign = true;
+      newState.stretchUpdated = false;
     }
 
     return newState;
@@ -63,11 +64,11 @@ class Popup extends Component {
 
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
-    this.setStretchSize();
+    this.syncStrtchSize();
   }
 
   componentDidUpdate() {
-    this.setStretchSize();
+    this.syncStrtchSize();
   }
 
   onAlign = (popupDomNode, align) => {
@@ -86,35 +87,8 @@ class Popup extends Component {
 
   onMotionStart = () => {
     this.setState({
-      motionEntered: true,
+      needAlign: false,
     });
-  };
-
-  // Record size if stretch needed
-  setStretchSize = () => {
-    const { stretch, getRootDomNode, visible } = this.props;
-    const { stretchChecked, targetHeight, targetWidth } = this.state;
-
-    if (!stretch || !visible) {
-      if (stretchChecked) {
-        this.setState({ stretchChecked: false });
-      }
-      return;
-    }
-
-    const $ele = getRootDomNode();
-    if (!$ele) return;
-
-    const height = $ele.offsetHeight;
-    const width = $ele.offsetWidth;
-
-    if (targetHeight !== height || targetWidth !== width || !stretchChecked) {
-      this.setState({
-        stretchChecked: true,
-        targetHeight: height,
-        targetWidth: width,
-      });
-    }
   };
 
   getPopupDomNode() {
@@ -146,6 +120,8 @@ class Popup extends Component {
   }
 
   getTransitionName() {
+    if (!supportTransition) return null;
+
     const props = this.props;
     let transitionName = props.transitionName;
     if (!transitionName && props.animation) {
@@ -158,9 +134,38 @@ class Popup extends Component {
     return `${this.props.prefixCls} ${this.props.className} ${currentAlignClassName}`;
   }
 
-  getPopupElement() {
+  getZIndexStyle() {
+    const style = {};
+    const props = this.props;
+    if (props.zIndex !== undefined) {
+      style.zIndex = props.zIndex;
+    }
+    return style;
+  }
+
+  // ============================== Dom ===============================
+  syncStrtchSize = () => {
+    const { stretchUpdated } = this.state;
+    const { getRootDomNode, stretch } = this.props;
+
+    if (!stretch || stretchUpdated) return;
+
+    const ele = getRootDomNode();
+    const { width, height } = ele.getBoundingClientRect();
+
+    this.setState({
+      stretchUpdated: true,
+      targetWidth: width,
+      targetHeight: height,
+    });
+  };
+
+  // ============================= Render =============================
+  renderPopupElement() {
     const { savePopupRef } = this;
-    const { stretchChecked, targetHeight, targetWidth, motionEntered } = this.state;
+    const {
+      stretchUpdated, targetHeight, targetWidth, needAlign,
+    } = this.state;
     const {
       align, visible,
       prefixCls, style, getClassNameFromAlign,
@@ -188,16 +193,6 @@ class Popup extends Component {
       } else if (stretch.indexOf('minWidth') !== -1) {
         sizeStyle.minWidth = targetWidth;
       }
-
-      // Delay force align to makes ui smooth
-      if (!stretchChecked) {
-        sizeStyle.visibility = 'hidden';
-        setTimeout(() => {
-          if (this.alignInstance) {
-            this.alignInstance.forceAlign();
-          }
-        }, 0);
-      }
     }
 
     const newStyle = {
@@ -216,16 +211,21 @@ class Popup extends Component {
       visible,
     };
 
-    const transitionName = supportTransition ? this.getTransitionName() : null;
+    let mergedVisible = visible;
+    if (stretch && !stretchUpdated) {
+      mergedVisible = false;
+    }
 
-    let needAlign = visible && !transitionName;
+    const transitionName = this.getTransitionName();
+
+    let mergedNeedAlign = visible && !transitionName;
     if (transitionName) {
-      needAlign = visible && !motionEntered;
+      mergedNeedAlign = visible && needAlign;
     }
 
     return (
       <CSSMotion
-        visible={visible}
+        visible={mergedVisible}
         motionName={transitionName}
         removeOnLeave={destroyPopupOnHide}
         leavedClassName={hiddenClassName}
@@ -239,7 +239,7 @@ class Popup extends Component {
               key="popup"
               ref={this.saveAlignRef}
               monitorWindowResize
-              disabled={!needAlign}
+              disabled={!mergedNeedAlign}
               align={align}
               onAlign={this.onAlign}
             >
@@ -256,16 +256,7 @@ class Popup extends Component {
     );
   }
 
-  getZIndexStyle() {
-    const style = {};
-    const props = this.props;
-    if (props.zIndex !== undefined) {
-      style.zIndex = props.zIndex;
-    }
-    return style;
-  }
-
-  getMaskElement() {
+  renderMaskElement() {
     const { prefixCls, visible, mask } = this.props;
     let maskElement;
     if (mask) {
@@ -275,7 +266,6 @@ class Popup extends Component {
         style: this.getZIndexStyle(),
         key: 'mask',
         className: `${prefixCls}-mask`,
-        // hiddenClassName: `${props.prefixCls}-mask-hidden`,
         visible,
       };
 
@@ -295,20 +285,6 @@ class Popup extends Component {
           }}
         </CSSMotion>
       );
-
-      // if (maskTransition) {
-      //   maskElement = (
-      //     <Animate
-      //       key="mask"
-      //       showProp="visible"
-      //       transitionAppear
-      //       component=""
-      //       transitionName={maskTransition}
-      //     >
-      //       {maskElement}
-      //     </Animate>
-      //   );
-      // }
     }
     return maskElement;
   }
@@ -316,8 +292,8 @@ class Popup extends Component {
   render() {
     return (
       <div>
-        {this.getMaskElement()}
-        {this.getPopupElement()}
+        {this.renderMaskElement()}
+        {this.renderPopupElement()}
       </div>
     );
   }
