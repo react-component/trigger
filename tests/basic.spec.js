@@ -2,6 +2,7 @@
 
 import 'core-js/es6/map';
 import 'core-js/es6/set';
+import { supportTransition } from 'rc-animate/lib/util/motion';
 import async from 'async';
 import expect from 'expect.js';
 import React from 'react';
@@ -635,6 +636,51 @@ describe('rc-trigger', function main() {
       expect(trigger.getPopupDomNode()).not.to.be.ok();
     });
   });
+
+  if (supportTransition) {
+    describe('motion', () => {
+      it('transitionName', (done) => {
+        const trigger = ReactDOM.render(
+          <Trigger
+            action={['click']}
+            popupTransitionName="motion-fade"
+            popupAlign={placementAlignMap.top}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>,
+          div,
+        );
+
+        const domNode = ReactDOM.findDOMNode(trigger);
+        Simulate.click(domNode);
+
+        async.series([
+          timeout(100),
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect(popupDomNode).to.be.ok();
+            expect($(popupDomNode).css('opacity')).not.to.be('1');
+            next();
+          },
+          timeout(500),
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect(popupDomNode).to.be.ok();
+            expect($(popupDomNode).css('opacity')).to.be('1');
+            Simulate.click(domNode);
+            next();
+          },
+          timeout(500),
+          (next) => {
+            const popupDomNode = trigger.getPopupDomNode();
+            expect($(popupDomNode).css('display')).to.be('none');
+            next();
+          }
+        ], done);
+      });
+    });
+  }
 
   if (window.TransitionEvent) {
     describe('transitionName', () => {

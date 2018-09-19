@@ -11,6 +11,29 @@
   height: 100px;
 }
 
+.motion-fade-enter,
+.motion-fade-appear {
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+.motion-fade-enter-active,
+.motion-fade-appear-active {
+  opacity: 1;
+}
+
+.motion-fade-leave {
+  opacity: 1;
+  transition: all 0.3s;
+}
+.motion-fade-leave-active {
+  opacity: 0;
+}
+
+.rc-trigger-popup-hidden {
+  display: none;
+}
+
 .fade-enter,.fade-appear {
   display: block;
   opacity: 0;

@@ -202,7 +202,6 @@ class Popup extends Component {
     };
 
     const popupInnerProps = {
-      // className,
       prefixCls,
       ref: savePopupRef,
       onMouseEnter,
