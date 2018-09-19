@@ -205,6 +205,7 @@ export default class Trigger extends React.Component {
   componentWillUnmount() {
     this.clearDelayTimer();
     this.clearOutsideHandler();
+    clearTimeout(this.mouseDownTimeout);
   }
 
   onMouseEnter = (e) => {
@@ -310,7 +311,9 @@ export default class Trigger extends React.Component {
   onPopupMouseDown = (...args) => {
     const { rcTrigger = {} } = this.context;
     this.hasPopupMouseDown = true;
-    setTimeout(() => {
+
+    clearTimeout(this.mouseDownTimeout);
+    this.mouseDownTimeout = setTimeout(() => {
       this.hasPopupMouseDown = false;
     }, 0);
 
