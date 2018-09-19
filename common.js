@@ -24804,6 +24804,7 @@ var Trigger = function (_React$Component) {
   Trigger.prototype.componentWillUnmount = function componentWillUnmount() {
     this.clearDelayTimer();
     this.clearOutsideHandler();
+    clearTimeout(this.mouseDownTimeout);
   };
 
   Trigger.prototype.getPopupDomNode = function getPopupDomNode() {
@@ -25243,7 +25244,9 @@ var _initialiseProps = function _initialiseProps() {
         rcTrigger = _context$rcTrigger === undefined ? {} : _context$rcTrigger;
 
     _this5.hasPopupMouseDown = true;
-    setTimeout(function () {
+
+    clearTimeout(_this5.mouseDownTimeout);
+    _this5.mouseDownTimeout = setTimeout(function () {
       _this5.hasPopupMouseDown = false;
     }, 0);
 
