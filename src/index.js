@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { findDOMNode, createPortal } from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
-import Popup from './Popup';
-import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
+
+import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
+import Popup from './Popup';
 
 function noop() {
 }
@@ -24,6 +25,12 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
   'onMouseLeave', 'onFocus', 'onBlur', 'onContextMenu'];
 
 const IS_REACT_16 = !!createPortal;
+
+const contextTypes = {
+  rcTrigger: PropTypes.shape({
+    onPopupMouseDown: PropTypes.func,
+  }),
+};
 
 export default class Trigger extends React.Component {
   static propTypes = {
@@ -73,6 +80,10 @@ export default class Trigger extends React.Component {
     alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
   };
 
+  static contextTypes = contextTypes;
+
+  static childContextTypes = contextTypes;
+
   static defaultProps = {
     prefixCls: 'rc-trigger-popup',
     getPopupClassNameFromAlign: returnEmptyString,
@@ -110,6 +121,14 @@ export default class Trigger extends React.Component {
 
     this.state = {
       popupVisible,
+    };
+  }
+
+  getChildContext() {
+    return {
+      rcTrigger: {
+        onPopupMouseDown: this.onPopupMouseDown,
+      },
     };
   }
 
@@ -288,14 +307,26 @@ export default class Trigger extends React.Component {
     }
   }
 
+  onPopupMouseDown = (...args) => {
+    const { rcTrigger = {} } = this.context;
+    this.hasPopupMouseDown = true;
+    setTimeout(() => {
+      this.hasPopupMouseDown = false;
+    }, 0);
+
+    if (rcTrigger.onPopupMouseDown) {
+      rcTrigger.onPopupMouseDown(...args);
+    }
+  };
+
   onDocumentClick = (event) => {
     if (this.props.mask && !this.props.maskClosable) {
       return;
     }
+
     const target = event.target;
     const root = findDOMNode(this);
-    const popupNode = this.getPopupDomNode();
-    if (!contains(root, target) && !contains(popupNode, target)) {
+    if (!contains(root, target) && !this.hasPopupMouseDown) {
       this.close();
     }
   }
@@ -354,6 +385,8 @@ export default class Trigger extends React.Component {
     if (this.isMouseLeaveToHide()) {
       mouseProps.onMouseLeave = this.onPopupMouseLeave;
     }
+
+    mouseProps.onMouseDown = this.onPopupMouseDown;
 
     return (
       <Popup
