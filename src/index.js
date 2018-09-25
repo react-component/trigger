@@ -390,6 +390,7 @@ export default class Trigger extends React.Component {
     }
 
     mouseProps.onMouseDown = this.onPopupMouseDown;
+    mouseProps.onTouchStart = this.onPopupMouseDown;
 
     return (
       <Popup

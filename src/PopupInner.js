@@ -10,6 +10,7 @@ class PopupInner extends Component {
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     onMouseDown: PropTypes.func,
+    onTouchStart: PropTypes.func,
     children: PropTypes.any,
   };
   render() {
@@ -24,6 +25,7 @@ class PopupInner extends Component {
         onMouseEnter={props.onMouseEnter}
         onMouseLeave={props.onMouseLeave}
         onMouseDown={props.onMouseDown}
+        onTouchStart={props.onTouchStart}
         style={props.style}
       >
         <LazyRenderBox className={`${props.prefixCls}-content`} visible={props.visible}>
