@@ -329,7 +329,8 @@ export default class Trigger extends React.Component {
 
     const target = event.target;
     const root = findDOMNode(this);
-    if (!contains(root, target) && !this.hasPopupMouseDown) {
+    const popupNode = this.getPopupDomNode();
+    if (!contains(root, target) && !this.hasPopupMouseDown && !contains(popupNode, target)) {
       this.close();
     }
   }
