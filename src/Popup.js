@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Align from 'rc-align';
 import classNames from 'classnames';
-import { CSSMotion } from 'rc-animate';
+import CSSMotion from 'rc-animate/lib/CSSMotion';
 import { supportTransition } from 'rc-animate/lib/util/motion';
 import { polyfill } from 'react-lifecycles-compat';
 import PopupInner from './PopupInner';
