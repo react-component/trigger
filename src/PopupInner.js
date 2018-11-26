@@ -12,21 +12,25 @@ class PopupInner extends Component {
     prefixCls: PropTypes.string,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
+    onMouseDown: PropTypes.func,
+    onTouchStart: PropTypes.func,
     children: PropTypes.node,
   };
 
   render() {
     const {
       prefixCls, visible, style, className,
-      onMouseEnter, onMouseLeave,
+      onMouseEnter, onMouseLeave, onMouseDown, onTouchStart,
       children,
     } = this.props;
-  
+
     return (
       <div
         className={className}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onMouseDown={onMouseDown}
+        onTouchStart={onTouchStart}
         style={style}
       >
         <LazyRenderBox className={`${prefixCls}-content`} visible={visible}>

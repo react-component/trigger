@@ -1,4 +1,5 @@
-/* eslint no-console:0, react/no-multi-comp:0, react/no-render-return-value:0, react/jsx-no-bind:0 */
+/* eslint no-console:0, react/no-multi-comp:0,
+react/no-render-return-value:0, react/jsx-no-bind:0 */
 
 import 'core-js/es6/map';
 import 'core-js/es6/set';
@@ -676,7 +677,7 @@ describe('rc-trigger', function main() {
             const popupDomNode = trigger.getPopupDomNode();
             expect($(popupDomNode).css('display')).to.be('none');
             next();
-          }
+          },
         ], done);
       });
     });
@@ -759,6 +760,83 @@ describe('rc-trigger', function main() {
 
       // height should be same, should not have break lines inside words
       expect(popupNodeHeightOfOneWord).to.equal(popupNodeHeightOfSeveralWords);
+    });
+
+    // https://github.com/ant-design/ant-design/issues/9114
+    it('click in popup of popup', (done) => {
+      const builtinPlacements = {
+        right: {
+          points: ['cl', 'cr'],
+        },
+      };
+
+      let innerVisible = null;
+      function onInnerPopupVisibleChange(value) {
+        innerVisible = value;
+      }
+
+      const innerTrigger = (
+        <div style={{ background: 'rgba(255, 0, 0, 0.3)' }}>
+          <Trigger
+            onPopupVisibleChange={onInnerPopupVisibleChange}
+            popupPlacement="right"
+            action={['click']}
+            builtinPlacements={builtinPlacements}
+            popup={
+              <div id="issue_9114_popup" style={{ background: 'rgba(0, 255, 0, 0.3)' }}>
+                Final Popup
+              </div>
+            }
+          >
+            <div id="issue_9114_trigger">another trigger in popup</div>
+          </Trigger>
+        </div>
+      );
+
+      let visible = null;
+      function onPopupVisibleChange(value) {
+        visible = value;
+      }
+
+      const trigger = ReactDOM.render(
+        <Trigger
+          onPopupVisibleChange={onPopupVisibleChange}
+          popupPlacement="right"
+          action={['click']}
+          builtinPlacements={builtinPlacements}
+          popup={innerTrigger}
+        >
+          <span style={{ margin: 20 }}>basic trigger</span>
+        </Trigger>,
+        div
+      );
+
+      // Basic click
+      const domNode = ReactDOM.findDOMNode(trigger);
+      Simulate.click(domNode);
+
+      setTimeout(() => {
+        expect(visible).to.be(true);
+        expect(innerVisible).to.be(null);
+
+        const innerDomNode = document.getElementById('issue_9114_trigger');
+        Simulate.click(innerDomNode);
+
+        setTimeout(() => {
+          expect(visible).to.be(true);
+          expect(innerVisible).to.be(true);
+
+          const popupDomNode = document.getElementById('issue_9114_popup');
+          Simulate.click(popupDomNode);
+
+          setTimeout(() => {
+            expect(visible).to.be(true);
+            expect(innerVisible).to.be(true);
+
+            done();
+          });
+        }, 100);
+      }, 100);
     });
   });
 

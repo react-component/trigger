@@ -26,6 +26,12 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
 
 const IS_REACT_16 = !!createPortal;
 
+const contextTypes = {
+  rcTrigger: PropTypes.shape({
+    onPopupMouseDown: PropTypes.func,
+  }),
+};
+
 class Trigger extends React.Component {
   static propTypes = {
     children: PropTypes.any,
@@ -74,6 +80,10 @@ class Trigger extends React.Component {
     alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
   };
 
+  static contextTypes = contextTypes;
+
+  static childContextTypes = contextTypes;
+
   static defaultProps = {
     prefixCls: 'rc-trigger-popup',
     getPopupClassNameFromAlign: returnEmptyString,
@@ -121,11 +131,12 @@ class Trigger extends React.Component {
     });
   }
 
-  static getDerivedStateFromProps({ popupVisible }) {
-    if (popupVisible !== undefined) {
-      return { popupVisible };
-    }
-    return {};
+  getChildContext() {
+    return {
+      rcTrigger: {
+        onPopupMouseDown: this.onPopupMouseDown,
+      },
+    };
   }
 
   componentDidMount() {
@@ -185,6 +196,7 @@ class Trigger extends React.Component {
   componentWillUnmount() {
     this.clearDelayTimer();
     this.clearOutsideHandler();
+    clearTimeout(this.mouseDownTimeout);
   }
 
   onMouseEnter = (e) => {
@@ -287,16 +299,37 @@ class Trigger extends React.Component {
     }
   }
 
+  onPopupMouseDown = (...args) => {
+    const { rcTrigger = {} } = this.context;
+    this.hasPopupMouseDown = true;
+
+    clearTimeout(this.mouseDownTimeout);
+    this.mouseDownTimeout = setTimeout(() => {
+      this.hasPopupMouseDown = false;
+    }, 0);
+
+    if (rcTrigger.onPopupMouseDown) {
+      rcTrigger.onPopupMouseDown(...args);
+    }
+  };
+
   onDocumentClick = (event) => {
     if (this.props.mask && !this.props.maskClosable) {
       return;
     }
+
     const target = event.target;
     const root = findDOMNode(this);
-    const popupNode = this.getPopupDomNode();
-    if (!contains(root, target) && !contains(popupNode, target)) {
+    if (!contains(root, target) && !this.hasPopupMouseDown) {
       this.close();
     }
+  }
+
+  static getDerivedStateFromProps({ popupVisible }) {
+    if (popupVisible !== undefined) {
+      return { popupVisible };
+    }
+    return {};
   }
 
   getPopupDomNode() {
@@ -353,6 +386,9 @@ class Trigger extends React.Component {
     if (this.isMouseLeaveToHide()) {
       mouseProps.onMouseLeave = this.onPopupMouseLeave;
     }
+
+    mouseProps.onMouseDown = this.onPopupMouseDown;
+    mouseProps.onTouchStart = this.onPopupMouseDown;
 
     return (
       <Popup

@@ -18,12 +18,14 @@ class Popup extends Component {
     getClassNameFromAlign: PropTypes.func,
     onAlign: PropTypes.func,
     getRootDomNode: PropTypes.func,
-    onMouseEnter: PropTypes.func,
     align: PropTypes.any,
     destroyPopupOnHide: PropTypes.bool,
     className: PropTypes.string,
     prefixCls: PropTypes.string,
+    onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
+    onMouseDown: PropTypes.func,
+    onTouchStart: PropTypes.func,
     stretch: PropTypes.string,
     children: PropTypes.node,
     point: PropTypes.shape({
@@ -47,19 +49,6 @@ class Popup extends Component {
 
     this.savePopupRef = saveRef.bind(this, 'popupInstance');
     this.saveAlignRef = saveRef.bind(this, 'alignInstance');
-  }
-
-  static getDerivedStateFromProps(nextProps, { prevProps = {} }) {
-    const newState = {
-      prevProps: nextProps,
-    };
-
-    if (nextProps.visible !== prevProps.visible && nextProps.visible) {
-      newState.needAlign = true;
-      newState.stretchUpdated = false;
-    }
-
-    return newState;
   }
 
   componentDidMount() {
@@ -90,6 +79,19 @@ class Popup extends Component {
       needAlign: false,
     });
   };
+
+  static getDerivedStateFromProps(nextProps, { prevProps = {} }) {
+    const newState = {
+      prevProps: nextProps,
+    };
+
+    if (nextProps.visible !== prevProps.visible && nextProps.visible) {
+      newState.needAlign = true;
+      newState.stretchUpdated = false;
+    }
+
+    return newState;
+  }
 
   getPopupDomNode() {
     return ReactDOM.findDOMNode(this.popupInstance);
@@ -170,7 +172,7 @@ class Popup extends Component {
       align, visible,
       prefixCls, style, getClassNameFromAlign,
       destroyPopupOnHide, stretch, children,
-      onMouseEnter, onMouseLeave,
+      onMouseEnter, onMouseLeave, onMouseDown, onTouchStart,
     } = this.props;
     const className = this.getClassName(this.currentAlignClassName ||
       getClassNameFromAlign(align));
@@ -206,6 +208,8 @@ class Popup extends Component {
       ref: savePopupRef,
       onMouseEnter,
       onMouseLeave,
+      onMouseDown,
+      onTouchStart,
       style: newStyle,
       visible,
     };
