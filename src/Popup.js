@@ -83,7 +83,7 @@ class Popup extends Component {
     const height = $ele.offsetHeight;
     const width = $ele.offsetWidth;
 
-    if (targetHeight !== height || targetWidth !== width || !stretchChecked) {
+    if ((targetHeight !== height || targetWidth !== width) && !stretchChecked) {
       this.setState({
         stretchChecked: true,
         targetHeight: height,
