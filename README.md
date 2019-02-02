@@ -180,6 +180,12 @@ ReactDOM.render((
           <td>whether to support click mask to hide</td>
         </tr>
         <tr>
+          <td>keyboard</td>
+          <td>Boolean</td>
+          <td>false</td>
+          <td>whether support press esc to close</td>
+        </tr>
+        <tr>
           <td>popupVisible</td>
           <td>boolean</td>
           <td></td>
