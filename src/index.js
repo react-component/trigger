@@ -5,6 +5,7 @@ import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
+import KeyCode from 'rc-util/lib/KeyCode';
 import classNames from 'classnames';
 
 import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
@@ -78,6 +79,7 @@ export default class Trigger extends React.Component {
     maskAnimation: PropTypes.string,
     stretch: PropTypes.string,
     alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
+    keyboard: PropTypes.bool,
   };
 
   static contextTypes = contextTypes;
@@ -105,6 +107,7 @@ export default class Trigger extends React.Component {
     action: [],
     showAction: [],
     hideAction: [],
+    keyboard: false,
   };
 
   constructor(props) {
@@ -196,6 +199,13 @@ export default class Trigger extends React.Component {
         this.contextMenuOutsideHandler2 = addEventListener(window,
           'blur', this.onContextMenuClose);
       }
+      // close popup on escape keyboard event
+      if (!this.keyDownHandler && props.keyboard) {
+        currentDocument = currentDocument || props.getDocument();
+        this.keyDownHandler = addEventListener(currentDocument,
+          'keydown', this.onKeyDown);
+      }
+
       return;
     }
 
@@ -330,6 +340,14 @@ export default class Trigger extends React.Component {
     const target = event.target;
     const root = findDOMNode(this);
     if (!contains(root, target) && !this.hasPopupMouseDown) {
+      this.close();
+    }
+  }
+
+  onKeyDown = (event) => {
+    // close popup if escape key pressed
+    if (event.keyCode === KeyCode.ESC || event.key === 'Escape') {
+      event.stopPropagation();
       this.close();
     }
   }
@@ -515,6 +533,11 @@ export default class Trigger extends React.Component {
     if (this.touchOutsideHandler) {
       this.touchOutsideHandler.remove();
       this.touchOutsideHandler = null;
+    }
+
+    if (this.keyDownHandler) {
+      this.keyDownHandler.remove();
+      this.keyDownHandler = null;
     }
   }
 
