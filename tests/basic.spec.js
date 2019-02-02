@@ -11,7 +11,7 @@ import '../assets/index.less';
 import Trigger from '../index';
 import './basic.less';
 import async from 'async';
-import { saveRef } from '../src/utils';
+import { saveRef, keyboardEvent } from '../src/utils';
 
 const Simulate = TestUtils.Simulate;
 const scryRenderedDOMComponentsWithClass = TestUtils.scryRenderedDOMComponentsWithClass;
@@ -893,6 +893,66 @@ describe('rc-trigger', function main() {
       ), div);
       const domNode = ReactDOM.findDOMNode(trigger);
       expect(domNode.className).to.be('target className-in-trigger-1 className-in-trigger-2');
+    });
+  });
+
+  describe('keyboard', () => {
+    let visible;
+    const onChange = (value) => {
+      visible = value;
+    };
+
+    it('esc key works if keyboard=true ', () => {
+      const trigger = ReactDOM.render(
+        <Trigger
+          keyboard
+          popup={<div />}
+          action={['click']}
+          popupAlign={placementAlignMap.right}
+          onPopupVisibleChange={onChange}
+        >
+          <div>click</div>
+        </Trigger>,
+        div
+      );
+      const domNode = ReactDOM.findDOMNode(trigger);
+
+      // click trigger and show popup
+      Simulate.click(domNode);
+      expect(visible).to.be(true);
+
+      // click escape
+      const event = keyboardEvent('keydown', { key: 'Escape', keyCode: 27 });
+      document.dispatchEvent(event);
+
+      // assert that popup hidden
+      expect(visible).to.be(false);
+    });
+
+    it('esc key doesn\'t work if keyboard=false ', () => {
+      const trigger = ReactDOM.render(
+        <Trigger
+          popup={<div />}
+          action={['click']}
+          popupAlign={placementAlignMap.right}
+          onPopupVisibleChange={onChange}
+        >
+          <div>click</div>
+        </Trigger>,
+        div
+      );
+      const domNode = ReactDOM.findDOMNode(trigger);
+
+      // click trigger and show popup
+      Simulate.click(domNode);
+      expect(visible).to.be(true);
+
+      // click escape
+      const event = keyboardEvent('keydown', { key: 'Escape', keyCode: 27 });
+      document.dispatchEvent(event);
+
+      // assert that popup still visible
+      expect(visible).to.be(true);
     });
   });
 });
