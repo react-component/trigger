@@ -123,6 +123,12 @@ class Test extends React.Component {
     });
   }
 
+  onKeyboard = (e) => {
+    this.setState({
+      keyboard: e.target.checked,
+    });
+  }
+
   destroy = () => {
     this.setState({
       destroyed: true,
@@ -248,6 +254,16 @@ class Test extends React.Component {
           maskClosable
         </label>
 
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <input
+            checked={!!this.state.keyboard}
+            type="checkbox"
+            onChange={this.onKeyboard}
+          />
+          keyboard
+        </label>
+
         <br />
         <label>
           offsetX:
@@ -296,6 +312,7 @@ class Test extends React.Component {
             </div>
           }
           popupTransitionName={state.transitionName}
+          keyboard={state.keyboard}
         >
           <a
             style={{ margin: 20, display: 'inline-block', background: `rgba(255, 0, 0, 0.05)` }}
