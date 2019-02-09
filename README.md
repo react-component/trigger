@@ -245,6 +245,12 @@ ReactDOM.render((
           <td></td>
           <td>Let popup div stretch with trigger element. enums of 'width', 'minWidth', 'height', 'minHeight'. (You can also mixed with 'height minWidth')</td>
         </tr>
+        <tr>
+          <td>disabled</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Flag for disable the popup, (none of the events is triggered when this flag is setted to true)</td>
+        </tr>
     </tbody>
 </table>
 
