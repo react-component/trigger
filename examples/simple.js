@@ -15,7 +15,7 @@ function getPopupAlign(state) {
   };
 }
 
-const builtinPlacements = {
+export const builtinPlacements = {
   left: {
     points: ['cr', 'cl'],
   },
@@ -105,10 +105,6 @@ class Test extends React.Component {
     this.setState({
       offsetY: targetValue || undefined,
     });
-  }
-
-  onVisibleChange = (visible) => {
-    console.log('tooltip', visible);
   }
 
   onMask = (e) => {
@@ -271,7 +267,6 @@ class Test extends React.Component {
       </div>
       <div style={{ margin: 120, position: 'relative' }}>
         <Trigger
-          getPopupContainer={undefined && getPopupContainer}
           popupAlign={getPopupAlign(state)}
           popupPlacement={state.placement}
           destroyPopupOnHide={this.state.destroyPopupOnHide}
