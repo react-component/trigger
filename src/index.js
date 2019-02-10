@@ -78,7 +78,7 @@ export default class Trigger extends React.Component {
     maskAnimation: PropTypes.string,
     stretch: PropTypes.string,
     alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
   };
 
   static contextTypes = contextTypes;
@@ -106,7 +106,7 @@ export default class Trigger extends React.Component {
     action: [],
     showAction: [],
     hideAction: [],
-    disabled: false
+    disabled: false,
   };
 
   constructor(props) {
@@ -211,7 +211,7 @@ export default class Trigger extends React.Component {
   }
 
   onMouseEnter = (e) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     const { mouseEnterDelay } = this.props;
     this.fireEvents('onMouseEnter', e);
     this.delaySetPopupVisible(true, mouseEnterDelay, mouseEnterDelay ? null : e);
@@ -223,7 +223,7 @@ export default class Trigger extends React.Component {
   };
 
   onMouseLeave = (e) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     this.fireEvents('onMouseLeave', e);
     this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
   }
@@ -233,7 +233,7 @@ export default class Trigger extends React.Component {
   }
 
   onPopupMouseLeave = (e) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     // https://github.com/react-component/trigger/pull/13
     // react bug?
     if (e.relatedTarget && !e.relatedTarget.setTimeout &&
@@ -246,7 +246,7 @@ export default class Trigger extends React.Component {
   }
 
   onFocus = (e) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     this.fireEvents('onFocus', e);
     // incase focusin and focusout
     this.clearDelayTimer();
@@ -267,7 +267,7 @@ export default class Trigger extends React.Component {
   }
 
   onBlur = (e) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     this.fireEvents('onBlur', e);
     this.clearDelayTimer();
     if (this.isBlurToHide()) {
@@ -276,7 +276,7 @@ export default class Trigger extends React.Component {
   }
 
   onContextMenu = (e) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     e.preventDefault();
     this.fireEvents('onContextMenu', e);
     this.setPopupVisible(true, e);
@@ -289,7 +289,7 @@ export default class Trigger extends React.Component {
   }
 
   onClick = (event) => {
-    if (this.props.disabled) return
+    if (this.props.disabled) return;
     this.fireEvents('onClick', event);
     // focus will trigger click
     if (this.focusTime) {
