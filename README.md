@@ -245,6 +245,12 @@ ReactDOM.render((
           <td></td>
           <td>Let popup div stretch with trigger element. enums of 'width', 'minWidth', 'height', 'minHeight'. (You can also mixed with 'height minWidth')</td>
         </tr>
+        <tr>
+          <td>ignoreVisibilityChangeClassName</td>
+          <td>string</td>
+          <td></td>
+          <td>Ignore the pop visibility change to false when the target has the `ignoreVisibilityChangeClassName`</td>
+        </tr>
     </tbody>
 </table>
 
