@@ -323,11 +323,11 @@ export default class Trigger extends React.Component {
   };
 
   onDocumentClick = (event) => {
-    setTimeout(function() {
+    setTimeout(() => {
       if (this.props.mask && !this.props.maskClosable) {
         return;
       }
-  
+
       const target = event.target;
       const root = findDOMNode(this);
       if (!contains(root, target) && !this.hasPopupMouseDown) {
