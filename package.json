@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "async": "~1.5.0",
-    "core-js": "^2.5.1",
+    "core-js": "^3.0.1",
     "expect.js": "0.3.x",
     "jquery": "~1.11.3",
     "pre-commit": "1.x",
