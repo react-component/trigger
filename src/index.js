@@ -585,6 +585,7 @@ export default class Trigger extends React.Component {
 
   savePopup = (node) => {
     this._component = node;
+    this.props.afterPopupVisibleChange(this.props.visible)
   }
 
   render() {
