@@ -72,7 +72,7 @@ class Popup extends Component {
     //   popupDomNode.className = this.getClassName(currentAlignClassName);
     // }
     onAlign(popupDomNode, align);
-  }
+  };
 
   onMotionStart = () => {
     this.setState({
@@ -80,6 +80,20 @@ class Popup extends Component {
     });
   };
 
+  /**
+   * We manage the motion status by every props change:
+   * 1. When visible: false -> true
+   *    1. Reset needAlign: true
+   *    2. Reset stretchUpdated if needed
+   * 2. on componentDidUpdate
+   *    1. if stretchUpdated is true, measure the size
+   *      1. Set stretchUpdated to true
+   * 3. Render popup but hidden it (visibility: false)
+   *    1. Set needAlign: false
+   *
+   * Render visible:
+   * 1. true until stretchUpdated & visible
+   */
   static getDerivedStateFromProps(nextProps, { prevProps = {} }) {
     const newState = {
       prevProps: nextProps,
@@ -99,7 +113,7 @@ class Popup extends Component {
 
   getTargetElement = () => {
     return this.props.getRootDomNode();
-  }
+  };
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
   // ref: https://www.npmjs.com/package/rc-align
@@ -109,7 +123,7 @@ class Popup extends Component {
       return point;
     }
     return this.getTargetElement;
-  }
+  };
 
   getMaskTransitionName() {
     const props = this.props;
@@ -165,17 +179,22 @@ class Popup extends Component {
   // ============================= Render =============================
   renderPopupElement() {
     const { savePopupRef } = this;
+    const { stretchUpdated, targetHeight, targetWidth, needAlign } = this.state;
     const {
-      stretchUpdated, targetHeight, targetWidth, needAlign,
-    } = this.state;
-    const {
-      align, visible,
-      prefixCls, style, getClassNameFromAlign,
-      destroyPopupOnHide, stretch, children,
-      onMouseEnter, onMouseLeave, onMouseDown, onTouchStart,
+      align,
+      visible,
+      prefixCls,
+      style,
+      getClassNameFromAlign,
+      destroyPopupOnHide,
+      stretch,
+      children,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onTouchStart,
     } = this.props;
-    const className = this.getClassName(this.currentAlignClassName ||
-      getClassNameFromAlign(align));
+    const className = this.getClassName(this.currentAlignClassName || getClassNameFromAlign(align));
     const hiddenClassName = `${prefixCls}-hidden`;
 
     if (!visible) {
@@ -246,10 +265,7 @@ class Popup extends Component {
               align={align}
               onAlign={this.onAlign}
             >
-              <PopupInner
-                {...popupInnerProps}
-                className={classNames(className, motionClassName)}
-              >
+              <PopupInner {...popupInnerProps} className={classNames(className, motionClassName)}>
                 {children}
               </PopupInner>
             </Align>
