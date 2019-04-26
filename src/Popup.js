@@ -53,11 +53,11 @@ class Popup extends Component {
 
   componentDidMount() {
     this.rootNode = this.getPopupDomNode();
-    this.syncStrtchSize();
+    this.syncStretchSize();
   }
 
   componentDidUpdate() {
-    this.syncStrtchSize();
+    this.syncStretchSize();
   }
 
   onAlign = (popupDomNode, align) => {
@@ -146,7 +146,7 @@ class Popup extends Component {
   }
 
   // ============================== Dom ===============================
-  syncStrtchSize = () => {
+  syncStretchSize = () => {
     const { stretchUpdated } = this.state;
     const { getRootDomNode, stretch } = this.props;
 
