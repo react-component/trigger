@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>simple.js - example - rc-trigger@2.6.2</title>
+  <title>simple.js - example - rc-trigger@2.7.0-alpha.0</title>
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <meta charset="utf-8"/>
@@ -263,13 +263,13 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 <body>
   <div class="container">
     <div class="header">
-      <h1>rc-trigger@2.6.2</h1>
+      <h1>rc-trigger@2.7.0-alpha.0</h1>
 
       <p>base abstract trigger component for react</p>
     </div>
     <div class="example" id="__react-content"></div>
 
-    <div class="highlight"><pre><code language="js"><span class="hljs-comment">/* eslint no-console:0 */</span>
+    <div class="highlight"><pre><code language="js"><span class="hljs-comment">/* eslint no-console:0, react/no-unused-state:0 */</span>
 
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
@@ -325,6 +325,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
   state = {
     mask: <span class="hljs-literal">false</span>,
     maskClosable: <span class="hljs-literal">false</span>,
+    maskAnimation: <span class="hljs-literal">false</span>,
     placement: <span class="hljs-string">'right'</span>,
     trigger: {
       hover: <span class="hljs-number">1</span>,
@@ -394,6 +395,12 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     });
   }
 
+  onMaskAnimation = (e) =&gt; {
+    <span class="hljs-keyword">this</span>.setState({
+      maskAnimation: e.target.checked,
+    });
+  }
+
   destroy = () =&gt; {
     <span class="hljs-keyword">this</span>.setState({
       destroyed: <span class="hljs-literal">true</span>,
@@ -412,6 +419,14 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
     <span class="hljs-keyword">if</span> (state.destroyed) {
       <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
     }
+
+    <span class="hljs-keyword">let</span> maskAnimationProps = {};
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.maskAnimation) {
+      maskAnimationProps = {
+        maskAnimation: <span class="hljs-string">'fade'</span>,
+      };
+    }
+
     <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> &gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">{{</span> <span class="hljs-attribute">margin:</span> '<span class="hljs-attribute">10px</span> <span class="hljs-attribute">20px</span>' }}&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
@@ -519,6 +534,16 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
           maskClosable
         <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
 
+        &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+        <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">input</span>
+            <span class="hljs-attribute">checked</span>=<span class="hljs-value">{!!this.state.maskAnimation}</span>
+            <span class="hljs-attribute">type</span>=<span class="hljs-value">"checkbox"</span>
+            <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.onMaskAnimation}</span>
+          /&gt;</span>
+          maskAnimation
+        <span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
+
         <span class="hljs-tag">&lt;<span class="hljs-title">br</span> /&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-title">label</span>&gt;</span>
           offsetX:
@@ -550,7 +575,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
           <span class="hljs-attribute">mask</span>=<span class="hljs-value">{this.state.mask}</span>
           <span class="hljs-attribute">maskClosable</span>=<span class="hljs-value">{this.state.maskClosable}</span>
           <span class="hljs-attribute">stretch</span>=<span class="hljs-value">{this.state.stretch}</span>
-          // <span class="hljs-attribute">maskAnimation</span>=<span class="hljs-value">"fade"</span>
+          {<span class="hljs-attribute">...maskAnimationProps</span>}
           // <span class="hljs-attribute">mouseEnterDelay</span>=<span class="hljs-value">{0.1}</span>
           // <span class="hljs-attribute">mouseLeaveDelay</span>=<span class="hljs-value">{0.1}</span>
           <span class="hljs-attribute">action</span>=<span class="hljs-value">{Object.keys(state.trigger)}</span>

@@ -1,38 +1,38 @@
 webpackJsonp([2],{
 
-/***/ 157:
+/***/ 152:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(158);
+module.exports = __webpack_require__(153);
 
 
 /***/ }),
 
-/***/ 158:
+/***/ 153:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_classCallCheck__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_inherits__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_dom__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_react_dom__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rc_trigger__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rc_trigger__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_rc_trigger_assets_index_less__);
 
 
 
 
-/* eslint no-console:0 */
+/* eslint no-console:0, react/no-unused-state:0 */
 
 
 
@@ -99,6 +99,7 @@ var Test = function (_React$Component) {
     return _ret = (_temp = (_this = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_possibleConstructorReturn___default()(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
       mask: false,
       maskClosable: false,
+      maskAnimation: false,
       placement: 'right',
       trigger: {
         hover: 1
@@ -148,6 +149,10 @@ var Test = function (_React$Component) {
       _this.setState({
         maskClosable: e.target.checked
       });
+    }, _this.onMaskAnimation = function (e) {
+      _this.setState({
+        maskAnimation: e.target.checked
+      });
     }, _this.destroy = function () {
       _this.setState({
         destroyed: true
@@ -165,6 +170,14 @@ var Test = function (_React$Component) {
     if (state.destroyed) {
       return null;
     }
+
+    var maskAnimationProps = {};
+    if (this.state.maskAnimation) {
+      maskAnimationProps = {
+        maskAnimation: 'fade'
+      };
+    }
+
     return __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
       'div',
       null,
@@ -345,6 +358,17 @@ var Test = function (_React$Component) {
           }),
           'maskClosable'
         ),
+        '\xA0\xA0\xA0\xA0',
+        __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
+          'label',
+          null,
+          __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('input', {
+            checked: !!this.state.maskAnimation,
+            type: 'checkbox',
+            onChange: this.onMaskAnimation
+          }),
+          'maskAnimation'
+        ),
         __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement('br', null),
         __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
           'label',
@@ -379,7 +403,7 @@ var Test = function (_React$Component) {
         { style: { margin: 120, position: 'relative' } },
         __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_6_rc_trigger__["a" /* default */],
-          {
+          __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_extends___default()({
             getPopupContainer: undefined && getPopupContainer,
             popupAlign: getPopupAlign(state),
             popupPlacement: state.placement,
@@ -388,10 +412,10 @@ var Test = function (_React$Component) {
             , mask: this.state.mask,
             maskClosable: this.state.maskClosable,
             stretch: this.state.stretch
-            // maskAnimation="fade"
+          }, maskAnimationProps, {
             // mouseEnterDelay={0.1}
             // mouseLeaveDelay={0.1}
-            , action: Object.keys(state.trigger),
+            action: Object.keys(state.trigger),
             builtinPlacements: builtinPlacements,
             popupStyle: {
               border: '1px solid red',
@@ -405,7 +429,7 @@ var Test = function (_React$Component) {
               'i am a popup'
             ),
             popupTransitionName: state.transitionName
-          },
+          }),
           __WEBPACK_IMPORTED_MODULE_4_react___default.a.createElement(
             'a',
             {
@@ -441,5 +465,5 @@ __WEBPACK_IMPORTED_MODULE_5_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 
 /***/ })
 
-},[157]);
+},[152]);
 //# sourceMappingURL=simple.js.map
