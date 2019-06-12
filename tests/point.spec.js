@@ -12,8 +12,7 @@ describe('align by point', () => {
   beforeEach(() => {
     $('body div').remove();
 
-    region = $('<div>')
-      .appendTo(document.body);
+    region = $('<div>').appendTo(document.body);
   });
 
   afterEach(() => {
@@ -22,27 +21,18 @@ describe('align by point', () => {
   });
 
   class Demo extends React.Component {
-    popup = (
-      <div className="point-popup">
-        POPUP
-      </div>
-    );
+    popup = <div className="point-popup">POPUP</div>;
 
     render() {
       return (
-        <Trigger
-          popup={this.popup}
-          popupAlign={{ points: ['tl'] }}
-          alignPoint
-          {...this.props}
-        >
+        <Trigger popup={this.popup} popupAlign={{ points: ['tl'] }} alignPoint {...this.props}>
           <div className="point-region" />
         </Trigger>
       );
     }
   }
 
-  it('onClick', (done) => {
+  it('onClick', done => {
     const instance = ReactDOM.render(<Demo action={['click']} />, region[0]);
     const domNode = ReactDOM.findDOMNode(instance);
     TestUtils.Simulate.click(domNode, { pageX: 10, pageY: 20 });
@@ -55,7 +45,7 @@ describe('align by point', () => {
     }, 20);
   });
 
-  it('hover', (done) => {
+  it('hover', done => {
     const instance = ReactDOM.render(<Demo action={['hover']} />, region[0]);
     const domNode = ReactDOM.findDOMNode(instance);
     TestUtils.Simulate.mouseEnter(domNode, { pageX: 10, pageY: 20 });
@@ -68,16 +58,36 @@ describe('align by point', () => {
     }, 20);
   });
 
-  it('contextMenu', (done) => {
-    const instance = ReactDOM.render(<Demo action={['contextMenu']} />, region[0]);
-    const domNode = ReactDOM.findDOMNode(instance);
-    TestUtils.Simulate.contextMenu(domNode, { pageX: 10, pageY: 20 });
+  describe('contextMenu', () => {
+    it('basic', done => {
+      const instance = ReactDOM.render(<Demo action={['contextMenu']} />, region[0]);
+      const domNode = ReactDOM.findDOMNode(instance);
+      TestUtils.Simulate.contextMenu(domNode, { pageX: 10, pageY: 20 });
 
-    setTimeout(() => {
-      const popup = $('.rc-trigger-popup');
-      expect(popup.offset().left).to.be(10);
-      expect(popup.offset().top).to.be(20);
-      done();
-    }, 20);
+      setTimeout(() => {
+        const popup = $('.rc-trigger-popup');
+        expect(popup.offset().left).to.be(10);
+        expect(popup.offset().top).to.be(20);
+        done();
+      }, 20);
+    });
+
+    it('basic', done => {
+      const instance = ReactDOM.render(
+        <Demo showAction={['contextMenu']} hideAction={['click']} />,
+        region[0],
+      );
+      const domNode = ReactDOM.findDOMNode(instance);
+      TestUtils.Simulate.contextMenu(domNode, { pageX: 10, pageY: 20 });
+
+      setTimeout(() => {
+        TestUtils.Simulate.click(domNode, {
+          preventDefault() {
+            expect().fail();
+          },
+        });
+        done();
+      }, 20);
+    });
   });
 });

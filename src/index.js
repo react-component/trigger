@@ -299,7 +299,10 @@ export default class Trigger extends React.Component {
     }
     this.preClickTime = 0;
     this.preTouchTime = 0;
-    if (event && event.preventDefault) {
+
+    // Only prevent default when all the action is click.
+    // https://github.com/ant-design/ant-design/issues/17043
+    if (this.isClickToShow() && this.isClickToHide() && event && event.preventDefault) {
       event.preventDefault();
     }
     const nextVisible = !this.state.popupVisible;
