@@ -179,6 +179,11 @@ export default class Trigger extends React.Component {
         this.clickOutsideHandler = addEventListener(currentDocument,
           'mousedown', this.onDocumentClick);
       }
+      // close popup when trigger type is `contextMenu`, or `click` and window is blurred
+      if (!this.clickBlurOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
+        this.clickBlurOutsideHandler = addEventListener(window,
+          'blur', this.onDocumentClick);
+      }
       // always hide on mobile
       if (!this.touchOutsideHandler) {
         currentDocument = currentDocument || props.getDocument();
@@ -186,15 +191,10 @@ export default class Trigger extends React.Component {
           'touchstart', this.onDocumentClick);
       }
       // close popup when trigger type contains 'onContextMenu' and document is scrolling.
-      if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
+      if (!this.contextMenuScrollOutsideHandler && this.isContextMenuToShow()) {
         currentDocument = currentDocument || props.getDocument();
-        this.contextMenuOutsideHandler1 = addEventListener(currentDocument,
+        this.contextMenuScrollOutsideHandler = addEventListener(currentDocument,
           'scroll', this.onContextMenuClose);
-      }
-      // close popup when trigger type contains 'onContextMenu' and window is blur.
-      if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
-        this.contextMenuOutsideHandler2 = addEventListener(window,
-          'blur', this.onContextMenuClose);
       }
       return;
     }
@@ -505,14 +505,14 @@ export default class Trigger extends React.Component {
       this.clickOutsideHandler = null;
     }
 
-    if (this.contextMenuOutsideHandler1) {
-      this.contextMenuOutsideHandler1.remove();
-      this.contextMenuOutsideHandler1 = null;
+    if (this.contextMenuScrollOutsideHandler) {
+      this.contextMenuScrollOutsideHandler.remove();
+      this.contextMenuScrollOutsideHandler = null;
     }
 
-    if (this.contextMenuOutsideHandler2) {
-      this.contextMenuOutsideHandler2.remove();
-      this.contextMenuOutsideHandler2 = null;
+    if (this.clickBlurOutsideHandler) {
+      this.clickBlurOutsideHandler.remove();
+      this.clickBlurOutsideHandler = null;
     }
 
     if (this.touchOutsideHandler) {
