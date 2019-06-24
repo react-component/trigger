@@ -42,7 +42,7 @@
     "coverage": "rc-test run coverage"
   },
   "devDependencies": {
-    "async": "~1.5.0",
+    "async": "~3.1.0",
     "core-js": "^2.5.1",
     "expect.js": "0.3.x",
     "jquery": "~1.11.3",
