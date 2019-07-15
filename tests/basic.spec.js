@@ -236,7 +236,7 @@ describe('rc-trigger', function main() {
       }], done);
     });
 
-    describe.only('afterPopupVisibleChange can be triggered', () => {
+    describe('afterPopupVisibleChange can be triggered', () => {
       it('uncontrolled', done => {
         let triggered = 0;
         const trigger = ReactDOM.render(
