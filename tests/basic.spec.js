@@ -236,25 +236,83 @@ describe('rc-trigger', function main() {
       }], done);
     });
 
-    it('afterPopupVisibleChange can be triggered', (done) => {
-      let triggered = 0;
-      const trigger = ReactDOM.render((
-        <Trigger
-          action={['click']}
-          popupAlign={placementAlignMap.left}
-          afterPopupVisibleChange={() => {
-            triggered = 1;
-          }}
-          popup={<strong>trigger</strong>}
-        >
-          <div className="target">click</div>
-        </Trigger>), div);
-      const domNode = ReactDOM.findDOMNode(trigger);
-      Simulate.click(domNode);
-      async.series([timeout(200), (next) => {
-        expect(triggered).to.be(1);
-        next();
-      }], done);
+    describe('afterPopupVisibleChange can be triggered', () => {
+      it('uncontrolled', done => {
+        let triggered = 0;
+        const trigger = ReactDOM.render(
+          <Trigger
+            action={['click']}
+            popupAlign={placementAlignMap.left}
+            afterPopupVisibleChange={() => {
+              triggered = 1;
+            }}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>,
+          div,
+        );
+        const domNode = ReactDOM.findDOMNode(trigger);
+        Simulate.click(domNode);
+        async.series(
+          [
+            timeout(200),
+            next => {
+              expect(triggered).to.be(1);
+              next();
+            },
+          ],
+          done,
+        );
+      });
+
+      it('controlled', done => {
+        let triggered = 0;
+
+        class Demo extends React.Component {
+          state = {
+            visible: false,
+          };
+
+          render() {
+            return (
+              <Trigger
+                popupVisible={this.state.visible}
+                popupAlign={placementAlignMap.left}
+                afterPopupVisibleChange={() => {
+                  triggered += 1;
+                }}
+                popup={<strong>trigger</strong>}
+              >
+                <div className="target">click</div>
+              </Trigger>
+            );
+          }
+        }
+
+        const trigger = ReactDOM.render(<Demo />, div);
+        trigger.setState({ visible: true });
+
+        async.series(
+          [
+            timeout(200),
+            next => {
+              expect(triggered).to.be(1);
+              next();
+            },
+            next => {
+              trigger.setState({ visible: false });
+              next();
+            },
+            timeout(200),
+            next => {
+              expect(triggered).to.be(2);
+              next();
+            },
+          ],
+          done,
+        );
+      });
     });
 
     it('nested action works', (done) => {
