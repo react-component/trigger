@@ -61,6 +61,7 @@
     "prop-types": "15.x",
     "rc-align": "^2.4.0",
     "rc-animate": "2.x",
-    "rc-util": "^4.4.0"
+    "rc-util": "^4.4.0",
+    "react-lifecycles-compat": "^3.0.4"
   }
 }

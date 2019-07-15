@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { findDOMNode, createPortal } from 'react-dom';
+import { polyfill } from 'react-lifecycles-compat';
 import contains from 'rc-util/lib/Dom/contains';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import ContainerRender from 'rc-util/lib/ContainerRender';
@@ -39,7 +40,7 @@ const contextTypes = {
   }),
 };
 
-export default class Trigger extends React.Component {
+class Trigger extends React.Component {
   static propTypes = {
     children: PropTypes.any,
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -115,11 +116,16 @@ export default class Trigger extends React.Component {
       popupVisible = !!props.defaultPopupVisible;
     }
 
-    this.prevPopupVisible = popupVisible;
-
     this.state = {
+      prevPopupVisible: popupVisible,
       popupVisible,
     };
+
+    ALL_HANDLERS.forEach(h => {
+      this[`fire${h}`] = e => {
+        this.fireEvents(h, e);
+      };
+    });
   }
 
   getChildContext() {
@@ -130,14 +136,6 @@ export default class Trigger extends React.Component {
     };
   }
 
-  componentWillMount() {
-    ALL_HANDLERS.forEach(h => {
-      this[`fire${h}`] = e => {
-        this.fireEvents(h, e);
-      };
-    });
-  }
-
   componentDidMount() {
     this.componentDidUpdate(
       {},
@@ -145,14 +143,6 @@ export default class Trigger extends React.Component {
         popupVisible: this.state.popupVisible,
       },
     );
-  }
-
-  componentWillReceiveProps({ popupVisible }) {
-    if (popupVisible !== undefined) {
-      this.setState({
-        popupVisible,
-      });
-    }
   }
 
   componentDidUpdate(_, prevState) {
@@ -166,8 +156,6 @@ export default class Trigger extends React.Component {
     if (!IS_REACT_16) {
       this.renderComponent(null, triggerAfterPopupVisibleChange);
     }
-
-    this.prevPopupVisible = prevState.popupVisible;
 
     // We must listen to `mousedown` or `touchstart`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
@@ -355,6 +343,17 @@ export default class Trigger extends React.Component {
     }
   };
 
+  static getDerivedStateFromProps({ popupVisible }, prevState) {
+    const newState = {};
+
+    if (popupVisible !== undefined && prevState.popupVisible !== popupVisible) {
+      newState.popupVisible = popupVisible;
+      newState.prevPopupVisible = prevState.popupVisible;
+    }
+
+    return newState;
+  }
+
   getPopupDomNode() {
     // for test
     if (this._component && this._component.getPopupDomNode) {
@@ -477,12 +476,13 @@ export default class Trigger extends React.Component {
    */
   setPopupVisible(popupVisible, event) {
     const { alignPoint } = this.props;
+    const { popupVisible: prevPopupVisible } = this.state;
 
     this.clearDelayTimer();
 
-    if (this.state.popupVisible !== popupVisible) {
+    if (prevPopupVisible !== popupVisible) {
       if (!('popupVisible' in this.props)) {
-        this.setState({ popupVisible });
+        this.setState({ popupVisible, prevPopupVisible });
       }
       this.props.onPopupVisibleChange(popupVisible);
     }
@@ -506,7 +506,7 @@ export default class Trigger extends React.Component {
   };
 
   handlePortalUpdate = () => {
-    if (this.prevPopupVisible !== this.state.popupVisible) {
+    if (this.state.prevPopupVisible !== this.state.popupVisible) {
       this.props.afterPopupVisibleChange(this.state.popupVisible);
     }
   };
@@ -702,3 +702,7 @@ export default class Trigger extends React.Component {
     return [trigger, portal];
   }
 }
+
+polyfill(Trigger);
+
+export default Trigger;
