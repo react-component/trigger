@@ -77,6 +77,7 @@ class Trigger extends React.Component {
     maskAnimation: PropTypes.string,
     stretch: PropTypes.string,
     alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
+    ignoreVisibilityChangeClassName: PropTypes.string,
   };
 
   static contextTypes = contextTypes;
@@ -104,6 +105,7 @@ class Trigger extends React.Component {
     action: [],
     showAction: [],
     hideAction: [],
+    ignoreVisibilityChangeClassName: '',
   };
 
   constructor(props) {
@@ -335,8 +337,16 @@ class Trigger extends React.Component {
     if (this.props.mask && !this.props.maskClosable) {
       return;
     }
-
+    const { ignoreVisibilityChangeClassName } = this.props;
     const target = event.target;
+    if (
+      ignoreVisibilityChangeClassName &&
+      typeof target.className === 'string' &&
+      target.className.split(' ').filter(className => className === ignoreVisibilityChangeClassName)
+        .length > 0
+    ) {
+      return;
+    }
     const root = findDOMNode(this);
     if (!contains(root, target) && !this.hasPopupMouseDown) {
       this.close();
