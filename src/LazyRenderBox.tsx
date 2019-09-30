@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 
 interface LazyRenderBoxProps {
-  children: React.ReactNode;
-  className: string;
-  visible: boolean;
-  hiddenClassName: string;
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  visible?: boolean;
+  hiddenClassName?: string;
 }
 
 class LazyRenderBox extends Component<LazyRenderBoxProps> {
