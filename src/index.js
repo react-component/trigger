@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { findDOMNode, createPortal } from 'react-dom';
+import { createPortal } from 'react-dom';
 import { polyfill } from 'react-lifecycles-compat';
 import contains from 'rc-util/lib/Dom/contains';
+import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
@@ -105,6 +106,8 @@ class Trigger extends React.Component {
     showAction: [],
     hideAction: [],
   };
+
+  cachedComponent = null;
 
   constructor(props) {
     super(props);
@@ -231,9 +234,9 @@ class Trigger extends React.Component {
     if (
       e.relatedTarget &&
       !e.relatedTarget.setTimeout &&
-      this._component &&
-      this._component.getPopupDomNode &&
-      contains(this._component.getPopupDomNode(), e.relatedTarget)
+      this.cachedComponent &&
+      this.cachedComponent.getPopupDomNode &&
+      contains(this.cachedComponent.getPopupDomNode(), e.relatedTarget)
     ) {
       return;
     }
@@ -356,8 +359,8 @@ class Trigger extends React.Component {
 
   getPopupDomNode() {
     // for test
-    if (this._component && this._component.getPopupDomNode) {
-      return this._component.getPopupDomNode();
+    if (this.cachedComponent && this.cachedComponent.getPopupDomNode) {
+      return this.cachedComponent.getPopupDomNode();
     }
     return null;
   }
@@ -509,6 +512,10 @@ class Trigger extends React.Component {
     }
   };
 
+  savePopup = node => {
+    this.cachedComponent = node;
+  };
+
   delaySetPopupVisible(visible, delayS, event) {
     const delay = delayS * 1000;
     this.clearDelayTimer();
@@ -597,8 +604,8 @@ class Trigger extends React.Component {
   }
 
   forcePopupAlign() {
-    if (this.state.popupVisible && this._component && this._component.alignInstance) {
-      this._component.alignInstance.forceAlign();
+    if (this.state.popupVisible && this.cachedComponent && this.cachedComponent.alignInstance) {
+      this.cachedComponent.alignInstance.forceAlign();
     }
   }
 
@@ -616,10 +623,6 @@ class Trigger extends React.Component {
   close() {
     this.setPopupVisible(false);
   }
-
-  savePopup = node => {
-    this._component = node;
-  };
 
   render() {
     const { popupVisible } = this.state;
@@ -689,7 +692,7 @@ class Trigger extends React.Component {
 
     let portal;
     // prevent unmounting after it's rendered
-    if (popupVisible || this._component || forceRender) {
+    if (popupVisible || this.cachedComponent || forceRender) {
       portal = (
         <Portal key="portal" getContainer={this.getContainer} didUpdate={this.handlePortalUpdate}>
           {this.getComponent()}

@@ -12,5 +12,6 @@ module.exports = {
     'react/require-default-props': 0,
     'jsx-a11y/label-has-for': 0,
     'jsx-a11y/label-has-associated-control': 0,
+    'react/no-find-dom-node': 0,
   },
 };

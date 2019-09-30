@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
@@ -63,7 +64,7 @@ class Popup extends Component {
       popupDomNode.className = this.getClassName(currentAlignClassName);
     }
     props.onAlign(popupDomNode, align);
-  }
+  };
 
   // Record size if stretch needed
   setStretchSize = () => {
@@ -96,7 +97,7 @@ class Popup extends Component {
     return ReactDOM.findDOMNode(this.popupInstance);
   }
 
-  getTargetElement = () => this.props.getRootDomNode()
+  getTargetElement = () => this.props.getRootDomNode();
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
   // ref: https://www.npmjs.com/package/rc-align
@@ -106,7 +107,7 @@ class Popup extends Component {
       return point;
     }
     return this.getTargetElement;
-  }
+  };
 
   getMaskTransitionName() {
     const { props } = this;
@@ -135,13 +136,20 @@ class Popup extends Component {
     const { savePopupRef } = this;
     const { stretchChecked, targetHeight, targetWidth } = this.state;
     const {
-      align, visible,
-      prefixCls, style, getClassNameFromAlign,
-      destroyPopupOnHide, stretch, children,
-      onMouseEnter, onMouseLeave, onMouseDown, onTouchStart,
+      align,
+      visible,
+      prefixCls,
+      style,
+      getClassNameFromAlign,
+      destroyPopupOnHide,
+      stretch,
+      children,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onTouchStart,
     } = this.props;
-    const className = this.getClassName(this.currentAlignClassName ||
-      getClassNameFromAlign(align));
+    const className = this.getClassName(this.currentAlignClassName || getClassNameFromAlign(align));
     const hiddenClassName = `${prefixCls}-hidden`;
 
     if (!visible) {
@@ -191,12 +199,7 @@ class Popup extends Component {
     };
     if (destroyPopupOnHide) {
       return (
-        <Animate
-          component=""
-          exclusive
-          transitionAppear
-          transitionName={this.getTransitionName()}
-        >
+        <Animate component="" exclusive transitionAppear transitionName={this.getTransitionName()}>
           {visible ? (
             <Align
               target={this.getAlignTarget()}
@@ -206,10 +209,7 @@ class Popup extends Component {
               align={align}
               onAlign={this.onAlign}
             >
-              <PopupInner
-                visible
-                {...popupInnerProps}
-              >
+              <PopupInner visible {...popupInnerProps}>
                 {children}
               </PopupInner>
             </Align>
@@ -237,10 +237,7 @@ class Popup extends Component {
           align={align}
           onAlign={this.onAlign}
         >
-          <PopupInner
-            hiddenClassName={hiddenClassName}
-            {...popupInnerProps}
-          >
+          <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
             {children}
           </PopupInner>
         </Align>
@@ -299,3 +296,4 @@ class Popup extends Component {
 }
 
 export default Popup;
+/* eslint-enable */

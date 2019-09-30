@@ -4,16 +4,6 @@ import React from 'react';
 import Trigger from '../src';
 import '../assets/index.less';
 
-function getPopupAlign(state) {
-  return {
-    offset: [state.offsetX, state.offsetY],
-    overflow: {
-      adjustX: 1,
-      adjustY: 1,
-    },
-  };
-}
-
 const builtinPlacements = {
   left: {
     points: ['cr', 'cl'],
@@ -81,14 +71,18 @@ class Test extends React.Component {
   };
 
   onTriggerChange = e => {
-    const trigger = { ...this.state.trigger };
-    if (e.target.checked) {
-      trigger[e.target.value] = 1;
-    } else {
-      delete trigger[e.target.value];
-    }
-    this.setState({
-      trigger,
+    this.setState(({ trigger }) => {
+      const clone = { ...trigger };
+
+      if (e.target.checked) {
+        clone[e.target.value] = 1;
+      } else {
+        delete clone[e.target.value];
+      }
+
+      return {
+        trigger: clone,
+      };
     });
   };
 
@@ -120,6 +114,17 @@ class Test extends React.Component {
     this.setState({
       maskClosable: e.target.checked,
     });
+  };
+
+  getPopupAlign = () => {
+    const { offsetX, offsetY } = this.state;
+    return {
+      offset: [offsetX, offsetY],
+      overflow: {
+        adjustX: 1,
+        adjustY: 1,
+      },
+    };
   };
 
   destroy = () => {
@@ -255,7 +260,7 @@ class Test extends React.Component {
         <div style={{ margin: 120, position: 'relative' }}>
           <Trigger
             getPopupContainer={undefined && getPopupContainer}
-            popupAlign={getPopupAlign(state)}
+            popupAlign={this.getPopupAlign()}
             popupPlacement={state.placement}
             destroyPopupOnHide={this.state.destroyPopupOnHide}
             // zIndex={40}
