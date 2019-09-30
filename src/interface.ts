@@ -25,12 +25,14 @@ type AlignPoint =
   | 'rl'
   | 'rr';
 
+export type AlignPoints = [AlignPoint, AlignPoint];
+
 export interface AlignType {
   /**
    * move point of source node to align with point of target node.
    * Such as ['tr','cc'], align top right point of source node with center point of target node.
    * Point can be 't'(top), 'b'(bottom), 'c'(center), 'l'(left), 'r'(right) */
-  points?: [AlignPoint, AlignPoint];
+  points?: AlignPoints;
   /**
    * offset source node by offset[0] in x and offset[1] in y.
    * If offset contains percentage string value, it is relative to sourceNode region.
@@ -62,6 +64,10 @@ export interface AlignType {
    * Defaults to false.
    */
   useCssTransform?: boolean;
+}
+
+export interface BuildInPlacements {
+  [placement: string]: AlignType;
 }
 
 export type StretchType = string;
