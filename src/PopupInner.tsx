@@ -5,7 +5,7 @@ interface PopupInnerProps {
   prefixCls: string;
   className: string;
   hiddenClassName?: string;
-  visible: boolean;
+  visible?: boolean;
   style?: React.CSSProperties;
   children?: React.ReactNode;
 

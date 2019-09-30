@@ -1,53 +1,66 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
-import CSSMotion from 'rc-animate/lib/CSSMotion';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
-import { saveRef } from './utils';
+import { StretchType, AlignType } from './interface';
 
-class Popup extends Component {
-  static propTypes = {
-    visible: PropTypes.bool,
-    style: PropTypes.object,
-    getClassNameFromAlign: PropTypes.func,
-    onAlign: PropTypes.func,
-    getRootDomNode: PropTypes.func,
-    align: PropTypes.any,
-    destroyPopupOnHide: PropTypes.bool,
-    className: PropTypes.string,
-    prefixCls: PropTypes.string,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onMouseDown: PropTypes.func,
-    onTouchStart: PropTypes.func,
-    stretch: PropTypes.string,
-    children: PropTypes.node,
-    point: PropTypes.shape({
-      pageX: PropTypes.number,
-      pageY: PropTypes.number,
-    }),
+interface PopupProps {
+  visible?: boolean;
+  style?: React.CSSProperties;
+  getClassNameFromAlign?: (align: AlignType) => string;
+  onAlign?: (element: HTMLElement, align: AlignType) => void;
+  getRootDomNode?: () => HTMLElement;
+  align?: AlignType;
+  destroyPopupOnHide?: boolean;
+  className?: string;
+  prefixCls?: string;
+  onMouseEnter?: React.MouseEventHandler<HTMLElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLElement>;
+  onMouseDown?: React.MouseEventHandler<HTMLElement>;
+  onTouchStart?: React.TouchEventHandler<HTMLElement>;
+  stretch?: StretchType;
+  children?: React.ReactNode;
+  point?: { pageX: number; pageY: number };
+  zIndex?: number;
+  mask?: boolean;
+
+  // TODO: handle this
+  animation: any;
+  transitionName: any;
+  maskAnimation: any;
+  maskTransitionName: any;
+}
+
+interface PopupState {
+  stretchChecked: boolean;
+  targetWidth: number;
+  targetHeight: number;
+}
+
+interface AlignRefType {
+  forceAlign: () => void;
+}
+
+class Popup extends Component<PopupProps, PopupState> {
+  state = {
+    // Used for stretch
+    stretchChecked: false,
+    targetWidth: undefined,
+    targetHeight: undefined,
   };
 
-  constructor(props) {
-    super(props);
+  rootNode: HTMLElement;
 
-    this.state = {
-      // Used for stretch
-      stretchChecked: false,
-      targetWidth: undefined,
-      targetHeight: undefined,
-    };
+  currentAlignClassName: string;
 
-    this.savePopupRef = saveRef.bind(this, 'popupInstance');
-    this.saveAlignRef = saveRef.bind(this, 'alignInstance');
-  }
+  popupRef = React.createRef<HTMLDivElement>();
+
+  alignRef = React.createRef<AlignRefType>();
 
   componentDidMount() {
-    this.rootNode = this.getPopupDomNode();
+    this.rootNode = this.popupRef.current;
     this.setStretchSize();
   }
 
@@ -55,16 +68,16 @@ class Popup extends Component {
     this.setStretchSize();
   }
 
-  onAlign = (popupDomNode, align) => {
-    const { props } = this;
-    const currentAlignClassName = props.getClassNameFromAlign(align);
+  onAlign = (popupDomNode: HTMLElement, align: AlignType) => {
+    const { getClassNameFromAlign, onAlign } = this.props;
+    const currentAlignClassName = getClassNameFromAlign(align);
     // FIX: https://github.com/react-component/trigger/issues/56
     // FIX: https://github.com/react-component/tooltip/issues/79
     if (this.currentAlignClassName !== currentAlignClassName) {
       this.currentAlignClassName = currentAlignClassName;
       popupDomNode.className = this.getClassName(currentAlignClassName);
     }
-    props.onAlign(popupDomNode, align);
+    onAlign(popupDomNode, align);
   };
 
   // Record size if stretch needed
@@ -93,10 +106,6 @@ class Popup extends Component {
       });
     }
   };
-
-  getPopupDomNode() {
-    return findDOMNode(this.popupInstance);
-  }
 
   getTargetElement = () => this.props.getRootDomNode();
 
@@ -134,7 +143,6 @@ class Popup extends Component {
   }
 
   getPopupElement() {
-    const { savePopupRef } = this;
     const { stretchChecked, targetHeight, targetWidth } = this.state;
     const {
       align,
@@ -157,7 +165,7 @@ class Popup extends Component {
       this.currentAlignClassName = null;
     }
 
-    const sizeStyle = {};
+    const sizeStyle: React.CSSProperties = {};
     if (stretch) {
       // Stretch with target
       if (stretch.indexOf('height') !== -1) {
@@ -175,8 +183,8 @@ class Popup extends Component {
       if (!stretchChecked) {
         sizeStyle.visibility = 'hidden';
         setTimeout(() => {
-          if (this.alignInstance) {
-            this.alignInstance.forceAlign();
+          if (this.alignRef.current) {
+            this.alignRef.current.forceAlign();
           }
         }, 0);
       }
@@ -191,7 +199,7 @@ class Popup extends Component {
     const popupInnerProps = {
       className,
       prefixCls,
-      ref: savePopupRef,
+      ref: this.popupRef,
       onMouseEnter,
       onMouseLeave,
       onMouseDown,
@@ -205,7 +213,7 @@ class Popup extends Component {
             <Align
               target={this.getAlignTarget()}
               key="popup"
-              ref={this.saveAlignRef}
+              ref={this.alignRef}
               monitorWindowResize
               align={align}
               onAlign={this.onAlign}
@@ -230,7 +238,7 @@ class Popup extends Component {
         <Align
           target={this.getAlignTarget()}
           key="popup"
-          ref={this.saveAlignRef}
+          ref={this.alignRef}
           monitorWindowResize
           xVisible={visible}
           childrenProps={{ visible: 'xVisible' }}
@@ -247,7 +255,7 @@ class Popup extends Component {
   }
 
   getZIndexStyle() {
-    const style = {};
+    const style: React.CSSProperties = {};
     const { props } = this;
     if (props.zIndex !== undefined) {
       style.zIndex = props.zIndex;
