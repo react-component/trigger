@@ -2,8 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Trigger from 'rc-trigger';
-import 'rc-trigger/assets/index.less';
+import Trigger from '../src';
+import '../assets/index.less';
 
 const builtinPlacements = {
   left: {
@@ -59,12 +59,14 @@ class Test extends React.Component {
           getPopupContainer={() => this.containerInstance}
           popup={<div style={popupBorderStyle}>I am inner Trigger Popup</div>}
         >
-          <span href="#" style={{ margin: 20 }}>clickToShowInnerTrigger</span>
+          <span href="#" style={{ margin: 20 }}>
+            clickToShowInnerTrigger
+          </span>
         </Trigger>
       </div>
     );
     return (
-      <div>
+      <div style={{ margin: 200 }}>
         <div>
           <Trigger
             popupPlacement="left"
@@ -73,14 +75,16 @@ class Test extends React.Component {
             popup={<div style={popupBorderStyle}>i am a click popup</div>}
           >
             <span>
-            <Trigger
-              popupPlacement="bottom"
-              action={['hover']}
-              builtinPlacements={builtinPlacements}
-              popup={<div style={popupBorderStyle}>i am a hover popup</div>}
-            >
-              <span href="#" style={{ margin: 20 }}>trigger</span>
-            </Trigger>
+              <Trigger
+                popupPlacement="bottom"
+                action={['hover']}
+                builtinPlacements={builtinPlacements}
+                popup={<div style={popupBorderStyle}>i am a hover popup</div>}
+              >
+                <span href="#" style={{ margin: 20 }}>
+                  trigger
+                </span>
+              </Trigger>
             </span>
           </Trigger>
         </div>
@@ -91,7 +95,9 @@ class Test extends React.Component {
             builtinPlacements={builtinPlacements}
             popup={innerTrigger}
           >
-            <span href="#" style={{ margin: 20 }}>trigger</span>
+            <span href="#" style={{ margin: 20 }}>
+              trigger
+            </span>
           </Trigger>
         </div>
       </div>
@@ -99,8 +105,4 @@ class Test extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <div style={{ margin: 200 }}>
-    <Test />
-  </div>
-, document.getElementById('__react-content'));
+export default Test;

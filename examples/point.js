@@ -2,8 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Trigger from 'rc-trigger';
-import 'rc-trigger/assets/index.less';
+import Trigger from '../src';
+import '../assets/index.less';
 import './point.less';
 
 const builtinPlacements = {
@@ -13,26 +13,22 @@ const builtinPlacements = {
 };
 
 const innerTrigger = (
-  <div
-    style={{ padding: 20, background: 'rgba(0, 255, 0, 0.3)' }}
-  >
-    This is popup
-  </div>
+  <div style={{ padding: 20, background: 'rgba(0, 255, 0, 0.3)' }}>This is popup</div>
 );
 
 class Test extends React.Component {
   state = {
     action: 'click',
     mouseEnterDelay: 0,
-  }
+  };
 
   onActionChange = ({ target: { value } }) => {
     this.setState({ action: value });
-  }
+  };
 
   onDelayChange = ({ target: { value } }) => {
     this.setState({ mouseEnterDelay: Number(value) || 0 });
-  }
+  };
 
   render() {
     const { action, mouseEnterDelay } = this.state;
@@ -40,23 +36,19 @@ class Test extends React.Component {
     return (
       <div>
         <label>
-          Trigger type:
-          {' '}
+          Trigger type:{' '}
           <select value={action} onChange={this.onActionChange}>
             <option>click</option>
             <option>hover</option>
             <option>contextMenu</option>
           </select>
-        </label>
-
-        {' '}
-
-        {action === 'hover' && <label>
-          Mouse enter delay:
-          {' '}
-          <input type="text" value={mouseEnterDelay} onChange={this.onDelayChange} />
-        </label>}
-
+        </label>{' '}
+        {action === 'hover' && (
+          <label>
+            Mouse enter delay:{' '}
+            <input type="text" value={mouseEnterDelay} onChange={this.onDelayChange} />
+          </label>
+        )}
         <div style={{ margin: 50 }}>
           <Trigger
             popupPlacement="topLeft"
@@ -89,5 +81,4 @@ class Test extends React.Component {
   }
 }
 
-
-ReactDOM.render(<Test />, document.getElementById('__react-content'));
+export default Test;
