@@ -417,7 +417,6 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       prefixCls,
       destroyPopupOnHide,
       popupClassName,
-      action,
       onPopupAlign,
       popupAnimation,
       popupTransitionName,
