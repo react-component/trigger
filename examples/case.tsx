@@ -31,9 +31,7 @@ const builtinPlacements: BuildInPlacements = {
   },
 };
 
-function getPopupContainer(trigger: HTMLElement) {
-  return trigger.parentNode;
-}
+const Motion = {};
 
 function useControl<T>(defaultValue?: T): [T, any] {
   const [value, setValue] = React.useState<T>(defaultValue);
@@ -92,6 +90,7 @@ const Demo = () => {
 
   const [placement, placementProps] = useControl('right');
   const [stretch, stretchProps] = useControl('');
+  const [motion, motionProps] = useControl(false);
   const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl(false);
   const [mask, maskProps] = useControl(false);
   const [maskClosable, maskClosableProps] = useControl(false);
@@ -147,6 +146,10 @@ const Demo = () => {
           </select>
         </LabelItem>
 
+        <LabelItem title="Motion" {...motionProps}>
+          <input type="checkbox" />
+        </LabelItem>
+
         <LabelItem title="Destroy Popup On Hide" {...destroyPopupOnHideProps}>
           <input type="checkbox" />
         </LabelItem>
@@ -170,7 +173,6 @@ const Demo = () => {
 
       <div style={{ margin: 120, position: 'relative' }}>
         <Trigger
-          getPopupContainer={undefined && getPopupContainer}
           popupAlign={{
             offset: [offsetX, offsetY],
             overflow: {
@@ -192,6 +194,7 @@ const Demo = () => {
             boxSizing: 'border-box',
           }}
           popup={<div>i am a popup</div>}
+          motion={motion ? Motion : null}
         >
           <div
             style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
