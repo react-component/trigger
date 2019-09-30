@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
+import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
+import CSSMotion from 'rc-animate/lib/CSSMotion';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
 import { saveRef } from './utils';
@@ -94,7 +95,7 @@ class Popup extends Component {
   };
 
   getPopupDomNode() {
-    return ReactDOM.findDOMNode(this.popupInstance);
+    return findDOMNode(this.popupInstance);
   }
 
   getTargetElement = () => this.props.getRootDomNode();
