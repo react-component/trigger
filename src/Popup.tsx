@@ -241,55 +241,57 @@ class Popup extends Component<PopupProps, PopupState> {
       );
     }
 
-    // return (
-    //   <CSSMotion visible={visible} {...motion}>
-    //     {({ style: motionStyle, className: motionClassName }) => {
-    //       return (
-    //         <Align
-    //           target={this.getAlignTarget()}
-    //           key="popup"
-    //           ref={this.alignRef}
-    //           monitorWindowResize
-    //           xVisible={visible}
-    //           childrenProps={{ visible: 'xVisible' }}
-    //           disabled={!visible}
-    //           align={align}
-    //           onAlign={this.onAlign}
-    //         >
-    //           <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
-    //             {children}
-    //           </PopupInner>
-    //         </Align>
-    //       );
-    //     }}
-    //   </CSSMotion>
-    // );
-
+    // TODO: Handle this
     return (
-      <Animate
-        component=""
-        exclusive
-        transitionAppear
-        transitionName={this.getTransitionName()}
-        showProp="xVisible"
-      >
-        <Align
-          target={this.getAlignTarget()}
-          key="popup"
-          ref={this.alignRef}
-          monitorWindowResize
-          xVisible={visible}
-          childrenProps={{ visible: 'xVisible' }}
-          disabled={!visible}
-          align={align}
-          onAlign={this.onAlign}
-        >
-          <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
-            {children}
-          </PopupInner>
-        </Align>
-      </Animate>
+      <CSSMotion visible={visible} {...motion} removeOnLeave={false}>
+        {({ style: motionStyle, className: motionClassName }) => {
+          console.log('=>', motionStyle, motionClassName);
+          return (
+            <Align
+              target={this.getAlignTarget()}
+              key="popup"
+              ref={this.alignRef}
+              monitorWindowResize
+              xVisible={visible}
+              childrenProps={{ visible: 'xVisible' }}
+              disabled={!visible}
+              align={align}
+              onAlign={this.onAlign}
+            >
+              <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
+                {children}
+              </PopupInner>
+            </Align>
+          );
+        }}
+      </CSSMotion>
     );
+
+    // return (
+    //   <Animate
+    //     component=""
+    //     exclusive
+    //     transitionAppear
+    //     transitionName={this.getTransitionName()}
+    //     showProp="xVisible"
+    //   >
+    //     <Align
+    //       target={this.getAlignTarget()}
+    //       key="popup"
+    //       ref={this.alignRef}
+    //       monitorWindowResize
+    //       xVisible={visible}
+    //       childrenProps={{ visible: 'xVisible' }}
+    //       disabled={!visible}
+    //       align={align}
+    //       onAlign={this.onAlign}
+    //     >
+    //       <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
+    //         {children}
+    //       </PopupInner>
+    //     </Align>
+    //   </Animate>
+    // );
   }
 
   getZIndexStyle() {

@@ -1,0 +1,211 @@
+/* eslint no-console:0 */
+
+import React from 'react';
+import Trigger, { BuildInPlacements } from '../src';
+import '../assets/index.less';
+
+const builtinPlacements: BuildInPlacements = {
+  left: {
+    points: ['cr', 'cl'],
+  },
+  right: {
+    points: ['cl', 'cr'],
+  },
+  top: {
+    points: ['bc', 'tc'],
+  },
+  bottom: {
+    points: ['tc', 'bc'],
+  },
+  topLeft: {
+    points: ['bl', 'tl'],
+  },
+  topRight: {
+    points: ['br', 'tr'],
+  },
+  bottomRight: {
+    points: ['tr', 'br'],
+  },
+  bottomLeft: {
+    points: ['tl', 'bl'],
+  },
+};
+
+function getPopupContainer(trigger: HTMLElement) {
+  return trigger.parentNode;
+}
+
+function useControl<T>(defaultValue?: T): [T, any] {
+  const [value, setValue] = React.useState<T>(defaultValue);
+
+  return [
+    value,
+    {
+      value,
+      checked: value,
+      onChange({ target }) {
+        setValue('checked' in target ? target.checked : target.value);
+      },
+    },
+  ];
+}
+
+const LabelItem: React.FC<{
+  title: React.ReactNode;
+  children: React.ReactElement;
+  [prop: string]: any;
+}> = ({ title, children, ...rest }) => {
+  const { type } = children;
+
+  const style = {
+    display: 'inline-flex',
+    padding: '0 8px',
+    alignItems: 'center',
+  };
+
+  const spacing = <span style={{ width: 4 }} />;
+
+  if (type === 'input' && children.props.type === 'checkbox') {
+    return (
+      <label style={style}>
+        {React.cloneElement(children, rest)}
+        {spacing}
+        {title}
+      </label>
+    );
+  }
+
+  return (
+    <label style={style}>
+      {title}
+      {spacing}
+      {React.cloneElement(children, rest)}
+    </label>
+  );
+};
+
+const Demo = () => {
+  const [hover, hoverProps] = useControl(true);
+  const [focus, focusProps] = useControl(false);
+  const [click, clickProps] = useControl(false);
+  const [contextMenu, contextMenuProps] = useControl(false);
+
+  const [placement, placementProps] = useControl('right');
+  const [stretch, stretchProps] = useControl('');
+  const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl(false);
+  const [mask, maskProps] = useControl(false);
+  const [maskClosable, maskClosableProps] = useControl(false);
+  const [offsetX, offsetXProps] = useControl<number>(0);
+  const [offsetY, offsetYProps] = useControl<number>(0);
+
+  const actions = {
+    hover,
+    focus,
+    click,
+    contextMenu,
+  };
+
+  return (
+    <div>
+      <div style={{ margin: '10px 20px' }}>
+        <strong>Actions: </strong>
+        <LabelItem title="Hover" {...hoverProps}>
+          <input type="checkbox" />
+        </LabelItem>
+        <LabelItem title="Focus" {...focusProps}>
+          <input type="checkbox" />
+        </LabelItem>
+        <LabelItem title="Click" {...clickProps}>
+          <input type="checkbox" />
+        </LabelItem>
+        <LabelItem title="ContextMenu" {...contextMenuProps}>
+          <input type="checkbox" />
+        </LabelItem>
+
+        <hr />
+
+        <LabelItem title="Stretch" {...stretchProps}>
+          <select>
+            <option value="">--NONE--</option>
+            <option value="width">width</option>
+            <option value="minWidth">minWidth</option>
+            <option value="height">height</option>
+            <option value="minHeight">minHeight</option>
+          </select>
+        </LabelItem>
+
+        <LabelItem title="Placement" {...placementProps}>
+          <select>
+            <option>right</option>
+            <option>left</option>
+            <option>top</option>
+            <option>bottom</option>
+            <option>topLeft</option>
+            <option>topRight</option>
+            <option>bottomRight</option>
+            <option>bottomLeft</option>
+          </select>
+        </LabelItem>
+
+        <LabelItem title="Destroy Popup On Hide" {...destroyPopupOnHideProps}>
+          <input type="checkbox" />
+        </LabelItem>
+
+        <LabelItem title="Mask" {...maskProps}>
+          <input type="checkbox" />
+        </LabelItem>
+
+        <LabelItem title="Mask Closable" {...maskClosableProps}>
+          <input type="checkbox" />
+        </LabelItem>
+
+        <LabelItem title="OffsetX" {...offsetXProps}>
+          <input />
+        </LabelItem>
+
+        <LabelItem title="OffsetY" {...offsetYProps}>
+          <input />
+        </LabelItem>
+      </div>
+
+      <div style={{ margin: 120, position: 'relative' }}>
+        <Trigger
+          getPopupContainer={undefined && getPopupContainer}
+          popupAlign={{
+            offset: [offsetX, offsetY],
+            overflow: {
+              adjustX: 1,
+              adjustY: 1,
+            },
+          }}
+          popupPlacement={placement}
+          destroyPopupOnHide={destroyPopupOnHide}
+          mask={mask}
+          maskClosable={maskClosable}
+          stretch={stretch}
+          action={Object.keys(actions).filter(action => actions[action])}
+          builtinPlacements={builtinPlacements}
+          popupStyle={{
+            border: '1px solid red',
+            padding: 10,
+            background: 'white',
+            boxSizing: 'border-box',
+          }}
+          popup={<div>i am a popup</div>}
+        >
+          <div
+            style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
+            tabIndex={0}
+            role="button"
+          >
+            <p>This is a example of trigger usage.</p>
+            <p>You can adjust the value above</p>
+            <p>which will also change the behaviour of popup.</p>
+          </div>
+        </Trigger>
+      </div>
+    </div>
+  );
+};
+
+export default Demo;

@@ -710,4 +710,6 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 polyfill(Trigger);
 
+export { BuildInPlacements };
+
 export default Trigger;

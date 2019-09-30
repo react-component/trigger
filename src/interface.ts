@@ -1,6 +1,6 @@
 import { MotionProps } from 'rc-animate/lib/CSSMotion';
 
-type AlignPoint =
+export type AlignPoint =
   | 'tt'
   | 'tb'
   | 'tc'
@@ -27,31 +27,29 @@ type AlignPoint =
   | 'rl'
   | 'rr';
 
-export type AlignPoints = [AlignPoint, AlignPoint];
-
 export interface AlignType {
   /**
    * move point of source node to align with point of target node.
    * Such as ['tr','cc'], align top right point of source node with center point of target node.
    * Point can be 't'(top), 'b'(bottom), 'c'(center), 'l'(left), 'r'(right) */
-  points?: AlignPoints;
+  points?: AlignPoint[];
   /**
    * offset source node by offset[0] in x and offset[1] in y.
    * If offset contains percentage string value, it is relative to sourceNode region.
    */
-  offset?: [number, number];
+  offset?: number[];
   /**
    * offset target node by offset[0] in x and offset[1] in y.
    * If targetOffset contains percentage string value, it is relative to targetNode region.
    */
-  targetOffset?: [number, number];
+  targetOffset?: number[];
   /**
    * If adjustX field is true, will adjust source node in x direction if source node is invisible.
    * If adjustY field is true, will adjust source node in y direction if source node is invisible.
    */
   overflow?: {
-    adjustX?: boolean;
-    adjustY?: boolean;
+    adjustX?: boolean | number;
+    adjustY?: boolean | number;
   };
   /**
    * Whether use css right instead of left to position
