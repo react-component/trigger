@@ -4,7 +4,7 @@ import Align from 'rc-align';
 import Animate from 'rc-animate';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
-import { StretchType, AlignType, TransitionNameType, AnimationType } from './interface';
+import { StretchType, AlignType, TransitionNameType, AnimationType, Point } from './interface';
 
 interface PopupProps {
   visible?: boolean;
@@ -22,7 +22,7 @@ interface PopupProps {
   onTouchStart?: React.TouchEventHandler<HTMLElement>;
   stretch?: StretchType;
   children?: React.ReactNode;
-  point?: { pageX: number; pageY: number };
+  point?: Point;
   zIndex?: number;
   mask?: boolean;
 
@@ -55,9 +55,9 @@ class Popup extends Component<PopupProps, PopupState> {
 
   currentAlignClassName: string;
 
-  popupRef = React.createRef<HTMLDivElement>();
+  public popupRef = React.createRef<HTMLDivElement>();
 
-  alignRef = React.createRef<AlignRefType>();
+  public alignRef = React.createRef<AlignRefType>();
 
   componentDidMount() {
     this.rootNode = this.popupRef.current;

@@ -74,6 +74,15 @@ export type StretchType = string;
 
 export type ActionType = string;
 
-export type AnimationType = object;
+export type AnimationType = string | object;
 
 export type TransitionNameType = string | object;
+
+export interface Point {
+  pageX: number;
+  pageY: number;
+}
+
+export interface CommonEventHandler {
+  remove: () => void;
+}

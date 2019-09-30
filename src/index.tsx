@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import PropTypes from 'prop-types';
 import { polyfill } from 'react-lifecycles-compat';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
-import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
 
@@ -16,6 +15,8 @@ import {
   BuildInPlacements,
   TransitionNameType,
   AnimationType,
+  Point,
+  CommonEventHandler,
 } from './interface';
 
 function noop() {}
@@ -46,7 +47,7 @@ const contextTypes = {
 };
 
 export interface TriggerProps {
-  children?: React.ReactNode;
+  children: React.ReactElement;
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
@@ -74,16 +75,22 @@ export interface TriggerProps {
   mask?: boolean;
   maskClosable?: boolean;
   onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
-  popupAlign: AlignType;
-  popupVisible: boolean;
-  defaultPopupVisible: boolean;
-  maskTransitionName: TransitionNameType;
-  maskAnimation: string;
-  stretch: string;
-  alignPoint: boolean; // Maybe we can support user pass position in the future
+  popupAlign?: AlignType;
+  popupVisible?: boolean;
+  defaultPopupVisible?: boolean;
+  maskTransitionName?: TransitionNameType;
+  maskAnimation?: string;
+  stretch?: string;
+  alignPoint?: boolean; // Maybe we can support user pass position in the future
 }
 
-class Trigger extends React.Component<TriggerProps> {
+interface TriggerState {
+  prevPopupVisible: boolean;
+  popupVisible: boolean;
+  point?: Point;
+}
+
+class Trigger extends React.Component<TriggerProps, TriggerState> {
   static contextTypes = contextTypes;
 
   static childContextTypes = contextTypes;
@@ -111,12 +118,32 @@ class Trigger extends React.Component<TriggerProps> {
     hideAction: [],
   };
 
-  cachedComponent = null;
+  componentRef = React.createRef<Popup>();
 
-  constructor(props) {
+  clickOutsideHandler: CommonEventHandler;
+
+  touchOutsideHandler: CommonEventHandler;
+
+  contextMenuOutsideHandler1: CommonEventHandler;
+
+  contextMenuOutsideHandler2: CommonEventHandler;
+
+  mouseDownTimeout: number;
+
+  focusTime: number;
+
+  preClickTime: number;
+
+  preTouchTime: number;
+
+  delayTimer: number;
+
+  hasPopupMouseDown: boolean;
+
+  constructor(props: TriggerProps) {
     super(props);
 
-    let popupVisible;
+    let popupVisible: boolean;
     if ('popupVisible' in props) {
       popupVisible = !!props.popupVisible;
     } else {
@@ -144,22 +171,12 @@ class Trigger extends React.Component<TriggerProps> {
   }
 
   componentDidMount() {
-    this.componentDidUpdate(
-      {},
-      {
-        popupVisible: this.state.popupVisible,
-      },
-    );
+    this.componentDidUpdate();
   }
 
-  componentDidUpdate(_, prevState) {
+  componentDidUpdate() {
     const { props } = this;
     const { state } = this;
-    const triggerAfterPopupVisibleChange = () => {
-      if (prevState.popupVisible !== state.popupVisible) {
-        props.afterPopupVisibleChange(state.popupVisible);
-      }
-    };
 
     // We must listen to `mousedown` or `touchstart`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
@@ -235,9 +252,9 @@ class Trigger extends React.Component<TriggerProps> {
     if (
       e.relatedTarget &&
       !e.relatedTarget.setTimeout &&
-      this.cachedComponent &&
-      this.cachedComponent.getPopupDomNode &&
-      contains(this.cachedComponent.getPopupDomNode(), e.relatedTarget)
+      this.componentRef.current &&
+      this.componentRef.current.popupRef.current &&
+      contains(this.componentRef.current.popupRef.current, e.relatedTarget)
     ) {
       return;
     }
@@ -326,7 +343,7 @@ class Trigger extends React.Component<TriggerProps> {
     this.hasPopupMouseDown = true;
 
     clearTimeout(this.mouseDownTimeout);
-    this.mouseDownTimeout = setTimeout(() => {
+    this.mouseDownTimeout = window.setTimeout(() => {
       this.hasPopupMouseDown = false;
     }, 0);
 
@@ -347,8 +364,8 @@ class Trigger extends React.Component<TriggerProps> {
     }
   };
 
-  static getDerivedStateFromProps({ popupVisible }, prevState) {
-    const newState = {};
+  static getDerivedStateFromProps({ popupVisible }, prevState: TriggerState) {
+    const newState: Partial<TriggerState> = {};
 
     if (popupVisible !== undefined && prevState.popupVisible !== popupVisible) {
       newState.popupVisible = popupVisible;
@@ -360,13 +377,13 @@ class Trigger extends React.Component<TriggerProps> {
 
   getPopupDomNode() {
     // for test
-    if (this.cachedComponent && this.cachedComponent.getPopupDomNode) {
-      return this.cachedComponent.getPopupDomNode();
+    if (this.componentRef.current && this.componentRef.current.popupRef.current) {
+      return this.componentRef.current.popupRef.current;
     }
     return null;
   }
 
-  getRootDomNode = () => findDOMNode(this);
+  getRootDomNode = () => findDOMNode<HTMLElement>(this);
 
   getPopupClassNameFromAlign = align => {
     const className = [];
@@ -417,7 +434,7 @@ class Trigger extends React.Component<TriggerProps> {
 
     const align = this.getPopupAlign();
 
-    const mouseProps = {};
+    const mouseProps: HTMLAttributes<HTMLElement> = {};
     if (this.isMouseEnterToShow()) {
       mouseProps.onMouseEnter = this.onPopupMouseEnter;
     }
@@ -435,7 +452,6 @@ class Trigger extends React.Component<TriggerProps> {
         visible={popupVisible}
         point={alignPoint && point}
         className={popupClassName}
-        action={action}
         align={align}
         onAlign={onPopupAlign}
         animation={popupAnimation}
@@ -449,7 +465,7 @@ class Trigger extends React.Component<TriggerProps> {
         transitionName={popupTransitionName}
         maskAnimation={maskAnimation}
         maskTransitionName={maskTransitionName}
-        ref={this.savePopup}
+        ref={this.componentRef}
       >
         {typeof popup === 'function' ? popup() : popup}
       </Popup>
@@ -476,7 +492,7 @@ class Trigger extends React.Component<TriggerProps> {
    * @param popupVisible    Show or not the popup element
    * @param event           SyntheticEvent, used for `pointAlign`
    */
-  setPopupVisible(popupVisible, event) {
+  setPopupVisible(popupVisible, event?) {
     const { alignPoint } = this.props;
     const { popupVisible: prevPopupVisible } = this.state;
 
@@ -513,16 +529,12 @@ class Trigger extends React.Component<TriggerProps> {
     }
   };
 
-  savePopup = node => {
-    this.cachedComponent = node;
-  };
-
-  delaySetPopupVisible(visible, delayS, event) {
+  delaySetPopupVisible(visible: boolean, delayS: number, event?: MouseEvent) {
     const delay = delayS * 1000;
     this.clearDelayTimer();
     if (delay) {
       const point = event ? { pageX: event.pageX, pageY: event.pageY } : null;
-      this.delayTimer = setTimeout(() => {
+      this.delayTimer = window.setTimeout(() => {
         this.setPopupVisible(visible, point);
         this.clearDelayTimer();
       }, delay);
@@ -560,7 +572,7 @@ class Trigger extends React.Component<TriggerProps> {
     }
   }
 
-  createTwoChains(event) {
+  createTwoChains(event: string) {
     const childPros = this.props.children.props;
     const { props } = this;
     if (childPros[event] && props[event]) {
@@ -605,13 +617,17 @@ class Trigger extends React.Component<TriggerProps> {
   }
 
   forcePopupAlign() {
-    if (this.state.popupVisible && this.cachedComponent && this.cachedComponent.alignInstance) {
-      this.cachedComponent.alignInstance.forceAlign();
+    if (
+      this.state.popupVisible &&
+      this.componentRef.current &&
+      this.componentRef.current.alignRef.current
+    ) {
+      this.componentRef.current.alignRef.current.forceAlign();
     }
   }
 
-  fireEvents(type, e) {
-    const childCallback = this.props.children.props[type];
+  fireEvents(type: string, e: Event) {
+    const childCallback = (this.props.children as React.ReactElement).props[type];
     if (childCallback) {
       childCallback(e);
     }
@@ -628,8 +644,8 @@ class Trigger extends React.Component<TriggerProps> {
   render() {
     const { popupVisible } = this.state;
     const { children, forceRender, alignPoint, className } = this.props;
-    const child = React.Children.only(children);
-    const newChildProps = { key: 'trigger' };
+    const child = React.Children.only(children) as React.ReactElement;
+    const newChildProps: HTMLAttributes<HTMLElement> & { key: string } = { key: 'trigger' };
 
     if (this.isContextMenuToShow()) {
       newChildProps.onContextMenu = this.onContextMenu;
@@ -675,7 +691,7 @@ class Trigger extends React.Component<TriggerProps> {
 
     let portal;
     // prevent unmounting after it's rendered
-    if (popupVisible || this.cachedComponent || forceRender) {
+    if (popupVisible || this.componentRef.current || forceRender) {
       portal = (
         <Portal key="portal" getContainer={this.getContainer} didUpdate={this.handlePortalUpdate}>
           {this.getComponent()}
