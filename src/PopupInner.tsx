@@ -1,5 +1,4 @@
 import React from 'react';
-import LazyRenderBox from './LazyRenderBox';
 
 interface PopupInnerProps {
   prefixCls: string;
@@ -30,9 +29,7 @@ const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> 
       onTouchStart={props.onTouchStart}
       style={props.style}
     >
-      <LazyRenderBox className={`${props.prefixCls}-content`} visible={props.visible}>
-        {props.children}
-      </LazyRenderBox>
+      {props.children}
     </div>
   );
 };
