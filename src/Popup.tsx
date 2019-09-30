@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
+import classNames from 'classnames';
 import RawCSSMotion from 'rc-animate/lib/CSSMotion';
 import PopupInner from './PopupInner';
-import LazyRenderBox from './LazyRenderBox';
 import {
   StretchType,
   AlignType,
@@ -307,12 +307,13 @@ class Popup extends Component<PopupProps, PopupState> {
     if (props.mask) {
       const maskTransition = this.getMaskTransitionName();
       maskElement = (
-        <LazyRenderBox
+        <div
           style={this.getZIndexStyle()}
           key="mask"
-          className={`${props.prefixCls}-mask`}
-          hiddenClassName={`${props.prefixCls}-mask-hidden`}
-          visible={props.visible}
+          className={classNames(
+            `${props.prefixCls}-mask`,
+            !props.visible && `${props.prefixCls}-mask-hidden`,
+          )}
         />
       );
       if (maskTransition) {
