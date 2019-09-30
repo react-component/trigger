@@ -1,3 +1,5 @@
+import { AlignType } from './interface';
+
 function isPointsEq(a1, a2, isAlignPoint) {
   if (isAlignPoint) {
     return a1[0] === a2[0];
@@ -5,7 +7,7 @@ function isPointsEq(a1, a2, isAlignPoint) {
   return a1[0] === a2[0] && a1[1] === a2[1];
 }
 
-export function getAlignFromPlacement(builtinPlacements, placementStr, align) {
+export function getAlignFromPlacement(builtinPlacements, placementStr: string, align: AlignType) {
   const baseAlign = builtinPlacements[placementStr] || {};
   return {
     ...baseAlign,
