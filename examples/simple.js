@@ -70,14 +70,14 @@ class Test extends React.Component {
     });
   };
 
-  onTriggerChange = e => {
+  onTriggerChange = ({ target: { checked, value } }) => {
     this.setState(({ trigger }) => {
       const clone = { ...trigger };
 
-      if (e.target.checked) {
-        clone[e.target.value] = 1;
+      if (checked) {
+        clone[value] = 1;
       } else {
-        delete clone[e.target.value];
+        delete clone[value];
       }
 
       return {

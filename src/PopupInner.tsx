@@ -15,13 +15,14 @@ interface PopupInnerProps {
   onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
 }
 
-const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> = props => {
+const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> = (props, ref) => {
   let { className } = props;
   if (!props.visible) {
     className += ` ${props.hiddenClassName}`;
   }
   return (
     <div
+      ref={ref}
       className={className}
       onMouseEnter={props.onMouseEnter}
       onMouseLeave={props.onMouseLeave}
