@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createPortal } from 'react-dom';
 import { polyfill } from 'react-lifecycles-compat';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
@@ -11,6 +10,13 @@ import classNames from 'classnames';
 
 import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 import Popup from './Popup';
+import {
+  ActionType,
+  AlignType,
+  BuildInPlacements,
+  TransitionNameType,
+  AnimationType,
+} from './interface';
 
 function noop() {}
 
@@ -33,53 +39,51 @@ const ALL_HANDLERS = [
   'onContextMenu',
 ];
 
-const IS_REACT_16 = !!createPortal;
-
 const contextTypes = {
   rcTrigger: PropTypes.shape({
     onPopupMouseDown: PropTypes.func,
   }),
 };
 
-class Trigger extends React.Component {
-  static propTypes = {
-    children: PropTypes.any,
-    action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
-    showAction: PropTypes.any,
-    hideAction: PropTypes.any,
-    getPopupClassNameFromAlign: PropTypes.any,
-    onPopupVisibleChange: PropTypes.func,
-    afterPopupVisibleChange: PropTypes.func,
-    popup: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-    popupStyle: PropTypes.object,
-    prefixCls: PropTypes.string,
-    popupClassName: PropTypes.string,
-    className: PropTypes.string,
-    popupPlacement: PropTypes.string,
-    builtinPlacements: PropTypes.object,
-    popupTransitionName: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    popupAnimation: PropTypes.any,
-    mouseEnterDelay: PropTypes.number,
-    mouseLeaveDelay: PropTypes.number,
-    zIndex: PropTypes.number,
-    focusDelay: PropTypes.number,
-    blurDelay: PropTypes.number,
-    getPopupContainer: PropTypes.func,
-    getDocument: PropTypes.func,
-    forceRender: PropTypes.bool,
-    destroyPopupOnHide: PropTypes.bool,
-    mask: PropTypes.bool,
-    maskClosable: PropTypes.bool,
-    onPopupAlign: PropTypes.func,
-    popupAlign: PropTypes.object,
-    popupVisible: PropTypes.bool,
-    defaultPopupVisible: PropTypes.bool,
-    maskTransitionName: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    maskAnimation: PropTypes.string,
-    stretch: PropTypes.string,
-    alignPoint: PropTypes.bool, // Maybe we can support user pass position in the future
-  };
+export interface TriggerProps {
+  children?: React.ReactNode;
+  action?: ActionType | ActionType[];
+  showAction?: ActionType[];
+  hideAction?: ActionType[];
+  getPopupClassNameFromAlign?: (align: AlignType) => string;
+  onPopupVisibleChange?: (visible: boolean) => void;
+  afterPopupVisibleChange?: (visible: boolean) => void;
+  popup: React.ReactNode | (() => React.ReactNode);
+  popupStyle?: React.CSSProperties;
+  prefixCls?: string;
+  popupClassName?: string;
+  className?: string;
+  popupPlacement?: string;
+  builtinPlacements?: BuildInPlacements;
+  popupTransitionName?: TransitionNameType;
+  popupAnimation?: AnimationType;
+  mouseEnterDelay?: number;
+  mouseLeaveDelay?: number;
+  zIndex?: number;
+  focusDelay?: number;
+  blurDelay?: number;
+  getPopupContainer?: (node: HTMLElement) => HTMLElement;
+  getDocument?: () => HTMLDocument;
+  forceRender?: boolean;
+  destroyPopupOnHide?: boolean;
+  mask?: boolean;
+  maskClosable?: boolean;
+  onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
+  popupAlign: AlignType;
+  popupVisible: boolean;
+  defaultPopupVisible: boolean;
+  maskTransitionName: TransitionNameType;
+  maskAnimation: string;
+  stretch: string;
+  alignPoint: boolean; // Maybe we can support user pass position in the future
+}
 
+class Trigger extends React.Component<TriggerProps> {
   static contextTypes = contextTypes;
 
   static childContextTypes = contextTypes;
@@ -156,9 +160,6 @@ class Trigger extends React.Component {
         props.afterPopupVisibleChange(state.popupVisible);
       }
     };
-    if (!IS_REACT_16) {
-      this.renderComponent(null, triggerAfterPopupVisibleChange);
-    }
 
     // We must listen to `mousedown` or `touchstart`, edge case:
     // https://github.com/ant-design/ant-design/issues/5804
@@ -671,24 +672,6 @@ class Trigger extends React.Component {
       newChildProps.className = childrenClassName;
     }
     const trigger = React.cloneElement(child, newChildProps);
-
-    if (!IS_REACT_16) {
-      return (
-        <ContainerRender
-          parent={this}
-          visible={popupVisible}
-          autoMount={false}
-          forceRender={forceRender}
-          getComponent={this.getComponent}
-          getContainer={this.getContainer}
-        >
-          {({ renderComponent }) => {
-            this.renderComponent = renderComponent;
-            return trigger;
-          }}
-        </ContainerRender>
-      );
-    }
 
     let portal;
     // prevent unmounting after it's rendered

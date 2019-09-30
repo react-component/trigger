@@ -4,7 +4,7 @@ import Align from 'rc-align';
 import Animate from 'rc-animate';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
-import { StretchType, AlignType } from './interface';
+import { StretchType, AlignType, TransitionNameType, AnimationType } from './interface';
 
 interface PopupProps {
   visible?: boolean;
@@ -27,10 +27,10 @@ interface PopupProps {
   mask?: boolean;
 
   // TODO: handle this
-  animation: any;
-  transitionName: any;
-  maskAnimation: any;
-  maskTransitionName: any;
+  animation: AnimationType;
+  transitionName: TransitionNameType;
+  maskAnimation: AnimationType;
+  maskTransitionName: TransitionNameType;
 }
 
 interface PopupState {

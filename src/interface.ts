@@ -71,3 +71,9 @@ export interface BuildInPlacements {
 }
 
 export type StretchType = string;
+
+export type ActionType = string;
+
+export type AnimationType = object;
+
+export type TransitionNameType = string | object;
