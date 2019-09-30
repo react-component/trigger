@@ -17,6 +17,7 @@ import {
   AnimationType,
   Point,
   CommonEventHandler,
+  MotionType,
 } from './interface';
 
 function noop() {}
@@ -82,6 +83,9 @@ export interface TriggerProps {
   maskAnimation?: string;
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
+
+  // TODO:
+  motion?: MotionType;
 }
 
 interface TriggerState {
@@ -428,6 +432,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       popup,
       stretch,
       alignPoint,
+      motion,
     } = this.props;
     const { popupVisible, point } = this.state;
 
@@ -465,6 +470,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
         maskAnimation={maskAnimation}
         maskTransitionName={maskTransitionName}
         ref={this.componentRef}
+        motion={motion}
       >
         {typeof popup === 'function' ? popup() : popup}
       </Popup>
@@ -688,7 +694,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     }
     const trigger = React.cloneElement(child, newChildProps);
 
-    let portal;
+    let portal: React.ReactElement;
     // prevent unmounting after it's rendered
     if (popupVisible || this.componentRef.current || forceRender) {
       portal = (

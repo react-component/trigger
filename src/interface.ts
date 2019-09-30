@@ -1,3 +1,5 @@
+import { MotionProps } from 'rc-animate/lib/CSSMotion';
+
 type AlignPoint =
   | 'tt'
   | 'tb'
@@ -86,3 +88,46 @@ export interface Point {
 export interface CommonEventHandler {
   remove: () => void;
 }
+
+// =================================== Motion ===================================
+type MotionStatus = 'none' | 'appear' | 'enter' | 'leave';
+
+type MotionActiveStatus = 'appear-active' | 'enter-active' | 'leave-active';
+
+type MotionNameObject = {
+  [key in MotionStatus | MotionActiveStatus]?: string;
+};
+
+type MotionEventHandler = (
+  element: HTMLElement,
+  event: React.TransitionEvent<HTMLElement> | React.AnimationEvent<HTMLElement> | undefined,
+) => React.CSSProperties | false | null | undefined;
+
+export interface MotionType {
+  motionName?: string | MotionNameObject;
+  motionAppear?: boolean;
+  motionEnter?: boolean;
+  motionLeave?: boolean;
+  motionLeaveImmediately?: boolean; // Trigger leave motion immediately
+  removeOnLeave?: boolean;
+  leavedClassName?: string;
+  onAppearStart?: MotionEventHandler;
+  onAppearActive?: MotionEventHandler;
+  onAppearEnd?: MotionEventHandler;
+  onEnterStart?: MotionEventHandler;
+  onEnterActive?: MotionEventHandler;
+  onEnterEnd?: MotionEventHandler;
+  onLeaveStart?: MotionEventHandler;
+  onLeaveActive?: MotionEventHandler;
+  onLeaveEnd?: MotionEventHandler;
+}
+
+export interface MotionProps extends MotionType {
+  visible?: boolean;
+  children: (
+    props: { className: string; style: React.CSSProperties },
+    ref: React.Ref<any>,
+  ) => React.ReactElement;
+}
+
+export type CSSMotionClass = React.ComponentClass<MotionProps>;

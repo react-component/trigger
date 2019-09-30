@@ -2,9 +2,20 @@
 import React, { Component } from 'react';
 import Align from 'rc-align';
 import Animate from 'rc-animate';
+import RawCSSMotion from 'rc-animate/lib/CSSMotion';
 import PopupInner from './PopupInner';
 import LazyRenderBox from './LazyRenderBox';
-import { StretchType, AlignType, TransitionNameType, AnimationType, Point } from './interface';
+import {
+  StretchType,
+  AlignType,
+  TransitionNameType,
+  AnimationType,
+  Point,
+  CSSMotionClass,
+  MotionType,
+} from './interface';
+
+const CSSMotion = RawCSSMotion as CSSMotionClass;
 
 interface PopupProps {
   visible?: boolean;
@@ -31,6 +42,8 @@ interface PopupProps {
   transitionName: TransitionNameType;
   maskAnimation: AnimationType;
   maskTransitionName: TransitionNameType;
+
+  motion: MotionType;
 }
 
 interface PopupState {
@@ -157,6 +170,7 @@ class Popup extends Component<PopupProps, PopupState> {
       onMouseLeave,
       onMouseDown,
       onTouchStart,
+      motion,
     } = this.props;
     const className = this.getClassName(this.currentAlignClassName || getClassNameFromAlign(align));
     const hiddenClassName = `${prefixCls}-hidden`;
@@ -226,6 +240,30 @@ class Popup extends Component<PopupProps, PopupState> {
         </Animate>
       );
     }
+
+    // return (
+    //   <CSSMotion visible={visible} {...motion}>
+    //     {({ style: motionStyle, className: motionClassName }) => {
+    //       return (
+    //         <Align
+    //           target={this.getAlignTarget()}
+    //           key="popup"
+    //           ref={this.alignRef}
+    //           monitorWindowResize
+    //           xVisible={visible}
+    //           childrenProps={{ visible: 'xVisible' }}
+    //           disabled={!visible}
+    //           align={align}
+    //           onAlign={this.onAlign}
+    //         >
+    //           <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
+    //             {children}
+    //           </PopupInner>
+    //         </Align>
+    //       );
+    //     }}
+    //   </CSSMotion>
+    // );
 
     return (
       <Animate
