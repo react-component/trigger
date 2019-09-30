@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-class LazyRenderBox extends Component {
-  static propTypes = {
-    children: PropTypes.any,
-    className: PropTypes.string,
-    visible: PropTypes.bool,
-    hiddenClassName: PropTypes.string,
-  };
+interface LazyRenderBoxProps {
+  children: React.ReactNode;
+  className: string;
+  visible: boolean;
+  hiddenClassName: string;
+}
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.hiddenClassName || nextProps.visible;
+class LazyRenderBox extends Component<LazyRenderBoxProps> {
+  shouldComponentUpdate(nextProps: LazyRenderBoxProps) {
+    return !!(nextProps.hiddenClassName || nextProps.visible);
   }
 
   render() {
@@ -20,7 +19,7 @@ class LazyRenderBox extends Component {
       if (!visible && hiddenClassName) {
         props.className += ` ${hiddenClassName}`;
       }
-      return <div {...props}/>;
+      return <div {...props} />;
     }
 
     return React.Children.only(props.children);
