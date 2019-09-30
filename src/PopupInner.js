@@ -13,9 +13,10 @@ class PopupInner extends Component {
     onTouchStart: PropTypes.func,
     children: PropTypes.any,
   };
+
   render() {
-    const props = this.props;
-    let className = props.className;
+    const { props } = this;
+    let { className } = props;
     if (!props.visible) {
       className += ` ${props.hiddenClassName}`;
     }

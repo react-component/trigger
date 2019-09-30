@@ -5,7 +5,7 @@ Portal.prototype.render = function () { // eslint-disable-line
   return this.props.children;
 };
 
-const render = Trigger.prototype.render;
+const { render } = Trigger.prototype;
 
 Trigger.prototype.render = function () { // eslint-disable-line
   const tree = render.call(this);

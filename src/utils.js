@@ -14,7 +14,7 @@ export function getAlignFromPlacement(builtinPlacements, placementStr, align) {
 }
 
 export function getAlignPopupClassName(builtinPlacements, prefixCls, align, isAlignPoint) {
-  const points = align.points;
+  const { points } = align;
   for (const placement in builtinPlacements) {
     if (builtinPlacements.hasOwnProperty(placement)) {
       if (isPointsEq(builtinPlacements[placement].points, points, isAlignPoint)) {

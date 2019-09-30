@@ -1,7 +1,6 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Trigger from '../src';
 import '../assets/index.less';
 
@@ -136,8 +135,8 @@ class Test extends React.Component {
   };
 
   render() {
-    const state = this.state;
-    const trigger = state.trigger;
+    const { state } = this;
+    const { trigger } = state;
     if (state.destroyed) {
       return null;
     }
@@ -249,7 +248,9 @@ class Test extends React.Component {
             <input type="text" onChange={this.onOffsetYChange} style={{ width: 50 }} />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <button onClick={this.destroy}>destroy</button>
+          <button type="button" onClick={this.destroy}>
+            destroy
+          </button>
         </div>
         <div style={{ margin: 120, position: 'relative' }}>
           <Trigger
@@ -276,7 +277,7 @@ class Test extends React.Component {
             popupTransitionName={state.transitionName}
           >
             <a
-              style={{ margin: 20, display: 'inline-block', background: `rgba(255, 0, 0, 0.05)` }}
+              style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
               href="#"
               onClick={preventDefault}
             >

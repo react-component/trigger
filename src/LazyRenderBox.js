@@ -8,9 +8,11 @@ class LazyRenderBox extends Component {
     visible: PropTypes.bool,
     hiddenClassName: PropTypes.string,
   };
+
   shouldComponentUpdate(nextProps) {
     return nextProps.hiddenClassName || nextProps.visible;
   }
+
   render() {
     const { hiddenClassName, visible, ...props } = this.props;
 

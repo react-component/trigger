@@ -146,8 +146,8 @@ class Trigger extends React.Component {
   }
 
   componentDidUpdate(_, prevState) {
-    const props = this.props;
-    const state = this.state;
+    const { props } = this;
+    const { state } = this;
     const triggerAfterPopupVisibleChange = () => {
       if (prevState.popupVisible !== state.popupVisible) {
         props.afterPopupVisibleChange(state.popupVisible);
@@ -336,7 +336,7 @@ class Trigger extends React.Component {
       return;
     }
 
-    const target = event.target;
+    const { target } = event;
     const root = findDOMNode(this);
     if (!contains(root, target) && !this.hasPopupMouseDown) {
       this.close();
@@ -362,9 +362,7 @@ class Trigger extends React.Component {
     return null;
   }
 
-  getRootDomNode = () => {
-    return findDOMNode(this);
-  };
+  getRootDomNode = () => findDOMNode(this);
 
   getPopupClassNameFromAlign = align => {
     const className = [];
@@ -385,7 +383,7 @@ class Trigger extends React.Component {
   };
 
   getPopupAlign() {
-    const props = this.props;
+    const { props } = this;
     const { popupPlacement, popupAlign, builtinPlacements } = props;
     if (popupPlacement && builtinPlacements) {
       return getAlignFromPlacement(builtinPlacements, popupPlacement, popupAlign);
@@ -556,7 +554,7 @@ class Trigger extends React.Component {
 
   createTwoChains(event) {
     const childPros = this.props.children.props;
-    const props = this.props;
+    const { props } = this;
     if (childPros[event] && props[event]) {
       return this[`fire${event}`];
     }

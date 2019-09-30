@@ -1,7 +1,6 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Trigger from '../src';
 import '../assets/index.less';
 import './point.less';

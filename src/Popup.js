@@ -54,7 +54,7 @@ class Popup extends Component {
   }
 
   onAlign = (popupDomNode, align) => {
-    const props = this.props;
+    const { props } = this;
     const currentAlignClassName = props.getClassNameFromAlign(align);
     // FIX: https://github.com/react-component/trigger/issues/56
     // FIX: https://github.com/react-component/tooltip/issues/79
@@ -96,9 +96,7 @@ class Popup extends Component {
     return ReactDOM.findDOMNode(this.popupInstance);
   }
 
-  getTargetElement = () => {
-    return this.props.getRootDomNode();
-  }
+  getTargetElement = () => this.props.getRootDomNode()
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
   // ref: https://www.npmjs.com/package/rc-align
@@ -111,7 +109,7 @@ class Popup extends Component {
   }
 
   getMaskTransitionName() {
-    const props = this.props;
+    const { props } = this;
     let transitionName = props.maskTransitionName;
     const animation = props.maskAnimation;
     if (!transitionName && animation) {
@@ -121,8 +119,8 @@ class Popup extends Component {
   }
 
   getTransitionName() {
-    const props = this.props;
-    let transitionName = props.transitionName;
+    const { props } = this;
+    let { transitionName } = props;
     if (!transitionName && props.animation) {
       transitionName = `${props.prefixCls}-${props.animation}`;
     }
@@ -252,7 +250,7 @@ class Popup extends Component {
 
   getZIndexStyle() {
     const style = {};
-    const props = this.props;
+    const { props } = this;
     if (props.zIndex !== undefined) {
       style.zIndex = props.zIndex;
     }
@@ -260,7 +258,7 @@ class Popup extends Component {
   }
 
   getMaskElement() {
-    const props = this.props;
+    const { props } = this;
     let maskElement;
     if (props.mask) {
       const maskTransition = this.getMaskTransitionName();
