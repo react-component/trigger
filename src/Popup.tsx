@@ -252,13 +252,19 @@ class Popup extends Component<PopupProps, PopupState> {
               key="popup"
               ref={this.alignRef}
               monitorWindowResize
-              xVisible={visible}
-              childrenProps={{ visible: 'xVisible' }}
               disabled={!visible}
               align={align}
               onAlign={this.onAlign}
             >
-              <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
+              <PopupInner
+                hiddenClassName={hiddenClassName}
+                {...popupInnerProps}
+                style={{
+                  ...popupInnerProps.style,
+                  ...motionStyle,
+                }}
+                className={classNames(popupInnerProps.className, motionClassName)}
+              >
                 {children}
               </PopupInner>
             </Align>

@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Trigger, { BuildInPlacements } from '../src';
-import '../assets/index.less';
+import './case.less';
+import { MotionType } from '../src/interface';
 
 const builtinPlacements: BuildInPlacements = {
   left: {
@@ -31,7 +32,9 @@ const builtinPlacements: BuildInPlacements = {
   },
 };
 
-const Motion = {};
+const Motion: MotionType = {
+  motionName: 'case-motion',
+};
 
 function useControl<T>(defaultValue?: T): [T, any] {
   const [value, setValue] = React.useState<T>(defaultValue);
@@ -90,7 +93,7 @@ const Demo = () => {
 
   const [placement, placementProps] = useControl('right');
   const [stretch, stretchProps] = useControl('');
-  const [motion, motionProps] = useControl(false);
+  const [motion, motionProps] = useControl(true);
   const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl(false);
   const [mask, maskProps] = useControl(false);
   const [maskClosable, maskClosableProps] = useControl(false);
