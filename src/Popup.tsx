@@ -257,6 +257,7 @@ class Popup extends Component<PopupProps, PopupState> {
               onAlign={this.onAlign}
             >
               <PopupInner
+                visible={visible}
                 hiddenClassName={hiddenClassName}
                 {...popupInnerProps}
                 style={{

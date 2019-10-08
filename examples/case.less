@@ -1,9 +1,14 @@
+.rc-trigger-popup {
+  left: 0 !important;
+  top: 0 !important;
+}
+
 .case-motion {
   box-shadow: 0 0 5px blue;
-  transition: all 3s;
+  transition: opacity 1s;
 
-  &-appear {
-    background: red;
+  &-appear,
+  &-enter {
     opacity: 0;
 
     &-active {
