@@ -61,10 +61,15 @@ interface PopupState {
   targetHeight: number;
 
   status: PopupStatus;
+  prevVisible: boolean;
 }
 
 interface AlignRefType {
   forceAlign: () => void;
+}
+
+function supportMotion(motion: MotionType) {
+  return motion && motion.motionName;
 }
 
 class Popup extends Component<PopupProps, PopupState> {
@@ -73,6 +78,7 @@ class Popup extends Component<PopupProps, PopupState> {
     targetHeight: undefined,
 
     status: null,
+    prevVisible: false,
   };
 
   public popupRef = React.createRef<HTMLDivElement>();
@@ -83,14 +89,23 @@ class Popup extends Component<PopupProps, PopupState> {
 
   private nextFrameId: number = null;
 
-  componentDidMount() {
-    this.componentDidUpdate({ visible: false });
+  static getDerivedStateFromProps({ visible, motion }: PopupProps, { prevVisible }: PopupState) {
+    const newState: Partial<PopupState> = { prevVisible: visible };
+
+    if (visible !== prevVisible) {
+      newState.status = visible || supportMotion(motion) ? null : 'stable';
+    }
+
+    return newState;
   }
 
-  componentDidUpdate({ visible: prevVisible }: Partial<PopupProps>) {
+  componentDidMount() {
+    this.componentDidUpdate();
+  }
+
+  componentDidUpdate() {
     const { status } = this.state;
     const { getRootDomNode, visible, stretch, motion } = this.props;
-    const supportMotion = motion && motion.motionName;
 
     if (visible && status !== 'stable') {
       switch (status) {
@@ -100,7 +115,7 @@ class Popup extends Component<PopupProps, PopupState> {
         }
 
         case 'afterAlign': {
-          this.setStateOnNextFrame({ status: supportMotion ? 'beforeMotion' : 'stable' });
+          this.setStateOnNextFrame({ status: supportMotion(motion) ? 'beforeMotion' : 'stable' });
           break;
         }
 
@@ -114,8 +129,6 @@ class Popup extends Component<PopupProps, PopupState> {
           }
         }
       }
-    } else if (prevVisible !== visible) {
-      this.setStateOnNextFrame({ status: visible || supportMotion ? null : 'stable' });
     }
 
     // Measure stretch size
@@ -188,6 +201,7 @@ class Popup extends Component<PopupProps, PopupState> {
       visible,
       motion,
       align,
+      destroyPopupOnHide,
       onMouseEnter,
       onMouseLeave,
       onMouseDown,
@@ -257,6 +271,12 @@ class Popup extends Component<PopupProps, PopupState> {
     //   mergedPopupVisible,
     // );
 
+    console.log('~~~~>', mergedPopupVisible, status);
+    if (destroyPopupOnHide && !mergedPopupVisible) {
+      console.log('hit!!!!!');
+      return null;
+    }
+
     return (
       <CSSMotion
         visible={mergedMotionVisible}
@@ -265,38 +285,36 @@ class Popup extends Component<PopupProps, PopupState> {
         onEnterEnd={this.onMotionEnd}
         onLeaveEnd={this.onMotionEnd}
       >
-        {({ style: motionStyle, className: motionClassName }, motionRef) =>
+        {({ style: motionStyle, className: motionClassName }, motionRef) => (
           // console.log('Motion:', classNames(mergedClassName, motionClassName));
-           (
-            <Align
-              target={this.getAlignTarget()}
-              key="popup"
-              ref={this.alignRef}
-              monitorWindowResize
-              disabled={mergedAlignDisabled}
-              align={align}
-              onAlign={this.onAlign}
+          <Align
+            target={this.getAlignTarget()}
+            key="popup"
+            ref={this.alignRef}
+            monitorWindowResize
+            disabled={mergedAlignDisabled}
+            align={align}
+            onAlign={this.onAlign}
+          >
+            <PopupInner
+              prefixCls={prefixCls}
+              visible={mergedPopupVisible}
+              hiddenClassName={hiddenClassName}
+              className={classNames(mergedClassName, motionClassName)}
+              ref={composeRef(motionRef, this.popupRef)}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              onMouseDown={onMouseDown}
+              onTouchStart={onTouchStart}
+              style={{
+                ...mergedStyle,
+                ...motionStyle,
+              }}
             >
-              <PopupInner
-                prefixCls={prefixCls}
-                visible={mergedPopupVisible}
-                hiddenClassName={hiddenClassName}
-                className={classNames(mergedClassName, motionClassName)}
-                ref={composeRef(motionRef, this.popupRef)}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                onMouseDown={onMouseDown}
-                onTouchStart={onTouchStart}
-                style={{
-                  ...mergedStyle,
-                  ...motionStyle,
-                }}
-              >
-                {children}
-              </PopupInner>
-            </Align>
-          )
-        }
+              {children}
+            </PopupInner>
+          </Align>
+        )}
       </CSSMotion>
     );
   };
