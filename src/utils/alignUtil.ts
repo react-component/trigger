@@ -1,4 +1,4 @@
-import { AlignType, BuildInPlacements, AlignPoint } from './interface';
+import { AlignType, BuildInPlacements, AlignPoint } from '../interface';
 
 function isPointsEq(a1: AlignPoint[], a2: AlignPoint[], isAlignPoint: boolean): boolean {
   if (isAlignPoint) {

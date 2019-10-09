@@ -72,9 +72,9 @@ export type StretchType = string;
 
 export type ActionType = string;
 
-export type AnimationType = string | object;
+export type AnimationType = string;
 
-export type TransitionNameType = string | object;
+export type TransitionNameType = string;
 
 export interface Point {
   pageX: number;

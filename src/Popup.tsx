@@ -15,6 +15,7 @@ import {
   CSSMotionClass,
   MotionType,
 } from './interface';
+import { getMotion } from './utils/legacyUtil';
 
 /**
  * Popup should follow the steps for each component work correctly:
@@ -25,7 +26,15 @@ import {
  * motion - play the motion
  * stable - everything is done
  */
-type PopupStatus = null | 'measure' | 'align' | 'afterAlign' | 'beforeMotion' | 'motion' | 'stable';
+type PopupStatus =
+  | null
+  | 'measure'
+  | 'align'
+  | 'afterAlign'
+  | 'beforeMotion'
+  | 'motion'
+  | 'AfterMotion'
+  | 'stable';
 
 const CSSMotion = RawCSSMotion as CSSMotionClass;
 
@@ -38,7 +47,7 @@ interface PopupProps {
   align?: AlignType;
   destroyPopupOnHide?: boolean;
   className?: string;
-  prefixCls?: string;
+  prefixCls: string;
   onMouseEnter?: React.MouseEventHandler<HTMLElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLElement>;
   onMouseDown?: React.MouseEventHandler<HTMLElement>;
@@ -49,14 +58,15 @@ interface PopupProps {
   zIndex?: number;
   mask?: boolean;
 
-  // TODO: handle this
+  // Motion
+  motion: MotionType;
+  maskMotion: MotionType;
+
+  // Legacy
   animation: AnimationType;
   transitionName: TransitionNameType;
   maskAnimation: AnimationType;
   maskTransitionName: TransitionNameType;
-
-  motion: MotionType;
-  maskMotion: MotionType;
 }
 
 interface PopupState {
@@ -94,11 +104,13 @@ class Popup extends Component<PopupProps, PopupState> {
 
   private nextFrameId: number = null;
 
-  static getDerivedStateFromProps({ visible, motion }: PopupProps, { prevVisible }: PopupState) {
+  static getDerivedStateFromProps({ visible, ...props }: PopupProps, { prevVisible }: PopupState) {
     const newState: Partial<PopupState> = { prevVisible: visible };
 
+    const mergedMotion = getMotion(props);
+
     if (visible !== prevVisible) {
-      newState.status = visible || supportMotion(motion) ? null : 'stable';
+      newState.status = visible || supportMotion(mergedMotion) ? null : 'stable';
 
       if (!visible) {
         newState.alignClassName = null;
@@ -114,7 +126,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
   componentDidUpdate() {
     const { status } = this.state;
-    const { getRootDomNode, visible, stretch, motion } = this.props;
+    const { getRootDomNode, visible, stretch } = this.props;
 
     if (visible && status !== 'stable') {
       switch (status) {
@@ -124,7 +136,16 @@ class Popup extends Component<PopupProps, PopupState> {
         }
 
         case 'afterAlign': {
-          this.setStateOnNextFrame({ status: supportMotion(motion) ? 'beforeMotion' : 'stable' });
+          this.setStateOnNextFrame({
+            status: supportMotion(this.getMotion()) ? 'beforeMotion' : 'stable',
+          });
+          break;
+        }
+
+        case 'AfterMotion': {
+          this.setStateOnNextFrame({
+            status: 'stable',
+          });
           break;
         }
 
@@ -164,7 +185,8 @@ class Popup extends Component<PopupProps, PopupState> {
   };
 
   onMotionEnd = () => {
-    this.setState({ status: 'stable' });
+    const { visible } = this.props;
+    this.setState({ status: visible ? 'AfterMotion' : 'stable' });
   };
 
   setStateOnNextFrame = (state: Partial<PopupState>) => {
@@ -181,6 +203,8 @@ class Popup extends Component<PopupProps, PopupState> {
       this.setState(submitState as PopupState);
     });
   };
+
+  getMotion = () => ({ ...getMotion(this.props) });
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
   // ref: https://www.npmjs.com/package/rc-align
@@ -209,7 +233,6 @@ class Popup extends Component<PopupProps, PopupState> {
       style,
       stretch,
       visible,
-      motion,
       align,
       destroyPopupOnHide,
       onMouseEnter,
@@ -246,7 +269,7 @@ class Popup extends Component<PopupProps, PopupState> {
     };
 
     // ================= Motions =================
-    const mergedMotion = { ...motion };
+    const mergedMotion = this.getMotion();
     let mergedMotionVisible = visible;
 
     if (visible && status !== 'beforeMotion' && status !== 'motion' && status !== 'stable') {
@@ -315,7 +338,7 @@ class Popup extends Component<PopupProps, PopupState> {
   };
 
   renderMaskElement = () => {
-    const { mask, maskMotion, prefixCls, visible } = this.props;
+    const { mask, maskMotion, maskTransitionName, maskAnimation, prefixCls, visible } = this.props;
 
     if (!mask) {
       return null;
@@ -326,7 +349,12 @@ class Popup extends Component<PopupProps, PopupState> {
     if (maskMotion && maskMotion.motionName) {
       motion = {
         motionAppear: true,
-        ...maskMotion,
+        ...getMotion({
+          motion: maskMotion,
+          prefixCls,
+          transitionName: maskTransitionName,
+          animation: maskAnimation,
+        }),
       };
     }
 

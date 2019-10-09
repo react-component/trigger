@@ -203,7 +203,10 @@ const Demo = () => {
               boxSizing: 'border-box',
             }}
             popup={<div>i am a popup</div>}
-            motion={motion ? Motion : null}
+            popupMotion={motion ? Motion : null}
+            onPopupAlign={() => {
+              console.warn('Aligned!');
+            }}
           >
             <div
               style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}

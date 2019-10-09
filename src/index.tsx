@@ -8,7 +8,7 @@ import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
 
-import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
+import { getAlignFromPlacement, getAlignPopupClassName } from './utils/alignUtil';
 import Popup from './Popup';
 import {
   ActionType,
@@ -63,8 +63,6 @@ export interface TriggerProps {
   className?: string;
   popupPlacement?: string;
   builtinPlacements?: BuildInPlacements;
-  popupTransitionName?: TransitionNameType;
-  popupAnimation?: AnimationType;
   mouseEnterDelay?: number;
   mouseLeaveDelay?: number;
   zIndex?: number;
@@ -80,14 +78,23 @@ export interface TriggerProps {
   popupAlign?: AlignType;
   popupVisible?: boolean;
   defaultPopupVisible?: boolean;
-  maskTransitionName?: TransitionNameType;
-  maskAnimation?: string;
-  maskMotion?: MotionType;
+
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
-  // TODO:
-  motion?: MotionType;
+  /** Set popup motion. You can ref `rc-animate` for more info. */
+  popupMotion?: MotionType;
+  /** Set mask motion. You can ref `rc-animate` for more info. */
+  maskMotion?: MotionType;
+
+  /** @deprecated Please us `popupMotion` instead. */
+  popupTransitionName?: TransitionNameType;
+  /** @deprecated Please us `popupMotion` instead. */
+  popupAnimation?: AnimationType;
+  /** @deprecated Please us `maskMotion` instead. */
+  maskTransitionName?: TransitionNameType;
+  /** @deprecated Please us `maskMotion` instead. */
+  maskAnimation?: string;
 }
 
 interface TriggerState {
@@ -426,6 +433,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       destroyPopupOnHide,
       popupClassName,
       onPopupAlign,
+      popupMotion,
       popupAnimation,
       popupTransitionName,
       popupStyle,
@@ -437,7 +445,6 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       popup,
       stretch,
       alignPoint,
-      motion,
     } = this.props;
     const { popupVisible, point } = this.state;
 
@@ -476,7 +483,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
         maskTransitionName={maskTransitionName}
         maskMotion={maskMotion}
         ref={this.popupRef}
-        motion={motion}
+        motion={popupMotion}
       >
         {typeof popup === 'function' ? popup() : popup}
       </Popup>
