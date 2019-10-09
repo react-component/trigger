@@ -1,11 +1,6 @@
-.rc-trigger-popup {
-  // left: 0 !important;
-  // top: 0 !important;
-}
-
+// ======================= Popup =======================
 .case-motion {
   transform-origin: 50% 50%;
-  transform: scale(1);
 
   animation-duration: 0.3s;
   animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
@@ -56,5 +51,55 @@
   100% {
     opacity: 0;
     transform: scale(1.2);
+  }
+}
+
+// ======================= Mask =======================
+.mask-motion {
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+
+  &-appear,
+  &-enter {
+    animation-play-state: paused;
+    opacity: 0;
+
+    &-active {
+      animation-name: mask-zoom-in;
+      animation-play-state: running;
+    }
+  }
+
+  &-leave {
+    animation-play-state: paused;
+
+    &-active {
+      animation-name: mask-zoom-out;
+      animation-play-state: running;
+    }
+  }
+}
+
+@keyframes mask-zoom-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes mask-zoom-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

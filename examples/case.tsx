@@ -36,6 +36,10 @@ const Motion: MotionType = {
   motionName: 'case-motion',
 };
 
+const MaskMotion: MotionType = {
+  motionName: 'mask-motion',
+};
+
 function useControl<T>(valuePropName: string, defaultValue: T): [T, any] {
   const [value, setValue] = React.useState<T>(defaultValue);
 
@@ -86,9 +90,9 @@ const LabelItem: React.FC<{
 };
 
 const Demo = () => {
-  const [hover, hoverProps] = useControl('checked', true);
+  const [hover, hoverProps] = useControl('checked', false);
   const [focus, focusProps] = useControl('checked', false);
-  const [click, clickProps] = useControl('checked', false);
+  const [click, clickProps] = useControl('checked', true);
   const [contextMenu, contextMenuProps] = useControl('checked', false);
 
   const [placement, placementProps] = useControl('value', 'right');
@@ -96,7 +100,7 @@ const Demo = () => {
   const [motion, motionProps] = useControl('checked', true);
   const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl('checked', false);
   const [mask, maskProps] = useControl('checked', false);
-  const [maskClosable, maskClosableProps] = useControl('checked', false);
+  const [maskClosable, maskClosableProps] = useControl('checked', true);
   const [offsetX, offsetXProps] = useControl<number>('value', 0);
   const [offsetY, offsetYProps] = useControl<number>('value', 0);
 
@@ -187,6 +191,7 @@ const Demo = () => {
             popupPlacement={placement}
             destroyPopupOnHide={destroyPopupOnHide}
             mask={mask}
+            maskMotion={motion ? MaskMotion : null}
             maskClosable={maskClosable}
             stretch={stretch}
             action={Object.keys(actions).filter(action => actions[action])}

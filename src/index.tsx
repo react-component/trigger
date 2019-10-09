@@ -82,6 +82,7 @@ export interface TriggerProps {
   defaultPopupVisible?: boolean;
   maskTransitionName?: TransitionNameType;
   maskAnimation?: string;
+  maskMotion?: MotionType;
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
@@ -431,6 +432,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       mask,
       maskAnimation,
       maskTransitionName,
+      maskMotion,
       zIndex,
       popup,
       stretch,
@@ -472,6 +474,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
         transitionName={popupTransitionName}
         maskAnimation={maskAnimation}
         maskTransitionName={maskTransitionName}
+        maskMotion={maskMotion}
         ref={this.popupRef}
         motion={motion}
       >

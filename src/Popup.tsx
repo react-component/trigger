@@ -54,6 +54,7 @@ interface PopupProps {
   maskTransitionName: TransitionNameType;
 
   motion: MotionType;
+  maskMotion: MotionType;
 }
 
 interface PopupState {
@@ -194,10 +195,11 @@ class Popup extends Component<PopupProps, PopupState> {
     return { zIndex };
   }
 
-  // TODO: handle this
-  getMaskElement = () => null;
+  cancelFrameState = () => {
+    raf.cancel(this.nextFrameId);
+  };
 
-  getPopupElement = () => {
+  renderPopupElement = () => {
     const { status, targetHeight, targetWidth, alignClassName } = this.state;
     const {
       prefixCls,
@@ -238,7 +240,7 @@ class Popup extends Component<PopupProps, PopupState> {
       ...sizeStyle,
       ...style,
       ...this.getZIndexStyle(),
-      opacity: status === 'stable' ? undefined : 0,
+      opacity: status === 'stable' || !visible ? undefined : 0,
     };
 
     // ================= Motions =================
@@ -256,7 +258,7 @@ class Popup extends Component<PopupProps, PopupState> {
     }
 
     // ================== Align ==================
-    const mergedAlignDisabled = !visible || status !== 'align';
+    const mergedAlignDisabled = !visible || (status !== 'align' && status !== 'stable');
 
     // ================== Popup ==================
     let mergedPopupVisible = true;
@@ -264,6 +266,7 @@ class Popup extends Component<PopupProps, PopupState> {
       mergedPopupVisible = visible;
     }
 
+    // Only remove popup since mask may still need animation
     if (destroyPopupOnHide && !mergedPopupVisible) {
       return null;
     }
@@ -309,15 +312,40 @@ class Popup extends Component<PopupProps, PopupState> {
     );
   };
 
-  cancelFrameState = () => {
-    raf.cancel(this.nextFrameId);
+  renderMaskElement = () => {
+    const { mask, maskMotion, prefixCls, visible } = this.props;
+
+    if (!mask) {
+      return null;
+    }
+
+    let motion: MotionType = {};
+
+    if (maskMotion && maskMotion.motionName) {
+      motion = {
+        motionAppear: true,
+        ...maskMotion,
+      };
+    }
+
+    return (
+      <CSSMotion {...motion} visible={visible} removeOnLeave>
+        {({ className }) => (
+          <div
+            style={this.getZIndexStyle()}
+            key="mask"
+            className={classNames(`${prefixCls}-mask`, className)}
+          />
+        )}
+      </CSSMotion>
+    );
   };
 
   render() {
     return (
       <div>
-        {this.getMaskElement()}
-        {this.getPopupElement()}
+        {this.renderMaskElement()}
+        {this.renderPopupElement()}
       </div>
     );
   }
