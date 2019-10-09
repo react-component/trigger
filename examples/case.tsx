@@ -90,9 +90,9 @@ const LabelItem: React.FC<{
 };
 
 const Demo = () => {
-  const [hover, hoverProps] = useControl('checked', false);
+  const [hover, hoverProps] = useControl('checked', true);
   const [focus, focusProps] = useControl('checked', false);
-  const [click, clickProps] = useControl('checked', true);
+  const [click, clickProps] = useControl('checked', false);
   const [contextMenu, contextMenuProps] = useControl('checked', false);
 
   const [placement, placementProps] = useControl('value', 'right');

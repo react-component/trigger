@@ -10,6 +10,7 @@ import classNames from 'classnames';
 
 import { getAlignFromPlacement, getAlignPopupClassName } from './utils/alignUtil';
 import Popup from './Popup';
+import TriggerContext from './context';
 import {
   ActionType,
   AlignType,
@@ -41,12 +42,6 @@ const ALL_HANDLERS = [
   'onBlur',
   'onContextMenu',
 ];
-
-const contextTypes = {
-  rcTrigger: PropTypes.shape({
-    onPopupMouseDown: PropTypes.func,
-  }),
-};
 
 export interface TriggerProps {
   children: React.ReactElement;
@@ -104,9 +99,7 @@ interface TriggerState {
 }
 
 class Trigger extends React.Component<TriggerProps, TriggerState> {
-  static contextTypes = contextTypes;
-
-  static childContextTypes = contextTypes;
+  static contextType = TriggerContext;
 
   static defaultProps = {
     prefixCls: 'rc-trigger-popup',
@@ -175,14 +168,6 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
         this.fireEvents(h, e);
       };
     });
-  }
-
-  getChildContext() {
-    return {
-      rcTrigger: {
-        onPopupMouseDown: this.onPopupMouseDown,
-      },
-    };
   }
 
   componentDidMount() {
@@ -354,7 +339,6 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
   };
 
   onPopupMouseDown = (...args) => {
-    const { rcTrigger = {} } = this.context;
     this.hasPopupMouseDown = true;
 
     clearTimeout(this.mouseDownTimeout);
@@ -362,8 +346,8 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       this.hasPopupMouseDown = false;
     }, 0);
 
-    if (rcTrigger.onPopupMouseDown) {
-      rcTrigger.onPopupMouseDown(...args);
+    if (this.context) {
+      this.context.onPopupMouseDown(...args);
     }
   };
 
@@ -720,7 +704,12 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
       );
     }
 
-    return [trigger, portal];
+    return (
+      <TriggerContext.Provider value={{ onPopupMouseDown: this.onPopupMouseDown }}>
+        {trigger}
+        {portal}
+      </TriggerContext.Provider>
+    );
   }
 }
 
