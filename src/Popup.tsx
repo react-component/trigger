@@ -62,6 +62,7 @@ interface PopupState {
 
   status: PopupStatus;
   prevVisible: boolean;
+  alignClassName: string;
 }
 
 interface AlignRefType {
@@ -79,6 +80,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
     status: null,
     prevVisible: false,
+    alignClassName: null,
   };
 
   public popupRef = React.createRef<HTMLDivElement>();
@@ -94,6 +96,10 @@ class Popup extends Component<PopupProps, PopupState> {
 
     if (visible !== prevVisible) {
       newState.status = visible || supportMotion(motion) ? null : 'stable';
+
+      if (!visible) {
+        newState.alignClassName = null;
+      }
     }
 
     return newState;
@@ -132,7 +138,6 @@ class Popup extends Component<PopupProps, PopupState> {
     }
 
     // Measure stretch size
-    // console.error('DID UPDATE!!!!!!', status, this.nextFrameState);
     if (status === 'measure') {
       const $ele = getRootDomNode();
       if ($ele) {
@@ -148,13 +153,14 @@ class Popup extends Component<PopupProps, PopupState> {
     this.cancelFrameState();
   }
 
-  onAlign = (...args) => {
-    // TODO: handle this
-    console.warn('Aligned!', ...args);
+  onAlign = (popupDomNode: HTMLElement, align: AlignType) => {
+    const { getClassNameFromAlign, onAlign } = this.props;
+    const alignClassName = getClassNameFromAlign(align);
+    this.setState({ alignClassName });
+    onAlign(popupDomNode, align);
   };
 
   onMotionEnd = () => {
-    console.warn('motion end!');
     this.setState({ status: 'stable' });
   };
 
@@ -192,7 +198,7 @@ class Popup extends Component<PopupProps, PopupState> {
   getMaskElement = () => null;
 
   getPopupElement = () => {
-    const { status, targetHeight, targetWidth } = this.state;
+    const { status, targetHeight, targetWidth, alignClassName } = this.state;
     const {
       prefixCls,
       className,
@@ -209,7 +215,7 @@ class Popup extends Component<PopupProps, PopupState> {
       children,
     } = this.props;
 
-    const mergedClassName = classNames(prefixCls, className);
+    const mergedClassName = classNames(prefixCls, className, alignClassName);
     const hiddenClassName = `${prefixCls}-hidden`;
 
     // ================== Style ==================
@@ -258,22 +264,7 @@ class Popup extends Component<PopupProps, PopupState> {
       mergedPopupVisible = visible;
     }
 
-    // console.log(
-    //   status,
-    //   '>>>',
-    //   'Align Disabled:',
-    //   mergedAlignDisabled,
-    //   'Motion Visible:',
-    //   mergedMotionVisible,
-    //   'Motion:',
-    //   mergedMotion,
-    //   'Popup Visible:',
-    //   mergedPopupVisible,
-    // );
-
-    console.log('~~~~>', mergedPopupVisible, status);
     if (destroyPopupOnHide && !mergedPopupVisible) {
-      console.log('hit!!!!!');
       return null;
     }
 
@@ -286,7 +277,6 @@ class Popup extends Component<PopupProps, PopupState> {
         onLeaveEnd={this.onMotionEnd}
       >
         {({ style: motionStyle, className: motionClassName }, motionRef) => (
-          // console.log('Motion:', classNames(mergedClassName, motionClassName));
           <Align
             target={this.getAlignTarget()}
             key="popup"
