@@ -1,6 +1,4 @@
 import React, { HTMLAttributes } from 'react';
-import PropTypes from 'prop-types';
-import { polyfill } from 'react-lifecycles-compat';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { composeRef } from 'rc-util/lib/ref';
@@ -712,8 +710,6 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     );
   }
 }
-
-polyfill(Trigger);
 
 export { BuildInPlacements };
 
