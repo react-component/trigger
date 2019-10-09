@@ -90,6 +90,7 @@ class Popup extends Component<PopupProps, PopupState> {
   componentDidUpdate({ visible: prevVisible }: Partial<PopupProps>) {
     const { status } = this.state;
     const { getRootDomNode, visible, stretch, motion } = this.props;
+    const supportMotion = motion && motion.motionName;
 
     if (visible && status !== 'stable') {
       switch (status) {
@@ -99,11 +100,7 @@ class Popup extends Component<PopupProps, PopupState> {
         }
 
         case 'afterAlign': {
-          if (!motion || !motion.motionName) {
-            this.setStateOnNextFrame({ status: 'stable' });
-          } else {
-            this.setStateOnNextFrame({ status: 'beforeMotion' });
-          }
+          this.setStateOnNextFrame({ status: supportMotion ? 'beforeMotion' : 'stable' });
           break;
         }
 
@@ -118,8 +115,7 @@ class Popup extends Component<PopupProps, PopupState> {
         }
       }
     } else if (prevVisible && !visible) {
-      // Restore status to null
-      this.setStateOnNextFrame({ status: null });
+      this.setStateOnNextFrame({ status: supportMotion ? null : 'stable' });
     }
 
     // Measure stretch size
