@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { polyfill } from 'react-lifecycles-compat';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
+import { composeRef } from 'rc-util/lib/ref';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
@@ -122,7 +123,9 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     hideAction: [],
   };
 
-  componentRef = React.createRef<Popup>();
+  popupRef = React.createRef<Popup>();
+
+  triggerRef = React.createRef<Popup>();
 
   clickOutsideHandler: CommonEventHandler;
 
@@ -256,9 +259,9 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     if (
       e.relatedTarget &&
       !e.relatedTarget.setTimeout &&
-      this.componentRef.current &&
-      this.componentRef.current.popupRef.current &&
-      contains(this.componentRef.current.popupRef.current, e.relatedTarget)
+      this.popupRef.current &&
+      this.popupRef.current.popupRef.current &&
+      contains(this.popupRef.current.popupRef.current, e.relatedTarget)
     ) {
       return;
     }
@@ -362,7 +365,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     }
 
     const { target } = event;
-    const root = findDOMNode(this);
+    const root = findDOMNode(this.triggerRef.current);
     if (!contains(root, target) && !this.hasPopupMouseDown) {
       this.close();
     }
@@ -381,13 +384,13 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
 
   getPopupDomNode() {
     // for test
-    if (this.componentRef.current && this.componentRef.current.popupRef.current) {
-      return this.componentRef.current.popupRef.current;
+    if (this.popupRef.current && this.popupRef.current.popupRef.current) {
+      return this.popupRef.current.popupRef.current;
     }
     return null;
   }
 
-  getRootDomNode = () => findDOMNode<HTMLElement>(this);
+  getRootDomNode = () => findDOMNode<HTMLElement>(this.triggerRef.current);
 
   getPopupClassNameFromAlign = align => {
     const className = [];
@@ -469,7 +472,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
         transitionName={popupTransitionName}
         maskAnimation={maskAnimation}
         maskTransitionName={maskTransitionName}
-        ref={this.componentRef}
+        ref={this.popupRef}
         motion={motion}
       >
         {typeof popup === 'function' ? popup() : popup}
@@ -487,7 +490,7 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     popupContainer.style.left = '0';
     popupContainer.style.width = '100%';
     const mountNode = props.getPopupContainer
-      ? props.getPopupContainer(findDOMNode(this))
+      ? props.getPopupContainer(findDOMNode(this.triggerRef.current))
       : props.getDocument().body;
     mountNode.appendChild(popupContainer);
     return popupContainer;
@@ -624,10 +627,10 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
   forcePopupAlign() {
     if (
       this.state.popupVisible &&
-      this.componentRef.current &&
-      this.componentRef.current.alignRef.current
+      this.popupRef.current &&
+      this.popupRef.current.alignRef.current
     ) {
-      this.componentRef.current.alignRef.current.forceAlign();
+      this.popupRef.current.alignRef.current.forceAlign();
     }
   }
 
@@ -692,11 +695,14 @@ class Trigger extends React.Component<TriggerProps, TriggerState> {
     if (childrenClassName) {
       newChildProps.className = childrenClassName;
     }
-    const trigger = React.cloneElement(child, newChildProps);
+    const trigger = React.cloneElement(child, {
+      ...newChildProps,
+      ref: composeRef(this.triggerRef, (child as any).ref),
+    });
 
     let portal: React.ReactElement;
     // prevent unmounting after it's rendered
-    if (popupVisible || this.componentRef.current || forceRender) {
+    if (popupVisible || this.popupRef.current || forceRender) {
       portal = (
         <Portal key="portal" getContainer={this.getContainer} didUpdate={this.handlePortalUpdate}>
           {this.getComponent()}

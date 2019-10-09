@@ -108,109 +108,111 @@ const Demo = () => {
   };
 
   return (
-    <div>
-      <div style={{ margin: '10px 20px' }}>
-        <strong>Actions: </strong>
-        <LabelItem title="Hover" {...hoverProps}>
-          <input type="checkbox" />
-        </LabelItem>
-        <LabelItem title="Focus" {...focusProps}>
-          <input type="checkbox" />
-        </LabelItem>
-        <LabelItem title="Click" {...clickProps}>
-          <input type="checkbox" />
-        </LabelItem>
-        <LabelItem title="ContextMenu" {...contextMenuProps}>
-          <input type="checkbox" />
-        </LabelItem>
+    <React.StrictMode>
+      <div>
+        <div style={{ margin: '10px 20px' }}>
+          <strong>Actions: </strong>
+          <LabelItem title="Hover" {...hoverProps}>
+            <input type="checkbox" />
+          </LabelItem>
+          <LabelItem title="Focus" {...focusProps}>
+            <input type="checkbox" />
+          </LabelItem>
+          <LabelItem title="Click" {...clickProps}>
+            <input type="checkbox" />
+          </LabelItem>
+          <LabelItem title="ContextMenu" {...contextMenuProps}>
+            <input type="checkbox" />
+          </LabelItem>
 
-        <hr />
+          <hr />
 
-        <LabelItem title="Stretch" {...stretchProps}>
-          <select>
-            <option value="">--NONE--</option>
-            <option value="width">width</option>
-            <option value="minWidth">minWidth</option>
-            <option value="height">height</option>
-            <option value="minHeight">minHeight</option>
-          </select>
-        </LabelItem>
+          <LabelItem title="Stretch" {...stretchProps}>
+            <select>
+              <option value="">--NONE--</option>
+              <option value="width">width</option>
+              <option value="minWidth">minWidth</option>
+              <option value="height">height</option>
+              <option value="minHeight">minHeight</option>
+            </select>
+          </LabelItem>
 
-        <LabelItem title="Placement" {...placementProps}>
-          <select>
-            <option>right</option>
-            <option>left</option>
-            <option>top</option>
-            <option>bottom</option>
-            <option>topLeft</option>
-            <option>topRight</option>
-            <option>bottomRight</option>
-            <option>bottomLeft</option>
-          </select>
-        </LabelItem>
+          <LabelItem title="Placement" {...placementProps}>
+            <select>
+              <option>right</option>
+              <option>left</option>
+              <option>top</option>
+              <option>bottom</option>
+              <option>topLeft</option>
+              <option>topRight</option>
+              <option>bottomRight</option>
+              <option>bottomLeft</option>
+            </select>
+          </LabelItem>
 
-        <LabelItem title="Motion" {...motionProps}>
-          <input type="checkbox" />
-        </LabelItem>
+          <LabelItem title="Motion" {...motionProps}>
+            <input type="checkbox" />
+          </LabelItem>
 
-        <LabelItem title="Destroy Popup On Hide" {...destroyPopupOnHideProps}>
-          <input type="checkbox" />
-        </LabelItem>
+          <LabelItem title="Destroy Popup On Hide" {...destroyPopupOnHideProps}>
+            <input type="checkbox" />
+          </LabelItem>
 
-        <LabelItem title="Mask" {...maskProps}>
-          <input type="checkbox" />
-        </LabelItem>
+          <LabelItem title="Mask" {...maskProps}>
+            <input type="checkbox" />
+          </LabelItem>
 
-        <LabelItem title="Mask Closable" {...maskClosableProps}>
-          <input type="checkbox" />
-        </LabelItem>
+          <LabelItem title="Mask Closable" {...maskClosableProps}>
+            <input type="checkbox" />
+          </LabelItem>
 
-        <LabelItem title="OffsetX" {...offsetXProps}>
-          <input />
-        </LabelItem>
+          <LabelItem title="OffsetX" {...offsetXProps}>
+            <input />
+          </LabelItem>
 
-        <LabelItem title="OffsetY" {...offsetYProps}>
-          <input />
-        </LabelItem>
-      </div>
+          <LabelItem title="OffsetY" {...offsetYProps}>
+            <input />
+          </LabelItem>
+        </div>
 
-      <div style={{ margin: 120, position: 'relative' }}>
-        <Trigger
-          popupAlign={{
-            offset: [offsetX, offsetY],
-            overflow: {
-              adjustX: 1,
-              adjustY: 1,
-            },
-          }}
-          popupPlacement={placement}
-          destroyPopupOnHide={destroyPopupOnHide}
-          mask={mask}
-          maskClosable={maskClosable}
-          stretch={stretch}
-          action={Object.keys(actions).filter(action => actions[action])}
-          builtinPlacements={builtinPlacements}
-          popupStyle={{
-            border: '1px solid red',
-            padding: 10,
-            background: 'white',
-            boxSizing: 'border-box',
-          }}
-          popup={<div>i am a popup</div>}
-          motion={motion ? Motion : null}
-        >
-          <div
-            style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
-            tabIndex={0}
-            role="button"
+        <div style={{ margin: 120, position: 'relative' }}>
+          <Trigger
+            popupAlign={{
+              offset: [offsetX, offsetY],
+              overflow: {
+                adjustX: 1,
+                adjustY: 1,
+              },
+            }}
+            popupPlacement={placement}
+            destroyPopupOnHide={destroyPopupOnHide}
+            mask={mask}
+            maskClosable={maskClosable}
+            stretch={stretch}
+            action={Object.keys(actions).filter(action => actions[action])}
+            builtinPlacements={builtinPlacements}
+            popupStyle={{
+              border: '1px solid red',
+              padding: 10,
+              background: 'white',
+              boxSizing: 'border-box',
+            }}
+            popup={<div>i am a popup</div>}
+            motion={motion ? Motion : null}
           >
-            <p>This is a example of trigger usage.</p>
-            <p>You can adjust the value above</p>
-            <p>which will also change the behaviour of popup.</p>
-          </div>
-        </Trigger>
+            <div
+              style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
+              tabIndex={0}
+              role="button"
+            >
+              <p>This is a example of trigger usage.</p>
+              <p>You can adjust the value above</p>
+              <p>which will also change the behaviour of popup.</p>
+            </div>
+          </Trigger>
+        </div>
       </div>
-    </div>
+    </React.StrictMode>
   );
 };
 

@@ -244,7 +244,7 @@ class Popup extends Component<PopupProps, PopupState> {
     // TODO: Handle this
     return (
       <CSSMotion visible={visible} {...motion} removeOnLeave={false}>
-        {({ style: motionStyle, className: motionClassName }) => {
+        {({ style: motionStyle, className: motionClassName }, motionRef) => {
           console.log('=>', motionStyle, motionClassName);
           return (
             <Align
@@ -252,8 +252,9 @@ class Popup extends Component<PopupProps, PopupState> {
               key="popup"
               ref={this.alignRef}
               monitorWindowResize
-              disabled={!visible}
+              // disabled={!visible}
               align={align}
+              disabled
               onAlign={this.onAlign}
             >
               <PopupInner
@@ -265,6 +266,7 @@ class Popup extends Component<PopupProps, PopupState> {
                   ...motionStyle,
                 }}
                 className={classNames(popupInnerProps.className, motionClassName)}
+                ref={motionRef}
               >
                 {children}
               </PopupInner>

@@ -1,5 +1,3 @@
-import { MotionProps } from 'rc-animate/lib/CSSMotion';
-
 export type AlignPoint =
   | 'tt'
   | 'tb'
