@@ -56,12 +56,10 @@ interface PopupProps {
 }
 
 interface PopupState {
-  stretchChecked: boolean;
   targetWidth: number;
   targetHeight: number;
 
   status: PopupStatus;
-  prevVisible: boolean;
 }
 
 interface AlignRefType {
@@ -70,70 +68,58 @@ interface AlignRefType {
 
 class Popup extends Component<PopupProps, PopupState> {
   state: PopupState = {
-    // Used for stretch
-    stretchChecked: false,
     targetWidth: undefined,
     targetHeight: undefined,
 
     status: null,
-    prevVisible: null,
   };
 
   public popupRef = React.createRef<HTMLDivElement>();
 
   public alignRef = React.createRef<AlignRefType>();
 
-  static getDerivedStateFromProps({ visible, stretch }: PopupProps, { status }: PopupState) {
-    const newState: Partial<PopupState> = {
-      prevVisible: visible,
-    };
-
-    if (visible && status !== 'stable') {
-      // Should do measure
-      switch (status) {
-        case null: {
-          newState.status = stretch ? 'measure' : 'align';
-          break;
-        }
-        case 'measure':
-        case 'align':
-        case 'motion': {
-          // Go to next status
-          const queue: PopupStatus[] = ['measure', 'align', 'beforeMotion', 'motion', 'stable'];
-          const index = queue.indexOf(status);
-          newState.status = queue[index + 1];
-          break;
-        }
-      }
-    } else if (!visible && status !== null) {
-      // Restore status to null
-      newState.status = null;
-    }
-
-    return newState;
+  componentDidMount() {
+    this.componentDidUpdate();
   }
 
   componentDidUpdate() {
     const { status } = this.state;
-    const { getRootDomNode } = this.props;
+    const { getRootDomNode, visible, stretch } = this.props;
 
-    switch (status) {
-      // Measure stretch size
-      case 'measure': {
-        const $ele = getRootDomNode();
-        if ($ele) {
-          this.setState({ targetHeight: $ele.offsetHeight, targetWidth: $ele.offsetWidth });
+    if (visible && status !== 'stable') {
+      switch (status) {
+        case null: {
+          this.setState({ status: stretch ? 'measure' : 'align' });
+          break;
         }
-        break;
+
+        default: {
+          // Go to next status
+          const queue: PopupStatus[] = ['measure', 'align', 'beforeMotion', 'motion', 'stable'];
+          const index = queue.indexOf(status);
+          const nextStatus = queue[index + 1];
+          if (nextStatus) {
+            this.setState({ status: nextStatus });
+          }
+        }
       }
-      case 'align': {
-        break;
+    } else if (!visible && status !== null) {
+      // Restore status to null
+      this.setState({ status: null });
+    }
+
+    // Measure stretch size
+    if (status === 'measure') {
+      const $ele = getRootDomNode();
+      if ($ele) {
+        this.setState({ targetHeight: $ele.offsetHeight, targetWidth: $ele.offsetWidth });
       }
     }
   }
 
-  onAlign = () => {
+  onAlign = (...args) => {
     // TODO: handle this
+    console.warn('Aligned!', ...args);
   };
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
@@ -174,6 +160,7 @@ class Popup extends Component<PopupProps, PopupState> {
     const mergedClassName = classNames(prefixCls, className);
     const hiddenClassName = `${prefixCls}-hidden`;
 
+    // ================== Style ==================
     const sizeStyle: React.CSSProperties = {};
     if (stretch) {
       // Stretch with target
@@ -195,17 +182,39 @@ class Popup extends Component<PopupProps, PopupState> {
       ...this.getZIndexStyle(),
     };
 
+    // ================= Motions =================
+    const mergedMotion = { ...motion };
+    const mergedMotionVisible = true;
+
+    if (status !== 'motion') {
+      mergedMotion.motionAppear = false;
+      mergedMotion.motionEnter = false;
+      mergedMotion.motionLeave = false;
+    }
+
+    // ================== Align ==================
+    const mergedAlignDisabled = !visible || status !== 'align';
+    console.log('Align disabled:', mergedAlignDisabled);
+
     return (
-      <CSSMotion visible={visible} {...motion} removeOnLeave={false}>
+      <CSSMotion visible={mergedMotionVisible} {...mergedMotion} removeOnLeave={false}>
         {({ style: motionStyle, className: motionClassName }, motionRef) => {
-          console.log('=>', motionStyle, motionClassName);
+          console.log(
+            status,
+            '>>>',
+            'motion style:',
+            motionStyle,
+            ', motion className:',
+            motionClassName,
+          );
           return (
             <Align
               target={this.getAlignTarget()}
               key="popup"
               ref={this.alignRef}
               monitorWindowResize
-              disabled={!visible}
+              disabled={mergedAlignDisabled}
+              // disabled
               align={align}
               onAlign={this.onAlign}
             >
