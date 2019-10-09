@@ -5,14 +5,31 @@
 
 .case-motion {
   box-shadow: 0 0 5px blue;
-  transition: opacity 1s;
+  transform-origin: 50% 50%;
+  transform: scale(1);
+
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  animation-fill-mode: both;
 
   &-appear,
   &-enter {
-    opacity: 0;
+    animation-play-state: paused;
 
     &-active {
-      opacity: 1;
+      animation-name: case-zoom-in;
+      animation-play-state: running;
     }
+  }
+}
+
+@keyframes case-zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

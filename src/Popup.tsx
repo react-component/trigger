@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
+import raf from 'raf';
 import Align from 'rc-align';
 import { composeRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
@@ -22,7 +23,7 @@ import {
  * motion - play the motion
  * stable - everything is done
  */
-type PopupStatus = null | 'measure' | 'align' | 'beforeMotion' | 'motion' | 'stable';
+type PopupStatus = null | 'measure' | 'align' | 'afterAlign' | 'beforeMotion' | 'motion' | 'stable';
 
 const CSSMotion = RawCSSMotion as CSSMotionClass;
 
@@ -78,48 +79,98 @@ class Popup extends Component<PopupProps, PopupState> {
 
   public alignRef = React.createRef<AlignRefType>();
 
+  private nextFrameState: Partial<PopupState> = null;
+
+  private nextFrameId: number = null;
+
   componentDidMount() {
     this.componentDidUpdate();
   }
 
   componentDidUpdate() {
     const { status } = this.state;
-    const { getRootDomNode, visible, stretch } = this.props;
+    const { getRootDomNode, visible, stretch, motion } = this.props;
 
     if (visible && status !== 'stable') {
       switch (status) {
         case null: {
-          this.setState({ status: stretch ? 'measure' : 'align' });
+          this.setStateOnNextFrame({ status: stretch ? 'measure' : 'align' });
+          break;
+        }
+
+        case 'afterAlign': {
+          if (!motion || !motion.motionName) {
+            this.setStateOnNextFrame({ status: 'stable' });
+          } else {
+            this.setStateOnNextFrame({ status: 'beforeMotion' });
+          }
           break;
         }
 
         default: {
           // Go to next status
-          const queue: PopupStatus[] = ['measure', 'align', 'beforeMotion', 'motion', 'stable'];
+          const queue: PopupStatus[] = [
+            'measure',
+            'align',
+            'afterAlign',
+            'beforeMotion',
+            'motion',
+            // 'stable',
+          ];
           const index = queue.indexOf(status);
           const nextStatus = queue[index + 1];
           if (nextStatus) {
-            this.setState({ status: nextStatus });
+            this.setStateOnNextFrame({ status: nextStatus });
           }
         }
       }
     } else if (!visible && status !== null) {
       // Restore status to null
-      this.setState({ status: null });
+      this.setStateOnNextFrame({ status: null });
     }
 
     // Measure stretch size
     if (status === 'measure') {
       const $ele = getRootDomNode();
       if ($ele) {
-        this.setState({ targetHeight: $ele.offsetHeight, targetWidth: $ele.offsetWidth });
+        this.setStateOnNextFrame({
+          targetHeight: $ele.offsetHeight,
+          targetWidth: $ele.offsetWidth,
+        });
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.cancelFrameState();
   }
 
   onAlign = (...args) => {
     // TODO: handle this
     console.warn('Aligned!', ...args);
+  };
+
+  onMotionEnd = () => {
+    console.log('motion end!');
+    const { visible } = this.props;
+    if (visible) {
+      this.setState({ status: 'stable' });
+    }
+  };
+
+  setStateOnNextFrame = (state: Partial<PopupState>) => {
+    this.cancelFrameState();
+
+    this.nextFrameState = {
+      ...this.nextFrameState,
+      ...state,
+    };
+
+    this.nextFrameId = raf(() => {
+      const submitState = { ...this.nextFrameState };
+      this.nextFrameState = null;
+      this.setState(submitState as PopupState);
+    });
   };
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
@@ -180,33 +231,36 @@ class Popup extends Component<PopupProps, PopupState> {
       ...sizeStyle,
       ...style,
       ...this.getZIndexStyle(),
+      opacity: status === 'stable' ? undefined : 0,
     };
 
     // ================= Motions =================
     const mergedMotion = { ...motion };
-    const mergedMotionVisible = true;
+    let mergedMotionVisible = true;
 
-    if (status !== 'motion') {
+    if (status !== 'beforeMotion' && status !== 'motion' && status !== 'stable') {
       mergedMotion.motionAppear = false;
       mergedMotion.motionEnter = false;
       mergedMotion.motionLeave = false;
     }
 
+    if (status === 'afterAlign' || status === 'beforeMotion') {
+      mergedMotionVisible = false;
+    }
+
     // ================== Align ==================
     const mergedAlignDisabled = !visible || status !== 'align';
-    console.log('Align disabled:', mergedAlignDisabled);
+    console.log(status, '>>>', mergedAlignDisabled, mergedMotionVisible, mergedMotion);
 
     return (
-      <CSSMotion visible={mergedMotionVisible} {...mergedMotion} removeOnLeave={false}>
+      <CSSMotion
+        visible={mergedMotionVisible}
+        {...mergedMotion}
+        removeOnLeave={false}
+        onEnterEnd={this.onMotionEnd}
+      >
         {({ style: motionStyle, className: motionClassName }, motionRef) => {
-          console.log(
-            status,
-            '>>>',
-            'motion style:',
-            motionStyle,
-            ', motion className:',
-            motionClassName,
-          );
+          console.log('Motion:', classNames(mergedClassName, motionClassName));
           return (
             <Align
               target={this.getAlignTarget()}
@@ -228,7 +282,10 @@ class Popup extends Component<PopupProps, PopupState> {
                 onMouseLeave={onMouseLeave}
                 onMouseDown={onMouseDown}
                 onTouchStart={onTouchStart}
-                style={mergedStyle}
+                style={{
+                  ...mergedStyle,
+                  ...motionStyle,
+                }}
               >
                 {children}
               </PopupInner>
@@ -237,6 +294,10 @@ class Popup extends Component<PopupProps, PopupState> {
         }}
       </CSSMotion>
     );
+  };
+
+  cancelFrameState = () => {
+    raf.cancel(this.nextFrameId);
   };
 
   render() {

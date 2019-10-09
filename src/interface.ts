@@ -97,7 +97,7 @@ type MotionNameObject = {
 type MotionEventHandler = (
   element: HTMLElement,
   event: React.TransitionEvent<HTMLElement> | React.AnimationEvent<HTMLElement> | undefined,
-) => React.CSSProperties | false | null | undefined;
+) => React.CSSProperties | false | null | undefined | void;
 
 export interface MotionType {
   motionName?: string | MotionNameObject;
