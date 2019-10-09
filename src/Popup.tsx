@@ -114,11 +114,12 @@ class Popup extends Component<PopupProps, PopupState> {
           }
         }
       }
-    } else if (prevVisible && !visible) {
-      this.setStateOnNextFrame({ status: supportMotion ? null : 'stable' });
+    } else if (prevVisible !== visible) {
+      this.setStateOnNextFrame({ status: visible || supportMotion ? null : 'stable' });
     }
 
     // Measure stretch size
+    // console.error('DID UPDATE!!!!!!', status, this.nextFrameState);
     if (status === 'measure') {
       const $ele = getRootDomNode();
       if ($ele) {
@@ -243,18 +244,18 @@ class Popup extends Component<PopupProps, PopupState> {
       mergedPopupVisible = visible;
     }
 
-    console.log(
-      status,
-      '>>>',
-      'Align Disabled:',
-      mergedAlignDisabled,
-      'Motion Visible:',
-      mergedMotionVisible,
-      'Motion:',
-      mergedMotion,
-      'Popup Visible:',
-      mergedPopupVisible,
-    );
+    // console.log(
+    //   status,
+    //   '>>>',
+    //   'Align Disabled:',
+    //   mergedAlignDisabled,
+    //   'Motion Visible:',
+    //   mergedMotionVisible,
+    //   'Motion:',
+    //   mergedMotion,
+    //   'Popup Visible:',
+    //   mergedPopupVisible,
+    // );
 
     return (
       <CSSMotion
@@ -264,9 +265,9 @@ class Popup extends Component<PopupProps, PopupState> {
         onEnterEnd={this.onMotionEnd}
         onLeaveEnd={this.onMotionEnd}
       >
-        {({ style: motionStyle, className: motionClassName }, motionRef) => {
-          console.log('Motion:', classNames(mergedClassName, motionClassName));
-          return (
+        {({ style: motionStyle, className: motionClassName }, motionRef) =>
+          // console.log('Motion:', classNames(mergedClassName, motionClassName));
+           (
             <Align
               target={this.getAlignTarget()}
               key="popup"
@@ -294,8 +295,8 @@ class Popup extends Component<PopupProps, PopupState> {
                 {children}
               </PopupInner>
             </Align>
-          );
-        }}
+          )
+        }
       </CSSMotion>
     );
   };
