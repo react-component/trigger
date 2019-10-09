@@ -6,12 +6,9 @@ module.exports = {
   rules: {
     ...base.rules,
     'default-case': 0,
-    'jsx-a11y/interactive-supports-focus': 0,
-    'jsx-a11y/no-autofocus': 0,
-    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-    'react/require-default-props': 0,
+    'react/no-find-dom-node': 0,
+    'react/no-did-update-set-state': 0,
     'jsx-a11y/label-has-for': 0,
     'jsx-a11y/label-has-associated-control': 0,
-    'react/no-find-dom-node': 0,
   },
 };

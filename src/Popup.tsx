@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
 import Align from 'rc-align';
-import Animate from 'rc-animate';
+import { composeRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
 import RawCSSMotion from 'rc-animate/lib/CSSMotion';
 import PopupInner from './PopupInner';
@@ -14,6 +14,15 @@ import {
   CSSMotionClass,
   MotionType,
 } from './interface';
+
+/**
+ * Popup should follow the steps for each component work correctly:
+ * measure - check for the current stretch size
+ * align - let component align the position
+ * motion - play the motion
+ * stable - everything is done
+ */
+type PopupStatus = null | 'measure' | 'align' | 'beforeMotion' | 'motion' | 'stable';
 
 const CSSMotion = RawCSSMotion as CSSMotionClass;
 
@@ -50,6 +59,9 @@ interface PopupState {
   stretchChecked: boolean;
   targetWidth: number;
   targetHeight: number;
+
+  status: PopupStatus;
+  prevVisible: boolean;
 }
 
 interface AlignRefType {
@@ -57,127 +69,110 @@ interface AlignRefType {
 }
 
 class Popup extends Component<PopupProps, PopupState> {
-  state = {
+  state: PopupState = {
     // Used for stretch
     stretchChecked: false,
     targetWidth: undefined,
     targetHeight: undefined,
+
+    status: null,
+    prevVisible: null,
   };
-
-  rootNode: HTMLElement;
-
-  currentAlignClassName: string;
 
   public popupRef = React.createRef<HTMLDivElement>();
 
   public alignRef = React.createRef<AlignRefType>();
 
-  componentDidMount() {
-    this.rootNode = this.popupRef.current;
-    this.setStretchSize();
+  static getDerivedStateFromProps({ visible, stretch }: PopupProps, { status }: PopupState) {
+    const newState: Partial<PopupState> = {
+      prevVisible: visible,
+    };
+
+    if (visible && status !== 'stable') {
+      // Should do measure
+      switch (status) {
+        case null: {
+          newState.status = stretch ? 'measure' : 'align';
+          break;
+        }
+        case 'measure':
+        case 'align':
+        case 'motion': {
+          // Go to next status
+          const queue: PopupStatus[] = ['measure', 'align', 'beforeMotion', 'motion', 'stable'];
+          const index = queue.indexOf(status);
+          newState.status = queue[index + 1];
+          break;
+        }
+      }
+    } else if (!visible && status !== null) {
+      // Restore status to null
+      newState.status = null;
+    }
+
+    return newState;
   }
 
   componentDidUpdate() {
-    this.setStretchSize();
+    const { status } = this.state;
+    const { getRootDomNode } = this.props;
+
+    switch (status) {
+      // Measure stretch size
+      case 'measure': {
+        const $ele = getRootDomNode();
+        if ($ele) {
+          this.setState({ targetHeight: $ele.offsetHeight, targetWidth: $ele.offsetWidth });
+        }
+        break;
+      }
+      case 'align': {
+        break;
+      }
+    }
   }
 
-  onAlign = (popupDomNode: HTMLElement, align: AlignType) => {
-    const { getClassNameFromAlign, onAlign } = this.props;
-    const currentAlignClassName = getClassNameFromAlign(align);
-    // FIX: https://github.com/react-component/trigger/issues/56
-    // FIX: https://github.com/react-component/tooltip/issues/79
-    if (this.currentAlignClassName !== currentAlignClassName) {
-      this.currentAlignClassName = currentAlignClassName;
-      popupDomNode.className = this.getClassName(currentAlignClassName);
-    }
-    onAlign(popupDomNode, align);
+  onAlign = () => {
+    // TODO: handle this
   };
-
-  // Record size if stretch needed
-  setStretchSize = () => {
-    const { stretch, getRootDomNode, visible } = this.props;
-    const { stretchChecked, targetHeight, targetWidth } = this.state;
-
-    if (!stretch || !visible) {
-      if (stretchChecked) {
-        this.setState({ stretchChecked: false });
-      }
-      return;
-    }
-
-    const $ele = getRootDomNode();
-    if (!$ele) return;
-
-    const height = $ele.offsetHeight;
-    const width = $ele.offsetWidth;
-
-    if (targetHeight !== height || targetWidth !== width || !stretchChecked) {
-      this.setState({
-        stretchChecked: true,
-        targetHeight: height,
-        targetWidth: width,
-      });
-    }
-  };
-
-  getTargetElement = () => this.props.getRootDomNode();
 
   // `target` on `rc-align` can accept as a function to get the bind element or a point.
   // ref: https://www.npmjs.com/package/rc-align
   getAlignTarget = () => {
-    const { point } = this.props;
+    const { point, getRootDomNode } = this.props;
     if (point) {
       return point;
     }
-    return this.getTargetElement;
+    return getRootDomNode;
   };
 
-  getMaskTransitionName() {
-    const { props } = this;
-    let transitionName = props.maskTransitionName;
-    const animation = props.maskAnimation;
-    if (!transitionName && animation) {
-      transitionName = `${props.prefixCls}-${animation}`;
-    }
-    return transitionName;
+  getZIndexStyle(): React.CSSProperties {
+    const { zIndex } = this.props;
+    return { zIndex };
   }
 
-  getTransitionName() {
-    const { props } = this;
-    let { transitionName } = props;
-    if (!transitionName && props.animation) {
-      transitionName = `${props.prefixCls}-${props.animation}`;
-    }
-    return transitionName;
-  }
+  // TODO: handle this
+  getMaskElement = () => null;
 
-  getClassName(currentAlignClassName) {
-    return `${this.props.prefixCls} ${this.props.className} ${currentAlignClassName}`;
-  }
-
-  getPopupElement() {
-    const { stretchChecked, targetHeight, targetWidth } = this.state;
+  getPopupElement = () => {
+    const { status, targetHeight, targetWidth } = this.state;
     const {
-      align,
-      visible,
       prefixCls,
+      className,
       style,
-      getClassNameFromAlign,
-      destroyPopupOnHide,
       stretch,
-      children,
+      visible,
+      motion,
+      align,
       onMouseEnter,
       onMouseLeave,
       onMouseDown,
       onTouchStart,
-      motion,
+      children,
     } = this.props;
-    const className = this.getClassName(this.currentAlignClassName || getClassNameFromAlign(align));
-    const hiddenClassName = `${prefixCls}-hidden`;
 
-    if (!visible) {
-      this.currentAlignClassName = null;
-    }
+    const mergedClassName = classNames(prefixCls, className);
+    const hiddenClassName = `${prefixCls}-hidden`;
 
     const sizeStyle: React.CSSProperties = {};
     if (stretch) {
@@ -192,56 +187,14 @@ class Popup extends Component<PopupProps, PopupState> {
       } else if (stretch.indexOf('minWidth') !== -1) {
         sizeStyle.minWidth = targetWidth;
       }
-
-      // Delay force align to makes ui smooth
-      if (!stretchChecked) {
-        sizeStyle.visibility = 'hidden';
-        setTimeout(() => {
-          if (this.alignRef.current) {
-            this.alignRef.current.forceAlign();
-          }
-        }, 0);
-      }
     }
 
-    const newStyle = {
+    const mergedStyle: React.CSSProperties = {
       ...sizeStyle,
       ...style,
       ...this.getZIndexStyle(),
     };
 
-    const popupInnerProps = {
-      className,
-      prefixCls,
-      ref: this.popupRef,
-      onMouseEnter,
-      onMouseLeave,
-      onMouseDown,
-      onTouchStart,
-      style: newStyle,
-    };
-    if (destroyPopupOnHide) {
-      return (
-        <Animate component="" exclusive transitionAppear transitionName={this.getTransitionName()}>
-          {visible ? (
-            <Align
-              target={this.getAlignTarget()}
-              key="popup"
-              ref={this.alignRef}
-              monitorWindowResize
-              align={align}
-              onAlign={this.onAlign}
-            >
-              <PopupInner visible {...popupInnerProps}>
-                {children}
-              </PopupInner>
-            </Align>
-          ) : null}
-        </Animate>
-      );
-    }
-
-    // TODO: Handle this
     return (
       <CSSMotion visible={visible} {...motion} removeOnLeave={false}>
         {({ style: motionStyle, className: motionClassName }, motionRef) => {
@@ -252,21 +205,21 @@ class Popup extends Component<PopupProps, PopupState> {
               key="popup"
               ref={this.alignRef}
               monitorWindowResize
-              // disabled={!visible}
+              disabled={!visible}
               align={align}
-              disabled
               onAlign={this.onAlign}
             >
               <PopupInner
+                prefixCls={prefixCls}
                 visible={visible}
                 hiddenClassName={hiddenClassName}
-                {...popupInnerProps}
-                style={{
-                  ...popupInnerProps.style,
-                  ...motionStyle,
-                }}
-                className={classNames(popupInnerProps.className, motionClassName)}
-                ref={motionRef}
+                className={classNames(mergedClassName, motionClassName)}
+                ref={composeRef(motionRef, this.popupRef)}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onMouseDown={onMouseDown}
+                onTouchStart={onTouchStart}
+                style={mergedStyle}
               >
                 {children}
               </PopupInner>
@@ -275,74 +228,7 @@ class Popup extends Component<PopupProps, PopupState> {
         }}
       </CSSMotion>
     );
-
-    // return (
-    //   <Animate
-    //     component=""
-    //     exclusive
-    //     transitionAppear
-    //     transitionName={this.getTransitionName()}
-    //     showProp="xVisible"
-    //   >
-    //     <Align
-    //       target={this.getAlignTarget()}
-    //       key="popup"
-    //       ref={this.alignRef}
-    //       monitorWindowResize
-    //       xVisible={visible}
-    //       childrenProps={{ visible: 'xVisible' }}
-    //       disabled={!visible}
-    //       align={align}
-    //       onAlign={this.onAlign}
-    //     >
-    //       <PopupInner hiddenClassName={hiddenClassName} {...popupInnerProps}>
-    //         {children}
-    //       </PopupInner>
-    //     </Align>
-    //   </Animate>
-    // );
-  }
-
-  getZIndexStyle() {
-    const style: React.CSSProperties = {};
-    const { props } = this;
-    if (props.zIndex !== undefined) {
-      style.zIndex = props.zIndex;
-    }
-    return style;
-  }
-
-  getMaskElement() {
-    const { props } = this;
-    let maskElement;
-    if (props.mask) {
-      const maskTransition = this.getMaskTransitionName();
-      maskElement = (
-        <div
-          style={this.getZIndexStyle()}
-          key="mask"
-          className={classNames(
-            `${props.prefixCls}-mask`,
-            !props.visible && `${props.prefixCls}-mask-hidden`,
-          )}
-        />
-      );
-      if (maskTransition) {
-        maskElement = (
-          <Animate
-            key="mask"
-            showProp="visible"
-            transitionAppear
-            component=""
-            transitionName={maskTransition}
-          >
-            {maskElement}
-          </Animate>
-        );
-      }
-    }
-    return maskElement;
-  }
+  };
 
   render() {
     return (

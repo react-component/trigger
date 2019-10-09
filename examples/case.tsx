@@ -36,7 +36,7 @@ const Motion: MotionType = {
   motionName: 'case-motion',
 };
 
-function useControl<T>(defaultValue?: T): [T, any] {
+function useControl<T>(valuePropName: string, defaultValue: T): [T, any] {
   const [value, setValue] = React.useState<T>(defaultValue);
 
   return [
@@ -45,7 +45,7 @@ function useControl<T>(defaultValue?: T): [T, any] {
       value,
       checked: value,
       onChange({ target }) {
-        setValue('checked' in target ? target.checked : target.value);
+        setValue(target[valuePropName]);
       },
     },
   ];
@@ -86,19 +86,19 @@ const LabelItem: React.FC<{
 };
 
 const Demo = () => {
-  const [hover, hoverProps] = useControl(true);
-  const [focus, focusProps] = useControl(false);
-  const [click, clickProps] = useControl(false);
-  const [contextMenu, contextMenuProps] = useControl(false);
+  const [hover, hoverProps] = useControl('checked', true);
+  const [focus, focusProps] = useControl('checked', false);
+  const [click, clickProps] = useControl('checked', false);
+  const [contextMenu, contextMenuProps] = useControl('checked', false);
 
-  const [placement, placementProps] = useControl('right');
-  const [stretch, stretchProps] = useControl('');
-  const [motion, motionProps] = useControl(true);
-  const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl(false);
-  const [mask, maskProps] = useControl(false);
-  const [maskClosable, maskClosableProps] = useControl(false);
-  const [offsetX, offsetXProps] = useControl<number>(0);
-  const [offsetY, offsetYProps] = useControl<number>(0);
+  const [placement, placementProps] = useControl('value', 'right');
+  const [stretch, stretchProps] = useControl('value', '');
+  const [motion, motionProps] = useControl('checked', true);
+  const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl('checked', false);
+  const [mask, maskProps] = useControl('checked', false);
+  const [maskClosable, maskClosableProps] = useControl('checked', false);
+  const [offsetX, offsetXProps] = useControl<number>('value', 0);
+  const [offsetY, offsetYProps] = useControl<number>('value', 0);
 
   const actions = {
     hover,
