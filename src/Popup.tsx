@@ -84,10 +84,10 @@ class Popup extends Component<PopupProps, PopupState> {
   private nextFrameId: number = null;
 
   componentDidMount() {
-    this.componentDidUpdate();
+    this.componentDidUpdate({ visible: false });
   }
 
-  componentDidUpdate() {
+  componentDidUpdate({ visible: prevVisible }: Partial<PopupProps>) {
     const { status } = this.state;
     const { getRootDomNode, visible, stretch, motion } = this.props;
 
@@ -109,14 +109,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
         default: {
           // Go to next status
-          const queue: PopupStatus[] = [
-            'measure',
-            'align',
-            'afterAlign',
-            'beforeMotion',
-            'motion',
-            // 'stable',
-          ];
+          const queue: PopupStatus[] = ['measure', 'align', 'afterAlign', 'beforeMotion', 'motion'];
           const index = queue.indexOf(status);
           const nextStatus = queue[index + 1];
           if (nextStatus) {
@@ -124,7 +117,7 @@ class Popup extends Component<PopupProps, PopupState> {
           }
         }
       }
-    } else if (!visible && status !== null) {
+    } else if (prevVisible && !visible) {
       // Restore status to null
       this.setStateOnNextFrame({ status: null });
     }
@@ -151,11 +144,8 @@ class Popup extends Component<PopupProps, PopupState> {
   };
 
   onMotionEnd = () => {
-    console.log('motion end!');
-    const { visible } = this.props;
-    if (visible) {
-      this.setState({ status: 'stable' });
-    }
+    console.warn('motion end!');
+    this.setState({ status: 'stable' });
   };
 
   setStateOnNextFrame = (state: Partial<PopupState>) => {
@@ -238,7 +228,7 @@ class Popup extends Component<PopupProps, PopupState> {
     const mergedMotion = { ...motion };
     let mergedMotionVisible = visible;
 
-    if (status !== 'beforeMotion' && status !== 'motion' && status !== 'stable') {
+    if (visible && status !== 'beforeMotion' && status !== 'motion' && status !== 'stable') {
       mergedMotion.motionAppear = false;
       mergedMotion.motionEnter = false;
       mergedMotion.motionLeave = false;
@@ -250,7 +240,25 @@ class Popup extends Component<PopupProps, PopupState> {
 
     // ================== Align ==================
     const mergedAlignDisabled = !visible || status !== 'align';
-    console.log(status, '>>>', mergedAlignDisabled, mergedMotionVisible, mergedMotion);
+
+    // ================== Popup ==================
+    let mergedPopupVisible = true;
+    if (status === 'stable') {
+      mergedPopupVisible = visible;
+    }
+
+    console.log(
+      status,
+      '>>>',
+      'Align Disabled:',
+      mergedAlignDisabled,
+      'Motion Visible:',
+      mergedMotionVisible,
+      'Motion:',
+      mergedMotion,
+      'Popup Visible:',
+      mergedPopupVisible,
+    );
 
     return (
       <CSSMotion
@@ -258,6 +266,7 @@ class Popup extends Component<PopupProps, PopupState> {
         {...mergedMotion}
         removeOnLeave={false}
         onEnterEnd={this.onMotionEnd}
+        onLeaveEnd={this.onMotionEnd}
       >
         {({ style: motionStyle, className: motionClassName }, motionRef) => {
           console.log('Motion:', classNames(mergedClassName, motionClassName));
@@ -268,13 +277,12 @@ class Popup extends Component<PopupProps, PopupState> {
               ref={this.alignRef}
               monitorWindowResize
               disabled={mergedAlignDisabled}
-              // disabled
               align={align}
               onAlign={this.onAlign}
             >
               <PopupInner
                 prefixCls={prefixCls}
-                visible={visible}
+                visible={mergedPopupVisible}
                 hiddenClassName={hiddenClassName}
                 className={classNames(mergedClassName, motionClassName)}
                 ref={composeRef(motionRef, this.popupRef)}
