@@ -236,7 +236,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
     // ================= Motions =================
     const mergedMotion = { ...motion };
-    let mergedMotionVisible = true;
+    let mergedMotionVisible = visible;
 
     if (status !== 'beforeMotion' && status !== 'motion' && status !== 'stable') {
       mergedMotion.motionAppear = false;
