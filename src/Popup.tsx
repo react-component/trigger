@@ -92,7 +92,7 @@ class Popup extends Component<PopupProps, PopupState> {
     targetHeight: undefined,
 
     status: null,
-    prevVisible: false,
+    prevVisible: null,
     alignClassName: null,
   };
 
@@ -109,7 +109,10 @@ class Popup extends Component<PopupProps, PopupState> {
 
     const mergedMotion = getMotion(props);
 
-    if (visible !== prevVisible) {
+    if (prevVisible === null && visible === false) {
+      // Init render should always be stable
+      newState.status = 'stable';
+    } else if (visible !== prevVisible) {
       newState.status = visible || supportMotion(mergedMotion) ? null : 'stable';
 
       if (!visible) {

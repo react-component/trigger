@@ -101,6 +101,7 @@ const Demo = () => {
   const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl('checked', false);
   const [mask, maskProps] = useControl('checked', false);
   const [maskClosable, maskClosableProps] = useControl('checked', true);
+  const [forceRender, forceRenderProps] = useControl('checked', false);
   const [offsetX, offsetXProps] = useControl<number>('value', 0);
   const [offsetY, offsetYProps] = useControl<number>('value', 0);
 
@@ -170,6 +171,10 @@ const Demo = () => {
             <input type="checkbox" />
           </LabelItem>
 
+          <LabelItem title="Force Render" {...forceRenderProps}>
+            <input type="checkbox" />
+          </LabelItem>
+
           <LabelItem title="OffsetX" {...offsetXProps}>
             <input />
           </LabelItem>
@@ -196,6 +201,7 @@ const Demo = () => {
             stretch={stretch}
             action={Object.keys(actions).filter(action => actions[action])}
             builtinPlacements={builtinPlacements}
+            forceRender={forceRender}
             popupStyle={{
               border: '1px solid red',
               padding: 10,
