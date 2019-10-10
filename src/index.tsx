@@ -99,7 +99,7 @@ interface TriggerState {
 /**
  * Internal usage. Do not use in your code since this will be removed.
  */
-export function generateTrigger(PortalComponent: any) {
+export function generateTrigger(PortalComponent: any): React.ComponentClass<TriggerProps> {
   class Trigger extends React.Component<TriggerProps, TriggerState> {
     static contextType = TriggerContext;
 
@@ -369,7 +369,7 @@ export function generateTrigger(PortalComponent: any) {
       }
     };
 
-    static getDerivedStateFromProps({ popupVisible }, prevState: TriggerState) {
+    static getDerivedStateFromProps({ popupVisible }: TriggerProps, prevState: TriggerState) {
       const newState: Partial<TriggerState> = {};
 
       if (popupVisible !== undefined && prevState.popupVisible !== popupVisible) {
