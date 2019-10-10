@@ -1,29 +1,5 @@
-export type AlignPoint =
-  | 'tt'
-  | 'tb'
-  | 'tc'
-  | 'tl'
-  | 'tr'
-  | 'bt'
-  | 'bb'
-  | 'bc'
-  | 'bl'
-  | 'br'
-  | 'ct'
-  | 'cb'
-  | 'cc'
-  | 'cl'
-  | 'cr'
-  | 'lt'
-  | 'lb'
-  | 'lc'
-  | 'll'
-  | 'lr'
-  | 'rt'
-  | 'rb'
-  | 'rc'
-  | 'rl'
-  | 'rr';
+/** Two char of 't' 'b' 'c' 'l' 'r'. Example: 'lt' */
+export type AlignPoint = string;
 
 export interface AlignType {
   /**
