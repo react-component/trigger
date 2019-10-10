@@ -1,6 +1,10 @@
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
 
+window.requestAnimationFrame = func => {
+  window.setTimeout(func, 16);
+};
+
 Enzyme.configure({ adapter: new Adapter() });
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
@@ -9,10 +13,10 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
     this.update();
     return this;
   },
-  trigger(eventName = 'click') {
+  trigger(eventName = 'click', data = null) {
     this.find('Trigger > *')
       .first()
-      .simulate(eventName);
+      .simulate(eventName, data);
 
     jest.runAllTimers();
     this.update();
