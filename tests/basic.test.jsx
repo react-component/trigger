@@ -361,99 +361,18 @@ describe('Trigger.Basic', () => {
     });
   });
 
-  /*
-  if (window.TransitionEvent) {
-    describe('transitionName', () => {
-      it.skip('works', (done) => {
-        const trigger = ReactDOM.render(
-          <Trigger
-            action={['click']}
-            popupTransitionName="fade"
-            popupAlign={placementAlignMap.top}
-            popup={<strong>trigger</strong>}
-          >
-            <div className="target">click</div>
-          </Trigger>, div);
-        const domNode = ReactDOM.findDOMNode(trigger);
-        Simulate.click(domNode);
-        async.series([timeout(100),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).not.to.be('1');
-              next();
-            },
-            timeout(500),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).to.be('1');
-              Simulate.click(domNode);
-              next();
-            },
-            timeout(100),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect(popupDomNode).to.be.ok();
-              expect($(popupDomNode).css('opacity')).not.to.be('1');
-              next();
-            },
-            timeout(500),
-            (next) => {
-              const popupDomNode = trigger.getPopupDomNode();
-              expect($(popupDomNode).css('display')).to.be('none');
-              next();
-            }],
-          done);
-      });
-    });
-  }
-
   describe('github issues', () => {
-    // https://github.com/ant-design/ant-design/issues/5047
-    // https://github.com/react-component/trigger/pull/43
-    it('render text without break lines', () => {
-      const trigger = ReactDOM.render(
-        <Trigger
-          popupVisible
-          popupAlign={placementAlignMap.top}
-          popup={<span>i am a pop up</span>}
-          popupClassName="no-fix-width"
-        >
-          <div>trigger</div>
-        </Trigger>
-        , div);
-      const popupNodeHeightOfSeveralWords = trigger.getPopupDomNode().offsetHeight;
-
-      const trigger2 = ReactDOM.render(
-        <Trigger
-          popupVisible
-          popupAlign={placementAlignMap.top}
-          popup={<span>iamapopup</span>}
-          popupClassName="no-fix-width"
-        >
-          <div>trigger</div>
-        </Trigger>
-        , div);
-      const popupNodeHeightOfOneWord = trigger2.getPopupDomNode().offsetHeight;
-
-      // height should be same, should not have break lines inside words
-      expect(popupNodeHeightOfOneWord).to.equal(popupNodeHeightOfSeveralWords);
-    });
-
     // https://github.com/ant-design/ant-design/issues/9114
-    it('click in popup of popup', (done) => {
+    it('click in popup of popup', () => {
       const builtinPlacements = {
         right: {
           points: ['cl', 'cr'],
         },
       };
-
       let innerVisible = null;
       function onInnerPopupVisibleChange(value) {
         innerVisible = value;
       }
-
       const innerTrigger = (
         <div style={{ background: 'rgba(255, 0, 0, 0.3)' }}>
           <Trigger
@@ -476,8 +395,7 @@ describe('Trigger.Basic', () => {
       function onPopupVisibleChange(value) {
         visible = value;
       }
-
-      const trigger = ReactDOM.render(
+      const wrapper = mount(
         <Trigger
           onPopupVisibleChange={onPopupVisibleChange}
           popupPlacement="right"
@@ -485,141 +403,111 @@ describe('Trigger.Basic', () => {
           builtinPlacements={builtinPlacements}
           popup={innerTrigger}
         >
-          <span style={{ margin: 20 }}>basic trigger</span>
+          <span style={{ margin: 20 }} className="target">
+            basic trigger
+          </span>
         </Trigger>,
-        div
       );
 
       // Basic click
-      const domNode = ReactDOM.findDOMNode(trigger);
-      Simulate.click(domNode);
+      wrapper.find('.target').simulate('click');
+      wrapper.refresh();
+      expect(visible).toBeTruthy();
+      expect(innerVisible).toBeFalsy();
 
-      setTimeout(() => {
-        expect(visible).to.be(true);
-        expect(innerVisible).to.be(null);
+      wrapper.find('#issue_9114_trigger').simulate('click');
+      wrapper.refresh();
+      expect(visible).toBeTruthy();
+      expect(innerVisible).toBeTruthy();
 
-        const innerDomNode = document.getElementById('issue_9114_trigger');
-        Simulate.click(innerDomNode);
-
-        setTimeout(() => {
-          expect(visible).to.be(true);
-          expect(innerVisible).to.be(true);
-
-          const popupDomNode = document.getElementById('issue_9114_popup');
-          Simulate.click(popupDomNode);
-
-          setTimeout(() => {
-            expect(visible).to.be(true);
-            expect(innerVisible).to.be(true);
-
-            done();
-          });
-        }, 100);
-      }, 100);
-    });
-  });
-
-  describe('utils/saveRef', () => {
-    const mock = {};
-    const saveTestRef = saveRef.bind(mock, 'testInstance');
-
-    it('adds a property with the given name to context', () => {
-      expect(mock.testInstance).to.be(undefined);
-      saveTestRef('bar');
-      expect(mock.testInstance).to.be('bar');
+      wrapper.find('#issue_9114_popup').simulate('click');
+      wrapper.refresh();
+      expect(visible).toBeTruthy();
+      expect(innerVisible).toBeTruthy();
     });
   });
 
   describe('stretch', () => {
-    const createTrigger = (stretch) => ReactDOM.render((
+    const createTrigger = stretch =>
+      mount(
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+          stretch={stretch}
+        >
+          <div className="target">
+            click me to show trigger
+            <br />
+            react component trigger
+          </div>
+        </Trigger>,
+      );
+
+    it('width', () => {
+      const wrapper = createTrigger('width');
+      wrapper.trigger();
+
+      expect('width' in wrapper.find('PopupInner').props().style).toBeTruthy();
+    });
+
+    it('height', () => {
+      const wrapper = createTrigger('height');
+      wrapper.trigger();
+
+      expect('height' in wrapper.find('PopupInner').props().style).toBeTruthy();
+    });
+  });
+
+  it('className should be undefined by default', () => {
+    const wrapper = mount(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
         popup={<strong className="x-content">tooltip2</strong>}
-        stretch={stretch}
       >
-        <div className="target">
-          click me to show trigger
-          <br />
-          react component trigger
-        </div>
-      </Trigger>
-    ), div);
+        <div>click</div>
+      </Trigger>,
+    );
+    expect(wrapper.find('div').props().className).toBeFalsy();
+  });
 
-    it('width', (done) => {
-      const trigger = createTrigger('width');
-      const domNode = ReactDOM.findDOMNode(trigger);
-      Simulate.click(domNode);
+  it('support className', () => {
+    const wrapper = mount(
+      <Trigger
+        action={['click']}
+        popupAlign={placementAlignMap.left}
+        popup={<strong className="x-content">tooltip2</strong>}
+        className="className-in-trigger"
+      >
+        <div className="target">click</div>
+      </Trigger>,
+    );
 
-      async.series([timeout(20), (next) => {
-        const popupDomNode = trigger.getPopupDomNode();
-        expect($(popupDomNode).width()).to.be($(domNode).width());
-        next();
-      }], done);
-    });
+    expect(wrapper.find('div').props().className).toBe('target className-in-trigger');
+  });
 
-    it('height', (done) => {
-      const trigger = createTrigger('height');
-      const domNode = ReactDOM.findDOMNode(trigger);
-      Simulate.click(domNode);
-
-      async.series([timeout(20), (next) => {
-        const popupDomNode = trigger.getPopupDomNode();
-        expect($(popupDomNode).height()).to.be($(domNode).height());
-        next();
-      }], done);
-    });
-
-    it('className should be undefined by default', () => {
-      const trigger = ReactDOM.render((
+  it('support className in nested Trigger', () => {
+    const wrapper = mount(
+      <Trigger
+        action={['click']}
+        popupAlign={placementAlignMap.left}
+        popup={<strong className="x-content">tooltip2</strong>}
+        className="className-in-trigger-2"
+      >
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
           popup={<strong className="x-content">tooltip2</strong>}
-        >
-          <div>click</div>
-        </Trigger>
-      ), div);
-      const domNode = ReactDOM.findDOMNode(trigger);
-      expect(domNode.getAttribute('class')).to.be(null);
-    });
-
-    it('support className', () => {
-      const trigger = ReactDOM.render((
-        <Trigger
-          action={['click']}
-          popupAlign={placementAlignMap.left}
-          popup={<strong className="x-content">tooltip2</strong>}
-          className="className-in-trigger"
+          className="className-in-trigger-1"
         >
           <div className="target">click</div>
         </Trigger>
-      ), div);
-      const domNode = ReactDOM.findDOMNode(trigger);
-      expect(domNode.className).to.be('target className-in-trigger');
-    });
+      </Trigger>,
+    );
 
-    it('support className in nested Trigger', () => {
-      const trigger = ReactDOM.render((
-        <Trigger
-          action={['click']}
-          popupAlign={placementAlignMap.left}
-          popup={<strong className="x-content">tooltip2</strong>}
-          className="className-in-trigger-2"
-        >
-          <Trigger
-            action={['click']}
-            popupAlign={placementAlignMap.left}
-            popup={<strong className="x-content">tooltip2</strong>}
-            className="className-in-trigger-1"
-          >
-            <div className="target">click</div>
-          </Trigger>
-        </Trigger>
-      ), div);
-      const domNode = ReactDOM.findDOMNode(trigger);
-      expect(domNode.className).to.be('target className-in-trigger-1 className-in-trigger-2');
-    });
+    expect(wrapper.find('div').props().className).toBe(
+      'target className-in-trigger-1 className-in-trigger-2',
+    );
   });
-  */
 });
