@@ -240,6 +240,8 @@ describe('Trigger.Basic', () => {
         wrapper.setState({ visible: false });
         jest.runAllTimers();
         expect(triggered).toBe(2);
+
+        wrapper.unmount();
       });
     });
 

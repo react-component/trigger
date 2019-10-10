@@ -1,6 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import Trigger from '../src';
 
 /**
@@ -8,19 +7,6 @@ import Trigger from '../src';
  * We do not need to simulate full position, check offset only.
  */
 describe('Trigger.Point', () => {
-  let domMock;
-
-  beforeAll(() => {
-    domMock = spyElementPrototypes(HTMLElement, {
-      getBoundingClientRect() {
-        return { left: 0, top: 0, width: 100, height: 50 };
-      },
-    });
-  });
-  afterAll(() => {
-    domMock.mockRestore();
-  });
-
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -99,5 +85,26 @@ describe('Trigger.Point', () => {
 
       done();
     });
+  });
+
+  it('placement', () => {
+    const builtinPlacements = {
+      right: {
+        // This should not hit
+        points: ['cl'],
+      },
+    };
+
+    const wrapper = mount(
+      <Demo action={['click']} builtinPlacements={builtinPlacements} popupPlacement="right" />,
+    );
+    wrapper.trigger('click', { pageX: 10, pageY: 20 });
+
+    const popup = wrapper
+      .find('.rc-trigger-popup')
+      .first()
+      .getDOMNode();
+
+    expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
   });
 });

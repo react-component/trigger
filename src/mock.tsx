@@ -1,20 +1,17 @@
-import Portal from 'rc-util/lib/Portal';
-import Trigger from './index';
+import React from 'react';
+import { generateTrigger } from './index';
 
-Portal.prototype.render = function portalRender() {
-  return this.props.children;
+interface MockPortalProps {
+  didUpdate: () => void;
+  children: React.ReactElement;
+}
+
+const MockPortal: React.FC<MockPortalProps> = ({ didUpdate, children }) => {
+  React.useEffect(() => {
+    didUpdate();
+  });
+
+  return children;
 };
 
-const { render } = Trigger.prototype;
-
-Trigger.prototype.render = function triggerRender() {
-  const tree = render.call(this);
-
-  if (this.state.popupVisible || this.cachedComponent) {
-    return tree;
-  }
-
-  return tree[0];
-};
-
-export default Trigger;
+export default generateTrigger(MockPortal);
