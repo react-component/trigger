@@ -104,8 +104,11 @@ class Popup extends Component<PopupProps, PopupState> {
 
   private nextFrameId: number = null;
 
-  static getDerivedStateFromProps({ visible, ...props }: PopupProps, { prevVisible }: PopupState) {
-    const newState: Partial<PopupState> = { prevVisible: visible };
+  static getDerivedStateFromProps(
+    { visible, ...props }: PopupProps,
+    { prevVisible, status }: PopupState,
+  ) {
+    const newState: Partial<PopupState> = { prevVisible: visible, status };
 
     const mergedMotion = getMotion(props);
 
@@ -115,7 +118,7 @@ class Popup extends Component<PopupProps, PopupState> {
     } else if (visible !== prevVisible) {
       newState.status = visible || supportMotion(mergedMotion) ? null : 'stable';
 
-      if (!visible) {
+      if (visible) {
         newState.alignClassName = null;
       }
     }

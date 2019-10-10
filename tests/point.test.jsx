@@ -87,24 +87,46 @@ describe('Trigger.Point', () => {
     });
   });
 
-  it('placement', () => {
-    const builtinPlacements = {
+  describe('placement', () => {
+    function testPlacement(name, builtinPlacements, afterAll) {
+      it(name, () => {
+        const wrapper = mount(
+          <Demo action={['click']} builtinPlacements={builtinPlacements} popupPlacement="right" />,
+        );
+        wrapper.trigger('click', { pageX: 10, pageY: 20 });
+
+        const popup = wrapper
+          .find('.rc-trigger-popup')
+          .first()
+          .getDOMNode();
+
+        expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
+
+        if (afterAll) {
+          afterAll(wrapper);
+        }
+      });
+    }
+
+    testPlacement('not hit', {
       right: {
         // This should not hit
         points: ['cl'],
       },
-    };
+    });
 
-    const wrapper = mount(
-      <Demo action={['click']} builtinPlacements={builtinPlacements} popupPlacement="right" />,
+    testPlacement(
+      'hit',
+      {
+        left: {
+          points: ['tl'],
+        },
+      },
+      wrapper => {
+        expect(
+          wrapper.find('div.rc-trigger-popup').hasClass('rc-trigger-popup-placement-left'),
+        ).toBeTruthy();
+      },
     );
-    wrapper.trigger('click', { pageX: 10, pageY: 20 });
-
-    const popup = wrapper
-      .find('.rc-trigger-popup')
-      .first()
-      .getDOMNode();
-
-    expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
   });
 });
