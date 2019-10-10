@@ -88,6 +88,12 @@ export interface TriggerProps {
   maskTransitionName?: TransitionNameType;
   /** @deprecated Please us `maskMotion` instead. */
   maskAnimation?: string;
+
+  /**
+   * @private Get trigger DOM node.
+   * Used for some component is function component which can not access by `findDOMNode`
+   */
+  getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
 }
 
 interface TriggerState {
@@ -128,7 +134,7 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
 
     popupRef = React.createRef<Popup>();
 
-    triggerRef = React.createRef<Popup>();
+    triggerRef = React.createRef<React.ReactInstance>();
 
     clickOutsideHandler: CommonEventHandler;
 
@@ -363,7 +369,7 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       }
 
       const { target } = event;
-      const root = findDOMNode(this.triggerRef.current);
+      const root = this.getRootDomNode();
       if (!contains(root, target) && !this.hasPopupMouseDown) {
         this.close();
       }
@@ -388,7 +394,13 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       return null;
     }
 
-    getRootDomNode = () => findDOMNode<HTMLElement>(this.triggerRef.current);
+    getRootDomNode = () => {
+      const { getTriggerDOMNode } = this.props;
+      if (getTriggerDOMNode) {
+        return getTriggerDOMNode(this.triggerRef.current);
+      }
+      return findDOMNode<HTMLElement>(this.triggerRef.current);
+    };
 
     getPopupClassNameFromAlign = align => {
       const className = [];
@@ -490,7 +502,7 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       popupContainer.style.left = '0';
       popupContainer.style.width = '100%';
       const mountNode = props.getPopupContainer
-        ? props.getPopupContainer(findDOMNode(this.triggerRef.current))
+        ? props.getPopupContainer(this.getRootDomNode())
         : props.getDocument().body;
       mountNode.appendChild(popupContainer);
       return popupContainer;
