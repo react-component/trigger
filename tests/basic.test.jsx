@@ -324,26 +324,26 @@ describe('Trigger.Basic', () => {
     });
   });
 
-  /*
   describe('destroyPopupOnHide', () => {
     it('defaults to false', () => {
-      const trigger = ReactDOM.render(
+      const wrapper = mount(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.topRight}
           popup={<strong>trigger</strong>}
         >
           <div className="target">click</div>
-        </Trigger>, div);
-      const domNode = ReactDOM.findDOMNode(trigger);
-      Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).to.be.ok();
-      Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).to.be.ok();
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+      expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
+      wrapper.trigger();
+      expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
     });
 
     it('set true will destroy tooltip on hide', () => {
-      const trigger = ReactDOM.render(
+      const wrapper = mount(
         <Trigger
           action={['click']}
           destroyPopupOnHide
@@ -351,15 +351,17 @@ describe('Trigger.Basic', () => {
           popup={<strong>trigger</strong>}
         >
           <div className="target">click</div>
-        </Trigger>, div);
-      const domNode = ReactDOM.findDOMNode(trigger);
-      Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).to.be.ok();
-      Simulate.click(domNode);
-      expect(trigger.getPopupDomNode()).not.to.be.ok();
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+      expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
+      wrapper.trigger();
+      expect(wrapper.instance().getPopupDomNode()).toBeFalsy();
     });
   });
 
+  /*
   if (window.TransitionEvent) {
     describe('transitionName', () => {
       it.skip('works', (done) => {
