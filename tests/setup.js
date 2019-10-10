@@ -4,15 +4,23 @@ const Adapter = require('enzyme-adapter-react-16');
 Enzyme.configure({ adapter: new Adapter() });
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
-  trigger() {
+  refresh() {
+    jest.runAllTimers();
+    this.update();
+    return this;
+  },
+  trigger(eventName = 'click') {
     this.find('Trigger > *')
       .first()
-      .simulate('click');
+      .simulate(eventName);
+
+    jest.runAllTimers();
+    this.update();
 
     return this;
   },
-  isHidden() {
-    return this.find('PopupInner > div')
+  isHidden(selector = 'PopupInner > div') {
+    return this.find(selector)
       .prop('className')
       .includes('-hidden');
   },
