@@ -1,4 +1,5 @@
 import React, { HTMLAttributes } from 'react';
+import ReactDOM from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { composeRef } from 'rc-util/lib/ref';
@@ -394,12 +395,22 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       return null;
     }
 
-    getRootDomNode = () => {
+    getRootDomNode = (): HTMLElement => {
       const { getTriggerDOMNode } = this.props;
       if (getTriggerDOMNode) {
         return getTriggerDOMNode(this.triggerRef.current);
       }
-      return findDOMNode<HTMLElement>(this.triggerRef.current);
+
+      try {
+        const domNode = findDOMNode<HTMLElement>(this.triggerRef.current);
+        if (domNode) {
+          return domNode;
+        }
+      } catch (err) {
+        // Do nothing
+      }
+
+      return ReactDOM.findDOMNode(this) as HTMLElement;
     };
 
     getPopupClassNameFromAlign = align => {

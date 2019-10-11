@@ -512,4 +512,31 @@ describe('Trigger.Basic', () => {
       'target className-in-trigger-1 className-in-trigger-2',
     );
   });
+
+  it('support function component', () => {
+    const NoRef = React.forwardRef((props, ref) => {
+      React.useImperativeHandle(ref, () => null);
+      return (
+        <div className="target" {...props}>
+          click
+        </div>
+      );
+    });
+
+    const wrapper = mount(
+      <Trigger
+        action={['click']}
+        popupAlign={placementAlignMap.left}
+        popup={<strong className="x-content">tooltip2</strong>}
+      >
+        <NoRef />
+      </Trigger>,
+    );
+
+    wrapper.trigger();
+    expect(wrapper.isHidden()).toBeFalsy();
+
+    wrapper.trigger();
+    expect(wrapper.isHidden()).toBeTruthy();
+  });
 });

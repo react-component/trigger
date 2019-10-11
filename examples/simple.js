@@ -31,13 +31,26 @@ const builtinPlacements = {
   },
 };
 
-function preventDefault(e) {
-  e.preventDefault();
-}
-
 function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
+
+const InnerTarget = React.forwardRef((props, ref) => {
+  React.useImperativeHandle(ref, () => ({}));
+
+  return (
+    <div
+      style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
+      tabIndex={0}
+      role="button"
+      {...props}
+    >
+      <p>This is a example of trigger usage.</p>
+      <p>You can adjust the value above</p>
+      <p>which will also change the behaviour of popup.</p>
+    </div>
+  );
+});
 
 class Test extends React.Component {
   state = {
@@ -259,7 +272,7 @@ class Test extends React.Component {
         </div>
         <div style={{ margin: 120, position: 'relative' }}>
           <Trigger
-            getPopupContainer={undefined && getPopupContainer}
+            getPopupContainer={getPopupContainer}
             popupAlign={this.getPopupAlign()}
             popupPlacement={state.placement}
             destroyPopupOnHide={this.state.destroyPopupOnHide}
@@ -281,15 +294,7 @@ class Test extends React.Component {
             popup={<div>i am a popup</div>}
             popupTransitionName={state.transitionName}
           >
-            <a
-              style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
-              href="#"
-              onClick={preventDefault}
-            >
-              <p>This is a example of trigger usage.</p>
-              <p>You can adjust the value above</p>
-              <p>which will also change the behaviour of popup.</p>
-            </a>
+            <InnerTarget />
           </Trigger>
         </div>
       </div>
