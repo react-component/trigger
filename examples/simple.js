@@ -31,10 +31,6 @@ const builtinPlacements = {
   },
 };
 
-function preventDefault(e) {
-  e.preventDefault();
-}
-
 function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
