@@ -43,7 +43,7 @@ const ALL_HANDLERS = [
 ];
 
 export interface TriggerProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
