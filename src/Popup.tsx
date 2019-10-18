@@ -292,7 +292,7 @@ class Popup extends Component<PopupProps, PopupState> {
     const mergedAlignDisabled = !visible || (status !== 'align' && status !== 'stable');
 
     // ================== Popup ==================
-    let mergedPopupVisible = true;
+    let mergedPopupVisible = false;
     if (status === 'stable') {
       mergedPopupVisible = visible;
     }
