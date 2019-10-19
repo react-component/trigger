@@ -289,10 +289,10 @@ class Popup extends Component<PopupProps, PopupState> {
     }
 
     // ================== Align ==================
-    const mergedAlignDisabled = !visible || (status !== 'align' && status !== 'stable');
+    const mergedAlignDisabled = !visible || (status === 'align' || status === 'stable');
 
     // ================== Popup ==================
-    let mergedPopupVisible = false;
+    let mergedPopupVisible = true;
     if (status === 'stable') {
       mergedPopupVisible = visible;
     }

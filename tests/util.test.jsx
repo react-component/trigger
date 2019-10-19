@@ -84,7 +84,7 @@ describe('Trigger.Util', () => {
       );
 
       expect(wrapper.html()).toEqual(
-        '<div>light</div><div><div class="rc-trigger-popup rc-trigger-popup-hidden" style="opacity: 0;"><div>bamboo</div></div></div>',
+        '<div style="">light</div><div><div class="rc-trigger-popup" style="opacity: 0; left: -999px; top: -999px;"><div>bamboo</div></div></div>',
       );
     });
   });
