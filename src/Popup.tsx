@@ -21,6 +21,7 @@ import { getMotion } from './utils/legacyUtil';
  * Popup should follow the steps for each component work correctly:
  * measure - check for the current stretch size
  * align - let component align the position
+ * aligned - re-align again in case additional className changed the size
  * afterAlign - choice next step is trigger motion or finished
  * beforeMotion - should reset motion to invisible so that CSSMotion can do normal motion
  * motion - play the motion
@@ -30,6 +31,7 @@ type PopupStatus =
   | null
   | 'measure'
   | 'align'
+  | 'aligned'
   | 'afterAlign'
   | 'beforeMotion'
   | 'motion'
@@ -157,7 +159,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
         default: {
           // Go to next status
-          const queue: PopupStatus[] = ['measure', 'align', 'afterAlign', 'beforeMotion', 'motion'];
+          const queue: PopupStatus[] = ['measure', 'align', null, 'beforeMotion', 'motion'];
           const index = queue.indexOf(status);
           const nextStatus = queue[index + 1];
           if (nextStatus) {
@@ -184,10 +186,20 @@ class Popup extends Component<PopupProps, PopupState> {
   }
 
   onAlign = (popupDomNode: HTMLElement, align: AlignType) => {
+    const { status } = this.state;
     const { getClassNameFromAlign, onAlign } = this.props;
     const alignClassName = getClassNameFromAlign(align);
-    this.setState({ alignClassName });
-    onAlign(popupDomNode, align);
+
+    if (status === 'align') {
+      this.setState({ alignClassName, status: 'aligned' }, () => {
+        this.alignRef.current.forceAlign();
+      });
+    } else if (status === 'aligned') {
+      this.setState({ alignClassName, status: 'afterAlign' });
+      onAlign(popupDomNode, align);
+    } else {
+      this.setState({ alignClassName });
+    }
   };
 
   onMotionEnd = () => {
@@ -289,7 +301,8 @@ class Popup extends Component<PopupProps, PopupState> {
     }
 
     // ================== Align ==================
-    const mergedAlignDisabled = !visible || (status !== 'align' && status !== 'stable');
+    const mergedAlignDisabled =
+      !visible || (status !== 'align' && status !== 'aligned' && status !== 'stable');
 
     // ================== Popup ==================
     let mergedPopupVisible = true;
