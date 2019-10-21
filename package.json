@@ -20,8 +20,8 @@
   "files": [
     "es",
     "lib",
-    "assets/*.css",
-    "assets/*.less"
+    "assets/**/*.css",
+    "assets/**/*.less"
   ],
   "license": "MIT",
   "main": "./lib/index",
