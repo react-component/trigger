@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { Component } from 'react';
+import React, { Component, ReactElement } from 'react';
 import raf from 'raf';
 import Align from 'rc-align';
 import { composeRef } from 'rc-util/lib/ref';
@@ -336,7 +336,9 @@ class Popup extends Component<PopupProps, PopupState> {
               prefixCls={prefixCls}
               visible={mergedPopupVisible}
               hiddenClassName={hiddenClassName}
-              className={classNames(mergedClassName, motionClassName)}
+              className={classNames(mergedClassName, {
+                [motionClassName]: !(children as ReactElement).props.motionName && motionClassName,
+              })}
               ref={composeRef(motionRef, this.popupRef)}
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
