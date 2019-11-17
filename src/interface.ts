@@ -38,6 +38,7 @@ export interface AlignType {
    * Defaults to false.
    */
   useCssTransform?: boolean;
+  ignoreShake?: boolean;
 }
 
 export interface BuildInPlacements {
