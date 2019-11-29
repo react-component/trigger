@@ -162,7 +162,7 @@ class Popup extends Component<PopupProps, PopupState> {
           const queue: PopupStatus[] = ['measure', 'align', null, 'beforeMotion', 'motion'];
           const index = queue.indexOf(status);
           const nextStatus = queue[index + 1];
-          if (nextStatus) {
+          if (index !== -1 && nextStatus) {
             this.setStateOnNextFrame({ status: nextStatus });
           }
         }
