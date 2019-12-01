@@ -577,7 +577,7 @@ describe('Trigger.Basic', () => {
         .getPopupDomNode().className,
     ).not.toContain('rc-trigger-popup-hidden');
 
-    wrapper.setState({ visible: true });
+    wrapper.setState({ visible: false });
     jest.runAllTimers();
     expect(
       wrapper
