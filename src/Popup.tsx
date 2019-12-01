@@ -123,6 +123,8 @@ class Popup extends Component<PopupProps, PopupState> {
       if (visible) {
         newState.alignClassName = null;
       }
+    } else if (prevVisible === visible && visible === false) {
+      newState.status = 'stable';
     }
 
     return newState;

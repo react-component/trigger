@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Trigger from '../src';
+import { sleep } from './utils';
 
 const autoAdjustOverflow = {
   adjustX: 1,
@@ -541,7 +542,8 @@ describe('Trigger.Basic', () => {
     expect(wrapper.isHidden()).toBeTruthy();
   });
 
-  it('controlled by popupTransitionName', () => {
+  it('controlled by popupTransitionName', async () => {
+    jest.useRealTimers();
     class Demo extends React.Component {
       state = {
         visible: false,
@@ -569,7 +571,6 @@ describe('Trigger.Basic', () => {
         .getPopupDomNode(),
     ).toBeNull();
     wrapper.setState({ visible: true });
-    jest.runAllTimers();
     expect(
       wrapper
         .find('Trigger')
@@ -578,7 +579,7 @@ describe('Trigger.Basic', () => {
     ).not.toContain('rc-trigger-popup-hidden');
 
     wrapper.setState({ visible: false });
-    jest.runAllTimers();
+    await sleep(100);
     expect(
       wrapper
         .find('Trigger')

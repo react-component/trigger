@@ -1,5 +1,8 @@
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
+// Use async
+// eslint-disable-next-line import/no-extraneous-dependencies
+require('regenerator-runtime/runtime');
 
 window.requestAnimationFrame = func => {
   window.setTimeout(func, 16);
