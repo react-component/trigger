@@ -224,6 +224,7 @@ describe('Trigger.Basic', () => {
                 afterPopupVisibleChange={() => {
                   triggered += 1;
                 }}
+                popupTransitionName="rc-trigger-popup-zoom"
                 popup={<strong>trigger</strong>}
               >
                 <div className="target">click</div>
@@ -538,5 +539,53 @@ describe('Trigger.Basic', () => {
 
     wrapper.trigger();
     expect(wrapper.isHidden()).toBeTruthy();
+  });
+
+  it('controlled by popupTransitionName', () => {
+    class Demo extends React.Component {
+      state = {
+        visible: false,
+      };
+
+      render() {
+        return (
+          <Trigger
+            popupVisible={this.state.visible}
+            popupAlign={placementAlignMap.left}
+            popupTransitionName="rc-trigger-popup-zoom"
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>
+        );
+      }
+    }
+
+    const wrapper = mount(<Demo />);
+    expect(
+      wrapper
+        .find('Trigger')
+        .instance()
+        .getPopupDomNode(),
+    ).toBeNull();
+    wrapper.setState({ visible: true });
+    jest.runAllTimers();
+    expect(
+      wrapper
+        .find('Trigger')
+        .instance()
+        .getPopupDomNode().className,
+    ).not.toContain('rc-trigger-popup-hidden');
+
+    wrapper.setState({ visible: true });
+    jest.runAllTimers();
+    expect(
+      wrapper
+        .find('Trigger')
+        .instance()
+        .getPopupDomNode().className,
+    ).toContain('rc-trigger-popup-hidden');
+
+    wrapper.unmount();
   });
 });
