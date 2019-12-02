@@ -8,6 +8,7 @@ import { getAlignFromPlacement, getAlignPopupClassName } from './utils';
 import ContainerRender from 'rc-util/lib/ContainerRender';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
+import unsafeLifecyclesPolyfill from 'rc-util/lib/unsafeLifecyclesPolyfill';
 
 function noop() {
 }
@@ -25,7 +26,7 @@ const ALL_HANDLERS = ['onClick', 'onMouseDown', 'onTouchStart', 'onMouseEnter',
 
 const IS_REACT_16 = !!createPortal;
 
-export default class Trigger extends React.Component {
+class Trigger extends React.Component {
   static propTypes = {
     children: PropTypes.any,
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -111,9 +112,7 @@ export default class Trigger extends React.Component {
     this.state = {
       popupVisible,
     };
-  }
 
-  componentWillMount() {
     ALL_HANDLERS.forEach((h) => {
       this[`fire${h}`] = (e) => {
         this.fireEvents(h, e);
@@ -636,3 +635,5 @@ export default class Trigger extends React.Component {
     ];
   }
 }
+
+export default unsafeLifecyclesPolyfill(Trigger);
