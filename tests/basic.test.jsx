@@ -514,14 +514,11 @@ describe('Trigger.Basic', () => {
   });
 
   it('support function component', () => {
-    const NoRef = React.forwardRef((props, ref) => {
-      React.useImperativeHandle(ref, () => null);
-      return (
+    const FuncComp = props => (
         <div className="target" {...props}>
           click
         </div>
       );
-    });
 
     const wrapper = mount(
       <Trigger
@@ -529,7 +526,7 @@ describe('Trigger.Basic', () => {
         popupAlign={placementAlignMap.left}
         popup={<strong className="x-content">tooltip2</strong>}
       >
-        <NoRef />
+        <FuncComp />
       </Trigger>,
     );
 
@@ -538,5 +535,65 @@ describe('Trigger.Basic', () => {
 
     wrapper.trigger();
     expect(wrapper.isHidden()).toBeTruthy();
+  });
+
+  describe('passes ref to children where applicable', () => {
+    function getRefResult(component) {
+      const triggerMock = jest.fn();
+      const wrapper = mount(
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+          ref={triggerMock}
+        >
+          {component}
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+
+      return triggerMock.mock.calls[0][0].triggerRef.current;
+    }
+
+    it('does not pass ref to function component', () => {
+      const NoRef = props => (
+        <div id="target" {...props}>
+          click
+        </div>
+      );
+
+      const refVal = getRefResult(<NoRef />);
+      expect(refVal).toBeNull();
+    });
+
+    it('does pass ref to forwardRef function component', () => {
+      const WithRef = React.forwardRef((props, ref) => (
+        <div id="target" {...props} ref={ref}>
+          click
+        </div>
+      ));
+
+      const refVal = getRefResult(<WithRef />);
+      expect(refVal.id).toBe('target');
+    });
+
+    it('does pass ref to class component', () => {
+      class ClassComp extends React.Component {
+        id = 'target';
+
+        render() {
+          return <div>click</div>;
+        }
+      }
+
+      const refVal = getRefResult(<ClassComp />);
+      expect(refVal.id).toBe('target');
+    });
+
+    it('does pass ref to element', () => {
+      const refVal = getRefResult(<div id="target">click</div>);
+      expect(refVal.id).toBe('target');
+    });
   });
 });

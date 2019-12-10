@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, RefAttributes, ReactInstance } from 'react';
 import ReactDOM from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
@@ -676,7 +676,8 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       const { popupVisible } = this.state;
       const { children, forceRender, alignPoint, className } = this.props;
       const child = React.Children.only(children) as React.ReactElement;
-      const newChildProps: HTMLAttributes<HTMLElement> & { key: string } = { key: 'trigger' };
+      const newChildProps: HTMLAttributes<HTMLElement> &
+        RefAttributes<ReactInstance> & { key: string } = { key: 'trigger' };
 
       if (this.isContextMenuToShow()) {
         newChildProps.onContextMenu = this.onContextMenu;
@@ -721,10 +722,17 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       if (childrenClassName) {
         newChildProps.className = childrenClassName;
       }
-      const trigger = React.cloneElement(child, {
-        ...newChildProps,
-        ref: composeRef(this.triggerRef, (child as any).ref),
-      });
+
+      // Prevent adding ref to Functional child components
+      if (
+        !child.type ||
+        typeof child.type !== 'function' ||
+        (child.type.prototype && child.type.prototype.isReactComponent)
+      ) {
+        newChildProps.ref = composeRef(this.triggerRef, (child as any).ref);
+      }
+
+      const trigger = React.cloneElement(child, newChildProps);
 
       let portal: React.ReactElement;
       // prevent unmounting after it's rendered
