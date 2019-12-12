@@ -118,7 +118,14 @@ class Popup extends Component<PopupProps, PopupState> {
       // Init render should always be stable
       newState.status = 'stable';
     } else if (visible !== prevVisible) {
-      newState.status = visible || supportMotion(mergedMotion) ? null : 'stable';
+      if (
+        visible ||
+        (supportMotion(mergedMotion) && ['motion', 'AfterMotion', 'stable'].includes(status))
+      ) {
+        newState.status = null;
+      } else {
+        newState.status = 'stable';
+      }
 
       if (visible) {
         newState.alignClassName = null;
@@ -135,6 +142,9 @@ class Popup extends Component<PopupProps, PopupState> {
   componentDidUpdate() {
     const { status } = this.state;
     const { getRootDomNode, visible, stretch } = this.props;
+
+    // If there is a pending state update, cancel it, a new one will be set if necessary
+    this.cancelFrameState();
 
     if (visible && status !== 'stable') {
       switch (status) {
