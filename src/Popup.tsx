@@ -59,6 +59,7 @@ interface PopupProps {
   point?: Point;
   zIndex?: number;
   mask?: boolean;
+  keepAlign?: boolean;
 
   // Motion
   motion: MotionType;
@@ -249,6 +250,7 @@ class Popup extends Component<PopupProps, PopupState> {
       prefixCls,
       className,
       style,
+      keepAlign,
       stretch,
       visible,
       align,
@@ -332,6 +334,7 @@ class Popup extends Component<PopupProps, PopupState> {
             disabled={mergedAlignDisabled}
             align={align}
             onAlign={this.onAlign}
+            keepAlign={keepAlign}
           >
             <PopupInner
               prefixCls={prefixCls}
