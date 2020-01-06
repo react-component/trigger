@@ -75,8 +75,6 @@ export interface TriggerProps {
 
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
-  /** Align will repeat trigger when component did updated */
-  keepAlign?: boolean;
 
   /** Set popup motion. You can ref `rc-animate` for more info. */
   popupMotion?: MotionType;
@@ -460,7 +458,6 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
         popup,
         stretch,
         alignPoint,
-        keepAlign,
       } = this.props;
       const { popupVisible, point } = this.state;
 
@@ -500,7 +497,6 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
           maskMotion={maskMotion}
           ref={this.popupRef}
           motion={popupMotion}
-          keepAlign={keepAlign}
         >
           {typeof popup === 'function' ? popup() : popup}
         </Popup>
