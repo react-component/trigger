@@ -83,7 +83,10 @@ describe('Trigger.Basic', () => {
 
       wrapper.trigger();
       const popupDomNode = wrapper.instance().getPopupDomNode();
-      expect(popupDomNode.parentNode.parentNode.parentNode instanceof HTMLBodyElement).toBeTruthy();
+      expect(
+        popupDomNode.parentNode.parentNode.parentNode instanceof
+          HTMLBodyElement,
+      ).toBeTruthy();
     });
 
     it('can change', () => {
@@ -105,7 +108,9 @@ describe('Trigger.Basic', () => {
 
       wrapper.trigger();
       const popupDomNode = wrapper.instance().getPopupDomNode();
-      expect(popupDomNode.parentNode.parentNode.parentNode instanceof HTMLDivElement).toBeTruthy();
+      expect(
+        popupDomNode.parentNode.parentNode.parentNode instanceof HTMLDivElement,
+      ).toBeTruthy();
     });
   });
 
@@ -138,7 +143,11 @@ describe('Trigger.Basic', () => {
         return <strong className="x-content">tooltip3</strong>;
       };
       const wrapper = mount(
-        <Trigger action={['click']} popupAlign={placementAlignMap.left} popup={popup}>
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={popup}
+        >
           <div className="target">click</div>
         </Trigger>,
       );
@@ -280,8 +289,12 @@ describe('Trigger.Basic', () => {
       wrapper.find('.target').simulate('click');
       wrapper.refresh();
 
-      const clickPopupDomNode = wrapper.instance().clickTriggerRef.current.getPopupDomNode();
-      const hoverPopupDomNode = wrapper.instance().hoverTriggerRef.current.getPopupDomNode();
+      const clickPopupDomNode = wrapper
+        .instance()
+        .clickTriggerRef.current.getPopupDomNode();
+      const hoverPopupDomNode = wrapper
+        .instance()
+        .hoverTriggerRef.current.getPopupDomNode();
       expect(clickPopupDomNode).toBeTruthy();
       expect(hoverPopupDomNode).toBeTruthy();
 
@@ -315,14 +328,20 @@ describe('Trigger.Basic', () => {
 
         render() {
           return (
-            <Trigger ref={this.triggerRef} forceRender popup={<span>Hello!</span>}>
+            <Trigger
+              ref={this.triggerRef}
+              forceRender
+              popup={<span>Hello!</span>}
+            >
               <span>Hey!</span>
             </Trigger>
           );
         }
       }
       const wrapper = mount(<Test />);
-      expect(wrapper.instance().triggerRef.current.getPopupDomNode()).toBeTruthy();
+      expect(
+        wrapper.instance().triggerRef.current.getPopupDomNode(),
+      ).toBeTruthy();
     });
   });
 
@@ -383,7 +402,10 @@ describe('Trigger.Basic', () => {
             action={['click']}
             builtinPlacements={builtinPlacements}
             popup={
-              <div id="issue_9114_popup" style={{ background: 'rgba(0, 255, 0, 0.3)' }}>
+              <div
+                id="issue_9114_popup"
+                style={{ background: 'rgba(0, 255, 0, 0.3)' }}
+              >
                 Final Popup
               </div>
             }
@@ -486,7 +508,9 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    expect(wrapper.find('div').props().className).toBe('target className-in-trigger');
+    expect(wrapper.find('div').props().className).toBe(
+      'target className-in-trigger',
+    );
   });
 
   it('support className in nested Trigger', () => {
@@ -538,5 +562,37 @@ describe('Trigger.Basic', () => {
 
     wrapper.trigger();
     expect(wrapper.isHidden()).toBeTruthy();
+  });
+
+  it('Popup with mouseDown prevent', () => {
+    const wrapper = mount(
+      <Trigger
+        action={['click']}
+        popupAlign={placementAlignMap.left}
+        popup={
+          <div>
+            <button
+              type="button"
+              onMouseDown={e => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              Prevent
+            </button>
+          </div>
+        }
+      >
+        <h1>233</h1>
+      </Trigger>,
+    );
+
+    wrapper.trigger();
+    expect(wrapper.isHidden()).toBeFalsy();
+
+    wrapper
+      .instance()
+      .onDocumentClick({ target: wrapper.find('button').instance() });
+    expect(wrapper.isHidden()).toBeFalsy();
   });
 });

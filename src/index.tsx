@@ -7,7 +7,10 @@ import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
 
-import { getAlignFromPlacement, getAlignPopupClassName } from './utils/alignUtil';
+import {
+  getAlignFromPlacement,
+  getAlignPopupClassName,
+} from './utils/alignUtil';
 import Popup from './Popup';
 import TriggerContext from './context';
 import {
@@ -106,7 +109,9 @@ interface TriggerState {
 /**
  * Internal usage. Do not use in your code since this will be removed.
  */
-export function generateTrigger(PortalComponent: any): React.ComponentClass<TriggerProps> {
+export function generateTrigger(
+  PortalComponent: any,
+): React.ComponentClass<TriggerProps> {
   class Trigger extends React.Component<TriggerProps, TriggerState> {
     static contextType = TriggerContext;
 
@@ -193,7 +198,10 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       // https://github.com/react-component/trigger/issues/50
       if (state.popupVisible) {
         let currentDocument;
-        if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
+        if (
+          !this.clickOutsideHandler &&
+          (this.isClickToHide() || this.isContextMenuToShow())
+        ) {
           currentDocument = props.getDocument();
           this.clickOutsideHandler = addEventListener(
             currentDocument,
@@ -242,7 +250,11 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
     onMouseEnter = e => {
       const { mouseEnterDelay } = this.props;
       this.fireEvents('onMouseEnter', e);
-      this.delaySetPopupVisible(true, mouseEnterDelay, mouseEnterDelay ? null : e);
+      this.delaySetPopupVisible(
+        true,
+        mouseEnterDelay,
+        mouseEnterDelay ? null : e,
+      );
     };
 
     onMouseMove = e => {
@@ -346,7 +358,10 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
         event.preventDefault();
       }
       const nextVisible = !this.state.popupVisible;
-      if ((this.isClickToHide() && !nextVisible) || (nextVisible && this.isClickToShow())) {
+      if (
+        (this.isClickToHide() && !nextVisible) ||
+        (nextVisible && this.isClickToShow())
+      ) {
         this.setPopupVisible(!this.state.popupVisible, event);
       }
     };
@@ -371,15 +386,26 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
 
       const { target } = event;
       const root = this.getRootDomNode();
-      if (!contains(root, target) && !this.hasPopupMouseDown) {
+      const popupNode = this.getPopupDomNode();
+      if (
+        !contains(root, target) &&
+        !contains(popupNode, target) &&
+        !this.hasPopupMouseDown
+      ) {
         this.close();
       }
     };
 
-    static getDerivedStateFromProps({ popupVisible }: TriggerProps, prevState: TriggerState) {
+    static getDerivedStateFromProps(
+      { popupVisible }: TriggerProps,
+      prevState: TriggerState,
+    ) {
       const newState: Partial<TriggerState> = {};
 
-      if (popupVisible !== undefined && prevState.popupVisible !== popupVisible) {
+      if (
+        popupVisible !== undefined &&
+        prevState.popupVisible !== popupVisible
+      ) {
         newState.popupVisible = popupVisible;
         newState.prevPopupVisible = prevState.popupVisible;
       }
@@ -423,7 +449,14 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
         getPopupClassNameFromAlign,
       } = this.props;
       if (popupPlacement && builtinPlacements) {
-        className.push(getAlignPopupClassName(builtinPlacements, prefixCls, align, alignPoint));
+        className.push(
+          getAlignPopupClassName(
+            builtinPlacements,
+            prefixCls,
+            align,
+            alignPoint,
+          ),
+        );
       }
       if (getPopupClassNameFromAlign) {
         className.push(getPopupClassNameFromAlign(align));
@@ -435,7 +468,11 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       const { props } = this;
       const { popupPlacement, popupAlign, builtinPlacements } = props;
       if (popupPlacement && builtinPlacements) {
-        return getAlignFromPlacement(builtinPlacements, popupPlacement, popupAlign);
+        return getAlignFromPlacement(
+          builtinPlacements,
+          popupPlacement,
+          popupAlign,
+        );
       }
       return popupAlign;
     }
@@ -614,37 +651,54 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
 
     isClickToShow() {
       const { action, showAction } = this.props;
-      return action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1;
+      return (
+        action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1
+      );
     }
 
     isContextMenuToShow() {
       const { action, showAction } = this.props;
-      return action.indexOf('contextMenu') !== -1 || showAction.indexOf('contextMenu') !== -1;
+      return (
+        action.indexOf('contextMenu') !== -1 ||
+        showAction.indexOf('contextMenu') !== -1
+      );
     }
 
     isClickToHide() {
       const { action, hideAction } = this.props;
-      return action.indexOf('click') !== -1 || hideAction.indexOf('click') !== -1;
+      return (
+        action.indexOf('click') !== -1 || hideAction.indexOf('click') !== -1
+      );
     }
 
     isMouseEnterToShow() {
       const { action, showAction } = this.props;
-      return action.indexOf('hover') !== -1 || showAction.indexOf('mouseEnter') !== -1;
+      return (
+        action.indexOf('hover') !== -1 ||
+        showAction.indexOf('mouseEnter') !== -1
+      );
     }
 
     isMouseLeaveToHide() {
       const { action, hideAction } = this.props;
-      return action.indexOf('hover') !== -1 || hideAction.indexOf('mouseLeave') !== -1;
+      return (
+        action.indexOf('hover') !== -1 ||
+        hideAction.indexOf('mouseLeave') !== -1
+      );
     }
 
     isFocusToShow() {
       const { action, showAction } = this.props;
-      return action.indexOf('focus') !== -1 || showAction.indexOf('focus') !== -1;
+      return (
+        action.indexOf('focus') !== -1 || showAction.indexOf('focus') !== -1
+      );
     }
 
     isBlurToHide() {
       const { action, hideAction } = this.props;
-      return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
+      return (
+        action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1
+      );
     }
 
     forcePopupAlign() {
@@ -658,7 +712,9 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
     }
 
     fireEvents(type: string, e: Event) {
-      const childCallback = (this.props.children as React.ReactElement).props[type];
+      const childCallback = (this.props.children as React.ReactElement).props[
+        type
+      ];
       if (childCallback) {
         childCallback(e);
       }
@@ -676,7 +732,9 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       const { popupVisible } = this.state;
       const { children, forceRender, alignPoint, className } = this.props;
       const child = React.Children.only(children) as React.ReactElement;
-      const newChildProps: HTMLAttributes<HTMLElement> & { key: string } = { key: 'trigger' };
+      const newChildProps: HTMLAttributes<HTMLElement> & { key: string } = {
+        key: 'trigger',
+      };
 
       if (this.isContextMenuToShow()) {
         newChildProps.onContextMenu = this.onContextMenu;
@@ -741,7 +799,9 @@ export function generateTrigger(PortalComponent: any): React.ComponentClass<Trig
       }
 
       return (
-        <TriggerContext.Provider value={{ onPopupMouseDown: this.onPopupMouseDown }}>
+        <TriggerContext.Provider
+          value={{ onPopupMouseDown: this.onPopupMouseDown }}
+        >
           {trigger}
           {portal}
         </TriggerContext.Provider>
