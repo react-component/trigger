@@ -1,7 +1,10 @@
 {
   "name": "rc-trigger",
-  "version": "4.0.0-alpha.7",
+  "version": "4.0.0-rc.4",
   "description": "base abstract trigger component for react",
+  "engines": {
+    "node": ">=8.x"
+  },
   "keywords": [
     "react",
     "react-component",
@@ -58,7 +61,7 @@
     "classnames": "^2.2.6",
     "prop-types": "15.x",
     "raf": "^3.4.1",
-    "rc-align": "^3.0.0-alpha.3",
+    "rc-align": "^3.0.0-rc.0",
     "rc-animate": "^2.10.2",
     "rc-util": "^4.15.2"
   }
