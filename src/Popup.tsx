@@ -250,7 +250,10 @@ class Popup extends Component<PopupProps, PopupState> {
   }
 
   cancelFrameState = () => {
-    raf.cancel(this.nextFrameId);
+    if (this.nextFrameId) {
+      raf.cancel(this.nextFrameId);
+      this.nextFrameId = null;
+    }
   };
 
   renderPopupElement = () => {
