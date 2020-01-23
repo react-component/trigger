@@ -77,8 +77,8 @@ describe('Popup', () => {
     );
 
     expect(raf).toHaveBeenCalledTimes(1);
-    expect(raf.cancel).not.toHaveBeenCalled();
 
+    raf.cancel.mockClear();
     wrapper.setProps({ visible: false });
     expect(raf.cancel).toHaveBeenCalledTimes(1);
   });
