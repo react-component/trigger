@@ -595,4 +595,23 @@ describe('Trigger.Basic', () => {
       .onDocumentClick({ target: wrapper.find('button').instance() });
     expect(wrapper.isHidden()).toBeFalsy();
   });
+
+  // https://github.com/ant-design/ant-design/issues/21770
+  it('support popupStyle, such as zIndex', () => {
+    const style = { color: 'red', zIndex: 9999, top: 100 };
+    const wrapper = mount(
+      <Trigger
+        popupVisible
+        popupStyle={style}
+        popup={<strong className="x-content">tooltip2</strong>}
+      >
+        <div className="target">click</div>
+      </Trigger>,
+    );
+
+    const popupDomNode = wrapper.instance().getPopupDomNode();
+    expect(popupDomNode.style.zIndex).toBe(style.zIndex.toString());
+    expect(popupDomNode.style.color).toBe(style.color);
+    expect(popupDomNode.style.top).toBe(`${style.top}px`);
+  });
 });

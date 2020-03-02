@@ -120,7 +120,8 @@ class Popup extends Component<PopupProps, PopupState> {
     } else if (visible !== prevVisible) {
       if (
         visible ||
-        (supportMotion(mergedMotion) && ['motion', 'AfterMotion', 'stable'].includes(status))
+        (supportMotion(mergedMotion) &&
+          ['motion', 'AfterMotion', 'stable'].includes(status))
       ) {
         newState.status = null;
       } else {
@@ -169,7 +170,13 @@ class Popup extends Component<PopupProps, PopupState> {
 
         default: {
           // Go to next status
-          const queue: PopupStatus[] = ['measure', 'align', null, 'beforeMotion', 'motion'];
+          const queue: PopupStatus[] = [
+            'measure',
+            'align',
+            null,
+            'beforeMotion',
+            'motion',
+          ];
           const index = queue.indexOf(status);
           const nextStatus = queue[index + 1];
           if (index !== -1 && nextStatus) {
@@ -291,8 +298,8 @@ class Popup extends Component<PopupProps, PopupState> {
 
     const mergedStyle: React.CSSProperties = {
       ...sizeStyle,
-      ...style,
       ...this.getZIndexStyle(),
+      ...style,
       opacity: status === 'stable' || !visible ? undefined : 0,
     };
 
@@ -300,7 +307,12 @@ class Popup extends Component<PopupProps, PopupState> {
     const mergedMotion = this.getMotion();
     let mergedMotionVisible = visible;
 
-    if (visible && status !== 'beforeMotion' && status !== 'motion' && status !== 'stable') {
+    if (
+      visible &&
+      status !== 'beforeMotion' &&
+      status !== 'motion' &&
+      status !== 'stable'
+    ) {
       mergedMotion.motionAppear = false;
       mergedMotion.motionEnter = false;
       mergedMotion.motionLeave = false;
@@ -312,7 +324,8 @@ class Popup extends Component<PopupProps, PopupState> {
 
     // ================== Align ==================
     const mergedAlignDisabled =
-      !visible || (status !== 'align' && status !== 'aligned' && status !== 'stable');
+      !visible ||
+      (status !== 'align' && status !== 'aligned' && status !== 'stable');
 
     // ================== Popup ==================
     let mergedPopupVisible = true;
@@ -367,7 +380,14 @@ class Popup extends Component<PopupProps, PopupState> {
   };
 
   renderMaskElement = () => {
-    const { mask, maskMotion, maskTransitionName, maskAnimation, prefixCls, visible } = this.props;
+    const {
+      mask,
+      maskMotion,
+      maskTransitionName,
+      maskAnimation,
+      prefixCls,
+      visible,
+    } = this.props;
 
     if (!mask) {
       return null;
