@@ -94,7 +94,6 @@ class Popup extends Component<PopupProps, PopupState> {
     targetHeight: undefined,
 
     status: null,
-    prevVisible: null,
     alignClassName: null,
   };
 
