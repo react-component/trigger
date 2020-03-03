@@ -94,6 +94,7 @@ class Popup extends Component<PopupProps, PopupState> {
     targetHeight: undefined,
 
     status: null,
+    prevVisible: null, // eslint-disable-line react/no-unused-state
     alignClassName: null,
   };
 
