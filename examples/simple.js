@@ -35,21 +35,27 @@ function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
 
-const InnerTarget = React.forwardRef((props, ref) => {
+const InnerTarget = props => (
+  <div
+    style={{
+      margin: 20,
+      display: 'inline-block',
+      background: 'rgba(255, 0, 0, 0.05)',
+    }}
+    tabIndex={0}
+    role="button"
+    {...props}
+  >
+    <p>This is a example of trigger usage.</p>
+    <p>You can adjust the value above</p>
+    <p>which will also change the behaviour of popup.</p>
+  </div>
+);
+
+const RefTarget = React.forwardRef((props, ref) => {
   React.useImperativeHandle(ref, () => ({}));
 
-  return (
-    <div
-      style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
-      tabIndex={0}
-      role="button"
-      {...props}
-    >
-      <p>This is a example of trigger usage.</p>
-      <p>You can adjust the value above</p>
-      <p>which will also change the behaviour of popup.</p>
-    </div>
-  );
+  return <InnerTarget {...props} />;
 });
 
 class Test extends React.Component {
@@ -243,7 +249,11 @@ class Test extends React.Component {
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input checked={!!this.state.mask} type="checkbox" onChange={this.onMask} />
+            <input
+              checked={!!this.state.mask}
+              type="checkbox"
+              onChange={this.onMask}
+            />
             mask
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;
@@ -258,12 +268,20 @@ class Test extends React.Component {
           <br />
           <label>
             offsetX:
-            <input type="text" onChange={this.onOffsetXChange} style={{ width: 50 }} />
+            <input
+              type="text"
+              onChange={this.onOffsetXChange}
+              style={{ width: 50 }}
+            />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <label>
             offsetY:
-            <input type="text" onChange={this.onOffsetYChange} style={{ width: 50 }} />
+            <input
+              type="text"
+              onChange={this.onOffsetYChange}
+              style={{ width: 50 }}
+            />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <button type="button" onClick={this.destroy}>
@@ -294,7 +312,7 @@ class Test extends React.Component {
             popup={<div>i am a popup</div>}
             popupTransitionName={state.transitionName}
           >
-            <InnerTarget />
+            <RefTarget />
           </Trigger>
         </div>
       </div>

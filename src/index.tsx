@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react';
 import ReactDOM from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { composeRef } from 'rc-util/lib/ref';
+import { composeRef, supportRef } from 'rc-util/lib/ref';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
@@ -779,10 +779,14 @@ export function generateTrigger(
       if (childrenClassName) {
         newChildProps.className = childrenClassName;
       }
-      const trigger = React.cloneElement(child, {
+
+      const cloneProps: any = {
         ...newChildProps,
-        ref: composeRef(this.triggerRef, (child as any).ref),
-      });
+      };
+      if (supportRef(child)) {
+        cloneProps.ref = composeRef(this.triggerRef, (child as any).ref);
+      }
+      const trigger = React.cloneElement(child, cloneProps);
 
       let portal: React.ReactElement;
       // prevent unmounting after it's rendered
