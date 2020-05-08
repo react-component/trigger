@@ -1,6 +1,10 @@
 # History
 ----
 
+## 4.1.0 / 2020-05-08
+
+- upgrade rc-animate to `3.x`
+
 ## 2.5.0 / 2018-06-05
 
 - support `alignPoint`

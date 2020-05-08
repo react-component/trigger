@@ -3,52 +3,32 @@
 
 React Trigger Component
 
-
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
-[![gemnasium deps][gemnasium-image]][gemnasium-url]
+[![Dependencies][david-image]][david-url]
+[![DevDependencies][david-dev-image]][david-dev-url]
 [![npm download][download-image]][download-url]
+[![bundle size][bundlephobia-image]][bundlephobia-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-trigger.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-trigger
-[travis-image]: https://img.shields.io/travis/react-component/trigger.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/react-component/trigger/master?style=flat-square
 [travis-url]: https://travis-ci.org/react-component/trigger
+[circleci-image]: https://img.shields.io/circleci/react-component/trigger/master?style=flat-square
+[circleci-url]: https://circleci.com/gh/react-component/trigger
 [coveralls-image]: https://img.shields.io/coveralls/react-component/trigger.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/react-component/trigger?branch=master
-[gemnasium-image]: http://img.shields.io/gemnasium/react-component/trigger.svg?style=flat-square
-[gemnasium-url]: https://gemnasium.com/react-component/trigger
-[node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
-[node-url]: http://nodejs.org/download/
+[david-url]: https://david-dm.org/react-component/trigger
+[david-image]: https://david-dm.org/react-component/trigger/status.svg?style=flat-square
+[david-dev-url]: https://david-dm.org/react-component/trigger?type=dev
+[david-dev-image]: https://david-dm.org/react-component/trigger/dev-status.svg?style=flat-square
 [download-image]: https://img.shields.io/npm/dm/rc-trigger.svg?style=flat-square
 [download-url]: https://npmjs.org/package/rc-trigger
+[bundlephobia-url]: https://bundlephobia.com/result?p=rc-trigger
+[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-trigger
 
-
-## Browser Support
-
-|![IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Opera](https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Safari](https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png)|
-| --- | --- | --- | --- | --- |
-| Edge / IE 8+ ✔ | Chrome 31.0+ ✔ | Firefox 31.0+ ✔ | Opera 30.0+ ✔ | Safari 7.0+ ✔ |
-
-
-## Development
-
-```
-npm install
-npm start
-```
-
-## Example
-
-http://localhost:8200/examples/
-
-online example: http://react-component.github.io/trigger/examples/
-
-## Feature
-
-* supported on IE 8+, Chrome, Firefox, and Safari
-
-## install
+## Install
 
 [![rc-trigger](https://nodei.co/npm/rc-trigger.png)](https://npmjs.org/package/rc-trigger)
 
@@ -73,6 +53,25 @@ ReactDOM.render((
     <a href='#'>hover</a>
   </Trigger>
 ), container);
+```
+
+## Compatibility
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Electron |
+| --- | --- | --- | --- | --- |
+| IE11, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+
+## Example
+
+http://localhost:9001
+
+online example: http://react-component.github.io/trigger/
+
+## Development
+
+```
+npm install
+npm start
 ```
 
 ## API
