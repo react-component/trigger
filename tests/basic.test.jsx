@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import Portal from 'rc-util/lib/Portal';
 import Trigger from '../src';
 
 const autoAdjustOverflow = {
@@ -379,6 +380,43 @@ describe('Trigger.Basic', () => {
       expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
       wrapper.trigger();
       expect(wrapper.instance().getPopupDomNode()).toBeFalsy();
+    });
+  });
+
+  describe('support autoDestroy', () => {
+    it('defaults to false', () => {
+      const wrapper = mount(
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.topRight}
+          popup={<strong>trigger</strong>}
+        >
+          <div className="target">click</div>
+        </Trigger>,
+      );
+      expect(wrapper.prop('autoDestroy')).toBeFalsy();
+      wrapper.trigger();
+      expect(wrapper.find(Portal).exists()).toBe(true);
+      wrapper.trigger();
+      expect(wrapper.find(Portal).exists()).toBe(true);
+    });
+
+    it('set true will destroy portal on hide', () => {
+      const wrapper = mount(
+        <Trigger
+          action={['click']}
+          autoDestroy
+          popupAlign={placementAlignMap.topRight}
+          popup={<strong>trigger</strong>}
+        >
+          <div className="target">click</div>
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+      expect(wrapper.find(Portal).exists()).toBe(true);
+      wrapper.trigger();
+      expect(wrapper.find(Portal).exists()).toBe(false);
     });
   });
 

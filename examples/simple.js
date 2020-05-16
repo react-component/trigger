@@ -158,6 +158,12 @@ class Test extends React.Component {
     });
   };
 
+  autoDestroy = e => {
+    this.setState({
+      autoDestroy: e.target.checked,
+    });
+  };
+
   render() {
     const { state } = this;
     const { trigger } = state;
@@ -250,6 +256,15 @@ class Test extends React.Component {
           &nbsp;&nbsp;&nbsp;&nbsp;
           <label>
             <input
+              checked={!!this.state.autoDestroy}
+              type="checkbox"
+              onChange={this.autoDestroy}
+            />
+            autoDestroy
+          </label>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <label>
+            <input
               checked={!!this.state.mask}
               type="checkbox"
               onChange={this.onMask}
@@ -294,6 +309,7 @@ class Test extends React.Component {
             popupAlign={this.getPopupAlign()}
             popupPlacement={state.placement}
             destroyPopupOnHide={this.state.destroyPopupOnHide}
+            autoDestroy={this.state.autoDestroy}
             // zIndex={40}
             mask={this.state.mask}
             maskClosable={this.state.maskClosable}
