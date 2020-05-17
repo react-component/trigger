@@ -75,6 +75,7 @@ export interface TriggerProps {
   popupAlign?: AlignType;
   popupVisible?: boolean;
   defaultPopupVisible?: boolean;
+  autoDestroy: boolean;
 
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
@@ -136,6 +137,7 @@ export function generateTrigger(
       action: [],
       showAction: [],
       hideAction: [],
+      autoDestroy: false,
     };
 
     popupRef = React.createRef<Popup>();
@@ -730,7 +732,13 @@ export function generateTrigger(
 
     render() {
       const { popupVisible } = this.state;
-      const { children, forceRender, alignPoint, className } = this.props;
+      const {
+        children,
+        forceRender,
+        alignPoint,
+        className,
+        autoDestroy,
+      } = this.props;
       const child = React.Children.only(children) as React.ReactElement;
       const newChildProps: HTMLAttributes<HTMLElement> & { key: string } = {
         key: 'trigger',
@@ -800,6 +808,10 @@ export function generateTrigger(
             {this.getComponent()}
           </PortalComponent>
         );
+      }
+
+      if (!popupVisible && autoDestroy) {
+        portal = null;
       }
 
       return (
