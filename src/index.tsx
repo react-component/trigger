@@ -186,7 +186,6 @@ export function generateTrigger(
     }
 
     componentDidUpdate() {
-      const { props } = this;
       const { state } = this;
 
       // We must listen to `mousedown` or `touchstart`, edge case:
