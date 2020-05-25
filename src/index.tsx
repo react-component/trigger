@@ -30,10 +30,6 @@ function returnEmptyString() {
   return '';
 }
 
-function returnDocument() {
-  return window.document;
-}
-
 const ALL_HANDLERS = [
   'onClick',
   'onMouseDown',
@@ -119,7 +115,6 @@ export function generateTrigger(
     static defaultProps = {
       prefixCls: 'rc-trigger-popup',
       getPopupClassNameFromAlign: returnEmptyString,
-      getDocument: returnDocument,
       onPopupVisibleChange: noop,
       afterPopupVisibleChange: noop,
       onPopupAlign: noop,
@@ -204,7 +199,7 @@ export function generateTrigger(
           !this.clickOutsideHandler &&
           (this.isClickToHide() || this.isContextMenuToShow())
         ) {
-          currentDocument = props.getDocument();
+          currentDocument = this.getDocument();
           this.clickOutsideHandler = addEventListener(
             currentDocument,
             'mousedown',
@@ -213,7 +208,7 @@ export function generateTrigger(
         }
         // always hide on mobile
         if (!this.touchOutsideHandler) {
-          currentDocument = currentDocument || props.getDocument();
+          currentDocument = currentDocument || this.getDocument();
           this.touchOutsideHandler = addEventListener(
             currentDocument,
             'touchstart',
@@ -222,7 +217,7 @@ export function generateTrigger(
         }
         // close popup when trigger type contains 'onContextMenu' and document is scrolling.
         if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
-          currentDocument = currentDocument || props.getDocument();
+          currentDocument = currentDocument || this.getDocument();
           this.contextMenuOutsideHandler1 = addEventListener(
             currentDocument,
             'scroll',
@@ -231,8 +226,9 @@ export function generateTrigger(
         }
         // close popup when trigger type contains 'onContextMenu' and window is blur.
         if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
+          currentDocument = currentDocument || this.getDocument();
           this.contextMenuOutsideHandler2 = addEventListener(
-            window,
+            currentDocument.defaultView || window,
             'blur',
             this.onContextMenuClose,
           );
@@ -553,10 +549,17 @@ export function generateTrigger(
       popupContainer.style.width = '100%';
       const mountNode = props.getPopupContainer
         ? props.getPopupContainer(this.getRootDomNode())
-        : props.getDocument().body;
+        : this.getDocument().body;
       mountNode.appendChild(popupContainer);
       return popupContainer;
     };
+
+    getDocument() {
+      if (this.props.getDocument) {
+        return this.props.getDocument();
+      }
+      return this.getRootDomNode().ownerDocument;
+    }
 
     /**
      * @param popupVisible    Show or not the popup element
