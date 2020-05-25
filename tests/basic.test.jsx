@@ -64,10 +64,94 @@ const placementAlignMap = {
 describe('Trigger.Basic', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    document.addEventListener = jest.fn();
+    window.addEventListener = jest.fn();
   });
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  describe('getDocument', () => {
+    it('defaults to window.document', () => {
+      const wrapper = mount(
+        <Trigger
+          action={['click', 'contextMenu']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+        >
+          <div className="target">click</div>
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+
+      expect(document.addEventListener).toHaveBeenCalledWith(
+        'mousedown',
+        expect.any(Function),
+        false,
+      );
+      expect(document.addEventListener).toHaveBeenCalledWith(
+        'touchstart',
+        expect.any(Function),
+        false,
+      );
+      expect(document.addEventListener).toHaveBeenCalledWith(
+        'scroll',
+        expect.any(Function),
+        false,
+      );
+      expect(window.addEventListener).toHaveBeenCalledWith(
+        'blur',
+        expect.any(Function),
+        false,
+      );
+    });
+
+    it('can change', () => {
+      const testWindow = {
+        addEventListener: jest.fn(),
+      };
+      const testDocument = {
+        addEventListener: jest.fn(),
+        body: document.createElement('body'),
+        defaultView: testWindow,
+      };
+
+      const wrapper = mount(
+        <Trigger
+          action={['click', 'contextMenu']}
+          popupAlign={placementAlignMap.left}
+          popup={<strong className="x-content">tooltip2</strong>}
+          getDocument={() => testDocument}
+        >
+          <div className="target">click</div>
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+
+      expect(testDocument.addEventListener).toHaveBeenCalledWith(
+        'mousedown',
+        expect.any(Function),
+        false,
+      );
+      expect(testDocument.addEventListener).toHaveBeenCalledWith(
+        'touchstart',
+        expect.any(Function),
+        false,
+      );
+      expect(testDocument.addEventListener).toHaveBeenCalledWith(
+        'scroll',
+        expect.any(Function),
+        false,
+      );
+      expect(testWindow.addEventListener).toHaveBeenCalledWith(
+        'blur',
+        expect.any(Function),
+        false,
+      );
+    });
   });
 
   describe('getPopupContainer', () => {
