@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
-import raf from 'raf';
+import raf from 'rc-util/lib/raf';
 import Align from 'rc-align';
 import { composeRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';

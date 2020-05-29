@@ -56,9 +56,8 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "raf": "^3.4.1",
     "rc-align": "^3.0.0",
     "rc-animate": "^3.0.0",
-    "rc-util": "^4.20.0"
+    "rc-util": "^5.0.1"
   }
 }

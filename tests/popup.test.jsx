@@ -1,9 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import raf from 'raf';
+import raf from 'rc-util/lib/raf';
 import Popup from '../src/Popup';
 
-jest.mock('raf', () => {
+jest.mock('rc-util/lib/raf', () => {
   const rafMock = jest.fn(() => 1);
   rafMock.cancel = jest.fn();
   return rafMock;
@@ -20,14 +20,18 @@ describe('Popup', () => {
       const props = { visible: false };
       const state = { prevVisible: null, status: 'something' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('stable');
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
+        'stable',
+      );
     });
 
     it('does not change when visible is unchanged', () => {
       const props = { visible: true };
       const state = { prevVisible: true, status: 'something' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('something');
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
+        'something',
+      );
     });
 
     it('returns null when visible is changed to true', () => {
@@ -41,7 +45,9 @@ describe('Popup', () => {
       const props = { visible: false };
       const state = { prevVisible: true, status: 'something' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('stable');
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
+        'stable',
+      );
     });
 
     it('returns null when visible is changed to false and motion is started', () => {
@@ -65,7 +71,9 @@ describe('Popup', () => {
       };
       const state = { prevVisible: true, status: 'beforeMotion' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('stable');
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
+        'stable',
+      );
     });
   });
 
