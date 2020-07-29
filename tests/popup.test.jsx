@@ -20,18 +20,14 @@ describe('Popup', () => {
       const props = { visible: false };
       const state = { prevVisible: null, status: 'something' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
-        'stable',
-      );
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('stable');
     });
 
     it('does not change when visible is unchanged', () => {
       const props = { visible: true };
       const state = { prevVisible: true, status: 'something' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
-        'something',
-      );
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('something');
     });
 
     it('returns null when visible is changed to true', () => {
@@ -45,9 +41,7 @@ describe('Popup', () => {
       const props = { visible: false };
       const state = { prevVisible: true, status: 'something' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
-        'stable',
-      );
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('stable');
     });
 
     it('returns null when visible is changed to false and motion is started', () => {
@@ -57,7 +51,7 @@ describe('Popup', () => {
           motionName: 'enter',
         },
       };
-      const state = { prevVisible: true, status: 'motion', inMotion: true };
+      const state = { prevVisible: true, status: 'motion' };
 
       expect(Popup.getDerivedStateFromProps(props, state).status).toBe(null);
     });
@@ -71,9 +65,7 @@ describe('Popup', () => {
       };
       const state = { prevVisible: true, status: 'beforeMotion' };
 
-      expect(Popup.getDerivedStateFromProps(props, state).status).toBe(
-        'stable',
-      );
+      expect(Popup.getDerivedStateFromProps(props, state).status).toBe('stable');
     });
   });
 
