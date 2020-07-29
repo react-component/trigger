@@ -225,7 +225,10 @@ class Popup extends Component<PopupProps, PopupState> {
 
   onMotionEnd = () => {
     const { visible } = this.props;
-    this.setState({ status: visible ? 'AfterMotion' : 'stable' });
+    this.setState({
+      status: visible ? 'AfterMotion' : 'stable',
+      inMotion: false,
+    });
   };
 
   setStateOnNextFrame = (state: Partial<PopupState>) => {
