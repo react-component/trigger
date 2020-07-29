@@ -78,6 +78,9 @@ interface PopupState {
   status: PopupStatus;
   prevVisible: boolean;
   alignClassName: string;
+
+  /** Record for CSSMotion is working or not */
+  inMotion: boolean;
 }
 
 interface AlignRefType {
@@ -96,6 +99,8 @@ class Popup extends Component<PopupProps, PopupState> {
     status: null,
     prevVisible: null, // eslint-disable-line react/no-unused-state
     alignClassName: null,
+
+    inMotion: false,
   };
 
   public popupRef = React.createRef<HTMLDivElement>();
@@ -108,7 +113,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
   static getDerivedStateFromProps(
     { visible, ...props }: PopupProps,
-    { prevVisible, status }: PopupState,
+    { prevVisible, status, inMotion }: PopupState,
   ) {
     const newState: Partial<PopupState> = { prevVisible: visible, status };
 
@@ -117,12 +122,11 @@ class Popup extends Component<PopupProps, PopupState> {
     if (prevVisible === null && visible === false) {
       // Init render should always be stable
       newState.status = 'stable';
+      newState.inMotion = false;
     } else if (visible !== prevVisible) {
-      if (
-        visible ||
-        (supportMotion(mergedMotion) &&
-          ['motion', 'AfterMotion', 'stable'].includes(status))
-      ) {
+      newState.inMotion = false;
+
+      if (visible || (supportMotion(mergedMotion) && inMotion)) {
         newState.status = null;
       } else {
         newState.status = 'stable';
@@ -321,6 +325,16 @@ class Popup extends Component<PopupProps, PopupState> {
     if (status === 'afterAlign' || status === 'beforeMotion') {
       mergedMotionVisible = false;
     }
+
+    // Update trigger to tell if is in motion
+    ['onEnterStart', 'onAppearStart', 'onLeaveStart'].forEach(event => {
+      const originFunc = mergedMotion?.[event];
+
+      mergedMotion[event] = (...args) => {
+        originFunc?.(...args);
+        this.setState({ inMotion: true });
+      };
+    });
 
     // ================== Align ==================
     const mergedAlignDisabled =
