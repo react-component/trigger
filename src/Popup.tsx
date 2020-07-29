@@ -328,8 +328,10 @@ class Popup extends Component<PopupProps, PopupState> {
 
     // Update trigger to tell if is in motion
     ['onEnterStart', 'onAppearStart', 'onLeaveStart'].forEach(event => {
+      const originFunc = mergedMotion?.[event];
+
       mergedMotion[event] = (...args) => {
-        mergedMotion?.[event]?.(...args);
+        originFunc?.(...args);
         this.setState({ inMotion: true });
       };
     });

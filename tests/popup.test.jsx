@@ -90,4 +90,22 @@ describe('Popup', () => {
     wrapper.setProps({ visible: false });
     expect(raf.cancel).toHaveBeenCalledTimes(1);
   });
+
+  it('not crash on motion with event', () => {
+    const onEnterStart = jest.fn();
+
+    const wrapper = mount(
+      <Popup visible motion={{ motionName: 'light', onEnterStart }}>
+        <div>popup content</div>
+      </Popup>,
+    );
+
+    // Trigger once
+    wrapper
+      .find('CSSMotion')
+      .props()
+      .onEnterStart();
+
+    expect(onEnterStart).toHaveBeenCalledTimes(1);
+  });
 });
