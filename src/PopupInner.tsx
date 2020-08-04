@@ -1,11 +1,8 @@
 import React from 'react';
-import classNames from 'classnames';
 
 interface PopupInnerProps {
   prefixCls: string;
   className: string;
-  hiddenClassName?: string;
-  visible?: boolean;
   style?: React.CSSProperties;
   children?: React.ReactNode;
 
@@ -15,11 +12,13 @@ interface PopupInnerProps {
   onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
 }
 
-const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> = (props, ref) => {
+const PopupInner: React.RefForwardingComponent<
+  HTMLDivElement,
+  PopupInnerProps
+> = (props, ref) => {
   const {
     prefixCls,
     className,
-    visible,
     style,
     children,
     onMouseEnter,
@@ -37,7 +36,7 @@ const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> 
   return (
     <div
       ref={ref}
-      className={classNames(className, !visible && `${props.hiddenClassName}`)}
+      className={className}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseDown={onMouseDown}
@@ -49,7 +48,9 @@ const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> 
   );
 };
 
-const RefPopupInner = React.forwardRef<HTMLDivElement, PopupInnerProps>(PopupInner);
+const RefPopupInner = React.forwardRef<HTMLDivElement, PopupInnerProps>(
+  PopupInner,
+);
 RefPopupInner.displayName = 'PopupInner';
 
 export default RefPopupInner;

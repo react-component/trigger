@@ -362,6 +362,7 @@ class Popup extends Component<PopupProps, PopupState> {
         removeOnLeave={false}
         onEnterEnd={this.onMotionEnd}
         onLeaveEnd={this.onMotionEnd}
+        leavedClassName={hiddenClassName}
       >
         {({ style: motionStyle, className: motionClassName }, motionRef) => (
           <Align
@@ -375,8 +376,6 @@ class Popup extends Component<PopupProps, PopupState> {
           >
             <PopupInner
               prefixCls={prefixCls}
-              visible={mergedPopupVisible}
-              hiddenClassName={hiddenClassName}
               className={classNames(mergedClassName, motionClassName)}
               ref={composeRef(motionRef, this.popupRef)}
               onMouseEnter={onMouseEnter}
