@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 interface PopupInnerProps {
   prefixCls: string;
@@ -13,7 +12,10 @@ interface PopupInnerProps {
   onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
 }
 
-const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> = (props, ref) => {
+const PopupInner: React.RefForwardingComponent<
+  HTMLDivElement,
+  PopupInnerProps
+> = (props, ref) => {
   const {
     prefixCls,
     className,
@@ -46,7 +48,9 @@ const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> 
   );
 };
 
-const RefPopupInner = React.forwardRef<HTMLDivElement, PopupInnerProps>(PopupInner);
+const RefPopupInner = React.forwardRef<HTMLDivElement, PopupInnerProps>(
+  PopupInner,
+);
 RefPopupInner.displayName = 'PopupInner';
 
 export default RefPopupInner;
