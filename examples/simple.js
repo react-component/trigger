@@ -69,6 +69,7 @@ class Test extends React.Component {
     offsetX: undefined,
     offsetY: undefined,
     stretch: '',
+    transitionName: 'rc-trigger-popup-zoom',
   };
 
   onPlacementChange = e => {

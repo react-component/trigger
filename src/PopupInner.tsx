@@ -4,8 +4,6 @@ import classNames from 'classnames';
 interface PopupInnerProps {
   prefixCls: string;
   className: string;
-  hiddenClassName?: string;
-  visible?: boolean;
   style?: React.CSSProperties;
   children?: React.ReactNode;
 
@@ -19,7 +17,6 @@ const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> 
   const {
     prefixCls,
     className,
-    visible,
     style,
     children,
     onMouseEnter,
@@ -37,7 +34,7 @@ const PopupInner: React.RefForwardingComponent<HTMLDivElement, PopupInnerProps> 
   return (
     <div
       ref={ref}
-      className={classNames(className, !visible && `${props.hiddenClassName}`)}
+      className={className}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseDown={onMouseDown}
