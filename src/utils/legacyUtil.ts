@@ -1,7 +1,8 @@
-import { MotionType, AnimationType, TransitionNameType } from '../interface';
+import { CSSMotionProps } from 'rc-motion';
+import { AnimationType, TransitionNameType } from '../interface';
 
 interface GetMotionProps {
-  motion: MotionType;
+  motion: CSSMotionProps;
   animation: AnimationType;
   transitionName: TransitionNameType;
   prefixCls: string;
@@ -12,7 +13,7 @@ export function getMotion({
   motion,
   animation,
   transitionName,
-}: GetMotionProps): MotionType {
+}: GetMotionProps): CSSMotionProps {
   if (motion) {
     return motion;
   }

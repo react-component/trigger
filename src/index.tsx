@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
+import { CSSMotionProps } from 'rc-motion';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
@@ -21,7 +22,6 @@ import {
   AnimationType,
   Point,
   CommonEventHandler,
-  MotionType,
 } from './interface';
 
 function noop() {}
@@ -80,10 +80,10 @@ export interface TriggerProps {
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
-  /** Set popup motion. You can ref `rc-animate` for more info. */
-  popupMotion?: MotionType;
-  /** Set mask motion. You can ref `rc-animate` for more info. */
-  maskMotion?: MotionType;
+  /** Set popup motion. You can ref `rc-motion` for more info. */
+  popupMotion?: CSSMotionProps;
+  /** Set mask motion. You can ref `rc-motion` for more info. */
+  maskMotion?: CSSMotionProps;
 
   /** @deprecated Please us `popupMotion` instead. */
   popupTransitionName?: TransitionNameType;

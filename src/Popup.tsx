@@ -4,7 +4,7 @@ import raf from 'raf';
 import Align from 'rc-align';
 import { composeRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
-import RawCSSMotion from 'rc-animate/lib/CSSMotion';
+import CSSMotion, { CSSMotionProps } from 'rc-motion';
 import PopupInner from './PopupInner';
 import {
   StretchType,
@@ -12,8 +12,6 @@ import {
   TransitionNameType,
   AnimationType,
   Point,
-  CSSMotionClass,
-  MotionType,
 } from './interface';
 import { getMotion } from './utils/legacyUtil';
 
@@ -38,8 +36,6 @@ type PopupStatus =
   | 'AfterMotion'
   | 'stable';
 
-const CSSMotion = RawCSSMotion as CSSMotionClass;
-
 interface PopupProps {
   visible?: boolean;
   style?: React.CSSProperties;
@@ -61,8 +57,8 @@ interface PopupProps {
   mask?: boolean;
 
   // Motion
-  motion: MotionType;
-  maskMotion: MotionType;
+  motion: CSSMotionProps;
+  maskMotion: CSSMotionProps;
 
   // Legacy
   animation: AnimationType;
@@ -87,7 +83,7 @@ interface AlignRefType {
   forceAlign: () => void;
 }
 
-function supportMotion(motion: MotionType) {
+function supportMotion(motion: CSSMotionProps) {
   return motion && motion.motionName;
 }
 
@@ -409,7 +405,7 @@ class Popup extends Component<PopupProps, PopupState> {
       return null;
     }
 
-    let motion: MotionType = {};
+    let motion: CSSMotionProps = {};
 
     if (maskMotion && maskMotion.motionName) {
       motion = {
