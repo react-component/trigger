@@ -1,9 +1,9 @@
 /* eslint no-console:0 */
 
 import React from 'react';
+import { CSSMotionProps } from 'rc-motion';
 import Trigger, { BuildInPlacements } from '../src';
 import './case.less';
-import { MotionType } from '../src/interface';
 
 const builtinPlacements: BuildInPlacements = {
   left: {
@@ -32,11 +32,11 @@ const builtinPlacements: BuildInPlacements = {
   },
 };
 
-const Motion: MotionType = {
+const Motion: CSSMotionProps = {
   motionName: 'case-motion',
 };
 
-const MaskMotion: MotionType = {
+const MaskMotion: CSSMotionProps = {
   motionName: 'mask-motion',
 };
 
@@ -98,7 +98,10 @@ const Demo = () => {
   const [placement, placementProps] = useControl('value', 'right');
   const [stretch, stretchProps] = useControl('value', '');
   const [motion, motionProps] = useControl('checked', true);
-  const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl('checked', false);
+  const [destroyPopupOnHide, destroyPopupOnHideProps] = useControl(
+    'checked',
+    false,
+  );
   const [mask, maskProps] = useControl('checked', false);
   const [maskClosable, maskClosableProps] = useControl('checked', true);
   const [forceRender, forceRenderProps] = useControl('checked', false);
@@ -215,7 +218,11 @@ const Demo = () => {
             }}
           >
             <div
-              style={{ margin: 20, display: 'inline-block', background: 'rgba(255, 0, 0, 0.05)' }}
+              style={{
+                margin: 20,
+                display: 'inline-block',
+                background: 'rgba(255, 0, 0, 0.05)',
+              }}
               tabIndex={0}
               role="button"
             >
