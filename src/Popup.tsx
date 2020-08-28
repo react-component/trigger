@@ -303,7 +303,8 @@ class Popup extends Component<PopupProps, PopupState> {
       ...sizeStyle,
       ...this.getZIndexStyle(),
       ...style,
-      visibility: status === 'stable' || !visible ? 'visible' : 'hidden',
+      opacity: status === 'stable' || !visible ? undefined : 0,
+      pointerEvents: status === 'stable' || !visible ? undefined : 'none',
     };
 
     // ================= Motions =================
