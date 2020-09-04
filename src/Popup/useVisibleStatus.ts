@@ -11,42 +11,65 @@ import raf from 'rc-util/lib/raf';
  * motion - play the motion
  * stable - everything is done
  */
-type PopupStatus = null | 'measure' | 'align' | 'motion' | 'stable';
+type PopupStatus = null | 'measure' | 'align' | 'aligned' | 'motion' | 'stable';
 
 type Func = () => void;
 
-const StatusQueue: PopupStatus[] = ['measure', 'align', 'motion', 'stable'];
+const StatusQueue: PopupStatus[] = [
+  'measure',
+  'align',
+  null,
+  'motion',
+  'stable',
+];
 
-export default (visible: boolean, doMeasure: Func, doAlign: Func) => {
+export default (
+  visible: boolean,
+  doMeasure: Func,
+): [PopupStatus, (callback: () => void) => void] => {
   const [status, setStatus] = useState<PopupStatus>(null);
   const rafRef = useRef<number>();
-  const alignPromiseRef = useRef<Promise<any>>();
 
   function cancelRaf() {
     raf.cancel(rafRef.current);
   }
 
+  function goNextStatus(callback?: () => void) {
+    // Only align should be manually trigger
+    setStatus(prev => {
+      switch (status) {
+        case 'align':
+          //   return 'aligned';
+
+          // case 'aligned':
+          return 'motion';
+      }
+
+      return prev;
+    });
+
+    // Trigger callback in another frame
+    if (callback) {
+      cancelRaf();
+      rafRef.current = raf(callback);
+    }
+  }
+
+  // Init status
   useEffect(() => {
     setStatus('measure');
   }, [visible]);
 
+  // Go next status
   useEffect(() => {
     switch (status) {
       case 'measure':
         doMeasure();
         break;
-
-      case 'align':
-        break;
     }
 
     if (status) {
       rafRef.current = raf(async () => {
-        // Align need wait for align finished
-        if (status === 'align') {
-          await alignPromiseRef.current;
-        }
-
         const nextStatus = StatusQueue[StatusQueue.indexOf(status) + 1];
         if (nextStatus) {
           setStatus(nextStatus);
@@ -64,5 +87,5 @@ export default (visible: boolean, doMeasure: Func, doAlign: Func) => {
 
   console.log('Frame Status >>>>>>', status);
 
-  return [status];
+  return [status, goNextStatus];
 };

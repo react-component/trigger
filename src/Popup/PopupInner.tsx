@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Align from 'rc-align';
 import { RefAlign } from 'rc-align/lib/Align';
 import CSSMotion, { CSSMotionProps } from 'rc-motion';
@@ -24,6 +24,7 @@ export interface PopupInnerProps {
 
   // Motion
   motion: CSSMotionProps;
+  destroyPopupOnHide?: boolean;
   // Legacy Motion
   animation: AnimationType;
   transitionName: TransitionNameType;
@@ -35,6 +36,8 @@ export interface PopupInnerProps {
   align?: AlignType;
   point?: Point;
   getRootDomNode?: () => HTMLElement;
+  getClassNameFromAlign?: (align: AlignType) => string;
+  onAlign?: (element: HTMLElement, align: AlignType) => void;
 
   // Events
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
@@ -59,10 +62,13 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       children,
 
       stretch,
+      destroyPopupOnHide,
 
       align,
       point,
       getRootDomNode,
+      getClassNameFromAlign,
+      onAlign,
 
       onMouseEnter,
       onMouseLeave,
@@ -74,11 +80,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const elementRef = useRef<HTMLDivElement>();
 
     const [targetSize, setTargetSize] = useState({ width: 0, height: 0 });
-
-    const alignClassName = null;
-
-    // ======================== Motion ========================
-    const motion = getMotion(props);
+    const [alignedClassName, setAlignedClassName] = useState<string>();
 
     // ======================= Measure ========================
     function doMeasure() {
@@ -93,7 +95,12 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       }
     }
 
+    // ======================== Status ========================
+    const [status, goNextStatus] = useVisibleStatus(visible, doMeasure);
+
     // ======================== Aligns ========================
+    const prepareResolveRef = useRef<Function>();
+
     // `target` on `rc-align` can accept as a function to get the bind element or a point.
     // ref: https://www.npmjs.com/package/rc-align
     function getAlignTarget() {
@@ -103,31 +110,50 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       return getRootDomNode;
     }
 
-    function doAlign() {
-      // alignRef.current.forceAlign();
+    function forceAlign() {
+      alignRef.current?.forceAlign();
     }
 
-    // ======================== Status ========================
-    const [status] = useVisibleStatus(visible, doMeasure, doAlign);
+    function onInternalAlign(popupDomNode: HTMLElement, matchAlign: AlignType) {
+      if (status === 'align') {
+        const nextAlignedClassName = getClassNameFromAlign(matchAlign);
+        setAlignedClassName(nextAlignedClassName);
 
-    console.log('>>>>>>', visible, targetSize, motion);
+        if (alignedClassName !== nextAlignedClassName) {
+          Promise.resolve().then(() => {
+            forceAlign();
+          });
+        } else {
+          goNextStatus(() => {
+            prepareResolveRef.current?.();
+          });
+        }
+
+        onAlign?.(popupDomNode, matchAlign);
+      }
+    }
+
+    // ======================== Motion ========================
+    const motion = getMotion(props);
 
     function onShowPrepare() {
       return new Promise(resolve => {
-        setTimeout(resolve, 2000);
+        prepareResolveRef.current = resolve;
       });
     }
 
     // ========================= Refs =========================
     React.useImperativeHandle(ref, () => ({
-      forceAlign: () => {},
+      forceAlign,
       getElement: () => elementRef.current,
     }));
 
     // ======================== Render ========================
+    console.log('>>>>>>', visible, targetSize, motion);
+
     // Align status
     let alignDisabled = true;
-    if (status === 'align' || status === 'stable') {
+    if (status === 'align') {
       alignDisabled = false;
     }
 
@@ -145,13 +171,13 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
         {...motion}
         onAppearPrepare={onShowPrepare}
         onEnterPrepare={onShowPrepare}
-        removeOnLeave={false}
+        removeOnLeave={destroyPopupOnHide}
       >
         {({ className: motionClassName, style: motionStyle }, motionRef) => {
           const mergedClassName = classNames(
             prefixCls,
             className,
-            alignClassName,
+            alignedClassName,
             motionClassName,
           );
 
@@ -163,7 +189,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
               monitorWindowResize
               disabled={alignDisabled}
               align={align}
-              // onAlign={this.onAlign}
+              onAlign={onInternalAlign}
             >
               <div
                 ref={motionRef}
