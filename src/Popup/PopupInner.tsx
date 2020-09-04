@@ -13,6 +13,7 @@ import {
 } from '../interface';
 import useVisibleStatus from './useVisibleStatus';
 import { getMotion } from '../utils/legacyUtil';
+import useStretchStyle from './useStretchStyle';
 
 export interface PopupInnerProps {
   visible?: boolean;
@@ -79,19 +80,14 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const alignRef = useRef<RefAlign>();
     const elementRef = useRef<HTMLDivElement>();
 
-    const [targetSize, setTargetSize] = useState({ width: 0, height: 0 });
     const [alignedClassName, setAlignedClassName] = useState<string>();
 
     // ======================= Measure ========================
+    const [stretchStyle, measureStretchStyle] = useStretchStyle(stretch);
+
     function doMeasure() {
       if (stretch) {
-        const $ele = getRootDomNode();
-        if ($ele) {
-          setTargetSize({
-            width: $ele.offsetWidth,
-            height: $ele.offsetHeight,
-          });
-        }
+        measureStretchStyle(getRootDomNode());
       }
     }
 
@@ -119,6 +115,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
         const nextAlignedClassName = getClassNameFromAlign(matchAlign);
         setAlignedClassName(nextAlignedClassName);
 
+        // Repeat until not more align needed
         if (alignedClassName !== nextAlignedClassName) {
           Promise.resolve().then(() => {
             forceAlign();
@@ -149,11 +146,16 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     }));
 
     // ======================== Render ========================
-    console.log('>>>>>>', visible, targetSize, motion);
+    console.log('>>>>>>', visible, status, stretchStyle, motion);
+
+    const mergedStyle = {
+      ...stretchStyle,
+      ...style,
+    };
 
     // Align status
     let alignDisabled = true;
-    if (status === 'align') {
+    if (status === 'align' || status === 'stable') {
       alignDisabled = false;
     }
 
@@ -172,6 +174,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
         onAppearPrepare={onShowPrepare}
         onEnterPrepare={onShowPrepare}
         removeOnLeave={destroyPopupOnHide}
+        leavedClassName={`${prefixCls}-hidden`}
       >
         {({ className: motionClassName, style: motionStyle }, motionRef) => {
           const mergedClassName = classNames(
@@ -200,7 +203,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
                 onTouchStart={onTouchStart}
                 style={{
                   ...motionStyle,
-                  ...style,
+                  ...mergedStyle,
                 }}
               >
                 {childNode}

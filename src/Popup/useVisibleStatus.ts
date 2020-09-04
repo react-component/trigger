@@ -39,9 +39,6 @@ export default (
     setStatus(prev => {
       switch (status) {
         case 'align':
-          //   return 'aligned';
-
-          // case 'aligned':
           return 'motion';
       }
 
@@ -84,8 +81,6 @@ export default (
     },
     [],
   );
-
-  console.log('Frame Status >>>>>>', status);
 
   return [status, goNextStatus];
 };
