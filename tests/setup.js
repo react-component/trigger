@@ -8,6 +8,8 @@ window.requestAnimationFrame = func => {
 
 Enzyme.configure({ adapter: new Adapter() });
 
+const popupInnerSelector = 'PopupInner div';
+
 Object.assign(Enzyme.ReactWrapper.prototype, {
   refresh() {
     jest.runAllTimers();
@@ -24,7 +26,10 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
 
     return this;
   },
-  isHidden(selector = 'PopupInner div') {
+  getPopupInner() {
+    return this.find(popupInnerSelector).first();
+  },
+  isHidden(selector = popupInnerSelector) {
     return this.find(selector)
       .first()
       .prop('className')

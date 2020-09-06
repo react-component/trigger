@@ -1,5 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
+import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import Portal from 'rc-util/lib/Portal';
 import Trigger from '../src';
 
@@ -506,18 +508,47 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
+    let domSpy;
+
+    beforeAll(() => {
+      domSpy = spyElementPrototypes(HTMLElement, {
+        offsetWidth: {
+          get: () => 1128,
+        },
+        offsetHeight: {
+          get: () => 903,
+        },
+      });
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+      domSpy.mockRestore();
+    });
+
     it('width', () => {
       const wrapper = createTrigger('width');
-      wrapper.trigger();
 
-      expect('width' in wrapper.find('PopupInner').props().style).toBeTruthy();
+      act(() => {
+        wrapper.trigger();
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect('width' in wrapper.getPopupInner().props().style).toBeTruthy();
     });
 
     it('height', () => {
       const wrapper = createTrigger('height');
-      wrapper.trigger();
 
-      expect('height' in wrapper.find('PopupInner').props().style).toBeTruthy();
+      act(() => {
+        wrapper.trigger();
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect('height' in wrapper.getPopupInner().props().style).toBeTruthy();
     });
   });
 

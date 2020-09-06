@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
-    "@types/jest": "^26.0.7",
+    "@types/jest": "^26.0.13",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
     "cross-env": "^7.0.1",
