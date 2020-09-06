@@ -150,7 +150,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     // ======================== Render ========================
     const interactiveReady = status === 'stable' || !visible;
 
-    const mergedStyle = {
+    const mergedStyle: React.CSSProperties = {
       ...stretchStyle,
       zIndex,
       ...style,
@@ -160,7 +160,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
 
     // Align status
     let alignDisabled = true;
-    if (status === 'align' || status === 'stable') {
+    if (align?.points && (status === 'align' || status === 'stable')) {
       alignDisabled = false;
     }
 
