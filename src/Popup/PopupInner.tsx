@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Align from 'rc-align';
 import { RefAlign } from 'rc-align/lib/Align';
 import CSSMotion, { CSSMotionProps } from 'rc-motion';
@@ -22,6 +22,7 @@ export interface PopupInnerProps {
   className?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  zIndex?: number;
 
   // Motion
   motion: CSSMotionProps;
@@ -61,6 +62,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       className,
       style,
       children,
+      zIndex,
 
       stretch,
       destroyPopupOnHide,
@@ -146,11 +148,14 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     }));
 
     // ======================== Render ========================
-    console.log('>>>>>>', visible, status, stretchStyle, motion);
+    const interactiveReady = status === 'stable' || !visible;
 
     const mergedStyle = {
       ...stretchStyle,
+      zIndex,
       ...style,
+      opacity: interactiveReady ? undefined : 0,
+      pointerEvents: interactiveReady ? undefined : 'none',
     };
 
     // Align status

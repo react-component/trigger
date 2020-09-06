@@ -1,6 +1,5 @@
 import * as React from 'react';
-import Align from 'rc-align';
-import CSSMotion, { CSSMotionProps } from 'rc-motion';
+import { CSSMotionProps } from 'rc-motion';
 import {
   StretchType,
   AlignType,
@@ -47,7 +46,7 @@ const Popup = React.forwardRef<PopupInnerRef, PopupProps>((props, ref) => {
 
   return (
     <>
-      <Mask />
+      <Mask {...cloneProps} />
       <PopupInner {...cloneProps} ref={ref} />
     </>
   );
