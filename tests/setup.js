@@ -11,6 +11,10 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const popupInnerSelector = 'PopupInner div';
 
+// jsdom add motion events to test CSSMotion
+window.AnimationEvent = window.AnimationEvent || (() => {});
+window.TransitionEvent = window.TransitionEvent || (() => {});
+
 Object.assign(Enzyme.ReactWrapper.prototype, {
   refresh() {
     jest.runAllTimers();

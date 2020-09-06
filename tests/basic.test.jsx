@@ -541,20 +541,14 @@ describe('Trigger.Basic', () => {
       domSpy.mockRestore();
     });
 
-    it('width', () => {
-      const wrapper = createTrigger('width');
+    ['width', 'height', 'minWidth', 'minHeight'].forEach(prop => {
+      it(prop, () => {
+        const wrapper = createTrigger(prop);
 
-      wrapper.trigger();
+        wrapper.trigger();
 
-      expect('width' in wrapper.getPopupInner().props().style).toBeTruthy();
-    });
-
-    it('height', () => {
-      const wrapper = createTrigger('height');
-
-      wrapper.trigger();
-
-      expect('height' in wrapper.getPopupInner().props().style).toBeTruthy();
+        expect(prop in wrapper.getPopupInner().props().style).toBeTruthy();
+      });
     });
   });
 
