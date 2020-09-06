@@ -24,8 +24,9 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
 
     return this;
   },
-  isHidden(selector = 'PopupInner > div') {
+  isHidden(selector = 'PopupInner div') {
     return this.find(selector)
+      .first()
       .prop('className')
       .includes('-hidden');
   },
