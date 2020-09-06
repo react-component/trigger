@@ -53,6 +53,7 @@
     "np": "^6.2.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "regenerator-runtime": "^0.13.7",
     "typescript": "^3.5.2"
   },
   "dependencies": {

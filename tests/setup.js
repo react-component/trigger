@@ -1,5 +1,6 @@
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
+require('regenerator-runtime/runtime');
 
 window.requestAnimationFrame = func => {
   window.setTimeout(func, 16);
