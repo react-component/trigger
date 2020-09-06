@@ -44,11 +44,12 @@ export interface PopupProps {
 const Popup = React.forwardRef<PopupInnerRef, PopupProps>((props, ref) => {
   const { ...cloneProps } = props;
 
+  // We can use fragment directly but this may failed some selector usage. Keep as origin logic
   return (
-    <>
+    <div>
       <Mask {...cloneProps} />
       <PopupInner {...cloneProps} ref={ref} />
-    </>
+    </div>
   );
 });
 

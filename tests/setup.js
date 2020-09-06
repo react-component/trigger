@@ -1,5 +1,6 @@
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
+const { act } = require('react-dom/test-utils');
 require('regenerator-runtime/runtime');
 
 window.requestAnimationFrame = func => {
@@ -17,12 +18,14 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
     return this;
   },
   trigger(eventName = 'click', data = null) {
-    this.find('Trigger > *')
-      .first()
-      .simulate(eventName, data);
+    act(() => {
+      this.find('Trigger > *')
+        .first()
+        .simulate(eventName, data);
 
-    jest.runAllTimers();
-    this.update();
+      jest.runAllTimers();
+      this.update();
+    });
 
     return this;
   },
