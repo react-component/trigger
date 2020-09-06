@@ -11,7 +11,7 @@ const autoAdjustOverflow = {
 
 const targetOffsetG = [0, 0];
 
-const placementAlignMap = {
+export const placementAlignMap = {
   left: {
     points: ['cr', 'cl'],
     overflow: autoAdjustOverflow,
@@ -90,6 +90,22 @@ describe('Trigger.Basic', () => {
         popupDomNode.parentNode.parentNode.parentNode instanceof
           HTMLBodyElement,
       ).toBeTruthy();
+    });
+
+    it('wrapper children with div when multiple children', () => {
+      const wrapper = mount(
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={[<div />, <div />]}
+        >
+          <div className="target">click</div>
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+
+      expect(wrapper.find('.rc-trigger-popup-content').length).toBeTruthy();
     });
 
     it('can change', () => {

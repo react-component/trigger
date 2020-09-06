@@ -48,8 +48,6 @@ export default function Mask(props: MaskProps) {
     };
   }
 
-  console.log('>>>', motion, props);
-
   return (
     <CSSMotion {...motion} visible={visible} removeOnLeave>
       {({ className }) => (
