@@ -166,7 +166,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       ...stretchStyle,
       zIndex,
       ...style,
-      opacity: status === 'motion' || status === 'stable' ? undefined : 0,
+      opacity: status === 'motion' || status === 'stable' || !visible ? undefined : 0,
       pointerEvents: status === 'stable' ? undefined : 'none',
     };
 
