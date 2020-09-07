@@ -15,18 +15,12 @@ type PopupStatus = null | 'measure' | 'align' | 'aligned' | 'motion' | 'stable';
 
 type Func = () => void;
 
-const StatusQueue: PopupStatus[] = [
-  'measure',
-  'align',
-  null,
-  'motion',
-  'stable',
-];
+const StatusQueue: PopupStatus[] = ['measure', 'align', null, 'motion'];
 
 export default (
   visible: boolean,
   doMeasure: Func,
-): [PopupStatus, (callback: () => void) => void] => {
+): [PopupStatus, (callback?: () => void) => void] => {
   const [status, setStatus] = useState<PopupStatus>(null);
   const rafRef = useRef<number>();
 
@@ -35,21 +29,23 @@ export default (
   }
 
   function goNextStatus(callback?: () => void) {
-    // Only align should be manually trigger
-    setStatus(prev => {
-      switch (status) {
-        case 'align':
-          return 'motion';
-      }
+    cancelRaf();
+    rafRef.current = raf(() => {
+      // Only align should be manually trigger
+      setStatus(prev => {
+        switch (status) {
+          case 'align':
+            return 'motion';
 
-      return prev;
+          case 'motion':
+            return 'stable';
+        }
+
+        return prev;
+      });
+
+      callback?.();
     });
-
-    // Trigger callback in another frame
-    if (callback) {
-      cancelRaf();
-      rafRef.current = raf(callback);
-    }
   }
 
   // Init status
@@ -67,8 +63,9 @@ export default (
 
     if (status) {
       rafRef.current = raf(async () => {
-        const nextStatus = StatusQueue[StatusQueue.indexOf(status) + 1];
-        if (nextStatus) {
+        const index = StatusQueue.indexOf(status);
+        const nextStatus = StatusQueue[index + 1];
+        if (nextStatus && index !== -1) {
           setStatus(nextStatus);
         }
       });

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRef, useState } from 'react';
 import Align from 'rc-align';
 import { RefAlign } from 'rc-align/lib/Align';
-import CSSMotion, { CSSMotionProps } from 'rc-motion';
+import CSSMotion, { CSSMotionProps, MotionEndEventHandler } from 'rc-motion';
 import classNames from 'classnames';
 import {
   Point,
@@ -133,13 +133,27 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     }
 
     // ======================== Motion ========================
-    const motion = getMotion(props);
+    const motion = { ...getMotion(props) };
+    ['onAppearEnd', 'onEnterEnd', 'onLeaveEnd'].forEach(eventName => {
+      const originHandler: MotionEndEventHandler = motion[eventName];
+      motion[eventName] = (element, event) => {
+        goNextStatus();
+        return originHandler?.(element, event);
+      };
+    });
 
     function onShowPrepare() {
       return new Promise(resolve => {
         prepareResolveRef.current = resolve;
       });
     }
+
+    // Go to stable directly when motion not provided
+    React.useEffect(() => {
+      if (!motion.motionName && status === 'motion') {
+        goNextStatus();
+      }
+    }, [motion.motionName, status]);
 
     // ========================= Refs =========================
     React.useImperativeHandle(ref, () => ({
@@ -148,14 +162,12 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     }));
 
     // ======================== Render ========================
-    const interactiveReady = status === 'stable' || !visible;
-
     const mergedStyle: React.CSSProperties = {
       ...stretchStyle,
       zIndex,
       ...style,
-      opacity: interactiveReady ? undefined : 0,
-      pointerEvents: interactiveReady ? undefined : 'none',
+      opacity: status === 'motion' || status === 'stable' ? undefined : 0,
+      pointerEvents: status === 'stable' ? undefined : 'none',
     };
 
     // Align status
