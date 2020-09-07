@@ -13,6 +13,7 @@ import {
   getAlignPopupClassName,
 } from './utils/alignUtil';
 import Popup from './Popup';
+import { PopupInnerRef } from './Popup/PopupInner';
 import TriggerContext from './context';
 import {
   ActionType,
@@ -140,7 +141,7 @@ export function generateTrigger(
       autoDestroy: false,
     };
 
-    popupRef = React.createRef<Popup>();
+    popupRef = React.createRef<PopupInnerRef>();
 
     triggerRef = React.createRef<React.ReactInstance>();
 
@@ -279,9 +280,7 @@ export function generateTrigger(
       if (
         e.relatedTarget &&
         !e.relatedTarget.setTimeout &&
-        this.popupRef.current &&
-        this.popupRef.current.popupRef.current &&
-        contains(this.popupRef.current.popupRef.current, e.relatedTarget)
+        contains(this.popupRef.current?.getElement(), e.relatedTarget)
       ) {
         return;
       }
@@ -417,10 +416,7 @@ export function generateTrigger(
 
     getPopupDomNode() {
       // for test
-      if (this.popupRef.current && this.popupRef.current.popupRef.current) {
-        return this.popupRef.current.popupRef.current;
-      }
-      return null;
+      return this.popupRef.current?.getElement() || null;
     }
 
     getRootDomNode = (): HTMLElement => {
@@ -704,12 +700,8 @@ export function generateTrigger(
     }
 
     forcePopupAlign() {
-      if (
-        this.state.popupVisible &&
-        this.popupRef.current &&
-        this.popupRef.current.alignRef.current
-      ) {
-        this.popupRef.current.alignRef.current.forceAlign();
+      if (this.state.popupVisible) {
+        this.popupRef.current?.forceAlign();
       }
     }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import Portal from 'rc-util/lib/Portal';
 import Trigger from '../src';
 
@@ -10,7 +11,7 @@ const autoAdjustOverflow = {
 
 const targetOffsetG = [0, 0];
 
-const placementAlignMap = {
+export const placementAlignMap = {
   left: {
     points: ['cr', 'cl'],
     overflow: autoAdjustOverflow,
@@ -83,11 +84,28 @@ describe('Trigger.Basic', () => {
       );
 
       wrapper.trigger();
+
       const popupDomNode = wrapper.instance().getPopupDomNode();
       expect(
         popupDomNode.parentNode.parentNode.parentNode instanceof
           HTMLBodyElement,
       ).toBeTruthy();
+    });
+
+    it('wrapper children with div when multiple children', () => {
+      const wrapper = mount(
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          popup={[<div />, <div />]}
+        >
+          <div className="target">click</div>
+        </Trigger>,
+      );
+
+      wrapper.trigger();
+
+      expect(wrapper.find('.rc-trigger-popup-content').length).toBeTruthy();
     });
 
     it('can change', () => {
@@ -506,18 +524,31 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-    it('width', () => {
-      const wrapper = createTrigger('width');
-      wrapper.trigger();
+    let domSpy;
 
-      expect('width' in wrapper.find('PopupInner').props().style).toBeTruthy();
+    beforeAll(() => {
+      domSpy = spyElementPrototypes(HTMLElement, {
+        offsetWidth: {
+          get: () => 1128,
+        },
+        offsetHeight: {
+          get: () => 903,
+        },
+      });
     });
 
-    it('height', () => {
-      const wrapper = createTrigger('height');
-      wrapper.trigger();
+    afterAll(() => {
+      domSpy.mockRestore();
+    });
 
-      expect('height' in wrapper.find('PopupInner').props().style).toBeTruthy();
+    ['width', 'height', 'minWidth', 'minHeight'].forEach(prop => {
+      it(prop, () => {
+        const wrapper = createTrigger(prop);
+
+        wrapper.trigger();
+
+        expect(prop in wrapper.getPopupInner().props().style).toBeTruthy();
+      });
     });
   });
 

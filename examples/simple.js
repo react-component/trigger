@@ -60,11 +60,11 @@ const RefTarget = React.forwardRef((props, ref) => {
 
 class Test extends React.Component {
   state = {
-    mask: false,
-    maskClosable: false,
+    mask: true,
+    maskClosable: true,
     placement: 'right',
     trigger: {
-      hover: 1,
+      click: 1,
     },
     offsetX: undefined,
     offsetY: undefined,
@@ -315,7 +315,7 @@ class Test extends React.Component {
             mask={this.state.mask}
             maskClosable={this.state.maskClosable}
             stretch={this.state.stretch}
-            // maskAnimation="fade"
+            maskAnimation="fade"
             // mouseEnterDelay={0.1}
             // mouseLeaveDelay={0.1}
             action={Object.keys(state.trigger)}

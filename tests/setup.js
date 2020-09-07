@@ -1,11 +1,19 @@
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
+const { act } = require('react-dom/test-utils');
+require('regenerator-runtime/runtime');
 
 window.requestAnimationFrame = func => {
   window.setTimeout(func, 16);
 };
 
 Enzyme.configure({ adapter: new Adapter() });
+
+const popupInnerSelector = 'PopupInner div';
+
+// jsdom add motion events to test CSSMotion
+window.AnimationEvent = window.AnimationEvent || (() => {});
+window.TransitionEvent = window.TransitionEvent || (() => {});
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
   refresh() {
@@ -14,17 +22,23 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
     return this;
   },
   trigger(eventName = 'click', data = null) {
-    this.find('Trigger > *')
-      .first()
-      .simulate(eventName, data);
+    act(() => {
+      this.find('Trigger > *')
+        .first()
+        .simulate(eventName, data);
 
-    jest.runAllTimers();
-    this.update();
+      jest.runAllTimers();
+      this.update();
+    });
 
     return this;
   },
-  isHidden(selector = 'PopupInner > div') {
+  getPopupInner() {
+    return this.find(popupInnerSelector).first();
+  },
+  isHidden(selector = popupInnerSelector) {
     return this.find(selector)
+      .first()
       .prop('className')
       .includes('-hidden');
   },
