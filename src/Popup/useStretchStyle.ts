@@ -18,16 +18,18 @@ export default (
     const sizeStyle: React.CSSProperties = {};
 
     if (stretch) {
+      const { width, height } = targetSize;
+
       // Stretch with target
-      if (stretch.indexOf('height') !== -1) {
-        sizeStyle.height = targetSize.height;
-      } else if (stretch.indexOf('minHeight') !== -1) {
-        sizeStyle.minHeight = targetSize.height;
+      if (stretch.indexOf('height') !== -1 && height) {
+        sizeStyle.height = height;
+      } else if (stretch.indexOf('minHeight') !== -1 && height) {
+        sizeStyle.minHeight = height;
       }
-      if (stretch.indexOf('width') !== -1) {
-        sizeStyle.width = targetSize.width;
-      } else if (stretch.indexOf('minWidth') !== -1) {
-        sizeStyle.minWidth = targetSize.width;
+      if (stretch.indexOf('width') !== -1 && width) {
+        sizeStyle.width = width;
+      } else if (stretch.indexOf('minWidth') !== -1 && width) {
+        sizeStyle.minWidth = width;
       }
     }
 
