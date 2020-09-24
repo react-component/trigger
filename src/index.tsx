@@ -1,5 +1,6 @@
 import React, { HTMLAttributes } from 'react';
 import ReactDOM from 'react-dom';
+import raf from 'rc-util/lib/raf';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
@@ -538,8 +539,23 @@ export function generateTrigger(
       );
     };
 
-    getContainer = () => {
+    attachParent = (popupContainer: HTMLDivElement) => {
       const { props } = this;
+      const mountNode = props.getPopupContainer
+        ? props.getPopupContainer(this.getRootDomNode())
+        : props.getDocument().body;
+
+      if (mountNode) {
+        mountNode.appendChild(popupContainer);
+      } else {
+        // Retry after frame render in case parent not ready
+        raf(() => {
+          this.attachParent(popupContainer);
+        });
+      }
+    };
+
+    getContainer = () => {
       const popupContainer = document.createElement('div');
       // Make sure default popup container will never cause scrollbar appearing
       // https://github.com/react-component/trigger/issues/41
@@ -547,10 +563,7 @@ export function generateTrigger(
       popupContainer.style.top = '0';
       popupContainer.style.left = '0';
       popupContainer.style.width = '100%';
-      const mountNode = props.getPopupContainer
-        ? props.getPopupContainer(this.getRootDomNode())
-        : props.getDocument().body;
-      mountNode.appendChild(popupContainer);
+      this.attachParent(popupContainer);
       return popupContainer;
     };
 
