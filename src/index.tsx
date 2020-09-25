@@ -146,6 +146,8 @@ export function generateTrigger(
 
     triggerRef = React.createRef<React.ReactInstance>();
 
+    attachId?: number;
+
     clickOutsideHandler: CommonEventHandler;
 
     touchOutsideHandler: CommonEventHandler;
@@ -540,14 +542,17 @@ export function generateTrigger(
     };
 
     attachParent = (popupContainer: HTMLDivElement) => {
+      raf.cancel(this.attachId);
+
       const { getPopupContainer, getDocument } = this.props;
       const domNode = this.getRootDomNode();
 
       let mountNode: HTMLElement;
       if (!getPopupContainer) {
         mountNode = getDocument().body;
-      } else if (domNode) {
-        // Compatible for sync render usage
+      } else if (domNode || getPopupContainer.length === 0) {
+        // Compatible for legacy getPopupContainer with domNode argument.
+        // If no need `domNode` argument, will call directly.
         // https://codesandbox.io/s/eloquent-mclean-ss93m?file=/src/App.js
         mountNode = getPopupContainer(domNode);
       }
@@ -556,7 +561,7 @@ export function generateTrigger(
         mountNode.appendChild(popupContainer);
       } else {
         // Retry after frame render in case parent not ready
-        raf(() => {
+        this.attachId = raf(() => {
           this.attachParent(popupContainer);
         });
       }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import Portal from 'rc-util/lib/Portal';
 import Trigger from '../src';
@@ -682,5 +683,61 @@ describe('Trigger.Basic', () => {
     expect(popupDomNode.style.zIndex).toBe(style.zIndex.toString());
     expect(popupDomNode.style.color).toBe(style.color);
     expect(popupDomNode.style.top).toBe(`${style.top}px`);
+  });
+
+  describe('getContainer', () => {
+    it('not trigger when dom not ready', () => {
+      const getPopupContainer = jest.fn(node => node.parentElement);
+
+      function Demo() {
+        return (
+          <Trigger
+            popupVisible
+            getPopupContainer={getPopupContainer}
+            popup={<strong className="x-content">tooltip2</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>
+        );
+      }
+
+      const wrapper = mount(<Demo />);
+
+      expect(getPopupContainer).toHaveReturnedTimes(0);
+
+      act(() => {
+        jest.runAllTimers();
+      });
+      expect(getPopupContainer).toHaveReturnedTimes(1);
+      expect(getPopupContainer).toHaveBeenCalledWith(
+        wrapper.find('.target').instance(),
+      );
+    });
+
+    it('not trigger when dom no need', () => {
+      let triggerTimes = 0;
+      const getPopupContainer = () => {
+        triggerTimes += 1;
+        return document.body;
+      };
+
+      function Demo() {
+        return (
+          <Trigger
+            popupVisible
+            getPopupContainer={getPopupContainer}
+            popup={<strong className="x-content">tooltip2</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>
+        );
+      }
+
+      const wrapper = mount(<Demo />);
+
+      expect(triggerTimes).toEqual(1);
+
+      wrapper.unmount();
+    });
   });
 });
