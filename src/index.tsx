@@ -250,7 +250,7 @@ export function generateTrigger(
     componentWillUnmount() {
       this.clearDelayTimer();
       this.clearOutsideHandler();
-      clearTimeout(this.mouseDownTimeout);
+      if (this.mouseDownTimeout) clearTimeout(this.mouseDownTimeout);
     }
 
     onMouseEnter = e => {
