@@ -540,10 +540,17 @@ export function generateTrigger(
     };
 
     attachParent = (popupContainer: HTMLDivElement) => {
-      const { props } = this;
-      const mountNode = props.getPopupContainer
-        ? props.getPopupContainer(this.getRootDomNode())
-        : props.getDocument().body;
+      const { getPopupContainer, getDocument } = this.props;
+      const domNode = this.getRootDomNode();
+
+      let mountNode: HTMLElement;
+      if (!getPopupContainer) {
+        mountNode = getDocument().body;
+      } else if (domNode) {
+        // Compatible for sync render usage
+        // https://codesandbox.io/s/eloquent-mclean-ss93m?file=/src/App.js
+        mountNode = getPopupContainer(domNode);
+      }
 
       if (mountNode) {
         mountNode.appendChild(popupContainer);
