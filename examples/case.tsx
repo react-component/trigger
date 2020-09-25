@@ -196,11 +196,6 @@ const Demo = () => {
                 adjustY: 1,
               },
             }}
-            popupVisible
-            getPopupContainer={node => {
-              console.log('G<>>>>>>', node);
-              return node.parentElement;
-            }}
             popupPlacement={placement}
             destroyPopupOnHide={destroyPopupOnHide}
             mask={mask}
