@@ -1,5 +1,5 @@
 # rc-trigger
----
+-------
 
 React Trigger Component
 
