@@ -583,7 +583,7 @@ export function generateTrigger(
      * @param popupVisible    Show or not the popup element
      * @param event           SyntheticEvent, used for `pointAlign`
      */
-    setPopupVisible(popupVisible, event?) {
+    setPopupVisible(popupVisible: boolean, event?: { pageX: number, pageY: number }) {
       const { alignPoint } = this.props;
       const { popupVisible: prevPopupVisible } = this.state;
 
@@ -597,7 +597,7 @@ export function generateTrigger(
       }
 
       // Always record the point position since mouseEnterDelay will delay the show
-      if (alignPoint && event) {
+      if (alignPoint && event && popupVisible) {
         this.setPoint(event);
       }
     }

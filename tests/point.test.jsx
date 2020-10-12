@@ -16,11 +16,16 @@ describe('Trigger.Point', () => {
   });
 
   class Demo extends React.Component {
-    popup = <div className="point-popup">POPUP</div>;
+    popup = (<div className="point-popup">POPUP</div>);
 
     render() {
       return (
-        <Trigger popup={this.popup} popupAlign={{ points: ['tl'] }} alignPoint {...this.props}>
+        <Trigger
+          popup={this.popup}
+          popupAlign={{ points: ['tl'] }}
+          alignPoint
+          {...this.props}
+        >
           <div className="point-region" />
         </Trigger>
       );
@@ -36,7 +41,9 @@ describe('Trigger.Point', () => {
       .first()
       .getDOMNode();
 
-    expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
+    expect(popup.style).toEqual(
+      expect.objectContaining({ left: '-989px', top: '-979px' }),
+    );
   });
 
   it('hover', () => {
@@ -48,12 +55,16 @@ describe('Trigger.Point', () => {
       .first()
       .getDOMNode();
 
-    expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
+    expect(popup.style).toEqual(
+      expect.objectContaining({ left: '-989px', top: '-979px' }),
+    );
   });
 
   describe('contextMenu', () => {
     it('basic', () => {
-      const wrapper = mount(<Demo action={['contextMenu']} />);
+      const wrapper = mount(
+        <Demo action={['contextMenu']} hideAction={['click']} />,
+      );
       wrapper.trigger('contextMenu', { pageX: 10, pageY: 20 });
 
       const popup = wrapper
@@ -61,12 +72,32 @@ describe('Trigger.Point', () => {
         .first()
         .getDOMNode();
 
-      expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
+      expect(popup.style).toEqual(
+        expect.objectContaining({ left: '-989px', top: '-979px' }),
+      );
+
+      // Not trigger point update when close
+      const clickEvent = {};
+      const pagePropDefine = {
+        get: () => {
+          throw new Error('should not read when close');
+        },
+      };
+      Object.defineProperties(clickEvent, {
+        pageX: pagePropDefine,
+        pageY: pagePropDefine,
+      });
+      wrapper
+        .find('Trigger')
+        .instance()
+        .onClick(clickEvent);
     });
 
     // https://github.com/ant-design/ant-design/issues/17043
     it('not prevent default', done => {
-      const wrapper = mount(<Demo showAction={['contextMenu']} hideAction={['click']} />);
+      const wrapper = mount(
+        <Demo showAction={['contextMenu']} hideAction={['click']} />,
+      );
       wrapper.trigger('contextMenu', { pageX: 10, pageY: 20 });
 
       const popup = wrapper
@@ -74,7 +105,9 @@ describe('Trigger.Point', () => {
         .first()
         .getDOMNode();
 
-      expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
+      expect(popup.style).toEqual(
+        expect.objectContaining({ left: '-989px', top: '-979px' }),
+      );
 
       // Click to close
       wrapper.trigger('click', {
@@ -91,7 +124,11 @@ describe('Trigger.Point', () => {
     function testPlacement(name, builtinPlacements, afterAll) {
       it(name, () => {
         const wrapper = mount(
-          <Demo action={['click']} builtinPlacements={builtinPlacements} popupPlacement="right" />,
+          <Demo
+            action={['click']}
+            builtinPlacements={builtinPlacements}
+            popupPlacement="right"
+          />,
         );
         wrapper.trigger('click', { pageX: 10, pageY: 20 });
 
@@ -100,7 +137,9 @@ describe('Trigger.Point', () => {
           .first()
           .getDOMNode();
 
-        expect(popup.style).toEqual(expect.objectContaining({ left: '-989px', top: '-979px' }));
+        expect(popup.style).toEqual(
+          expect.objectContaining({ left: '-989px', top: '-979px' }),
+        );
 
         if (afterAll) {
           afterAll(wrapper);
@@ -124,7 +163,9 @@ describe('Trigger.Point', () => {
       },
       wrapper => {
         expect(
-          wrapper.find('div.rc-trigger-popup').hasClass('rc-trigger-popup-placement-left'),
+          wrapper
+            .find('div.rc-trigger-popup')
+            .hasClass('rc-trigger-popup-placement-left'),
         ).toBeTruthy();
       },
     );
