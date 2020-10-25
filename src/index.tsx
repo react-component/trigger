@@ -251,6 +251,7 @@ export function generateTrigger(
       this.clearDelayTimer();
       this.clearOutsideHandler();
       clearTimeout(this.mouseDownTimeout);
+      raf.cancel(this.attachId);
     }
 
     onMouseEnter = e => {
