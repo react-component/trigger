@@ -1,4 +1,5 @@
-import React, { HTMLAttributes } from 'react';
+import * as React from 'react';
+import { HTMLAttributes } from 'react';
 import ReactDOM from 'react-dom';
 import raf from 'rc-util/lib/raf';
 import contains from 'rc-util/lib/Dom/contains';
