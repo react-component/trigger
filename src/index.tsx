@@ -79,7 +79,6 @@ export interface TriggerProps {
   popupVisible?: boolean;
   defaultPopupVisible?: boolean;
   autoDestroy?: boolean;
-
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
