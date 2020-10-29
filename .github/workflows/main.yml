@@ -88,7 +88,7 @@ jobs:
       - name: compile
         run: npm run compile
 
-    needs: lint
+    needs: setup
   
   coverage:
     runs-on: ubuntu-latest
@@ -111,4 +111,4 @@ jobs:
       - name: coverage
         run: npm run coverage && bash <(curl -s https://codecov.io/bash)
 
-    needs: compile
+    needs: setup
