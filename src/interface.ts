@@ -1,3 +1,5 @@
+import { CSSMotionProps } from 'rc-motion';
+
 /** Two char of 't' 'b' 'c' 'l' 'r'. Example: 'lt' */
 export type AlignPoint = string;
 
@@ -60,4 +62,12 @@ export interface Point {
 
 export interface CommonEventHandler {
   remove: () => void;
+}
+
+export interface MobileConfig {
+  /** Set popup motion. You can ref `rc-motion` for more info. */
+  popupMotion?: CSSMotionProps;
+  popupClassName?: string;
+  popupStyle?: React.CSSProperties;
+  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
 }

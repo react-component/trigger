@@ -58,13 +58,32 @@ const RefTarget = React.forwardRef((props, ref) => {
   return <InnerTarget {...props} />;
 });
 
-class Test extends React.Component {
-  state = {
+interface TestState {
+  mask: boolean;
+  maskClosable: boolean;
+  placement: 'right';
+  trigger: {
+    click?: boolean;
+    focus?: boolean;
+    hover?: boolean;
+    contextMenu?: boolean;
+  };
+  offsetX: number;
+  offsetY: number;
+  stretch: string;
+  transitionName: string;
+  destroyed?: boolean;
+  destroyPopupOnHide?: boolean;
+  autoDestroy?: boolean;
+}
+
+class Test extends React.Component<{}, TestState> {
+  state: TestState = {
     mask: true,
     maskClosable: true,
     placement: 'right',
     trigger: {
-      click: 1,
+      click: true,
     },
     offsetX: undefined,
     offsetY: undefined,
@@ -328,6 +347,28 @@ class Test extends React.Component {
             }}
             popup={<div>i am a popup</div>}
             popupTransitionName={state.transitionName}
+            mobile={{
+              popupMotion: {
+                motionName: 'rc-trigger-popup-mobile',
+              },
+              popupStyle: {
+                padding: 16,
+                borderTop: '1px solid red',
+                background: '#FFF',
+                textAlign: 'center',
+              },
+              popupRender: node => (
+                <>
+                  <div>
+                    <input
+                      style={{ width: '100%' }}
+                      placeholder="additional content"
+                    />
+                  </div>
+                  {node}
+                </>
+              ),
+            }}
           >
             <RefTarget />
           </Trigger>

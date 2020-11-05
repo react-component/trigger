@@ -25,6 +25,7 @@ import {
   AnimationType,
   Point,
   CommonEventHandler,
+  MobileConfig,
 } from './interface';
 
 function noop() {}
@@ -102,6 +103,10 @@ export interface TriggerProps {
    * Used for some component is function component which can not access by `findDOMNode`
    */
   getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
+
+  // ========================== Mobile ==========================
+  /** Bump fixed position at bottom in mobile */
+  mobile?: MobileConfig;
 }
 
 interface TriggerState {
@@ -184,8 +189,8 @@ export function generateTrigger(
         popupVisible,
       };
 
-      ALL_HANDLERS.forEach(h => {
-        this[`fire${h}`] = e => {
+      ALL_HANDLERS.forEach((h) => {
+        this[`fire${h}`] = (e) => {
           this.fireEvents(h, e);
         };
       });
@@ -255,7 +260,7 @@ export function generateTrigger(
       raf.cancel(this.attachId);
     }
 
-    onMouseEnter = e => {
+    onMouseEnter = (e) => {
       const { mouseEnterDelay } = this.props;
       this.fireEvents('onMouseEnter', e);
       this.delaySetPopupVisible(
@@ -265,12 +270,12 @@ export function generateTrigger(
       );
     };
 
-    onMouseMove = e => {
+    onMouseMove = (e) => {
       this.fireEvents('onMouseMove', e);
       this.setPoint(e);
     };
 
-    onMouseLeave = e => {
+    onMouseLeave = (e) => {
       this.fireEvents('onMouseLeave', e);
       this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
     };
@@ -279,7 +284,7 @@ export function generateTrigger(
       this.clearDelayTimer();
     };
 
-    onPopupMouseLeave = e => {
+    onPopupMouseLeave = (e) => {
       // https://github.com/react-component/trigger/pull/13
       // react bug?
       if (
@@ -292,7 +297,7 @@ export function generateTrigger(
       this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
     };
 
-    onFocus = e => {
+    onFocus = (e) => {
       this.fireEvents('onFocus', e);
       // incase focusin and focusout
       this.clearDelayTimer();
@@ -302,17 +307,17 @@ export function generateTrigger(
       }
     };
 
-    onMouseDown = e => {
+    onMouseDown = (e) => {
       this.fireEvents('onMouseDown', e);
       this.preClickTime = Date.now();
     };
 
-    onTouchStart = e => {
+    onTouchStart = (e) => {
       this.fireEvents('onTouchStart', e);
       this.preTouchTime = Date.now();
     };
 
-    onBlur = e => {
+    onBlur = (e) => {
       this.fireEvents('onBlur', e);
       this.clearDelayTimer();
       if (this.isBlurToHide()) {
@@ -320,7 +325,7 @@ export function generateTrigger(
       }
     };
 
-    onContextMenu = e => {
+    onContextMenu = (e) => {
       e.preventDefault();
       this.fireEvents('onContextMenu', e);
       this.setPopupVisible(true, e);
@@ -332,7 +337,7 @@ export function generateTrigger(
       }
     };
 
-    onClick = event => {
+    onClick = (event) => {
       this.fireEvents('onClick', event);
       // focus will trigger click
       if (this.focusTime) {
@@ -385,7 +390,7 @@ export function generateTrigger(
       }
     };
 
-    onDocumentClick = event => {
+    onDocumentClick = (event) => {
       if (this.props.mask && !this.props.maskClosable) {
         return;
       }
@@ -442,7 +447,7 @@ export function generateTrigger(
       return ReactDOM.findDOMNode(this) as HTMLElement;
     };
 
-    getPopupClassNameFromAlign = align => {
+    getPopupClassNameFromAlign = (align) => {
       const className = [];
       const {
         popupPlacement,
@@ -498,6 +503,7 @@ export function generateTrigger(
         popup,
         stretch,
         alignPoint,
+        mobile,
       } = this.props;
       const { popupVisible, point } = this.state;
 
@@ -537,6 +543,7 @@ export function generateTrigger(
           maskMotion={maskMotion}
           ref={this.popupRef}
           motion={popupMotion}
+          mobile={mobile}
         >
           {typeof popup === 'function' ? popup() : popup}
         </Popup>
@@ -585,7 +592,10 @@ export function generateTrigger(
      * @param popupVisible    Show or not the popup element
      * @param event           SyntheticEvent, used for `pointAlign`
      */
-    setPopupVisible(popupVisible: boolean, event?: { pageX: number, pageY: number }) {
+    setPopupVisible(
+      popupVisible: boolean,
+      event?: { pageX: number; pageY: number },
+    ) {
       const { alignPoint } = this.props;
       const { popupVisible: prevPopupVisible } = this.state;
 
@@ -604,7 +614,7 @@ export function generateTrigger(
       }
     }
 
-    setPoint = point => {
+    setPoint = (point) => {
       const { alignPoint } = this.props;
       if (!alignPoint || !point) return;
 

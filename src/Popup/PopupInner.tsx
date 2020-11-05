@@ -134,7 +134,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
 
     // ======================== Motion ========================
     const motion = { ...getMotion(props) };
-    ['onAppearEnd', 'onEnterEnd', 'onLeaveEnd'].forEach(eventName => {
+    ['onAppearEnd', 'onEnterEnd', 'onLeaveEnd'].forEach((eventName) => {
       const originHandler: MotionEndEventHandler = motion[eventName];
       motion[eventName] = (element, event) => {
         goNextStatus();
@@ -143,7 +143,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     });
 
     function onShowPrepare() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         prepareResolveRef.current = resolve;
       });
     }
@@ -166,7 +166,8 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       ...stretchStyle,
       zIndex,
       ...style,
-      opacity: status === 'motion' || status === 'stable' || !visible ? undefined : 0,
+      opacity:
+        status === 'motion' || status === 'stable' || !visible ? undefined : 0,
       pointerEvents: status === 'stable' ? undefined : 'none',
     };
 

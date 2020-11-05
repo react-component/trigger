@@ -1,0 +1,19 @@
+.@{triggerPrefixCls} {
+  &-mobile {
+    transition: all 0.3s;
+
+    &-appear,
+    &-enter {
+      &-start {
+        transform: translateY(100%);
+      }
+    }
+
+    &-leave {
+      &-active {
+        transform: translateY(100%);
+      }
+    }
+  }
+}
+
