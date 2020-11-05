@@ -33,14 +33,8 @@ const MobilePopupInner = React.forwardRef<PopupInnerRef, MobilePopupInnerProps>(
     // ======================== Render ========================
     const mergedStyle: React.CSSProperties = {
       zIndex,
-      ...popupStyle,
 
-      // Mobile inject
-      position: 'fixed',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      top: 'auto',
+      ...popupStyle,
     };
 
     let childNode = children;

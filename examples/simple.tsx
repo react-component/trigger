@@ -349,8 +349,9 @@ class Test extends React.Component<{}, TestState> {
             popupTransitionName={state.transitionName}
             mobile={{
               popupMotion: {
-                motionName: 'rc-trigger-popup-mobile',
+                motionName: 'rc-trigger-popup-mobile-fade',
               },
+              popupClassName: 'rc-trigger-popup-mobile',
               popupStyle: {
                 padding: 16,
                 borderTop: '1px solid red',
