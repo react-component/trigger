@@ -105,7 +105,8 @@ export interface TriggerProps {
   getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
 
   // ========================== Mobile ==========================
-  /** Bump fixed position at bottom in mobile */
+  /** @private Bump fixed position at bottom in mobile.
+   * This is internal usage currently, do not use in your prod */
   mobile?: MobileConfig;
 }
 
