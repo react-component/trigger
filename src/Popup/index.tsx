@@ -1,14 +1,18 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { CSSMotionProps } from 'rc-motion';
+import isMobile from 'rc-util/lib/isMobile';
 import {
   StretchType,
   AlignType,
   TransitionNameType,
   AnimationType,
   Point,
+  MobileConfig,
 } from '../interface';
 import Mask from './Mask';
 import PopupInner, { PopupInnerRef } from './PopupInner';
+import MobilePopupInner from './MobilePopupInner';
 
 export interface PopupProps {
   visible?: boolean;
@@ -39,19 +43,41 @@ export interface PopupProps {
   transitionName: TransitionNameType;
   maskAnimation: AnimationType;
   maskTransitionName: TransitionNameType;
+
+  // Mobile
+  mobile?: MobileConfig;
 }
 
-const Popup = React.forwardRef<PopupInnerRef, PopupProps>((props, ref) => {
-  const { ...cloneProps } = props;
+const Popup = React.forwardRef<PopupInnerRef, PopupProps>(
+  ({ visible, mobile, ...props }, ref) => {
+    const [innerVisible, serInnerVisible] = useState(visible);
+    const [inMobile, setInMobile] = useState(false);
+    const cloneProps = { ...props, visible: innerVisible };
 
-  // We can use fragment directly but this may failed some selector usage. Keep as origin logic
-  return (
-    <div>
-      <Mask {...cloneProps} />
+    // We check mobile in visible changed here.
+    // And this also delay set `innerVisible` to avoid popup component render flash
+    useEffect(() => {
+      serInnerVisible(visible);
+      if (visible && mobile) {
+        setInMobile(isMobile());
+      }
+    }, [visible, !!mobile]);
+
+    const popupNode: React.ReactNode = inMobile ? (
+      <MobilePopupInner {...cloneProps} mobile={mobile} ref={ref} />
+    ) : (
       <PopupInner {...cloneProps} ref={ref} />
-    </div>
-  );
-});
+    );
+
+    // We can use fragment directly but this may failed some selector usage. Keep as origin logic
+    return (
+      <div>
+        <Mask {...cloneProps} />
+        {popupNode}
+      </div>
+    );
+  },
+);
 
 Popup.displayName = 'Popup';
 

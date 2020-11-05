@@ -25,6 +25,7 @@ import {
   AnimationType,
   Point,
   CommonEventHandler,
+  MobileConfig,
 } from './interface';
 
 function noop() {}
@@ -102,6 +103,11 @@ export interface TriggerProps {
    * Used for some component is function component which can not access by `findDOMNode`
    */
   getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
+
+  // ========================== Mobile ==========================
+  /** @private Bump fixed position at bottom in mobile.
+   * This is internal usage currently, do not use in your prod */
+  mobile?: MobileConfig;
 }
 
 interface TriggerState {
@@ -498,6 +504,7 @@ export function generateTrigger(
         popup,
         stretch,
         alignPoint,
+        mobile,
       } = this.props;
       const { popupVisible, point } = this.state;
 
@@ -537,6 +544,7 @@ export function generateTrigger(
           maskMotion={maskMotion}
           ref={this.popupRef}
           motion={popupMotion}
+          mobile={mobile}
         >
           {typeof popup === 'function' ? popup() : popup}
         </Popup>
@@ -585,7 +593,11 @@ export function generateTrigger(
      * @param popupVisible    Show or not the popup element
      * @param event           SyntheticEvent, used for `pointAlign`
      */
-    setPopupVisible(popupVisible: boolean, event?: { pageX: number, pageY: number }) {
+    setPopupVisible(
+      popupVisible: boolean,
+      event?: { pageX: number; pageY: number },
+    ) {
+      console.error('Change:::', popupVisible);
       const { alignPoint } = this.props;
       const { popupVisible: prevPopupVisible } = this.state;
 
@@ -763,12 +775,15 @@ export function generateTrigger(
         key: 'trigger',
       };
 
+      // ============================== Visible Handlers ==============================
+      // >>> ContextMenu
       if (this.isContextMenuToShow()) {
         newChildProps.onContextMenu = this.onContextMenu;
       } else {
         newChildProps.onContextMenu = this.createTwoChains('onContextMenu');
       }
 
+      // >>> Click
       if (this.isClickToHide() || this.isClickToShow()) {
         newChildProps.onClick = this.onClick;
         newChildProps.onMouseDown = this.onMouseDown;
@@ -778,19 +793,27 @@ export function generateTrigger(
         newChildProps.onMouseDown = this.createTwoChains('onMouseDown');
         newChildProps.onTouchStart = this.createTwoChains('onTouchStart');
       }
+
+      // >>> Hover(enter)
       if (this.isMouseEnterToShow()) {
         newChildProps.onMouseEnter = this.onMouseEnter;
+
+        // Point align
         if (alignPoint) {
           newChildProps.onMouseMove = this.onMouseMove;
         }
       } else {
         newChildProps.onMouseEnter = this.createTwoChains('onMouseEnter');
       }
+
+      // >>> Hover(leave)
       if (this.isMouseLeaveToHide()) {
         newChildProps.onMouseLeave = this.onMouseLeave;
       } else {
         newChildProps.onMouseLeave = this.createTwoChains('onMouseLeave');
       }
+
+      // >>> Focus
       if (this.isFocusToShow() || this.isBlurToHide()) {
         newChildProps.onFocus = this.onFocus;
         newChildProps.onBlur = this.onBlur;
@@ -799,6 +822,7 @@ export function generateTrigger(
         newChildProps.onBlur = this.createTwoChains('onBlur');
       }
 
+      // =================================== Render ===================================
       const childrenClassName = classNames(
         child && child.props && child.props.className,
         className,
