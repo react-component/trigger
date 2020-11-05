@@ -75,6 +75,7 @@ interface TestState {
   destroyed?: boolean;
   destroyPopupOnHide?: boolean;
   autoDestroy?: boolean;
+  mobile?: boolean;
 }
 
 class Test extends React.Component<{}, TestState> {
@@ -300,6 +301,19 @@ class Test extends React.Component<{}, TestState> {
             />
             maskClosable
           </label>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <label>
+            <input
+              checked={!!this.state.mobile}
+              type="checkbox"
+              onChange={() => {
+                this.setState(({ mobile }) => ({
+                  mobile: !mobile,
+                }));
+              }}
+            />
+            mobile
+          </label>
           <br />
           <label>
             offsetX:
@@ -347,29 +361,33 @@ class Test extends React.Component<{}, TestState> {
             }}
             popup={<div>i am a popup</div>}
             popupTransitionName={state.transitionName}
-            mobile={{
-              popupMotion: {
-                motionName: 'rc-trigger-popup-mobile-fade',
-              },
-              popupClassName: 'rc-trigger-popup-mobile',
-              popupStyle: {
-                padding: 16,
-                borderTop: '1px solid red',
-                background: '#FFF',
-                textAlign: 'center',
-              },
-              popupRender: node => (
-                <>
-                  <div>
-                    <input
-                      style={{ width: '100%' }}
-                      placeholder="additional content"
-                    />
-                  </div>
-                  {node}
-                </>
-              ),
-            }}
+            mobile={
+              state.mobile
+                ? {
+                    popupMotion: {
+                      motionName: 'rc-trigger-popup-mobile-fade',
+                    },
+                    popupClassName: 'rc-trigger-popup-mobile',
+                    popupStyle: {
+                      padding: 16,
+                      borderTop: '1px solid red',
+                      background: '#FFF',
+                      textAlign: 'center',
+                    },
+                    popupRender: node => (
+                      <>
+                        <div>
+                          <input
+                            style={{ width: '100%' }}
+                            placeholder="additional content"
+                          />
+                        </div>
+                        {node}
+                      </>
+                    ),
+                  }
+                : null
+            }
           >
             <RefTarget />
           </Trigger>
