@@ -597,7 +597,6 @@ export function generateTrigger(
       popupVisible: boolean,
       event?: { pageX: number; pageY: number },
     ) {
-      console.error('Change:::', popupVisible);
       const { alignPoint } = this.props;
       const { popupVisible: prevPopupVisible } = this.state;
 
