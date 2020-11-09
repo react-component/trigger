@@ -28,5 +28,29 @@ describe('Trigger.Motion', () => {
 
     wrapper.trigger();
     expect(wrapper.getPopupInner().hasClass('bamboo-appear')).toBeTruthy();
+
+    wrapper.unmount();
+  });
+
+  it('use correct leave motion', () => {
+    const wrapper = mount(
+      <Trigger
+        action={['click']}
+        popupAlign={placementAlignMap.left}
+        popup={<strong className="x-content" />}
+        popupMotion={{
+          motionName: 'bamboo',
+          leavedClassName: 'light',
+        }}
+      >
+        <div className="target">click</div>
+      </Trigger>,
+    );
+
+    wrapper.trigger();
+
+    expect(wrapper.find('CSSMotion').props().leavedClassName).toEqual('light');
+
+    wrapper.unmount();
   });
 });
