@@ -601,9 +601,8 @@ export function generateTrigger(
       const { popupVisible: prevPopupVisible } = this.state;
 
       this.clearDelayTimer();
-
       if (prevPopupVisible !== popupVisible) {
-        if (!('popupVisible' in this.props)) {
+        if (this.props.popupVisible === undefined) {
           this.setState({ popupVisible, prevPopupVisible });
         }
         this.props.onPopupVisibleChange(popupVisible);
