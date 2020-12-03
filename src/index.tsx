@@ -34,7 +34,10 @@ function returnEmptyString() {
   return '';
 }
 
-function returnDocument() {
+function returnDocument(element?: HTMLElement) {
+  if (element) {
+    return element.ownerDocument;
+  }
   return window.document;
 }
 
@@ -70,7 +73,7 @@ export interface TriggerProps {
   focusDelay?: number;
   blurDelay?: number;
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
-  getDocument?: () => HTMLDocument;
+  getDocument?: (element?: HTMLElement) => HTMLDocument;
   forceRender?: boolean;
   destroyPopupOnHide?: boolean;
   mask?: boolean;
@@ -215,7 +218,7 @@ export function generateTrigger(
           !this.clickOutsideHandler &&
           (this.isClickToHide() || this.isContextMenuToShow())
         ) {
-          currentDocument = props.getDocument();
+          currentDocument = props.getDocument(this.getRootDomNode());
           this.clickOutsideHandler = addEventListener(
             currentDocument,
             'mousedown',
