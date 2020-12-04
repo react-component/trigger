@@ -34,7 +34,10 @@ function returnEmptyString() {
   return '';
 }
 
-function returnDocument() {
+function returnDocument(element?: HTMLElement) {
+  if (element) {
+    return element.ownerDocument;
+  }
   return window.document;
 }
 
@@ -70,7 +73,7 @@ export interface TriggerProps {
   focusDelay?: number;
   blurDelay?: number;
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
-  getDocument?: () => HTMLDocument;
+  getDocument?: (element?: HTMLElement) => HTMLDocument;
   forceRender?: boolean;
   destroyPopupOnHide?: boolean;
   mask?: boolean;
@@ -215,7 +218,7 @@ export function generateTrigger(
           !this.clickOutsideHandler &&
           (this.isClickToHide() || this.isContextMenuToShow())
         ) {
-          currentDocument = props.getDocument();
+          currentDocument = props.getDocument(this.getRootDomNode());
           this.clickOutsideHandler = addEventListener(
             currentDocument,
             'mousedown',
@@ -224,7 +227,7 @@ export function generateTrigger(
         }
         // always hide on mobile
         if (!this.touchOutsideHandler) {
-          currentDocument = currentDocument || props.getDocument();
+          currentDocument = currentDocument || props.getDocument(this.getRootDomNode());
           this.touchOutsideHandler = addEventListener(
             currentDocument,
             'touchstart',
@@ -233,7 +236,7 @@ export function generateTrigger(
         }
         // close popup when trigger type contains 'onContextMenu' and document is scrolling.
         if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
-          currentDocument = currentDocument || props.getDocument();
+          currentDocument = currentDocument || props.getDocument(this.getRootDomNode());
           this.contextMenuOutsideHandler1 = addEventListener(
             currentDocument,
             'scroll',
@@ -559,7 +562,7 @@ export function generateTrigger(
 
       let mountNode: HTMLElement;
       if (!getPopupContainer) {
-        mountNode = getDocument().body;
+        mountNode = getDocument(this.getRootDomNode()).body;
       } else if (domNode || getPopupContainer.length === 0) {
         // Compatible for legacy getPopupContainer with domNode argument.
         // If no need `domNode` argument, will call directly.
@@ -578,7 +581,8 @@ export function generateTrigger(
     };
 
     getContainer = () => {
-      const popupContainer = document.createElement('div');
+      const { getDocument } = this.props;
+      const popupContainer = getDocument(this.getRootDomNode()).createElement('div');
       // Make sure default popup container will never cause scrollbar appearing
       // https://github.com/react-component/trigger/issues/41
       popupContainer.style.position = 'absolute';
