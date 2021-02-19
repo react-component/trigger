@@ -116,6 +116,7 @@ export interface TriggerProps {
 interface TriggerState {
   prevPopupVisible: boolean;
   popupVisible: boolean;
+  hideOnMouseOutElement: Element | null;
   point?: Point;
 }
 
@@ -160,6 +161,8 @@ export function generateTrigger(
 
     clickOutsideHandler: CommonEventHandler;
 
+    disabledTargetHandler: CommonEventHandler;
+
     touchOutsideHandler: CommonEventHandler;
 
     contextMenuOutsideHandler1: CommonEventHandler;
@@ -191,6 +194,7 @@ export function generateTrigger(
       this.state = {
         prevPopupVisible: popupVisible,
         popupVisible,
+        hideOnMouseOutElement: null,
       };
 
       ALL_HANDLERS.forEach(h => {
@@ -202,6 +206,21 @@ export function generateTrigger(
 
     componentDidMount() {
       this.componentDidUpdate();
+      // This is a special case for handling disabled elements. When a tooltip is
+      // shown on a tooltip element, the flag is activated and the next time this
+      // event listener is called the tooltip is hidden. This happens because
+      // a mouseover event will be triggered when the cursor leaves a disabled
+      // element.
+      // See:
+      // https://github.com/facebook/react/issues/4251#issuecomment-334266778
+      const currentDocument = this.props.getDocument(this.getRootDomNode());
+      if (currentDocument) {
+        this.disabledTargetHandler = addEventListener(
+          currentDocument,
+          'mouseover',
+          this.handleDisabledMouseOver,
+        );
+      }
     }
 
     componentDidUpdate() {
@@ -227,7 +246,8 @@ export function generateTrigger(
         }
         // always hide on mobile
         if (!this.touchOutsideHandler) {
-          currentDocument = currentDocument || props.getDocument(this.getRootDomNode());
+          currentDocument =
+            currentDocument || props.getDocument(this.getRootDomNode());
           this.touchOutsideHandler = addEventListener(
             currentDocument,
             'touchstart',
@@ -236,7 +256,8 @@ export function generateTrigger(
         }
         // close popup when trigger type contains 'onContextMenu' and document is scrolling.
         if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
-          currentDocument = currentDocument || props.getDocument(this.getRootDomNode());
+          currentDocument =
+            currentDocument || props.getDocument(this.getRootDomNode());
           this.contextMenuOutsideHandler1 = addEventListener(
             currentDocument,
             'scroll',
@@ -260,12 +281,41 @@ export function generateTrigger(
     componentWillUnmount() {
       this.clearDelayTimer();
       this.clearOutsideHandler();
+      this.clearDisabledTargetHandler();
       clearTimeout(this.mouseDownTimeout);
       raf.cancel(this.attachId);
     }
 
+    handleDisabledMouseOver = e => {
+      const target = e.target as Element;
+      if (
+        !this.state.hideOnMouseOutElement ||
+        // needed to work on Firefox
+        this.state.hideOnMouseOutElement === target
+      ) {
+        return;
+      }
+
+      // if the event comes from one of the child elements
+      // then do not hide the tooltip
+      if (
+        this.state.hideOnMouseOutElement.firstElementChild &&
+        this.state.hideOnMouseOutElement.contains &&
+        this.state.hideOnMouseOutElement.contains(target)
+      ) {
+        return;
+      }
+
+      this.fireEvents('onMouseLeave', e);
+      this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+      this.setState({ hideOnMouseOutElement: null });
+    };
+
     onMouseEnter = e => {
       const { mouseEnterDelay } = this.props;
+      if ((e.target as any).disabled) {
+        this.setState({ hideOnMouseOutElement: e.target as Element });
+      }
       this.fireEvents('onMouseEnter', e);
       this.delaySetPopupVisible(
         true,
@@ -582,7 +632,9 @@ export function generateTrigger(
 
     getContainer = () => {
       const { getDocument } = this.props;
-      const popupContainer = getDocument(this.getRootDomNode()).createElement('div');
+      const popupContainer = getDocument(this.getRootDomNode()).createElement(
+        'div',
+      );
       // Make sure default popup container will never cause scrollbar appearing
       // https://github.com/react-component/trigger/issues/41
       popupContainer.style.position = 'absolute';
@@ -655,6 +707,13 @@ export function generateTrigger(
       if (this.delayTimer) {
         clearTimeout(this.delayTimer);
         this.delayTimer = null;
+      }
+    }
+
+    clearDisabledTargetHandler() {
+      if (this.disabledTargetHandler) {
+        this.disabledTargetHandler.remove();
+        this.disabledTargetHandler = null;
       }
     }
 
