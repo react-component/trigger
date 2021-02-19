@@ -62,6 +62,7 @@ export default (
     }
 
     if (status) {
+      cancelRaf();
       rafRef.current = raf(async () => {
         const index = StatusQueue.indexOf(status);
         const nextStatus = StatusQueue[index + 1];
