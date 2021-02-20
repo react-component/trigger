@@ -1,8 +1,8 @@
 import * as React from 'react';
 import CSSMotion from 'rc-motion';
 import classNames from 'classnames';
-import { PopupInnerProps, PopupInnerRef } from './PopupInner';
-import { MobileConfig } from '../interface';
+import type { PopupInnerProps, PopupInnerRef } from './PopupInner';
+import type { MobileConfig } from '../interface';
 
 interface MobilePopupInnerProps extends PopupInnerProps {
   mobile?: MobileConfig;

@@ -1,4 +1,4 @@
-import { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from 'rc-motion';
 
 /** Two char of 't' 'b' 'c' 'l' 'r'. Example: 'lt' */
 export type AlignPoint = string;
@@ -43,9 +43,7 @@ export interface AlignType {
   ignoreShake?: boolean;
 }
 
-export interface BuildInPlacements {
-  [placement: string]: AlignType;
-}
+export type BuildInPlacements = Record<string, AlignType>;
 
 export type StretchType = string;
 

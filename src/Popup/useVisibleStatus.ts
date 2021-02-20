@@ -32,13 +32,13 @@ export default (
     cancelRaf();
     rafRef.current = raf(() => {
       // Only align should be manually trigger
-      setStatus(prev => {
+      setStatus((prev) => {
         switch (status) {
           case 'align':
             return 'motion';
-
           case 'motion':
             return 'stable';
+          default:
         }
 
         return prev;
@@ -59,6 +59,7 @@ export default (
       case 'measure':
         doMeasure();
         break;
+      default:
     }
 
     if (status) {

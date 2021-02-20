@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StretchType } from '../interface';
+import type { StretchType } from '../interface';
 
 export default (
   stretch?: StretchType,
