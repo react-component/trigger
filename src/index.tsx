@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
 import ReactDOM from 'react-dom';
 import raf from 'rc-util/lib/raf';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
-import { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from 'rc-motion';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import Portal from 'rc-util/lib/Portal';
 import classNames from 'classnames';
@@ -15,18 +15,18 @@ import {
   getAlignPopupClassName,
 } from './utils/alignUtil';
 import Popup from './Popup';
-import { PopupInnerRef } from './Popup/PopupInner';
+import type { PopupInnerRef } from './Popup/PopupInner';
 import TriggerContext from './context';
-import {
+import type {
   ActionType,
   AlignType,
-  BuildInPlacements,
   TransitionNameType,
   AnimationType,
   Point,
   CommonEventHandler,
   MobileConfig,
 } from './interface';
+import { BuildInPlacements } from './interface';
 
 function noop() {}
 
@@ -193,8 +193,8 @@ export function generateTrigger(
         popupVisible,
       };
 
-      ALL_HANDLERS.forEach(h => {
-        this[`fire${h}`] = e => {
+      ALL_HANDLERS.forEach((h) => {
+        this[`fire${h}`] = (e) => {
           this.fireEvents(h, e);
         };
       });
@@ -227,7 +227,8 @@ export function generateTrigger(
         }
         // always hide on mobile
         if (!this.touchOutsideHandler) {
-          currentDocument = currentDocument || props.getDocument(this.getRootDomNode());
+          currentDocument =
+            currentDocument || props.getDocument(this.getRootDomNode());
           this.touchOutsideHandler = addEventListener(
             currentDocument,
             'touchstart',
@@ -236,7 +237,8 @@ export function generateTrigger(
         }
         // close popup when trigger type contains 'onContextMenu' and document is scrolling.
         if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
-          currentDocument = currentDocument || props.getDocument(this.getRootDomNode());
+          currentDocument =
+            currentDocument || props.getDocument(this.getRootDomNode());
           this.contextMenuOutsideHandler1 = addEventListener(
             currentDocument,
             'scroll',
@@ -264,7 +266,7 @@ export function generateTrigger(
       raf.cancel(this.attachId);
     }
 
-    onMouseEnter = e => {
+    onMouseEnter = (e) => {
       const { mouseEnterDelay } = this.props;
       this.fireEvents('onMouseEnter', e);
       this.delaySetPopupVisible(
@@ -274,12 +276,12 @@ export function generateTrigger(
       );
     };
 
-    onMouseMove = e => {
+    onMouseMove = (e) => {
       this.fireEvents('onMouseMove', e);
       this.setPoint(e);
     };
 
-    onMouseLeave = e => {
+    onMouseLeave = (e) => {
       this.fireEvents('onMouseLeave', e);
       this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
     };
@@ -288,7 +290,7 @@ export function generateTrigger(
       this.clearDelayTimer();
     };
 
-    onPopupMouseLeave = e => {
+    onPopupMouseLeave = (e) => {
       // https://github.com/react-component/trigger/pull/13
       // react bug?
       if (
@@ -301,7 +303,7 @@ export function generateTrigger(
       this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
     };
 
-    onFocus = e => {
+    onFocus = (e) => {
       this.fireEvents('onFocus', e);
       // incase focusin and focusout
       this.clearDelayTimer();
@@ -311,17 +313,17 @@ export function generateTrigger(
       }
     };
 
-    onMouseDown = e => {
+    onMouseDown = (e) => {
       this.fireEvents('onMouseDown', e);
       this.preClickTime = Date.now();
     };
 
-    onTouchStart = e => {
+    onTouchStart = (e) => {
       this.fireEvents('onTouchStart', e);
       this.preTouchTime = Date.now();
     };
 
-    onBlur = e => {
+    onBlur = (e) => {
       this.fireEvents('onBlur', e);
       this.clearDelayTimer();
       if (this.isBlurToHide()) {
@@ -329,7 +331,7 @@ export function generateTrigger(
       }
     };
 
-    onContextMenu = e => {
+    onContextMenu = (e) => {
       e.preventDefault();
       this.fireEvents('onContextMenu', e);
       this.setPopupVisible(true, e);
@@ -341,7 +343,7 @@ export function generateTrigger(
       }
     };
 
-    onClick = event => {
+    onClick = (event) => {
       this.fireEvents('onClick', event);
       // focus will trigger click
       if (this.focusTime) {
@@ -394,7 +396,7 @@ export function generateTrigger(
       }
     };
 
-    onDocumentClick = event => {
+    onDocumentClick = (event) => {
       if (this.props.mask && !this.props.maskClosable) {
         return;
       }
@@ -451,7 +453,7 @@ export function generateTrigger(
       return ReactDOM.findDOMNode(this) as HTMLElement;
     };
 
-    getPopupClassNameFromAlign = align => {
+    getPopupClassNameFromAlign = (align) => {
       const className = [];
       const {
         popupPlacement,
@@ -582,7 +584,9 @@ export function generateTrigger(
 
     getContainer = () => {
       const { getDocument } = this.props;
-      const popupContainer = getDocument(this.getRootDomNode()).createElement('div');
+      const popupContainer = getDocument(this.getRootDomNode()).createElement(
+        'div',
+      );
       // Make sure default popup container will never cause scrollbar appearing
       // https://github.com/react-component/trigger/issues/41
       popupContainer.style.position = 'absolute';
@@ -619,7 +623,7 @@ export function generateTrigger(
       }
     }
 
-    setPoint = point => {
+    setPoint = (point) => {
       const { alignPoint } = this.props;
       if (!alignPoint || !point) return;
 

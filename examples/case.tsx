@@ -1,8 +1,9 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import { CSSMotionProps } from 'rc-motion';
-import Trigger, { BuildInPlacements } from '../src';
+import type { CSSMotionProps } from 'rc-motion';
+import type { BuildInPlacements } from '../src';
+import Trigger from '../src';
 import './case.less';
 
 const builtinPlacements: BuildInPlacements = {
@@ -202,7 +203,7 @@ const Demo = () => {
             maskMotion={motion ? MaskMotion : null}
             maskClosable={maskClosable}
             stretch={stretch}
-            action={Object.keys(actions).filter(action => actions[action])}
+            action={Object.keys(actions).filter((action) => actions[action])}
             builtinPlacements={builtinPlacements}
             forceRender={forceRender}
             popupStyle={{

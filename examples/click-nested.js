@@ -37,17 +37,7 @@ const popupBorderStyle = {
   background: 'rgba(255, 0, 0, 0.1)',
 };
 
-function saveRef(name, component) {
-  this[name] = component;
-}
-
 class Test extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.saveContainerRef = saveRef.bind(this, 'containerInstance');
-  }
-
   render() {
     return (
       <div style={{ margin: 200 }}>
@@ -68,7 +58,7 @@ class Test extends React.Component {
                   i am a click popup{' '}
                   <button
                     type="button"
-                    onMouseDown={e => {
+                    onMouseDown={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
                     }}

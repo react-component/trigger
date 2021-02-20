@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from 'rc-motion';
 import isMobile from 'rc-util/lib/isMobile';
-import {
+import type {
   StretchType,
   AlignType,
   TransitionNameType,
@@ -11,7 +11,8 @@ import {
   MobileConfig,
 } from '../interface';
 import Mask from './Mask';
-import PopupInner, { PopupInnerRef } from './PopupInner';
+import type { PopupInnerRef } from './PopupInner';
+import PopupInner from './PopupInner';
 import MobilePopupInner from './MobilePopupInner';
 
 export interface PopupProps {
@@ -61,7 +62,7 @@ const Popup = React.forwardRef<PopupInnerRef, PopupProps>(
       if (visible && mobile) {
         setInMobile(isMobile());
       }
-    }, [visible, !!mobile]);
+    }, [visible, mobile]);
 
     const popupNode: React.ReactNode = inMobile ? (
       <MobilePopupInner {...cloneProps} mobile={mobile} ref={ref} />

@@ -1,5 +1,5 @@
-import { CSSMotionProps } from 'rc-motion';
-import { AnimationType, TransitionNameType } from '../interface';
+import type { CSSMotionProps } from 'rc-motion';
+import type { AnimationType, TransitionNameType } from '../interface';
 
 interface GetMotionProps {
   motion: CSSMotionProps;

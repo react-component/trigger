@@ -1,6 +1,10 @@
-import { AlignType, BuildInPlacements, AlignPoint } from '../interface';
+import type { AlignType, BuildInPlacements, AlignPoint } from '../interface';
 
-function isPointsEq(a1: AlignPoint[], a2: AlignPoint[], isAlignPoint: boolean): boolean {
+function isPointsEq(
+  a1: AlignPoint[],
+  a2: AlignPoint[],
+  isAlignPoint: boolean,
+): boolean {
   if (isAlignPoint) {
     return a1[0] === a2[0];
   }

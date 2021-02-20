@@ -35,7 +35,7 @@ function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
 
-const InnerTarget = props => (
+const InnerTarget = (props) => (
   <div
     style={{
       margin: 20,
@@ -78,7 +78,7 @@ interface TestState {
   mobile?: boolean;
 }
 
-class Test extends React.Component<{}, TestState> {
+class Test extends React.Component<any, TestState> {
   state: TestState = {
     mask: true,
     maskClosable: true,
@@ -92,19 +92,19 @@ class Test extends React.Component<{}, TestState> {
     transitionName: 'rc-trigger-popup-zoom',
   };
 
-  onPlacementChange = e => {
+  onPlacementChange = (e) => {
     this.setState({
       placement: e.target.value,
     });
   };
 
-  onStretch = e => {
+  onStretch = (e) => {
     this.setState({
       stretch: e.target.value,
     });
   };
 
-  onTransitionChange = e => {
+  onTransitionChange = (e) => {
     this.setState({
       transitionName: e.target.checked ? e.target.value : '',
     });
@@ -126,31 +126,31 @@ class Test extends React.Component<{}, TestState> {
     });
   };
 
-  onOffsetXChange = e => {
+  onOffsetXChange = (e) => {
     const targetValue = e.target.value;
     this.setState({
       offsetX: targetValue || undefined,
     });
   };
 
-  onOffsetYChange = e => {
+  onOffsetYChange = (e) => {
     const targetValue = e.target.value;
     this.setState({
       offsetY: targetValue || undefined,
     });
   };
 
-  onVisibleChange = visible => {
+  onVisibleChange = (visible) => {
     console.log('tooltip', visible);
   };
 
-  onMask = e => {
+  onMask = (e) => {
     this.setState({
       mask: e.target.checked,
     });
   };
 
-  onMaskClosable = e => {
+  onMaskClosable = (e) => {
     this.setState({
       maskClosable: e.target.checked,
     });
@@ -173,13 +173,13 @@ class Test extends React.Component<{}, TestState> {
     });
   };
 
-  destroyPopupOnHide = e => {
+  destroyPopupOnHide = (e) => {
     this.setState({
       destroyPopupOnHide: e.target.checked,
     });
   };
 
-  autoDestroy = e => {
+  autoDestroy = (e) => {
     this.setState({
       autoDestroy: e.target.checked,
     });
@@ -374,7 +374,7 @@ class Test extends React.Component<{}, TestState> {
                       background: '#FFF',
                       textAlign: 'center',
                     },
-                    popupRender: node => (
+                    popupRender: (node) => (
                       <>
                         <div>
                           <input
