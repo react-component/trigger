@@ -1,7 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import CSSMotion, { CSSMotionProps } from 'rc-motion';
-import { TransitionNameType, AnimationType } from '../interface';
+import type { CSSMotionProps } from 'rc-motion';
+import CSSMotion from 'rc-motion';
+import type { TransitionNameType, AnimationType } from '../interface';
 import { getMotion } from '../utils/legacyUtil';
 
 export interface MaskProps {

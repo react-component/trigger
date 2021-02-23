@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import Align from 'rc-align';
-import { RefAlign } from 'rc-align/lib/Align';
-import CSSMotion, { CSSMotionProps, MotionEndEventHandler } from 'rc-motion';
+import type { RefAlign } from 'rc-align/lib/Align';
+import type { CSSMotionProps, MotionEndEventHandler } from 'rc-motion';
+import CSSMotion from 'rc-motion';
 import classNames from 'classnames';
-import {
+import type {
   Point,
   AlignType,
   StretchType,
@@ -97,7 +98,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const [status, goNextStatus] = useVisibleStatus(visible, doMeasure);
 
     // ======================== Aligns ========================
-    const prepareResolveRef = useRef<Function>();
+    const prepareResolveRef = useRef<(value?: unknown) => void>();
 
     // `target` on `rc-align` can accept as a function to get the bind element or a point.
     // ref: https://www.npmjs.com/package/rc-align
@@ -134,7 +135,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
 
     // ======================== Motion ========================
     const motion = { ...getMotion(props) };
-    ['onAppearEnd', 'onEnterEnd', 'onLeaveEnd'].forEach(eventName => {
+    ['onAppearEnd', 'onEnterEnd', 'onLeaveEnd'].forEach((eventName) => {
       const originHandler: MotionEndEventHandler = motion[eventName];
       motion[eventName] = (element, event) => {
         goNextStatus();
@@ -143,7 +144,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     });
 
     function onShowPrepare() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         prepareResolveRef.current = resolve;
       });
     }

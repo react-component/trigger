@@ -36,16 +36,10 @@ const popupBorderStyle = {
   padding: 10,
 };
 
-function saveRef(name, component) {
-  this[name] = component;
-}
-
 class Test extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.saveContainerRef = saveRef.bind(this, 'containerInstance');
-  }
+  saveContainerRef = (node) => {
+    this.containerInstanceNode = node;
+  };
 
   render() {
     const innerTrigger = (
@@ -55,7 +49,7 @@ class Test extends React.Component {
           popupPlacement="bottom"
           action={['click']}
           builtinPlacements={builtinPlacements}
-          getPopupContainer={() => this.containerInstance}
+          getPopupContainer={() => this.containerInstanceNode}
           popup={<div style={popupBorderStyle}>I am inner Trigger Popup</div>}
         >
           <span href="#" style={{ margin: 20 }}>
