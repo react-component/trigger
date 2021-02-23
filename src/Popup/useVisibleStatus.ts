@@ -21,8 +21,17 @@ export default (
   visible: boolean,
   doMeasure: Func,
 ): [PopupStatus, (callback?: () => void) => void] => {
-  const [status, setStatus] = useState<PopupStatus>(null);
+  const [status, setInternalStatus] = useState<PopupStatus>(null);
   const rafRef = useRef<number>();
+  const destroyRef = useRef(false);
+
+  function setStatus(
+    nextStatus: PopupStatus | ((prevStatus: PopupStatus) => PopupStatus),
+  ) {
+    if (!destroyRef.current) {
+      setInternalStatus(nextStatus);
+    }
+  }
 
   function cancelRaf() {
     raf.cancel(rafRef.current);
@@ -63,7 +72,6 @@ export default (
     }
 
     if (status) {
-      cancelRaf();
       rafRef.current = raf(async () => {
         const index = StatusQueue.indexOf(status);
         const nextStatus = StatusQueue[index + 1];
@@ -76,6 +84,7 @@ export default (
 
   useEffect(
     () => () => {
+      destroyRef.current = true;
       cancelRaf();
     },
     [],

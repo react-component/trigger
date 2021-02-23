@@ -3,6 +3,7 @@ module.exports = {
   rules: {
     'default-case': 0,
     'import/no-extraneous-dependencies': 0,
+    'react-hooks/exhaustive-deps': 0,
     'react/no-find-dom-node': 0,
     'react/no-did-update-set-state': 0,
     'react/no-unused-state': 1,
