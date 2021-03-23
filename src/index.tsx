@@ -405,7 +405,9 @@ export function generateTrigger(
       const root = this.getRootDomNode();
       const popupNode = this.getPopupDomNode();
       if (
-        !contains(root, target) &&
+        // mousedown on the target should also close popup when action is contextMenu.
+        // https://github.com/ant-design/ant-design/issues/29853
+        (!contains(root, target) || this.isContextMenuOnly()) &&
         !contains(popupNode, target) &&
         !this.hasPopupMouseDown
       ) {
@@ -697,6 +699,14 @@ export function generateTrigger(
       const { action, showAction } = this.props;
       return (
         action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1
+      );
+    }
+
+    isContextMenuOnly() {
+      const { action } = this.props;
+      return (
+        action === 'contextMenu' ||
+        (action.length === 1 && action[0] === 'contextMenu')
       );
     }
 
