@@ -193,15 +193,6 @@ describe('Trigger.Basic', () => {
     });
 
     it('contextMenu works', () => {
-      // work around the global event listener issue with enzyme
-      // https://github.com/enzymejs/enzyme/issues/426
-      const eventMap = {
-        mousedown: null,
-      };
-      document.addEventListener = jest.fn((event, cb) => {
-        eventMap[event] = cb;
-      });
-
       const wrapper = mount(
         <Trigger
           action={['contextMenu']}
@@ -215,10 +206,14 @@ describe('Trigger.Basic', () => {
       wrapper.trigger('contextMenu');
       expect(wrapper.isHidden()).toBeFalsy();
 
-      // click target to close popup
-      eventMap.mousedown({ target: wrapper.find('.target').getDOMNode() });
-      jest.runAllTimers();
-      wrapper.update();
+      act(() => {
+        const mouseEvent = new MouseEvent('mousedown', {
+          target: wrapper.find('.target').getDOMNode(),
+        });
+        document.dispatchEvent(mouseEvent);
+        jest.runAllTimers();
+        wrapper.update();
+      });
 
       expect(wrapper.isHidden()).toBeTruthy();
     });
