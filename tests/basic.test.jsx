@@ -147,12 +147,7 @@ describe('Trigger.Basic', () => {
       );
 
       wrapper.trigger();
-      expect(
-        wrapper
-          .find('Popup')
-          .find('.x-content')
-          .text(),
-      ).toBe('tooltip2');
+      expect(wrapper.find('Popup').find('.x-content').text()).toBe('tooltip2');
 
       wrapper.trigger();
       expect(wrapper.isHidden()).toBeTruthy();
@@ -173,12 +168,7 @@ describe('Trigger.Basic', () => {
       );
 
       wrapper.trigger();
-      expect(
-        wrapper
-          .find('Popup')
-          .find('.x-content')
-          .text(),
-      ).toBe('tooltip3');
+      expect(wrapper.find('Popup').find('.x-content').text()).toBe('tooltip3');
 
       wrapper.trigger();
       expect(wrapper.isHidden()).toBeTruthy();
@@ -203,6 +193,15 @@ describe('Trigger.Basic', () => {
     });
 
     it('contextMenu works', () => {
+      // work around the global event listener issue with enzyme
+      // https://github.com/enzymejs/enzyme/issues/426
+      const eventMap = {
+        mousedown: null,
+      };
+      document.addEventListener = jest.fn((event, cb) => {
+        eventMap[event] = cb;
+      });
+
       const wrapper = mount(
         <Trigger
           action={['contextMenu']}
@@ -215,6 +214,13 @@ describe('Trigger.Basic', () => {
 
       wrapper.trigger('contextMenu');
       expect(wrapper.isHidden()).toBeFalsy();
+
+      // click target to close popup
+      eventMap.mousedown({ target: wrapper.find('.target').getDOMNode() });
+      jest.runAllTimers();
+      wrapper.update();
+
+      expect(wrapper.isHidden()).toBeTruthy();
     });
 
     describe('afterPopupVisibleChange can be triggered', () => {
@@ -509,7 +515,7 @@ describe('Trigger.Basic', () => {
   });
 
   describe('stretch', () => {
-    const createTrigger = stretch =>
+    const createTrigger = (stretch) =>
       mount(
         <Trigger
           action={['click']}
@@ -542,7 +548,7 @@ describe('Trigger.Basic', () => {
       domSpy.mockRestore();
     });
 
-    ['width', 'height', 'minWidth', 'minHeight'].forEach(prop => {
+    ['width', 'height', 'minWidth', 'minHeight'].forEach((prop) => {
       it(prop, () => {
         const wrapper = createTrigger(prop);
 
@@ -643,7 +649,7 @@ describe('Trigger.Basic', () => {
           <div>
             <button
               type="button"
-              onMouseDown={e => {
+              onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
@@ -687,7 +693,7 @@ describe('Trigger.Basic', () => {
 
   describe('getContainer', () => {
     it('not trigger when dom not ready', () => {
-      const getPopupContainer = jest.fn(node => node.parentElement);
+      const getPopupContainer = jest.fn((node) => node.parentElement);
 
       function Demo() {
         return (
