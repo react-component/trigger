@@ -207,10 +207,9 @@ describe('Trigger.Basic', () => {
       expect(wrapper.isHidden()).toBeFalsy();
 
       act(() => {
-        const mouseEvent = new MouseEvent('mousedown', {
-          target: wrapper.find('.target').getDOMNode(),
-        });
-        document.dispatchEvent(mouseEvent);
+        wrapper
+          .instance()
+          .onDocumentClick({ target: wrapper.find('.target').getDOMNode() });
         jest.runAllTimers();
         wrapper.update();
       });
