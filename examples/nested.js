@@ -1,6 +1,7 @@
 /* eslint no-console:0 */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Trigger from '../src';
 import '../assets/index.less';
 
@@ -36,66 +37,96 @@ const popupBorderStyle = {
   padding: 10,
 };
 
-class Test extends React.Component {
-  saveContainerRef = (node) => {
-    this.containerInstanceNode = node;
-  };
+const OuterContent = ({ getContainer }) => {
+  return ReactDOM.createPortal(
+    <div>
+      I am outer content
+      <button
+        onMouseDown={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        Stop Pop
+      </button>
+    </div>,
+    getContainer(),
+  );
+};
 
-  render() {
-    const innerTrigger = (
-      <div style={popupBorderStyle}>
-        <div ref={this.saveContainerRef} />
+const Test = () => {
+  const containerRef = React.useRef();
+  const outerDivRef = React.useRef();
+
+  const innerTrigger = (
+    <div style={popupBorderStyle}>
+      <div ref={containerRef} />
+      <Trigger
+        popupPlacement="bottom"
+        action={['click']}
+        builtinPlacements={builtinPlacements}
+        getPopupContainer={() => containerRef.current}
+        popup={<div style={popupBorderStyle}>I am inner Trigger Popup</div>}
+      >
+        <span href="#" style={{ margin: 20 }}>
+          clickToShowInnerTrigger
+        </span>
+      </Trigger>
+    </div>
+  );
+  return (
+    <div style={{ margin: 200 }}>
+      <div>
         <Trigger
-          popupPlacement="bottom"
+          popupPlacement="left"
           action={['click']}
           builtinPlacements={builtinPlacements}
-          getPopupContainer={() => this.containerInstanceNode}
-          popup={<div style={popupBorderStyle}>I am inner Trigger Popup</div>}
+          popup={
+            <div style={popupBorderStyle}>
+              i am a click popup
+              <OuterContent getContainer={() => outerDivRef.current} />
+            </div>
+          }
         >
-          <span href="#" style={{ margin: 20 }}>
-            clickToShowInnerTrigger
+          <span>
+            <Trigger
+              popupPlacement="bottom"
+              action={['hover']}
+              builtinPlacements={builtinPlacements}
+              popup={<div style={popupBorderStyle}>i am a hover popup</div>}
+            >
+              <span href="#" style={{ margin: 20 }}>
+                trigger
+              </span>
+            </Trigger>
           </span>
         </Trigger>
       </div>
-    );
-    return (
-      <div style={{ margin: 200 }}>
-        <div>
-          <Trigger
-            popupPlacement="left"
-            action={['click']}
-            builtinPlacements={builtinPlacements}
-            popup={<div style={popupBorderStyle}>i am a click popup</div>}
-          >
-            <span>
-              <Trigger
-                popupPlacement="bottom"
-                action={['hover']}
-                builtinPlacements={builtinPlacements}
-                popup={<div style={popupBorderStyle}>i am a hover popup</div>}
-              >
-                <span href="#" style={{ margin: 20 }}>
-                  trigger
-                </span>
-              </Trigger>
-            </span>
-          </Trigger>
-        </div>
-        <div style={{ margin: 50 }}>
-          <Trigger
-            popupPlacement="right"
-            action={['hover']}
-            builtinPlacements={builtinPlacements}
-            popup={innerTrigger}
-          >
-            <span href="#" style={{ margin: 20 }}>
-              trigger
-            </span>
-          </Trigger>
-        </div>
+      <div style={{ margin: 50 }}>
+        <Trigger
+          popupPlacement="right"
+          action={['hover']}
+          builtinPlacements={builtinPlacements}
+          popup={innerTrigger}
+        >
+          <span href="#" style={{ margin: 20 }}>
+            trigger
+          </span>
+        </Trigger>
       </div>
-    );
-  }
-}
+
+      <div
+        ref={outerDivRef}
+        style={{
+          position: 'fixed',
+          right: 0,
+          bottom: 0,
+          width: 200,
+          height: 200,
+          background: 'red',
+        }}
+      />
+    </div>
+  );
+};
 
 export default Test;

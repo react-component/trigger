@@ -2,8 +2,9 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import isMobile from 'rc-util/lib/isMobile';
 import { mount } from 'enzyme';
-import Trigger, { TriggerProps } from '../src';
-import { placementAlignMap } from './basic.test';
+import type { TriggerProps } from '../src';
+import Trigger from '../src';
+import { placementAlignMap } from './util';
 
 jest.mock('rc-util/lib/isMobile');
 
@@ -53,7 +54,7 @@ describe('Trigger.Mobile', () => {
     const wrapper = mount(
       getTrigger({
         mobile: {
-          popupRender: node => (
+          popupRender: (node) => (
             <>
               <div>Light</div>
               {node}
