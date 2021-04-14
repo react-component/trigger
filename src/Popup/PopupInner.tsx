@@ -218,8 +218,8 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
                 className={mergedClassName}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                onMouseDown={onMouseDown}
-                onTouchStart={onTouchStart}
+                onMouseDownCapture={onMouseDown}
+                onTouchStartCapture={onTouchStart}
                 style={{
                   ...motionStyle,
                   ...mergedStyle,

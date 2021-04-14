@@ -39,12 +39,15 @@ const popupBorderStyle = {
 
 const OuterContent = ({ getContainer }) => {
   return ReactDOM.createPortal(
-    <div
-      onMouseDown={(e) => {
-        e.stopPropagation();
-      }}
-    >
+    <div>
       I am outer content
+      <button
+        onMouseDown={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        Stop Pop
+      </button>
     </div>,
     getContainer(),
   );
