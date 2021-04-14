@@ -1,67 +1,13 @@
+/* eslint-disable max-classes-per-file */
+
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import Portal from 'rc-util/lib/Portal';
 import Trigger from '../src';
-
-const autoAdjustOverflow = {
-  adjustX: 1,
-  adjustY: 1,
-};
-
-const targetOffsetG = [0, 0];
-
-export const placementAlignMap = {
-  left: {
-    points: ['cr', 'cl'],
-    overflow: autoAdjustOverflow,
-    offset: [-3, 0],
-    targetOffsetG,
-  },
-  right: {
-    points: ['cl', 'cr'],
-    overflow: autoAdjustOverflow,
-    offset: [3, 0],
-    targetOffsetG,
-  },
-  top: {
-    points: ['bc', 'tc'],
-    overflow: autoAdjustOverflow,
-    offset: [0, -3],
-    targetOffsetG,
-  },
-  bottom: {
-    points: ['tc', 'bc'],
-    overflow: autoAdjustOverflow,
-    offset: [0, 3],
-    targetOffsetG,
-  },
-  topLeft: {
-    points: ['bl', 'tl'],
-    overflow: autoAdjustOverflow,
-    offset: [0, -3],
-    targetOffsetG,
-  },
-  topRight: {
-    points: ['br', 'tr'],
-    overflow: autoAdjustOverflow,
-    offset: [0, -3],
-    targetOffsetG,
-  },
-  bottomRight: {
-    points: ['tr', 'br'],
-    overflow: autoAdjustOverflow,
-    offset: [0, 3],
-    targetOffsetG,
-  },
-  bottomLeft: {
-    points: ['tl', 'bl'],
-    overflow: autoAdjustOverflow,
-    offset: [0, 3],
-    targetOffsetG,
-  },
-};
+import { placementAlignMap } from './util';
 
 describe('Trigger.Basic', () => {
   beforeEach(() => {
@@ -147,12 +93,7 @@ describe('Trigger.Basic', () => {
       );
 
       wrapper.trigger();
-      expect(
-        wrapper
-          .find('Popup')
-          .find('.x-content')
-          .text(),
-      ).toBe('tooltip2');
+      expect(wrapper.find('Popup').find('.x-content').text()).toBe('tooltip2');
 
       wrapper.trigger();
       expect(wrapper.isHidden()).toBeTruthy();
@@ -173,12 +114,7 @@ describe('Trigger.Basic', () => {
       );
 
       wrapper.trigger();
-      expect(
-        wrapper
-          .find('Popup')
-          .find('.x-content')
-          .text(),
-      ).toBe('tooltip3');
+      expect(wrapper.find('Popup').find('.x-content').text()).toBe('tooltip3');
 
       wrapper.trigger();
       expect(wrapper.isHidden()).toBeTruthy();
@@ -509,7 +445,7 @@ describe('Trigger.Basic', () => {
   });
 
   describe('stretch', () => {
-    const createTrigger = stretch =>
+    const createTrigger = (stretch) =>
       mount(
         <Trigger
           action={['click']}
@@ -542,7 +478,7 @@ describe('Trigger.Basic', () => {
       domSpy.mockRestore();
     });
 
-    ['width', 'height', 'minWidth', 'minHeight'].forEach(prop => {
+    ['width', 'height', 'minWidth', 'minHeight'].forEach((prop) => {
       it(prop, () => {
         const wrapper = createTrigger(prop);
 
@@ -643,7 +579,7 @@ describe('Trigger.Basic', () => {
           <div>
             <button
               type="button"
-              onMouseDown={e => {
+              onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
@@ -687,7 +623,7 @@ describe('Trigger.Basic', () => {
 
   describe('getContainer', () => {
     it('not trigger when dom not ready', () => {
-      const getPopupContainer = jest.fn(node => node.parentElement);
+      const getPopupContainer = jest.fn((node) => node.parentElement);
 
       function Demo() {
         return (
@@ -739,5 +675,66 @@ describe('Trigger.Basic', () => {
 
       wrapper.unmount();
     });
+  });
+
+  // https://github.com/ant-design/ant-design/issues/30116
+  it('createPortal should also work with stopPropagation', () => {
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+
+    const OuterContent = ({ container }) => {
+      return ReactDOM.createPortal(
+        <button
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          Stop Pop
+        </button>,
+        container,
+      );
+    };
+
+    const Demo = () => {
+      return (
+        <Trigger
+          action={['click']}
+          popup={
+            <strong className="x-content">
+              tooltip2
+              <OuterContent container={div} />
+            </strong>
+          }
+        >
+          <div className="target">click</div>
+        </Trigger>
+      );
+    };
+
+    const wrapper = mount(<Demo />, { attachTo: root });
+
+    wrapper.find('.target').simulate('click');
+    expect(wrapper.isHidden()).toBeFalsy();
+
+    // Click should not close
+    wrapper.find('button').simulate('mouseDown');
+
+    // Mock document mouse click event
+    act(() => {
+      const mouseEvent = new MouseEvent('mousedown');
+      document.dispatchEvent(mouseEvent);
+      wrapper.update();
+    });
+
+    wrapper.update();
+    expect(wrapper.isHidden()).toBeFalsy();
+
+    wrapper.unmount();
+
+    document.body.removeChild(div);
+    document.body.removeChild(root);
   });
 });

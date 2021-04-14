@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Trigger from '../src';
-import { placementAlignMap } from './basic.test';
+import { placementAlignMap } from './util';
 
 describe('Trigger.Motion', () => {
   beforeEach(() => {
