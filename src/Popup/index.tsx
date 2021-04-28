@@ -38,6 +38,7 @@ export interface PopupProps {
   // Motion
   motion: CSSMotionProps;
   maskMotion: CSSMotionProps;
+  forceRender?: boolean;
 
   // Legacy
   animation: AnimationType;
