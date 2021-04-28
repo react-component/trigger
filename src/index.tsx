@@ -510,6 +510,7 @@ export function generateTrigger(
         stretch,
         alignPoint,
         mobile,
+        forceRender,
       } = this.props;
       const { popupVisible, point } = this.state;
 
@@ -550,6 +551,7 @@ export function generateTrigger(
           ref={this.popupRef}
           motion={popupMotion}
           mobile={mobile}
+          forceRender={forceRender}
         >
           {typeof popup === 'function' ? popup() : popup}
         </Popup>

@@ -275,6 +275,7 @@ describe('Trigger.Basic', () => {
           <span>Hey!</span>
         </Trigger>,
       );
+
       expect(wrapper.instance().getPopupDomNode()).toBeFalsy();
     });
 

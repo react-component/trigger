@@ -28,6 +28,8 @@ export interface PopupInnerProps {
   // Motion
   motion: CSSMotionProps;
   destroyPopupOnHide?: boolean;
+  forceRender?: boolean;
+
   // Legacy Motion
   animation: AnimationType;
   transitionName: TransitionNameType;
@@ -67,6 +69,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
 
       stretch,
       destroyPopupOnHide,
+      forceRender,
 
       align,
       point,
@@ -194,6 +197,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
         onAppearPrepare={onShowPrepare}
         onEnterPrepare={onShowPrepare}
         removeOnLeave={destroyPopupOnHide}
+        forceRender={forceRender}
       >
         {({ className: motionClassName, style: motionStyle }, motionRef) => {
           const mergedClassName = classNames(
