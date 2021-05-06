@@ -151,6 +151,16 @@ describe('Trigger.Basic', () => {
 
       wrapper.trigger('contextMenu');
       expect(wrapper.isHidden()).toBeFalsy();
+
+      act(() => {
+        wrapper
+          .instance()
+          .onDocumentClick({ target: wrapper.find('.target').getDOMNode() });
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect(wrapper.isHidden()).toBeTruthy();
     });
 
     describe('afterPopupVisibleChange can be triggered', () => {
