@@ -169,10 +169,10 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const mergedStyle: React.CSSProperties = {
       ...stretchStyle,
       zIndex,
-      ...style,
       opacity:
         status === 'motion' || status === 'stable' || !visible ? undefined : 0,
       pointerEvents: status === 'stable' ? undefined : 'none',
+      ...style,
     };
 
     // Align status

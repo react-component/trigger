@@ -615,7 +615,7 @@ describe('Trigger.Basic', () => {
 
   // https://github.com/ant-design/ant-design/issues/21770
   it('support popupStyle, such as zIndex', () => {
-    const style = { color: 'red', zIndex: 9999, top: 100 };
+    const style = { color: 'red', zIndex: 9999, top: 100, opacity: 0.93 };
     const wrapper = mount(
       <Trigger
         popupVisible
@@ -630,6 +630,7 @@ describe('Trigger.Basic', () => {
     expect(popupDomNode.style.zIndex).toBe(style.zIndex.toString());
     expect(popupDomNode.style.color).toBe(style.color);
     expect(popupDomNode.style.top).toBe(`${style.top}px`);
+    expect(popupDomNode.style.opacity).toBe(style.opacity.toString());
   });
 
   describe('getContainer', () => {
