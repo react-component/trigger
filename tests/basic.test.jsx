@@ -749,4 +749,65 @@ describe('Trigger.Basic', () => {
     document.body.removeChild(div);
     document.body.removeChild(root);
   });
+
+  it('nested Trigger should not force render when ancestor Trigger render', () => {
+    let isUpdate = false;
+    let isChildUpdate = false;
+    let isGrandsonUpdate = false;
+
+    const Grandson = () => {
+      if (isUpdate) {
+        isGrandsonUpdate = true;
+      }
+
+      return null;
+    };
+
+    const Child = React.memo(() => {
+      if (isUpdate) {
+        isChildUpdate = true;
+      }
+
+      return (
+        <Trigger
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          forceRender
+          popup={() => (
+            <strong className="x-content">
+              <Grandson />
+            </strong>
+          )}
+        >
+          <div className="target">click</div>
+        </Trigger>
+      );
+    });
+
+    class App extends React.Component {
+      render() {
+        return (
+          <Trigger
+            action={['click']}
+            popupAlign={placementAlignMap.left}
+            popup={<strong className="x-content">tooltip2</strong>}
+            className="className-in-trigger-2"
+          >
+            <div className="target">
+              <Child />
+            </div>
+          </Trigger>
+        );
+      }
+    }
+
+    const wrapper = mount(<App />);
+
+    isUpdate = true;
+
+    wrapper.setState({});
+
+    expect(isChildUpdate).toBeFalsy();
+    expect(isGrandsonUpdate).toBeFalsy();
+  });
 });

@@ -780,15 +780,12 @@ export function generateTrigger(
       this.setPopupVisible(false);
     }
 
+    triggerContextValue = { onPopupMouseDown: this.onPopupMouseDown };
+
     render() {
       const { popupVisible } = this.state;
-      const {
-        children,
-        forceRender,
-        alignPoint,
-        className,
-        autoDestroy,
-      } = this.props;
+      const { children, forceRender, alignPoint, className, autoDestroy } =
+        this.props;
       const child = React.Children.only(children) as React.ReactElement;
       const newChildProps: HTMLAttributes<HTMLElement> & { key: string } = {
         key: 'trigger',
@@ -877,9 +874,7 @@ export function generateTrigger(
       }
 
       return (
-        <TriggerContext.Provider
-          value={{ onPopupMouseDown: this.onPopupMouseDown }}
-        >
+        <TriggerContext.Provider value={this.triggerContextValue}>
           {trigger}
           {portal}
         </TriggerContext.Provider>
