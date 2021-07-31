@@ -262,7 +262,7 @@ export function generateTrigger(
     componentWillUnmount() {
       this.clearDelayTimer();
       this.clearOutsideHandler();
-      clearTimeout(this.mouseDownTimeout);
+      this.clearMouseDownTimer();
       raf.cancel(this.attachId);
     }
 
@@ -389,6 +389,7 @@ export function generateTrigger(
       clearTimeout(this.mouseDownTimeout);
       this.mouseDownTimeout = window.setTimeout(() => {
         this.hasPopupMouseDown = false;
+        this.clearMouseDownTimer();
       }, 0);
 
       if (this.context) {
@@ -663,6 +664,13 @@ export function generateTrigger(
       if (this.delayTimer) {
         clearTimeout(this.delayTimer);
         this.delayTimer = null;
+      }
+    }
+
+    clearMouseDownTimer() {
+      if (this.mouseDownTimeout) {
+        clearTimeout(this.mouseDownTimeout);
+        this.mouseDownTimeout = null;
       }
     }
 
