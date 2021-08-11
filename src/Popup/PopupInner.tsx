@@ -117,10 +117,11 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     }
 
     function onInternalAlign(popupDomNode: HTMLElement, matchAlign: AlignType) {
-      if (status === 'align') {
-        const nextAlignedClassName = getClassNameFromAlign(matchAlign);
+      const nextAlignedClassName = getClassNameFromAlign(matchAlign);
+      if (alignedClassName !== nextAlignedClassName) {
         setAlignedClassName(nextAlignedClassName);
-
+      }
+      if (status === 'align') {
         // Repeat until not more align needed
         if (alignedClassName !== nextAlignedClassName) {
           Promise.resolve().then(() => {
