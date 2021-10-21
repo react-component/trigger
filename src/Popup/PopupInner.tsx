@@ -5,6 +5,7 @@ import type { RefAlign } from 'rc-align/lib/Align';
 import type { CSSMotionProps, MotionEndEventHandler } from 'rc-motion';
 import CSSMotion from 'rc-motion';
 import classNames from 'classnames';
+import asap from 'asap';
 import type {
   Point,
   AlignType,
@@ -124,7 +125,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       if (status === 'align') {
         // Repeat until not more align needed
         if (alignedClassName !== nextAlignedClassName) {
-          Promise.resolve().then(() => {
+          asap(() => {
             forceAlign();
           });
         } else {
