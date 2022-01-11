@@ -401,7 +401,13 @@ export function generateTrigger(
         return;
       }
 
-      const { target } = event;
+      let { target } = event;
+      
+      // get the target from composedPath if target is a shadowRoot;
+      if (target.shadowRoot && event.composed) {
+        target = (event.composedPath()[0] || target);
+      }
+      
       const root = this.getRootDomNode();
       const popupNode = this.getPopupDomNode();
       if (
