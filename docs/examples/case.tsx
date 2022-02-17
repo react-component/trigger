@@ -2,8 +2,8 @@
 
 import React from 'react';
 import type { CSSMotionProps } from 'rc-motion';
-import type { BuildInPlacements } from '../src';
-import Trigger from '../src';
+import type { BuildInPlacements } from '@/index';
+import Trigger from '@/index';
 import './case.less';
 
 const builtinPlacements: BuildInPlacements = {

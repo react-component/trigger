@@ -27,3 +27,9 @@ es
 coverage
 yarn.lock
 package-lock.json
+
+# dumi
+.umi
+.umi-production
+.umi-test
+.docs
