@@ -1,8 +1,8 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import Trigger from '../src';
-import '../assets/index.less';
+import Trigger from 'rc-trigger';
+import '../../assets/index.less';
 
 const builtinPlacements = {
   left: {

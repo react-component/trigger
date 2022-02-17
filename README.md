@@ -10,6 +10,7 @@ React Trigger Component
 [![DevDependencies][david-dev-image]][david-dev-url]
 [![npm download][download-image]][download-url]
 [![bundle size][bundlephobia-image]][bundlephobia-url]
+[![dumi][dumi-image]][dumi-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-trigger.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-trigger
@@ -27,6 +28,8 @@ React Trigger Component
 [download-url]: https://npmjs.org/package/rc-trigger
 [bundlephobia-url]: https://bundlephobia.com/result?p=rc-trigger
 [bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-trigger
+[dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
+[dumi-url]: https://github.com/umijs/dumi
 
 ## Install
 
