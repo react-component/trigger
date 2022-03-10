@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import raf from 'rc-util/lib/raf';
+import useState from 'rc-util/lib/hooks/useState';
 
 /**
  * Popup should follow the steps for each component work correctly:
@@ -23,14 +24,11 @@ export default (
 ): [PopupStatus, (callback?: () => void) => void] => {
   const [status, setInternalStatus] = useState<PopupStatus>(null);
   const rafRef = useRef<number>();
-  const destroyRef = useRef(false);
 
   function setStatus(
     nextStatus: PopupStatus | ((prevStatus: PopupStatus) => PopupStatus),
   ) {
-    if (!destroyRef.current) {
-      setInternalStatus(nextStatus);
-    }
+    setInternalStatus(nextStatus, true);
   }
 
   function cancelRaf() {
@@ -84,7 +82,6 @@ export default (
 
   useEffect(
     () => () => {
-      destroyRef.current = true;
       cancelRaf();
     },
     [],
