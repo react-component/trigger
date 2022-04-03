@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import Align from 'rc-align';
 import type { RefAlign } from 'rc-align/lib/Align';
 import type { CSSMotionProps, MotionEndEventHandler } from 'rc-motion';
@@ -125,7 +126,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
         // Repeat until not more align needed
         if (alignedClassName !== nextAlignedClassName) {
           Promise.resolve().then(() => {
-            forceAlign();
+            flushSync(forceAlign);
           });
         } else {
           goNextStatus(() => {

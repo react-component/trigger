@@ -156,6 +156,8 @@ export function generateTrigger(
 
     triggerRef = React.createRef<React.ReactInstance>();
 
+    portalContainerRef: React.MutableRefObject<HTMLElement> = React.createRef();
+
     attachId?: number;
 
     clickOutsideHandler: CommonEventHandler;
@@ -858,10 +860,14 @@ export function generateTrigger(
       let portal: React.ReactElement;
       // prevent unmounting after it's rendered
       if (popupVisible || this.popupRef.current || forceRender) {
+        if (!this.portalContainerRef.current) {
+          // init portal container
+          this.portalContainerRef.current = this.getContainer();
+        }
         portal = (
           <PortalComponent
             key="portal"
-            getContainer={this.getContainer}
+            container={this.portalContainerRef.current}
             didUpdate={this.handlePortalUpdate}
           >
             {this.getComponent()}
