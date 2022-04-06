@@ -867,7 +867,7 @@ export function generateTrigger(
         portal = (
           <PortalComponent
             key="portal"
-            container={this.portalContainerRef.current}
+            getContainer={() => this.portalContainerRef.current}
             didUpdate={this.handlePortalUpdate}
           >
             {this.getComponent()}
