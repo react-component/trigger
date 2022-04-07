@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import Align from 'rc-align';
+import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import type { RefAlign } from 'rc-align/lib/Align';
 import type { CSSMotionProps, MotionEndEventHandler } from 'rc-motion';
 import CSSMotion from 'rc-motion';
@@ -101,6 +102,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const [status, goNextStatus] = useVisibleStatus(visible, doMeasure);
 
     // ======================== Aligns ========================
+    const [alignInfo, setAlignInfo] = useState<AlignType>(null);
     const prepareResolveRef = useRef<(value?: unknown) => void>();
 
     // `target` on `rc-align` can accept as a function to get the bind element or a point.
@@ -121,21 +123,29 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       if (alignedClassName !== nextAlignedClassName) {
         setAlignedClassName(nextAlignedClassName);
       }
-      if (status === 'align') {
-        // Repeat until not more align needed
-        if (alignedClassName !== nextAlignedClassName) {
-          Promise.resolve().then(() => {
-            forceAlign();
-          });
-        } else {
-          goNextStatus(() => {
-            prepareResolveRef.current?.();
-          });
-        }
 
+      setAlignInfo(matchAlign);
+
+      if (status === 'align') {
         onAlign?.(popupDomNode, matchAlign);
       }
     }
+
+    // Delay to go to next status
+    useLayoutEffect(() => {
+      if (alignInfo && status === 'align') {
+        const nextAlignedClassName = getClassNameFromAlign(alignInfo);
+
+        // Repeat until not more align needed
+        if (alignedClassName !== nextAlignedClassName) {
+          forceAlign();
+        } else {
+          goNextStatus(function () {
+            prepareResolveRef.current?.();
+          });
+        }
+      }
+    }, [alignInfo]);
 
     // ======================== Motion ========================
     const motion = { ...getMotion(props) };
