@@ -156,6 +156,7 @@ export function generateTrigger(
 
     triggerRef = React.createRef<React.ReactInstance>();
 
+    // ensure `getContainer` will be called only once
     portalContainer?: HTMLElement;
 
     attachId?: number;
