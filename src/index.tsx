@@ -590,18 +590,28 @@ export function generateTrigger(
     };
 
     getContainer = () => {
-      const { getDocument } = this.props;
-      const popupContainer = getDocument(this.getRootDomNode()).createElement(
-        'div',
-      );
-      // Make sure default popup container will never cause scrollbar appearing
-      // https://github.com/react-component/trigger/issues/41
-      popupContainer.style.position = 'absolute';
-      popupContainer.style.top = '0';
-      popupContainer.style.left = '0';
-      popupContainer.style.width = '100%';
-      this.attachParent(popupContainer);
-      return popupContainer;
+      if (!this.portalContainer) {
+        // In React.StrictMode component will call render multiple time in first mount.
+        // When you want to refactor with FC, useRef will also init multiple time and
+        // point to different useRef instance which will create multiple element
+        // (This multiple render will not trigger effect so you can not clean up this
+        // in effect). But this is safe with class component since it always point to same class instance.
+        const { getDocument } = this.props;
+        const popupContainer = getDocument(this.getRootDomNode()).createElement(
+          'div',
+        );
+        // Make sure default popup container will never cause scrollbar appearing
+        // https://github.com/react-component/trigger/issues/41
+        popupContainer.style.position = 'absolute';
+        popupContainer.style.top = '0';
+        popupContainer.style.left = '0';
+        popupContainer.style.width = '100%';
+        this.attachParent(popupContainer);
+
+        this.portalContainer = popupContainer;
+      }
+
+      return this.portalContainer;
     };
 
     /**
@@ -861,18 +871,10 @@ export function generateTrigger(
       let portal: React.ReactElement;
       // prevent unmounting after it's rendered
       if (popupVisible || this.popupRef.current || forceRender) {
-        if (!this.portalContainer) {
-          // In React.StrictMode component will call render multiple time in first mount.
-          // When you want to refactor with FC, useRef will also init multiple time and
-          // point to different useRef instance which will create multiple element
-          // (This multiple render will not trigger effect so you can not clean up this
-          // in effect). But this is safe with class component since it always point to same class instance.
-          this.portalContainer = this.getContainer();
-        }
         portal = (
           <PortalComponent
             key="portal"
-            getContainer={() => this.portalContainer}
+            getContainer={this.getContainer}
             didUpdate={this.handlePortalUpdate}
           >
             {this.getComponent()}
