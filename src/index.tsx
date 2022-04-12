@@ -862,6 +862,11 @@ export function generateTrigger(
       // prevent unmounting after it's rendered
       if (popupVisible || this.popupRef.current || forceRender) {
         if (!this.portalContainer) {
+          // In React.StrictMode component will call render multiple time in first mount.
+          // When you want to refactor with FC, useRef will also init multiple time and
+          // point to different useRef instance which will create multiple element
+          // (This multiple render will not trigger effect so you can not clean up this
+          // in effect). But this is safe with class component since it always point to same class instance.
           this.portalContainer = this.getContainer();
         }
         portal = (
