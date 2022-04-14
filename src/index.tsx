@@ -563,7 +563,7 @@ export function generateTrigger(
       );
     };
 
-    attachParent = (popupContainer: HTMLDivElement) => {
+    attachParent = (popupContainer: HTMLElement) => {
       raf.cancel(this.attachId);
 
       const { getPopupContainer, getDocument } = this.props;
@@ -606,11 +606,11 @@ export function generateTrigger(
         popupContainer.style.top = '0';
         popupContainer.style.left = '0';
         popupContainer.style.width = '100%';
-        this.attachParent(popupContainer);
 
         this.portalContainer = popupContainer;
       }
 
+      this.attachParent(this.portalContainer);
       return this.portalContainer;
     };
 
