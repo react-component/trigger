@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import Trigger from '../src';
 import { getMouseEvent } from './util';
@@ -23,6 +23,7 @@ describe('Trigger.Point', () => {
     render() {
       return (
         <Trigger
+          ref={this.props.triggerRef}
           popup={this.popup}
           popupAlign={{ points: ['tl'] }}
           alignPoint
@@ -63,8 +64,13 @@ describe('Trigger.Point', () => {
 
   describe('contextMenu', () => {
     it('basic', () => {
+      const triggerRef = createRef();
       const { container } = render(
-        <Demo action={['contextMenu']} hideAction={['click']} />,
+        <Demo
+          triggerRef={triggerRef}
+          action={['contextMenu']}
+          hideAction={['click']}
+        />,
       );
       trigger(container, 'contextmenu', { pageX: 10, pageY: 20 });
 
@@ -84,8 +90,7 @@ describe('Trigger.Point', () => {
         pageX: pagePropDefine,
         pageY: pagePropDefine,
       });
-      // FIXME: implement in react-testing-library
-      // wrapper.find('Trigger').instance().onClick(clickEvent);
+      act(() => triggerRef.current.onClick(clickEvent));
     });
 
     // https://github.com/ant-design/ant-design/issues/17043
@@ -101,11 +106,14 @@ describe('Trigger.Point', () => {
       );
 
       // Click to close
-      fireEvent.click(document.querySelector('.rc-trigger-popup > *'), {
-        preventDefault() {
-          done.fail();
-        },
-      });
+      fireEvent(
+        document.querySelector('.rc-trigger-popup > *'),
+        getMouseEvent('click', {
+          preventDefault() {
+            done.fail();
+          },
+        }),
+      );
 
       done();
     });
