@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import Trigger from '../src';
+import { getMouseEvent } from './util';
 
 /**
  * dom-align internal default position is `-999`.
@@ -12,6 +13,7 @@ describe('Trigger.Point', () => {
   });
 
   afterEach(() => {
+    cleanup();
     jest.useRealTimers();
   });
 
@@ -32,29 +34,28 @@ describe('Trigger.Point', () => {
     }
   }
 
-  it('onClick', () => {
-    const wrapper = mount(<Demo action={['click']} />);
-    wrapper.trigger('click', { pageX: 10, pageY: 20 });
+  function trigger(container, eventName, data) {
+    const pointRegion = container.querySelector('.point-region');
+    fireEvent(pointRegion, getMouseEvent(eventName, data));
+    act(() => jest.runAllTimers());
+  }
 
-    const popup = wrapper
-      .find('.rc-trigger-popup')
-      .first()
-      .getDOMNode();
+  it('onClick', async () => {
+    const { container } = render(<Demo action={['click']} />);
+    trigger(container, 'click', { pageX: 10, pageY: 20 });
 
+    const popup = document.querySelector('.rc-trigger-popup');
     expect(popup.style).toEqual(
       expect.objectContaining({ left: '-989px', top: '-979px' }),
     );
   });
 
   it('hover', () => {
-    const wrapper = mount(<Demo action={['hover']} />);
-    wrapper.trigger('mouseEnter', { pageX: 10, pageY: 20 });
+    const { container } = render(<Demo action={['hover']} />);
+    trigger(container, 'mouseenter', { pageX: 10, pageY: 20 });
+    trigger(container, 'mouseover', { pageX: 10, pageY: 20 });
 
-    const popup = wrapper
-      .find('.rc-trigger-popup')
-      .first()
-      .getDOMNode();
-
+    const popup = document.querySelector('.rc-trigger-popup');
     expect(popup.style).toEqual(
       expect.objectContaining({ left: '-989px', top: '-979px' }),
     );
@@ -62,16 +63,12 @@ describe('Trigger.Point', () => {
 
   describe('contextMenu', () => {
     it('basic', () => {
-      const wrapper = mount(
+      const { container } = render(
         <Demo action={['contextMenu']} hideAction={['click']} />,
       );
-      wrapper.trigger('contextMenu', { pageX: 10, pageY: 20 });
+      trigger(container, 'contextmenu', { pageX: 10, pageY: 20 });
 
-      const popup = wrapper
-        .find('.rc-trigger-popup')
-        .first()
-        .getDOMNode();
-
+      const popup = document.querySelector('.rc-trigger-popup');
       expect(popup.style).toEqual(
         expect.objectContaining({ left: '-989px', top: '-979px' }),
       );
@@ -87,30 +84,24 @@ describe('Trigger.Point', () => {
         pageX: pagePropDefine,
         pageY: pagePropDefine,
       });
-      wrapper
-        .find('Trigger')
-        .instance()
-        .onClick(clickEvent);
+      // FIXME: implement in react-testing-library
+      // wrapper.find('Trigger').instance().onClick(clickEvent);
     });
 
     // https://github.com/ant-design/ant-design/issues/17043
-    it('not prevent default', done => {
-      const wrapper = mount(
+    it('not prevent default', (done) => {
+      const { container } = render(
         <Demo showAction={['contextMenu']} hideAction={['click']} />,
       );
-      wrapper.trigger('contextMenu', { pageX: 10, pageY: 20 });
+      trigger(container, 'contextmenu', { pageX: 10, pageY: 20 });
 
-      const popup = wrapper
-        .find('.rc-trigger-popup')
-        .first()
-        .getDOMNode();
-
+      const popup = document.querySelector('.rc-trigger-popup');
       expect(popup.style).toEqual(
         expect.objectContaining({ left: '-989px', top: '-979px' }),
       );
 
       // Click to close
-      wrapper.trigger('click', {
+      fireEvent.click(document.querySelector('.rc-trigger-popup > *'), {
         preventDefault() {
           done.fail();
         },
@@ -123,26 +114,22 @@ describe('Trigger.Point', () => {
   describe('placement', () => {
     function testPlacement(name, builtinPlacements, afterAll) {
       it(name, () => {
-        const wrapper = mount(
+        const { container } = render(
           <Demo
             action={['click']}
             builtinPlacements={builtinPlacements}
             popupPlacement="right"
           />,
         );
-        wrapper.trigger('click', { pageX: 10, pageY: 20 });
+        trigger(container, 'click', { pageX: 10, pageY: 20 });
 
-        const popup = wrapper
-          .find('.rc-trigger-popup')
-          .first()
-          .getDOMNode();
-
+        const popup = document.querySelector('.rc-trigger-popup');
         expect(popup.style).toEqual(
           expect.objectContaining({ left: '-989px', top: '-979px' }),
         );
 
         if (afterAll) {
-          afterAll(wrapper);
+          afterAll(document.body);
         }
       });
     }
@@ -161,12 +148,10 @@ describe('Trigger.Point', () => {
           points: ['tl'],
         },
       },
-      wrapper => {
-        expect(
-          wrapper
-            .find('div.rc-trigger-popup')
-            .hasClass('rc-trigger-popup-placement-left'),
-        ).toBeTruthy();
+      (wrapper) => {
+        expect(wrapper.querySelector('div.rc-trigger-popup')).toHaveClass(
+          'rc-trigger-popup-placement-left',
+        );
       },
     );
   });

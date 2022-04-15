@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { getMotion } from '../src/utils/legacyUtil';
 import MockTrigger from '../src/mock';
 
@@ -58,7 +58,7 @@ describe('Trigger.Util', () => {
 
   describe('mock', () => {
     it('close', () => {
-      const wrapper = mount(
+      const { container } = render(
         <MockTrigger
           action={['click']}
           popupAlign={{ points: ['cr', 'cl'] }}
@@ -68,11 +68,11 @@ describe('Trigger.Util', () => {
         </MockTrigger>,
       );
 
-      expect(wrapper.html()).toEqual('<div>light</div>');
+      expect(container.innerHTML).toEqual('<div>light</div>');
     });
 
     it('open', () => {
-      const wrapper = mount(
+      const { container } = render(
         <MockTrigger
           action={['click']}
           popupAlign={{ points: ['cr', 'cl'] }}
@@ -83,7 +83,7 @@ describe('Trigger.Util', () => {
         </MockTrigger>,
       );
 
-      expect(wrapper.html()).toEqual(
+      expect(container.innerHTML).toEqual(
         '<div>light</div><div><div class="rc-trigger-popup" style="opacity: 0; pointer-events: none;"><div>bamboo</div></div></div>',
       );
     });

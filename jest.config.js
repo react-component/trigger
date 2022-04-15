@@ -1,4 +1,4 @@
 module.exports = {
   setupFiles: ['./tests/setup.js'],
-  snapshotSerializers: [require.resolve('enzyme-to-json/serializer')],
+  setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
 };
