@@ -17,6 +17,17 @@ describe('Trigger.Basic', () => {
     jest.useRealTimers();
   });
 
+  function trigger(dom, selector, method = 'click') {
+    fireEvent[method](dom.querySelector(selector));
+    act(() => jest.runAllTimers());
+  }
+
+  function isPopupHidden() {
+    return document
+      .querySelector('.rc-trigger-popup')
+      .className.includes('-hidden');
+  }
+
   describe('getPopupContainer', () => {
     it('defaults to document.body', () => {
       const { container } = render(
@@ -29,7 +40,7 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
+      trigger(container, '.target');
 
       const popupDomNode = document.querySelector('.rc-trigger-popup');
       expect(popupDomNode.parentNode.parentNode.parentNode).toBeInstanceOf(
@@ -48,7 +59,7 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
+      trigger(container, '.target');
 
       expect(
         document.querySelectorAll('.rc-trigger-popup-content').length,
@@ -72,7 +83,8 @@ describe('Trigger.Basic', () => {
         document.createElement('div'),
       );
 
-      fireEvent.click(container.querySelector('.target'));
+      trigger(container, '.target');
+
       const popupDomNode = document.querySelector('.rc-trigger-popup');
       expect(popupDomNode.parentNode.parentNode.parentNode).toBeInstanceOf(
         HTMLDivElement,
@@ -92,13 +104,11 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
+      trigger(container, '.target');
       expect(document.querySelector('.x-content').textContent).toBe('tooltip2');
 
-      fireEvent.click(container.querySelector('.target'));
-      expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
-        'rc-trigger-popup-hidden',
-      );
+      trigger(container, '.target');
+      expect(isPopupHidden).toBeTruthy();
     });
 
     it('click works with function', () => {
@@ -115,13 +125,11 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
+      trigger(container, '.target');
       expect(document.querySelector('.x-content').textContent).toBe('tooltip3');
 
-      fireEvent.click(container.querySelector('.target'));
-      expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
-        'rc-trigger-popup-hidden',
-      );
+      trigger(container, '.target');
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     it('hover works', () => {
@@ -135,16 +143,11 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.mouseEnter(container.querySelector('.target'));
-      expect(document.querySelector('.rc-trigger-popup')).not.toHaveClass(
-        'rc-trigger-popup-hidden',
-      );
+      trigger(container, '.target', 'mouseEnter');
+      expect(isPopupHidden()).toBeFalsy();
 
-      fireEvent.mouseLeave(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
-      expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
-        'rc-trigger-popup-hidden',
-      );
+      trigger(container, '.target', 'mouseLeave');
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     it('contextMenu works', () => {
@@ -160,11 +163,8 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.contextMenu(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
-      expect(
-        document.querySelector('.rc-trigger-popup').className,
-      ).not.toContain('-hidden');
+      trigger(container, '.target', 'contextMenu');
+      expect(isPopupHidden()).toBeFalsy();
 
       act(() => {
         triggerRef.current.onDocumentClick({
@@ -173,9 +173,7 @@ describe('Trigger.Basic', () => {
         jest.runAllTimers();
       });
 
-      expect(document.querySelector('.rc-trigger-popup').className).toContain(
-        '-hidden',
-      );
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     describe('afterPopupVisibleChange can be triggered', () => {
@@ -194,7 +192,7 @@ describe('Trigger.Basic', () => {
           </Trigger>,
         );
 
-        fireEvent.click(container.querySelector('.target'));
+        trigger(container, '.target');
         expect(triggered).toBe(1);
       });
 
@@ -267,11 +265,8 @@ describe('Trigger.Basic', () => {
 
       const { container } = render(<Test />);
 
-      fireEvent.mouseEnter(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
-
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target', 'mouseEnter');
+      trigger(container, '.target');
 
       const clickPopupDomNode =
         document.querySelector('.click-trigger').parentElement;
@@ -280,8 +275,7 @@ describe('Trigger.Basic', () => {
       expect(clickPopupDomNode).toBeTruthy();
       expect(hoverPopupDomNode).toBeTruthy();
 
-      fireEvent.mouseLeave(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target', 'mouseLeave');
       expect(hoverPopupDomNode.className.includes('-hidden')).toBeTruthy();
       expect(clickPopupDomNode.className.includes('-hidden')).toBeFalsy();
 
@@ -335,12 +329,10 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
 
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
     });
 
@@ -358,12 +350,10 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
 
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(triggerRef.current.getPopupDomNode()).toBeFalsy();
     });
   });
@@ -382,8 +372,7 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
       expect(triggerRef.current.props.autoDestroy).toBeFalsy();
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
       act(() => jest.runAllTimers());
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
@@ -401,11 +390,9 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
-      fireEvent.click(container.querySelector('.target'));
-      act(() => jest.runAllTimers());
+      trigger(container, '.target');
       expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
     });
   });
@@ -462,7 +449,7 @@ describe('Trigger.Basic', () => {
       );
 
       // Basic click
-      fireEvent.click(container.querySelector('.target'));
+      trigger(container, '.target');
       expect(visible).toBeTruthy();
       expect(innerVisible).toBeFalsy();
 
@@ -600,17 +587,12 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    fireEvent.click(container.querySelector('.target'));
-    act(() => jest.runAllTimers());
-    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
-      '-hidden',
-    );
+    trigger(container, '.target');
+    expect(isPopupHidden()).toBeFalsy();
 
     fireEvent.click(container.querySelector('.target'));
     act(() => jest.runAllTimers());
-    expect(document.querySelector('.rc-trigger-popup').className).toContain(
-      '-hidden',
-    );
+    expect(isPopupHidden()).toBeTruthy();
   });
 
   it('Popup with mouseDown prevent', () => {
@@ -639,16 +621,12 @@ describe('Trigger.Basic', () => {
     );
 
     fireEvent.click(container.querySelector('h1'));
-    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
-      '-hidden',
-    );
+    expect(isPopupHidden()).toBeFalsy();
 
     triggerRef.current.onDocumentClick({
       target: document.querySelector('button'),
     });
-    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
-      '-hidden',
-    );
+    expect(isPopupHidden()).toBeFalsy();
   });
 
   // https://github.com/ant-design/ant-design/issues/21770
@@ -764,9 +742,7 @@ describe('Trigger.Basic', () => {
     const { container } = render(<Demo />, { container: root });
 
     fireEvent.click(container.querySelector('.target'));
-    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
-      '-hidden',
-    );
+    expect(isPopupHidden()).toBeFalsy();
 
     // Click should not close
     fireEvent.mouseDown(document.querySelector('button'));
@@ -777,9 +753,7 @@ describe('Trigger.Basic', () => {
       document.dispatchEvent(mouseEvent);
     });
 
-    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
-      '-hidden',
-    );
+    expect(isPopupHidden()).toBeFalsy();
 
     document.body.removeChild(div);
     document.body.removeChild(root);
