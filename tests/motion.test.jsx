@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { cleanup, fireEvent, render } from '@testing-library/react';
 import Trigger from '../src';
+import CSSMotion from 'rc-motion';
 import { placementAlignMap } from './util';
 
 describe('Trigger.Motion', () => {
@@ -9,11 +10,12 @@ describe('Trigger.Motion', () => {
   });
 
   afterEach(() => {
+    cleanup();
     jest.useRealTimers();
   });
 
   it('popup should support motion', async () => {
-    const wrapper = mount(
+    const { container } = render(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
@@ -25,15 +27,18 @@ describe('Trigger.Motion', () => {
         <div className="target">click</div>
       </Trigger>,
     );
+    const target = container.querySelector('.target');
 
-    wrapper.trigger();
-    expect(wrapper.getPopupInner().hasClass('bamboo-appear')).toBeTruthy();
+    fireEvent.click(target);
 
-    wrapper.unmount();
+    expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
+      'bamboo-appear',
+    );
   });
 
   it('use correct leave motion', () => {
-    const wrapper = mount(
+    const cssMotionSpy = jest.spyOn(CSSMotion, 'render');
+    const { container } = render(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
@@ -46,11 +51,13 @@ describe('Trigger.Motion', () => {
         <div className="target">click</div>
       </Trigger>,
     );
+    const target = container.querySelector('.target');
 
-    wrapper.trigger();
+    fireEvent.click(target);
 
-    expect(wrapper.find('CSSMotion').props().leavedClassName).toEqual('light');
-
-    wrapper.unmount();
+    expect(cssMotionSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ leavedClassName: 'light' }),
+      expect.anything(),
+    );
   });
 });

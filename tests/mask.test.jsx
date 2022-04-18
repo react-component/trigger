@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import Trigger from '../src';
+import CSSMotion from 'rc-motion';
 import { placementAlignMap } from './util';
 
 describe('Trigger.Mask', () => {
@@ -13,7 +14,8 @@ describe('Trigger.Mask', () => {
   });
 
   it('mask should support motion', () => {
-    const wrapper = mount(
+    const cssMotionSpy = jest.spyOn(CSSMotion, 'render');
+    const { container } = render(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
@@ -25,8 +27,12 @@ describe('Trigger.Mask', () => {
       </Trigger>,
     );
 
-    wrapper.trigger();
+    const target = container.querySelector('.target');
+    fireEvent.click(target);
 
-    expect(wrapper.find('Mask CSSMotion').props().motionName).toEqual('bamboo');
+    expect(cssMotionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ motionName: 'bamboo' }),
+      null,
+    );
   });
 });

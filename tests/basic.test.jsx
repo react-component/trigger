@@ -1,11 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
-import React from 'react';
+import React, { createRef } from 'react';
 import ReactDOM from 'react-dom';
-import { mount } from 'enzyme';
-import { act } from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
-import Portal from 'rc-util/lib/Portal';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
 
@@ -15,12 +13,24 @@ describe('Trigger.Basic', () => {
   });
 
   afterEach(() => {
+    cleanup();
     jest.useRealTimers();
   });
 
+  function trigger(dom, selector, method = 'click') {
+    fireEvent[method](dom.querySelector(selector));
+    act(() => jest.runAllTimers());
+  }
+
+  function isPopupHidden() {
+    return document
+      .querySelector('.rc-trigger-popup')
+      .className.includes('-hidden');
+  }
+
   describe('getPopupContainer', () => {
     it('defaults to document.body', () => {
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
@@ -30,29 +40,30 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger();
+      trigger(container, '.target');
 
-      const popupDomNode = wrapper.instance().getPopupDomNode();
-      expect(
-        popupDomNode.parentNode.parentNode.parentNode instanceof
-          HTMLBodyElement,
-      ).toBeTruthy();
+      const popupDomNode = document.querySelector('.rc-trigger-popup');
+      expect(popupDomNode.parentNode.parentNode.parentNode).toBeInstanceOf(
+        HTMLBodyElement,
+      );
     });
 
     it('wrapper children with div when multiple children', () => {
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
-          popup={[<div />, <div />]}
+          popup={[<div key={0} />, <div key={1} />]}
         >
           <div className="target">click</div>
         </Trigger>,
       );
 
-      wrapper.trigger();
+      trigger(container, '.target');
 
-      expect(wrapper.find('.rc-trigger-popup-content').length).toBeTruthy();
+      expect(
+        document.querySelectorAll('.rc-trigger-popup-content').length,
+      ).toBeTruthy();
     });
 
     it('can change', () => {
@@ -60,7 +71,7 @@ describe('Trigger.Basic', () => {
         return node.parentNode;
       }
 
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['click']}
           getPopupContainer={getPopupContainer}
@@ -72,17 +83,18 @@ describe('Trigger.Basic', () => {
         document.createElement('div'),
       );
 
-      wrapper.trigger();
-      const popupDomNode = wrapper.instance().getPopupDomNode();
-      expect(
-        popupDomNode.parentNode.parentNode.parentNode instanceof HTMLDivElement,
-      ).toBeTruthy();
+      trigger(container, '.target');
+
+      const popupDomNode = document.querySelector('.rc-trigger-popup');
+      expect(popupDomNode.parentNode.parentNode.parentNode).toBeInstanceOf(
+        HTMLDivElement,
+      );
     });
   });
 
   describe('action', () => {
     it('click works', () => {
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
@@ -92,18 +104,18 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger();
-      expect(wrapper.find('Popup').find('.x-content').text()).toBe('tooltip2');
+      trigger(container, '.target');
+      expect(document.querySelector('.x-content').textContent).toBe('tooltip2');
 
-      wrapper.trigger();
-      expect(wrapper.isHidden()).toBeTruthy();
+      trigger(container, '.target');
+      expect(isPopupHidden).toBeTruthy();
     });
 
     it('click works with function', () => {
       const popup = function renderPopup() {
         return <strong className="x-content">tooltip3</strong>;
       };
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
@@ -113,15 +125,15 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger();
-      expect(wrapper.find('Popup').find('.x-content').text()).toBe('tooltip3');
+      trigger(container, '.target');
+      expect(document.querySelector('.x-content').textContent).toBe('tooltip3');
 
-      wrapper.trigger();
-      expect(wrapper.isHidden()).toBeTruthy();
+      trigger(container, '.target');
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     it('hover works', () => {
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['hover']}
           popupAlign={placementAlignMap.left}
@@ -131,16 +143,18 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger('mouseEnter');
-      expect(wrapper.isHidden()).toBeFalsy();
+      trigger(container, '.target', 'mouseEnter');
+      expect(isPopupHidden()).toBeFalsy();
 
-      wrapper.trigger('mouseLeave');
-      expect(wrapper.isHidden()).toBeTruthy();
+      trigger(container, '.target', 'mouseLeave');
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     it('contextMenu works', () => {
-      const wrapper = mount(
+      const triggerRef = createRef();
+      const { container } = render(
         <Trigger
+          ref={triggerRef}
           action={['contextMenu']}
           popupAlign={placementAlignMap.left}
           popup={<strong>trigger</strong>}
@@ -149,24 +163,23 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger('contextMenu');
-      expect(wrapper.isHidden()).toBeFalsy();
+      trigger(container, '.target', 'contextMenu');
+      expect(isPopupHidden()).toBeFalsy();
 
       act(() => {
-        wrapper
-          .instance()
-          .onDocumentClick({ target: wrapper.find('.target').getDOMNode() });
+        triggerRef.current.onDocumentClick({
+          target: container.querySelector('.target'),
+        });
         jest.runAllTimers();
-        wrapper.update();
       });
 
-      expect(wrapper.isHidden()).toBeTruthy();
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     describe('afterPopupVisibleChange can be triggered', () => {
       it('uncontrolled', () => {
         let triggered = 0;
-        const wrapper = mount(
+        const { container } = render(
           <Trigger
             action={['click']}
             popupAlign={placementAlignMap.left}
@@ -179,11 +192,12 @@ describe('Trigger.Basic', () => {
           </Trigger>,
         );
 
-        wrapper.trigger();
+        trigger(container, '.target');
         expect(triggered).toBe(1);
       });
 
       it('controlled', () => {
+        const demoRef = createRef();
         let triggered = 0;
 
         class Demo extends React.Component {
@@ -207,16 +221,18 @@ describe('Trigger.Basic', () => {
           }
         }
 
-        const wrapper = mount(<Demo />);
-        wrapper.setState({ visible: true });
-        jest.runAllTimers();
+        render(<Demo ref={demoRef} />);
+        act(() => {
+          demoRef.current.setState({ visible: true });
+          jest.runAllTimers();
+        });
         expect(triggered).toBe(1);
 
-        wrapper.setState({ visible: false });
-        jest.runAllTimers();
+        act(() => {
+          demoRef.current.setState({ visible: false });
+          jest.runAllTimers();
+        });
         expect(triggered).toBe(2);
-
-        wrapper.unmount();
       });
     });
 
@@ -247,30 +263,24 @@ describe('Trigger.Basic', () => {
         }
       }
 
-      const wrapper = mount(<Test />);
+      const { container } = render(<Test />);
 
-      wrapper.find('.target').simulate('mouseEnter');
-      wrapper.refresh();
+      trigger(container, '.target', 'mouseEnter');
+      trigger(container, '.target');
 
-      wrapper.find('.target').simulate('click');
-      wrapper.refresh();
-
-      const clickPopupDomNode = wrapper
-        .instance()
-        .clickTriggerRef.current.getPopupDomNode();
-      const hoverPopupDomNode = wrapper
-        .instance()
-        .hoverTriggerRef.current.getPopupDomNode();
+      const clickPopupDomNode =
+        document.querySelector('.click-trigger').parentElement;
+      const hoverPopupDomNode =
+        document.querySelector('.hover-trigger').parentElement;
       expect(clickPopupDomNode).toBeTruthy();
       expect(hoverPopupDomNode).toBeTruthy();
 
-      wrapper.find('.target').simulate('mouseLeave');
-      wrapper.refresh();
+      trigger(container, '.target', 'mouseLeave');
       expect(hoverPopupDomNode.className.includes('-hidden')).toBeTruthy();
       expect(clickPopupDomNode.className.includes('-hidden')).toBeFalsy();
 
-      wrapper.find('.target').simulate('click');
-      wrapper.refresh();
+      fireEvent.click(container.querySelector('.target'));
+      act(() => jest.runAllTimers());
       expect(hoverPopupDomNode.className.includes('-hidden')).toBeTruthy();
       expect(clickPopupDomNode.className.includes('-hidden')).toBeTruthy();
     });
@@ -280,42 +290,37 @@ describe('Trigger.Basic', () => {
 
   describe('forceRender', () => {
     it("doesn't render at first time when forceRender=false", () => {
-      const wrapper = mount(
+      render(
         <Trigger popup={<span>Hello!</span>}>
           <span>Hey!</span>
         </Trigger>,
       );
 
-      expect(wrapper.instance().getPopupDomNode()).toBeFalsy();
+      expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
     });
 
     it('render at first time when forceRender=true', () => {
+      const triggerRef = React.createRef();
       class Test extends React.Component {
-        triggerRef = React.createRef();
-
         render() {
           return (
-            <Trigger
-              ref={this.triggerRef}
-              forceRender
-              popup={<span>Hello!</span>}
-            >
+            <Trigger ref={triggerRef} forceRender popup={<span>Hello!</span>}>
               <span>Hey!</span>
             </Trigger>
           );
         }
       }
-      const wrapper = mount(<Test />);
-      expect(
-        wrapper.instance().triggerRef.current.getPopupDomNode(),
-      ).toBeTruthy();
+      render(<Test />);
+      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
     });
   });
 
   describe('destroyPopupOnHide', () => {
     it('defaults to false', () => {
-      const wrapper = mount(
+      const triggerRef = createRef();
+      const { container } = render(
         <Trigger
+          ref={triggerRef}
           action={['click']}
           popupAlign={placementAlignMap.topRight}
           popup={<strong>trigger</strong>}
@@ -324,15 +329,18 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger();
-      expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
-      wrapper.trigger();
-      expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
+      trigger(container, '.target');
+      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
+
+      trigger(container, '.target');
+      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
     });
 
     it('set true will destroy tooltip on hide', () => {
-      const wrapper = mount(
+      const triggerRef = createRef();
+      const { container } = render(
         <Trigger
+          ref={triggerRef}
           action={['click']}
           destroyPopupOnHide
           popupAlign={placementAlignMap.topRight}
@@ -342,17 +350,20 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger();
-      expect(wrapper.instance().getPopupDomNode()).toBeTruthy();
-      wrapper.trigger();
-      expect(wrapper.instance().getPopupDomNode()).toBeFalsy();
+      trigger(container, '.target');
+      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
+
+      trigger(container, '.target');
+      expect(triggerRef.current.getPopupDomNode()).toBeFalsy();
     });
   });
 
   describe('support autoDestroy', () => {
     it('defaults to false', () => {
-      const wrapper = mount(
+      const triggerRef = createRef();
+      const { container } = render(
         <Trigger
+          ref={triggerRef}
           action={['click']}
           popupAlign={placementAlignMap.topRight}
           popup={<strong>trigger</strong>}
@@ -360,15 +371,15 @@ describe('Trigger.Basic', () => {
           <div className="target">click</div>
         </Trigger>,
       );
-      expect(wrapper.prop('autoDestroy')).toBeFalsy();
-      wrapper.trigger();
-      expect(wrapper.find(Portal).exists()).toBe(true);
-      wrapper.trigger();
-      expect(wrapper.find(Portal).exists()).toBe(true);
+      expect(triggerRef.current.props.autoDestroy).toBeFalsy();
+      trigger(container, '.target');
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+      act(() => jest.runAllTimers());
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
     });
 
     it('set true will destroy portal on hide', () => {
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           action={['click']}
           autoDestroy
@@ -379,10 +390,10 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
-      wrapper.trigger();
-      expect(wrapper.find(Portal).exists()).toBe(true);
-      wrapper.trigger();
-      expect(wrapper.find(Portal).exists()).toBe(false);
+      trigger(container, '.target');
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+      trigger(container, '.target');
+      expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
     });
   });
 
@@ -423,7 +434,7 @@ describe('Trigger.Basic', () => {
       function onPopupVisibleChange(value) {
         visible = value;
       }
-      const wrapper = mount(
+      const { container } = render(
         <Trigger
           onPopupVisibleChange={onPopupVisibleChange}
           popupPlacement="right"
@@ -438,18 +449,15 @@ describe('Trigger.Basic', () => {
       );
 
       // Basic click
-      wrapper.find('.target').simulate('click');
-      wrapper.refresh();
+      trigger(container, '.target');
       expect(visible).toBeTruthy();
       expect(innerVisible).toBeFalsy();
 
-      wrapper.find('#issue_9114_trigger').simulate('click');
-      wrapper.refresh();
+      fireEvent.click(document.querySelector('#issue_9114_trigger'));
       expect(visible).toBeTruthy();
       expect(innerVisible).toBeTruthy();
 
-      wrapper.find('#issue_9114_popup').simulate('click');
-      wrapper.refresh();
+      fireEvent.click(document.querySelector('#issue_9114_popup'));
       expect(visible).toBeTruthy();
       expect(innerVisible).toBeTruthy();
     });
@@ -457,7 +465,7 @@ describe('Trigger.Basic', () => {
 
   describe('stretch', () => {
     const createTrigger = (stretch) =>
-      mount(
+      render(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
@@ -489,19 +497,22 @@ describe('Trigger.Basic', () => {
       domSpy.mockRestore();
     });
 
-    ['width', 'height', 'minWidth', 'minHeight'].forEach((prop) => {
+    ['width', 'height', 'min-width', 'min-height'].forEach((prop) => {
       it(prop, () => {
-        const wrapper = createTrigger(prop);
+        const { container } = createTrigger(prop);
 
-        wrapper.trigger();
+        fireEvent.click(container.querySelector('.target'));
+        act(() => jest.runAllTimers());
 
-        expect(prop in wrapper.getPopupInner().props().style).toBeTruthy();
+        expect(
+          document.querySelector('.rc-trigger-popup').style,
+        ).toHaveProperty(prop);
       });
     });
   });
 
   it('className should be undefined by default', () => {
-    const wrapper = mount(
+    const { container } = render(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
@@ -510,11 +521,11 @@ describe('Trigger.Basic', () => {
         <div>click</div>
       </Trigger>,
     );
-    expect(wrapper.find('div').props().className).toBeFalsy();
+    expect(container.querySelector('div')).not.toHaveAttribute('class');
   });
 
   it('support className', () => {
-    const wrapper = mount(
+    const { container } = render(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
@@ -525,13 +536,13 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    expect(wrapper.find('div').props().className).toBe(
+    expect(container.querySelector('div')).toHaveClass(
       'target className-in-trigger',
     );
   });
 
   it('support className in nested Trigger', () => {
-    const wrapper = mount(
+    const { container } = render(
       <Trigger
         action={['click']}
         popupAlign={placementAlignMap.left}
@@ -549,7 +560,7 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    expect(wrapper.find('div').props().className).toBe(
+    expect(container.querySelector('div').className).toBe(
       'target className-in-trigger-1 className-in-trigger-2',
     );
   });
@@ -564,8 +575,10 @@ describe('Trigger.Basic', () => {
       );
     });
 
-    const wrapper = mount(
+    const triggerRef = createRef();
+    const { container } = render(
       <Trigger
+        ref={triggerRef}
         action={['click']}
         popupAlign={placementAlignMap.left}
         popup={<strong className="x-content">tooltip2</strong>}
@@ -574,16 +587,19 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    wrapper.trigger();
-    expect(wrapper.isHidden()).toBeFalsy();
+    trigger(container, '.target');
+    expect(isPopupHidden()).toBeFalsy();
 
-    wrapper.trigger();
-    expect(wrapper.isHidden()).toBeTruthy();
+    fireEvent.click(container.querySelector('.target'));
+    act(() => jest.runAllTimers());
+    expect(isPopupHidden()).toBeTruthy();
   });
 
   it('Popup with mouseDown prevent', () => {
-    const wrapper = mount(
+    const triggerRef = createRef();
+    const { container } = render(
       <Trigger
+        ref={triggerRef}
         action={['click']}
         popupAlign={placementAlignMap.left}
         popup={
@@ -604,20 +620,22 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    wrapper.trigger();
-    expect(wrapper.isHidden()).toBeFalsy();
+    fireEvent.click(container.querySelector('h1'));
+    expect(isPopupHidden()).toBeFalsy();
 
-    wrapper
-      .instance()
-      .onDocumentClick({ target: wrapper.find('button').instance() });
-    expect(wrapper.isHidden()).toBeFalsy();
+    triggerRef.current.onDocumentClick({
+      target: document.querySelector('button'),
+    });
+    expect(isPopupHidden()).toBeFalsy();
   });
 
   // https://github.com/ant-design/ant-design/issues/21770
   it('support popupStyle, such as zIndex', () => {
+    const triggerRef = createRef();
     const style = { color: 'red', zIndex: 9999, top: 100, opacity: 0.93 };
-    const wrapper = mount(
+    render(
       <Trigger
+        ref={triggerRef}
         popupVisible
         popupStyle={style}
         popup={<strong className="x-content">tooltip2</strong>}
@@ -626,7 +644,7 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    const popupDomNode = wrapper.instance().getPopupDomNode();
+    const popupDomNode = triggerRef.current.getPopupDomNode();
     expect(popupDomNode.style.zIndex).toBe(style.zIndex.toString());
     expect(popupDomNode.style.color).toBe(style.color);
     expect(popupDomNode.style.top).toBe(`${style.top}px`);
@@ -649,16 +667,14 @@ describe('Trigger.Basic', () => {
         );
       }
 
-      const wrapper = mount(<Demo />);
+      const { container } = render(<Demo />);
 
       expect(getPopupContainer).toHaveReturnedTimes(0);
 
-      act(() => {
-        jest.runAllTimers();
-      });
+      act(() => jest.runAllTimers());
       expect(getPopupContainer).toHaveReturnedTimes(1);
       expect(getPopupContainer).toHaveBeenCalledWith(
-        wrapper.find('.target').instance(),
+        container.querySelector('.target'),
       );
     });
 
@@ -681,11 +697,8 @@ describe('Trigger.Basic', () => {
         );
       }
 
-      const wrapper = mount(<Demo />);
-
+      render(<Demo />);
       expect(triggerTimes).toEqual(1);
-
-      wrapper.unmount();
     });
   });
 
@@ -726,25 +739,21 @@ describe('Trigger.Basic', () => {
       );
     };
 
-    const wrapper = mount(<Demo />, { attachTo: root });
+    const { container } = render(<Demo />, { container: root });
 
-    wrapper.find('.target').simulate('click');
-    expect(wrapper.isHidden()).toBeFalsy();
+    fireEvent.click(container.querySelector('.target'));
+    expect(isPopupHidden()).toBeFalsy();
 
     // Click should not close
-    wrapper.find('button').simulate('mouseDown');
+    fireEvent.mouseDown(document.querySelector('button'));
 
     // Mock document mouse click event
     act(() => {
       const mouseEvent = new MouseEvent('mousedown');
       document.dispatchEvent(mouseEvent);
-      wrapper.update();
     });
 
-    wrapper.update();
-    expect(wrapper.isHidden()).toBeFalsy();
-
-    wrapper.unmount();
+    expect(isPopupHidden()).toBeFalsy();
 
     document.body.removeChild(div);
     document.body.removeChild(root);
@@ -801,11 +810,12 @@ describe('Trigger.Basic', () => {
       }
     }
 
-    const wrapper = mount(<App />);
+    const appRef = createRef();
+    render(<App ref={appRef} />);
 
     isUpdate = true;
 
-    wrapper.setState({});
+    act(() => appRef.current.setState({}));
 
     expect(isChildUpdate).toBeFalsy();
     expect(isGrandsonUpdate).toBeFalsy();

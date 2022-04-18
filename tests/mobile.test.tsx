@@ -1,7 +1,6 @@
-import React from 'react';
-import { act } from 'react-dom/test-utils';
+import React, { createRef } from 'react';
 import isMobile from 'rc-util/lib/isMobile';
-import { mount } from 'enzyme';
+import { act, fireEvent, render } from '@testing-library/react';
 import type { TriggerProps } from '../src';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
@@ -13,7 +12,11 @@ describe('Trigger.Mobile', () => {
     (isMobile as any).mockImplementation(() => true);
   });
 
-  function getTrigger(props?: Partial<TriggerProps>) {
+  function getTrigger(
+    props?: Partial<
+      TriggerProps & React.ClassAttributes<InstanceType<typeof Trigger>>
+    >,
+  ) {
     return (
       <Trigger
         action={['click']}
@@ -30,7 +33,7 @@ describe('Trigger.Mobile', () => {
   }
 
   it('mobile config', () => {
-    const wrapper = mount(
+    const { container } = render(
       getTrigger({
         mobile: {
           popupClassName: 'mobile-popup',
@@ -39,19 +42,19 @@ describe('Trigger.Mobile', () => {
       }),
     );
 
-    wrapper.find('.target').simulate('click');
+    fireEvent.click(container.querySelector('.target'));
 
-    expect(
-      wrapper.find('.rc-trigger-popup').hasClass('mobile-popup'),
-    ).toBeTruthy();
-
-    expect(wrapper.find('.rc-trigger-popup').props().style).toEqual(
-      expect.objectContaining({ background: 'red' }),
+    expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
+      'mobile-popup',
     );
+
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      background: 'red',
+    });
   });
 
   it('popupRender', () => {
-    const wrapper = mount(
+    const { container } = render(
       getTrigger({
         mobile: {
           popupRender: (node) => (
@@ -64,31 +67,34 @@ describe('Trigger.Mobile', () => {
       }),
     );
 
-    wrapper.find('.target').simulate('click');
-    expect(wrapper.find('.rc-trigger-popup').render()).toMatchSnapshot();
+    fireEvent.click(container.querySelector('.target'));
+    expect(document.querySelector('.rc-trigger-popup')).toMatchSnapshot();
   });
 
   it('click inside not close', () => {
-    const wrapper = mount(getTrigger());
-    wrapper.find('.target').simulate('click');
-    expect((wrapper.state() as any).popupVisible).toBeTruthy();
-    wrapper.find('.x-content').simulate('click');
-    expect((wrapper.state() as any).popupVisible).toBeTruthy();
+    const triggerRef = createRef<InstanceType<typeof Trigger>>();
+    const { container } = render(getTrigger({ ref: triggerRef }));
+    fireEvent.click(container.querySelector('.target'));
+    expect(triggerRef.current.state.popupVisible).toBeTruthy();
+    fireEvent.click(document.querySelector('.x-content'));
+    expect(triggerRef.current.state.popupVisible).toBeTruthy();
 
     // Document click
     act(() => {
-      const mouseEvent = new MouseEvent('mousedown');
-      document.dispatchEvent(mouseEvent);
-      wrapper.update();
+      fireEvent.mouseDown(document);
     });
-    expect((wrapper.state() as any).popupVisible).toBeFalsy();
+    expect(triggerRef.current.state.popupVisible).toBeFalsy();
   });
 
   it('legacy array children', () => {
-    const wrapper = mount(
-      getTrigger({ popup: [<div>Light</div>, <div>Bamboo</div>] }),
+    const { container } = render(
+      getTrigger({
+        popup: [<div key={0}>Light</div>, <div key={1}>Bamboo</div>],
+      }),
     );
-    wrapper.find('.target').simulate('click');
-    expect(wrapper.find('.rc-trigger-popup-content')).toHaveLength(1);
+    fireEvent.click(container.querySelector('.target'));
+    expect(document.querySelectorAll('.rc-trigger-popup-content')).toHaveLength(
+      1,
+    );
   });
 });
