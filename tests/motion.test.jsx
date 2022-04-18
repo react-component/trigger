@@ -34,6 +34,10 @@ describe('Trigger.Motion', () => {
     expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
       'bamboo-appear',
     );
+
+    expect(
+      document.querySelector('.rc-trigger-popup').style.pointerEvents,
+    ).toEqual('');
   });
 
   it('use correct leave motion', () => {
