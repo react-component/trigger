@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import React, { createRef } from 'react';
+import React, { StrictMode, createRef } from 'react';
 import ReactDOM from 'react-dom';
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
@@ -819,5 +819,24 @@ describe('Trigger.Basic', () => {
 
     expect(isChildUpdate).toBeFalsy();
     expect(isGrandsonUpdate).toBeFalsy();
+  });
+
+  it('should work in StrictMode with autoDestroy', () => {
+    const { container } = render(
+      <Trigger action={['click']} autoDestroy={true}>
+        <div className="target">click</div>
+      </Trigger>,
+      { wrapper: StrictMode },
+    );
+
+    // click to show
+    trigger(container, '.target');
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+    // click to hide
+    trigger(container, '.target');
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+    // click to show
+    trigger(container, '.target');
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
   });
 });
