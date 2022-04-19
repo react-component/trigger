@@ -182,7 +182,9 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       zIndex,
       opacity:
         status === 'motion' || status === 'stable' || !visible ? undefined : 0,
-      pointerEvents: status === 'stable' ? undefined : 'none',
+      // Cannot interact with disappearing elements
+      // https://github.com/ant-design/ant-design/issues/35051#issuecomment-1101340714
+      pointerEvents: !visible && status !== 'stable' ? 'none' : undefined,
       ...style,
     };
 
