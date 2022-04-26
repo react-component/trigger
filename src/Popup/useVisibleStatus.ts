@@ -12,11 +12,24 @@ import useState from 'rc-util/lib/hooks/useState';
  * motion - play the motion
  * stable - everything is done
  */
-type PopupStatus = null | 'measure' | 'align' | 'aligned' | 'motion' | 'stable';
+type PopupStatus =
+  | null
+  | 'measure'
+  | 'alignPre'
+  | 'align'
+  | 'aligned'
+  | 'motion'
+  | 'stable';
 
 type Func = () => void;
 
-const StatusQueue: PopupStatus[] = ['measure', 'align', null, 'motion'];
+const StatusQueue: PopupStatus[] = [
+  'measure',
+  'alignPre',
+  'align',
+  null,
+  'motion',
+];
 
 export default (
   visible: boolean,
