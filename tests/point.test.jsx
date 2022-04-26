@@ -38,7 +38,11 @@ describe('Trigger.Point', () => {
   function trigger(container, eventName, data) {
     const pointRegion = container.querySelector('.point-region');
     fireEvent(pointRegion, getMouseEvent(eventName, data));
-    act(() => jest.runAllTimers());
+
+    // React scheduler will not hold when useEffect. We need repeat to tell that times go
+    for (let i = 0; i < 10; i += 1) {
+      act(() => jest.runAllTimers());
+    }
   }
 
   it('onClick', async () => {
