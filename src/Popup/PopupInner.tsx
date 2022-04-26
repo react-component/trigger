@@ -102,8 +102,14 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const [status, goNextStatus] = useVisibleStatus(visible, doMeasure);
 
     // ======================== Aligns ========================
-    const [alignInfo, setAlignInfo] = useState<AlignType>(null);
+    const [alignTimes, setAlignTimes] = useState(0);
     const prepareResolveRef = useRef<(value?: unknown) => void>();
+
+    useLayoutEffect(() => {
+      if (status === 'alignPre') {
+        setAlignTimes(0);
+      }
+    }, [status]);
 
     // `target` on `rc-align` can accept as a function to get the bind element or a point.
     // ref: https://www.npmjs.com/package/rc-align
@@ -120,11 +126,13 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
 
     function onInternalAlign(popupDomNode: HTMLElement, matchAlign: AlignType) {
       const nextAlignedClassName = getClassNameFromAlign(matchAlign);
+
       if (alignedClassName !== nextAlignedClassName) {
         setAlignedClassName(nextAlignedClassName);
       }
 
-      setAlignInfo(matchAlign);
+      // We will retry multi times to make sure that the element has been align in the right position.
+      setAlignTimes((val) => val + 1);
 
       if (status === 'align') {
         onAlign?.(popupDomNode, matchAlign);
@@ -133,11 +141,9 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
 
     // Delay to go to next status
     useLayoutEffect(() => {
-      if (alignInfo && status === 'align') {
-        const nextAlignedClassName = getClassNameFromAlign(alignInfo);
-
+      if (status === 'align') {
         // Repeat until not more align needed
-        if (alignedClassName !== nextAlignedClassName) {
+        if (alignTimes < 2) {
           forceAlign();
         } else {
           goNextStatus(function () {
@@ -145,7 +151,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
           });
         }
       }
-    }, [alignInfo]);
+    }, [alignTimes]);
 
     // ======================== Motion ========================
     const motion = { ...getMotion(props) };
