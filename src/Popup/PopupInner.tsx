@@ -102,6 +102,14 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     const [status, goNextStatus] = useVisibleStatus(visible, doMeasure);
 
     // ======================== Aligns ========================
+    /**
+     * `alignedClassName` may modify `source` size,
+     * which means one time align may not move to the correct position at once.
+     *
+     * We will reset `alignTimes` for each status switch to `alignPre`
+     * and let `rc-align` to align for multiple times to ensure get final stable place.
+     * Currently we mark `alignTimes < 2` repeat align, it will increase if user report for align issue.
+     */
     const [alignTimes, setAlignTimes] = useState(0);
     const prepareResolveRef = useRef<(value?: unknown) => void>();
 
