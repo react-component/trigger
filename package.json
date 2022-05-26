@@ -58,7 +58,7 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "^7.18.3",
     "classnames": "^2.2.6",
     "rc-align": "^4.0.0",
     "rc-motion": "^2.0.0",
