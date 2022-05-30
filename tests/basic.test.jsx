@@ -839,4 +839,22 @@ describe('Trigger.Basic', () => {
     trigger(container, '.target');
     expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
   });
+
+  it('onPopupClick', () => {
+    const onPopupClick = jest.fn();
+
+    render(
+      <Trigger
+        popupVisible
+        popup={<strong>trigger</strong>}
+        onPopupClick={onPopupClick}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    fireEvent.click(document.querySelector('strong'));
+
+    expect(onPopupClick).toHaveBeenCalled();
+  });
 });
