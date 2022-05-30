@@ -50,6 +50,7 @@ export interface PopupInnerProps {
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   onMouseDown?: React.MouseEventHandler<HTMLDivElement>;
   onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export interface PopupInnerRef {
@@ -82,6 +83,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       onMouseLeave,
       onMouseDown,
       onTouchStart,
+      onClick,
     } = props;
 
     const alignRef = useRef<RefAlign>();
@@ -251,6 +253,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
                 onMouseLeave={onMouseLeave}
                 onMouseDownCapture={onMouseDown}
                 onTouchStartCapture={onTouchStart}
+                onClick={onClick}
                 style={{
                   ...motionStyle,
                   ...mergedStyle,

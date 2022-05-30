@@ -59,6 +59,7 @@ export interface TriggerProps {
   hideAction?: ActionType[];
   getPopupClassNameFromAlign?: (align: AlignType) => string;
   onPopupVisibleChange?: (visible: boolean) => void;
+  onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
   afterPopupVisibleChange?: (visible: boolean) => void;
   popup: React.ReactNode | (() => React.ReactNode);
   popupStyle?: React.CSSProperties;
@@ -516,6 +517,7 @@ export function generateTrigger(
         alignPoint,
         mobile,
         forceRender,
+        onPopupClick,
       } = this.props;
       const { popupVisible, point } = this.state;
 
@@ -557,6 +559,7 @@ export function generateTrigger(
           motion={popupMotion}
           mobile={mobile}
           forceRender={forceRender}
+          onClick={onPopupClick}
         >
           {typeof popup === 'function' ? popup() : popup}
         </Popup>
