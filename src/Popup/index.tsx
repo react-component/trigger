@@ -29,6 +29,7 @@ export interface PopupProps {
   onMouseLeave?: React.MouseEventHandler<HTMLElement>;
   onMouseDown?: React.MouseEventHandler<HTMLElement>;
   onTouchStart?: React.TouchEventHandler<HTMLElement>;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   stretch?: StretchType;
   children?: React.ReactNode;
   point?: Point;

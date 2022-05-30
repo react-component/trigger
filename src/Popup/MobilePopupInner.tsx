@@ -21,6 +21,7 @@ const MobilePopupInner = React.forwardRef<PopupInnerRef, MobilePopupInnerProps>(
         popupMotion = {},
         popupRender,
       } = {},
+      onClick,
     } = props;
     const elementRef = React.useRef<HTMLDivElement>();
 
@@ -67,6 +68,7 @@ const MobilePopupInner = React.forwardRef<PopupInnerRef, MobilePopupInnerProps>(
             <div
               ref={motionRef}
               className={mergedClassName}
+              onClick={onClick}
               style={{
                 ...motionStyle,
                 ...mergedStyle,
