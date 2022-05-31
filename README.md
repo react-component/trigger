@@ -247,6 +247,12 @@ npm start
           <td></td>
           <td>Let popup div stretch with trigger element. enums of 'width', 'minWidth', 'height', 'minHeight'. (You can also mixed with 'height minWidth')</td>
         </tr>
+        <tr>
+          <td>hideContextMenuOnScroll</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>close popup when trigger type contains 'onContextMenu' and document is scrolling</td>
+        </tr>
     </tbody>
 </table>
 

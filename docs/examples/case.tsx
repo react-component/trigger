@@ -217,6 +217,7 @@ const Demo = () => {
             onPopupAlign={() => {
               console.warn('Aligned!');
             }}
+            hideContextMenuOnScroll={false}
           >
             <div
               style={{
