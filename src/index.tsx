@@ -460,7 +460,7 @@ export function generateTrigger(
     };
 
     getPopupClassNameFromAlign = (align) => {
-      const className = [];
+      const popupClassNames = [];
       const {
         popupPlacement,
         builtinPlacements,
@@ -469,19 +469,23 @@ export function generateTrigger(
         getPopupClassNameFromAlign,
       } = this.props;
       if (popupPlacement && builtinPlacements) {
-        className.push(
-          getAlignPopupClassName(
-            builtinPlacements,
-            prefixCls,
-            align,
-            alignPoint,
-          ),
+        const className = getAlignPopupClassName(
+          builtinPlacements,
+          prefixCls,
+          align,
+          alignPoint,
         );
+        if (className) {
+          popupClassNames.push(className);
+        }
       }
       if (getPopupClassNameFromAlign) {
-        className.push(getPopupClassNameFromAlign(align));
+        const className = getPopupClassNameFromAlign(align);
+        if (className) {
+          popupClassNames.push(className);
+        }
       }
-      return className.join(' ');
+      return popupClassNames.join(' ');
     };
 
     getPopupAlign() {
