@@ -153,7 +153,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
     useLayoutEffect(() => {
       if (status === 'align') {
         // Repeat until not more align needed
-        if (alignTimes < 2) {
+        if (alignTimes < 3) {
           forceAlign();
         } else {
           goNextStatus(function () {
