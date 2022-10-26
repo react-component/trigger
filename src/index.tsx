@@ -901,6 +901,6 @@ export function generateTrigger(
   return Trigger;
 }
 
-export { BuildInPlacements };
+export type { BuildInPlacements };
 
 export default generateTrigger(Portal);
