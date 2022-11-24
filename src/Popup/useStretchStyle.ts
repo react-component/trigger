@@ -10,6 +10,7 @@ export default (
     let { offsetWidth: tgtWidth, offsetHeight: tgtHeight } = element;
     const { width, height } = element.getBoundingClientRect();
 
+    // Rect is more accurate than offset, use if near
     if (Math.abs(tgtWidth - width) < 1 && Math.abs(tgtHeight - height) < 1) {
       tgtWidth = width;
       tgtHeight = height;
