@@ -1,9 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
-import React, { StrictMode, createRef } from 'react';
-import ReactDOM from 'react-dom';
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import React, { createRef, StrictMode } from 'react';
+import ReactDOM from 'react-dom';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
 
@@ -480,15 +480,21 @@ describe('Trigger.Basic', () => {
         </Trigger>,
       );
 
+    const width = 1128;
+    const height = 903;
     let domSpy;
+    let rect = {};
 
     beforeAll(() => {
       domSpy = spyElementPrototypes(HTMLElement, {
         offsetWidth: {
-          get: () => 1128,
+          get: () => width,
         },
         offsetHeight: {
-          get: () => 903,
+          get: () => height,
+        },
+        getBoundingClientRect() {
+          return rect;
         },
       });
     });
@@ -497,16 +503,19 @@ describe('Trigger.Basic', () => {
       domSpy.mockRestore();
     });
 
-    ['width', 'height', 'min-width', 'min-height'].forEach((prop) => {
-      it(prop, () => {
-        const { container } = createTrigger(prop);
+    [null, { width, height }].forEach((mockRect) => {
+      ['width', 'height', 'min-width', 'min-height'].forEach((prop) => {
+        it(`${mockRect ? 'offset' : 'getBoundingClientRect'}: ${prop}`, () => {
+          const { container } = createTrigger(prop);
+          rect = mockRect || {};
 
-        fireEvent.click(container.querySelector('.target'));
-        act(() => jest.runAllTimers());
+          fireEvent.click(container.querySelector('.target'));
+          act(() => jest.runAllTimers());
 
-        expect(
-          document.querySelector('.rc-trigger-popup').style,
-        ).toHaveProperty(prop);
+          expect(
+            document.querySelector('.rc-trigger-popup').style,
+          ).toHaveProperty(prop);
+        });
       });
     });
   });

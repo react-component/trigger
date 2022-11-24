@@ -7,9 +7,18 @@ export default (
   const [targetSize, setTargetSize] = React.useState({ width: 0, height: 0 });
 
   function measureStretch(element: HTMLElement) {
+    let { offsetWidth: tgtWidth, offsetHeight: tgtHeight } = element;
+    const { width, height } = element.getBoundingClientRect();
+
+    // Rect is more accurate than offset, use if near
+    if (Math.abs(tgtWidth - width) < 1 && Math.abs(tgtHeight - height) < 1) {
+      tgtWidth = width;
+      tgtHeight = height;
+    }
+
     setTargetSize({
-      width: element.offsetWidth,
-      height: element.offsetHeight,
+      width: tgtWidth,
+      height: tgtHeight,
     });
   }
 
