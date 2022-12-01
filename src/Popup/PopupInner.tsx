@@ -111,7 +111,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
      * We will reset `alignTimes` for each status switch to `alignPre`
      * and let `rc-align` to align for multiple times to ensure get final stable place.
      * Currently we mark `alignTimes < 2` repeat align, it will increase if user report for align issue.
-     * 
+     *
      * Update:
      * In React 18. `rc-align` effect of align may faster than ref called trigger `forceAlign`.
      * We adjust this to `alignTimes < 2`.
@@ -264,7 +264,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
                   ...mergedStyle,
                 }}
               >
-                {childNode}
+                {status === 'stable' && childNode}
               </div>
             </Align>
           );
