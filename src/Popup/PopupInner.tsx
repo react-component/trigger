@@ -208,9 +208,6 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       pointerEvents: !visible && status !== 'stable' ? 'none' : undefined,
       ...style,
     };
-    if (status !== 'stable') {
-      mergedStyle.position = 'fixed';
-    }
 
     // Align status
     let alignDisabled = true;
@@ -265,6 +262,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
                 style={{
                   ...motionStyle,
                   ...mergedStyle,
+                  top: document.documentElement.scrollTop,
                 }}
               >
                 {childNode}
