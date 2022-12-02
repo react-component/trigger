@@ -206,6 +206,7 @@ const PopupInner = React.forwardRef<PopupInnerRef, PopupInnerProps>(
       // Cannot interact with disappearing elements
       // https://github.com/ant-design/ant-design/issues/35051#issuecomment-1101340714
       pointerEvents: !visible && status !== 'stable' ? 'none' : undefined,
+      position: 'absolute',
       top: document.documentElement.scrollTop,
       ...style,
     };
