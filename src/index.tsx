@@ -1,6 +1,5 @@
 import * as React from 'react';
 import type { HTMLAttributes } from 'react';
-import ReactDOM from 'react-dom';
 import raf from 'rc-util/lib/raf';
 import contains from 'rc-util/lib/Dom/contains';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
@@ -455,8 +454,14 @@ export function generateTrigger(
       } catch (err) {
         // Do nothing
       }
-
-      return ReactDOM.findDOMNode(this) as HTMLElement;
+      
+      // use refs instead findDOMNode when destroy
+      // fix: https://github.com/ant-design/ant-design/issues/39921
+      let res: HTMLElement | null;
+      const target = this.popupRef.current?.getElement();
+      if(!target?.parentElement) res = null;
+      res = target?.parentElement || null;
+      return res;
     };
 
     getPopupClassNameFromAlign = (align) => {
