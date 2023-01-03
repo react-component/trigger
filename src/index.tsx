@@ -454,14 +454,11 @@ export function generateTrigger(
       } catch (err) {
         // Do nothing
       }
-      
+
       // use refs instead findDOMNode when destroy
       // fix: https://github.com/ant-design/ant-design/issues/39921
-      let res: HTMLElement | null;
       const target = this.popupRef.current?.getElement();
-      if(!target?.parentElement) res = null;
-      res = target?.parentElement || null;
-      return res;
+      return target?.parentElement || null;
     };
 
     getPopupClassNameFromAlign = (align) => {
