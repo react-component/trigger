@@ -40,6 +40,7 @@
     "now-build": "npm run build"
   },
   "devDependencies": {
+    "@rc-component/father-plugin": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.0.0",
     "@types/classnames": "^2.2.10",
@@ -47,7 +48,7 @@
     "@types/react": "^16.8.19",
     "@types/react-dom": "^16.8.4",
     "cross-env": "^7.0.1",
-    "dumi": "^1.1.38",
+    "dumi": "^2.1.0",
     "eslint": "^7.0.0",
     "father": "^4.0.0",
     "less": "^3.10.3",
@@ -56,8 +57,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "regenerator-runtime": "^0.13.7",
-    "typescript": "^4.0.0",
-    "@rc-component/father-plugin": "^1.0.0"
+    "typescript": "^4.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.3",
