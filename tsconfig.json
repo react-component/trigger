@@ -13,5 +13,5 @@
       "rc-trigger": ["src/index.ts"]
     }
   },
-  "include": [".dumi/**/*", ".dumirc.ts", "./src/**/*.ts", "./src/**/*.tsx"]
+  "include": [".dumi/**/*", ".dumirc.ts", "./src/**/*.ts", "./src/**/*.tsx", "./docs/**/*.tsx"]
 }
