@@ -1,3 +1,8 @@
-# Nested
+---
+title: Nested
+nav:
+  title: Demo
+  path: /demo
+---
 
-<code src="../examples/nested.jsx" />
+<code src="../examples/nested.jsx"></code>

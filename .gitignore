@@ -33,3 +33,8 @@ package-lock.json
 .umi-production
 .umi-test
 .docs
+
+
+# dumi
+.dumi/tmp
+.dumi/tmp-production
