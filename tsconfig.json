@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["src/*"],
-      "@@/*": ["src/.umi/*"],
+      "@@/*": [".dumi/tmp/*"],
       "rc-trigger": ["src/index.tsx"]
     }
   },
