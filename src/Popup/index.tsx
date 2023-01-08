@@ -53,14 +53,14 @@ export interface PopupProps {
 
 const Popup = React.forwardRef<PopupInnerRef, PopupProps>(
   ({ visible, mobile, ...props }, ref) => {
-    const [innerVisible, serInnerVisible] = useState(visible);
+    const [innerVisible, setInnerVisible] = useState(visible);
     const [inMobile, setInMobile] = useState(false);
     const cloneProps = { ...props, visible: innerVisible };
 
     // We check mobile in visible changed here.
     // And this also delay set `innerVisible` to avoid popup component render flash
     useEffect(() => {
-      serInnerVisible(visible);
+      setInnerVisible(visible);
       if (visible && mobile) {
         setInMobile(isMobile());
       }
