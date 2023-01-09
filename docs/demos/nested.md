@@ -5,4 +5,4 @@ nav:
   path: /demo
 ---
 
-<code src="../examples/nested.jsx"></code>
+<code src="../examples/nested.tsx"></code>
