@@ -5,4 +5,4 @@ nav:
   path: /demo
 ---
 
-<code src="../examples/click-nested.jsx"></code>
+<code src="../examples/click-nested.tsx"></code>
