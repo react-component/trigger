@@ -84,6 +84,7 @@ export interface TriggerProps {
   popupVisible?: boolean;
   defaultPopupVisible?: boolean;
   autoDestroy?: boolean;
+  hideContextMenuOnScroll?: boolean;
 
   stretch?: string;
   alignPoint?: boolean; // Maybe we can support user pass position in the future
@@ -151,6 +152,7 @@ export function generateTrigger(
       showAction: [],
       hideAction: [],
       autoDestroy: false,
+      hideContextMenuOnScroll: true,
     };
 
     popupRef = React.createRef<PopupInnerRef>();
@@ -240,7 +242,7 @@ export function generateTrigger(
           );
         }
         // close popup when trigger type contains 'onContextMenu' and document is scrolling.
-        if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
+        if (props.hideContextMenuOnScroll && !this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
           currentDocument =
             currentDocument || props.getDocument(this.getRootDomNode());
           this.contextMenuOutsideHandler1 = addEventListener(
