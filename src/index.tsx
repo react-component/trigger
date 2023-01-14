@@ -112,6 +112,7 @@ export interface TriggerProps {
   /** @private Bump fixed position at bottom in mobile.
    * This is internal usage currently, do not use in your prod */
   mobile?: MobileConfig;
+  triggerEventListenerOption?: object
 }
 
 interface TriggerState {
@@ -151,6 +152,7 @@ export function generateTrigger(
       showAction: [],
       hideAction: [],
       autoDestroy: false,
+      triggerEventListenerOption: {}
     };
 
     popupRef = React.createRef<PopupInnerRef>();
@@ -211,6 +213,7 @@ export function generateTrigger(
     componentDidUpdate() {
       const { props } = this;
       const { state } = this;
+      const { triggerEventListenerOption = {} } = props
 
       // We must listen to `mousedown` or `touchstart`, edge case:
       // https://github.com/ant-design/ant-design/issues/5804
@@ -227,6 +230,7 @@ export function generateTrigger(
             currentDocument,
             'mousedown',
             this.onDocumentClick,
+            triggerEventListenerOption
           );
         }
         // always hide on mobile
@@ -237,6 +241,7 @@ export function generateTrigger(
             currentDocument,
             'touchstart',
             this.onDocumentClick,
+            triggerEventListenerOption
           );
         }
         // close popup when trigger type contains 'onContextMenu' and document is scrolling.
@@ -247,6 +252,7 @@ export function generateTrigger(
             currentDocument,
             'scroll',
             this.onContextMenuClose,
+            triggerEventListenerOption
           );
         }
         // close popup when trigger type contains 'onContextMenu' and window is blur.
