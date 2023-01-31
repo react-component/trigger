@@ -1,8 +1,10 @@
 import Portal from '@rc-component/portal';
+import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import { useComposeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
+import DOMWrapper from './DOMWrapper';
 import useAction from './hooks/useAction';
 import type { ActionType } from './interface';
 
@@ -87,10 +89,21 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   } = props;
 
   // ========================== Children ==========================
+  const domWrapperRef = React.useRef<DOMWrapper>();
   const childRef = React.useRef<HTMLElement>();
   const child = React.Children.only(children) as React.ReactElement;
   const originChildProps = child?.props || {};
   const cloneProps: typeof originChildProps = {};
+
+  const getChildDom = () => {
+    return findDOMNode(childRef.current) || findDOMNode(domWrapperRef.current);
+  };
+
+  const inPopupOrChild = (ele: any) => {
+    console.log('>>>', childRef.current);
+    const childDOM = getChildDom();
+    return childDOM?.contains(ele) || ele === childDOM;
+  };
 
   // ============================ Open ============================
   const [mergedOpen, setMergedOpen] = useMergedState(
@@ -99,6 +112,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
       value: popupVisible,
     },
   );
+  const openRef = React.useRef(mergedOpen);
+  openRef.current = mergedOpen;
 
   const triggerOpen = useEvent((nextOpen: boolean) => {
     if (mergedOpen !== nextOpen) {
@@ -120,11 +135,39 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   };
 
   // ======================= Action: Click ========================
-  if (showActions.has('click')) {
-    wrapperAction('onClick', true);
+  const clickToShow = showActions.has('click');
+  const clickToHide = hideActions.has('click');
+
+  if (clickToShow || clickToHide) {
+    cloneProps.onClick = (...args: any[]) => {
+      if (openRef.current && clickToHide) {
+        triggerOpen(false);
+      } else if (!openRef.current && clickToShow) {
+        triggerOpen(true);
+      }
+
+      // Pass to origin
+      originChildProps.onClick?.(...args);
+    };
   }
 
-  // Click to hide is special action since use click popup element should not hide
+  // Click to hide is special action since click popup element should not hide
+  React.useEffect(() => {
+    if (clickToHide) {
+      const onWindowClick = ({ target }: MouseEvent) => {
+        console.log('hello world!', openRef.current, event);
+        if (openRef.current && !inPopupOrChild(target)) {
+          triggerOpen(false);
+        }
+      };
+
+      window.addEventListener('click', onWindowClick);
+
+      return () => {
+        window.removeEventListener('click', onWindowClick);
+      };
+    }
+  }, [clickToHide]);
 
   // ======================= Action: Hover ========================
   if (showActions.has('hover')) {
@@ -157,7 +200,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   return (
     <>
       <Portal open={mergedOpen}>Hello</Portal>
-      {triggerNode}
+      <DOMWrapper ref={domWrapperRef}>{triggerNode}</DOMWrapper>
     </>
   );
 });
