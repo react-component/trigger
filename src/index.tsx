@@ -100,7 +100,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   };
 
   const inPopupOrChild = (ele: any) => {
-    console.log('>>>', childRef.current);
     const childDOM = getChildDom();
     return childDOM?.contains(ele) || ele === childDOM;
   };
