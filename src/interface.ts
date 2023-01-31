@@ -1,5 +1,67 @@
 import type { CSSMotionProps } from 'rc-motion';
 
+export interface TriggerProps {
+  children: React.ReactElement;
+  action?: ActionType | ActionType[];
+  showAction?: ActionType[];
+  hideAction?: ActionType[];
+  getPopupClassNameFromAlign?: (align: AlignType) => string;
+  onPopupVisibleChange?: (visible: boolean) => void;
+  onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
+  afterPopupVisibleChange?: (visible: boolean) => void;
+  popup: React.ReactNode | (() => React.ReactNode);
+  popupStyle?: React.CSSProperties;
+  prefixCls?: string;
+  popupClassName?: string;
+  className?: string;
+  popupPlacement?: string;
+  builtinPlacements?: BuildInPlacements;
+  mouseEnterDelay?: number;
+  mouseLeaveDelay?: number;
+  zIndex?: number;
+  focusDelay?: number;
+  blurDelay?: number;
+  getPopupContainer?: (node: HTMLElement) => HTMLElement;
+  getDocument?: (element?: HTMLElement) => HTMLDocument;
+  forceRender?: boolean;
+  destroyPopupOnHide?: boolean;
+  mask?: boolean;
+  maskClosable?: boolean;
+  onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
+  popupAlign?: AlignType;
+  popupVisible?: boolean;
+  defaultPopupVisible?: boolean;
+  autoDestroy?: boolean;
+
+  stretch?: string;
+  alignPoint?: boolean; // Maybe we can support user pass position in the future
+
+  /** Set popup motion. You can ref `rc-motion` for more info. */
+  popupMotion?: CSSMotionProps;
+  /** Set mask motion. You can ref `rc-motion` for more info. */
+  maskMotion?: CSSMotionProps;
+
+  /** @deprecated Please us `popupMotion` instead. */
+  popupTransitionName?: TransitionNameType;
+  /** @deprecated Please us `popupMotion` instead. */
+  popupAnimation?: AnimationType;
+  /** @deprecated Please us `maskMotion` instead. */
+  maskTransitionName?: TransitionNameType;
+  /** @deprecated Please us `maskMotion` instead. */
+  maskAnimation?: string;
+
+  /**
+   * @private Get trigger DOM node.
+   * Used for some component is function component which can not access by `findDOMNode`
+   */
+  getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
+
+  // ========================== Mobile ==========================
+  /** @private Bump fixed position at bottom in mobile.
+   * This is internal usage currently, do not use in your prod */
+  mobile?: MobileConfig;
+}
+
 /** Two char of 't' 'b' 'c' 'l' 'r'. Example: 'lt' */
 export type AlignPoint = string;
 
@@ -47,7 +109,7 @@ export type BuildInPlacements = Record<string, AlignType>;
 
 export type StretchType = string;
 
-export type ActionType = string;
+export type ActionType = 'hover' | 'focus' | 'click' | 'contextMenu';
 
 export type AnimationType = string;
 
