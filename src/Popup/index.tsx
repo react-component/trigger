@@ -1,6 +1,7 @@
 import Portal from '@rc-component/portal';
 import classNames from 'classnames';
 import useEvent from 'rc-util/lib/hooks/useEvent';
+import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type { TriggerProps } from '../';
 import useWatch from '../hooks/useWatch';
@@ -11,7 +12,7 @@ export interface PopupProps {
   style?: React.CSSProperties;
   open: boolean;
   popup?: TriggerProps['popup'];
-  target: () => HTMLElement;
+  target: HTMLElement;
   getPopupContainer?: TriggerProps['getPopupContainer'];
 }
 
@@ -39,23 +40,22 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   const onAlign = useEvent(() => {
     const popupElement = popupRef.current;
-    const targetElement = target();
 
     // Reset first
     const originTransform = popupElement.style.transform;
     popupElement.style.transform = '';
 
     // Calculate align style, we should consider `transform` case
-    const targetRect = targetElement.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
     const popupRect = popupElement.getBoundingClientRect();
     const { width, height } = getComputedStyle(popupElement);
 
     popupElement.style.transform = originTransform;
 
     const scaleX =
-      Math.floor((popupRect.width / parseFloat(width)) * 100) / 100;
+      Math.round((popupRect.width / parseFloat(width)) * 1000) / 1000;
     const scaleY =
-      Math.floor((popupRect.height / parseFloat(height)) * 100) / 100;
+      Math.round((popupRect.height / parseFloat(height)) * 1000) / 1000;
 
     console.log(
       'Popup Scale:',
@@ -86,14 +86,38 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     });
   };
 
+  // ======================= Container ========================
+  const getPopupContainerNeedParams = getPopupContainer?.length > 0;
+
+  const [show, setShow] = React.useState(
+    !getPopupContainer || !getPopupContainerNeedParams,
+  );
+
+  // Delay to show since `getPopupContainer` need target element
+  useLayoutEffect(() => {
+    if (!show && getPopupContainerNeedParams && target) {
+      setShow(true);
+    }
+  }, [show, getPopupContainerNeedParams, target]);
+
   // ========================= Watch ==========================
   useWatch(open, target, () => popupRef.current, triggerAlign);
 
   // ========================= Render =========================
+  if (!show) {
+    return null;
+  }
+
   return (
     <Portal
       open={open}
-      getContainer={getPopupContainer && (() => getPopupContainer(target()))}
+      getContainer={
+        getPopupContainer &&
+        (() => {
+          console.log('get target!', target);
+          return getPopupContainer(target);
+        })
+      }
     >
       <div
         ref={popupRef}
@@ -104,6 +128,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           transform: `translate3d(${offsetX}px, ${offsetY}px, 0)`,
           ...style,
         }}
+        onMouseEnter={null}
+        onMouseLeave={null}
       >
         {childNode}
       </div>
