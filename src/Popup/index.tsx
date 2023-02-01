@@ -2,6 +2,7 @@ import Portal from '@rc-component/portal';
 import classNames from 'classnames';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import * as React from 'react';
+import type { TriggerProps } from '../';
 import useWatch from '../hooks/useWatch';
 
 export interface PopupProps {
@@ -9,12 +10,21 @@ export interface PopupProps {
   className?: string;
   style?: React.CSSProperties;
   open: boolean;
-  popup?: React.ReactNode | (() => React.ReactNode);
+  popup?: TriggerProps['popup'];
   target: () => HTMLElement;
+  getPopupContainer?: TriggerProps['getPopupContainer'];
 }
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
-  const { open, popup, className, prefixCls, style, target } = props;
+  const {
+    open,
+    popup,
+    className,
+    prefixCls,
+    style,
+    target,
+    getPopupContainer,
+  } = props;
 
   const childNode = typeof popup === 'function' ? popup() : popup;
   const popupRef = React.useRef<HTMLDivElement>(null);
@@ -78,7 +88,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   // ========================= Render =========================
   return (
-    <Portal open={open}>
+    <Portal
+      open={open}
+      getContainer={getPopupContainer && (() => getPopupContainer(target()))}
+    >
       <div
         ref={popupRef}
         className={classNames(prefixCls, className)}

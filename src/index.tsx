@@ -33,7 +33,7 @@ export interface TriggerProps {
   // zIndex?: number;
   // focusDelay?: number;
   // blurDelay?: number;
-  // getPopupContainer?: (node: HTMLElement) => HTMLElement;
+  getPopupContainer?: (node: HTMLElement) => HTMLElement;
   // getDocument?: (element?: HTMLElement) => HTMLDocument;
   // forceRender?: boolean;
   // destroyPopupOnHide?: boolean;
@@ -92,6 +92,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     popup,
     popupClassName,
     popupStyle,
+    getPopupContainer,
   } = props;
 
   // ========================== Children ==========================
@@ -211,6 +212,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         className={popupClassName}
         style={popupStyle}
         target={getTargetDom}
+        getPopupContainer={getPopupContainer}
       />
       <DOMWrapper ref={domWrapperRef}>{triggerNode}</DOMWrapper>
     </>
