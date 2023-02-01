@@ -1,4 +1,3 @@
-import Portal from '@rc-component/portal';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
@@ -7,6 +6,7 @@ import * as React from 'react';
 import DOMWrapper from './DOMWrapper';
 import useAction from './hooks/useAction';
 import type { ActionType } from './interface';
+import Popup from './Popup';
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
@@ -21,10 +21,10 @@ export interface TriggerProps {
   // onPopupVisibleChange?: (visible: boolean) => void;
   // onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
   // afterPopupVisibleChange?: (visible: boolean) => void;
-  // popup: React.ReactNode | (() => React.ReactNode);
-  // popupStyle?: React.CSSProperties;
-  // prefixCls?: string;
-  // popupClassName?: string;
+  popup: React.ReactNode | (() => React.ReactNode);
+  popupStyle?: React.CSSProperties;
+  prefixCls?: string;
+  popupClassName?: string;
   // className?: string;
   // popupPlacement?: string;
   // builtinPlacements?: BuildInPlacements;
@@ -76,6 +76,7 @@ export interface TriggerProps {
 
 const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   const {
+    prefixCls = 'rc-trigger-popup',
     children,
 
     // Action
@@ -86,6 +87,11 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     // Open
     popupVisible,
     defaultPopupVisible,
+
+    // Popup
+    popup,
+    popupClassName,
+    popupStyle,
   } = props;
 
   // ========================== Children ==========================
@@ -95,12 +101,13 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   const originChildProps = child?.props || {};
   const cloneProps: typeof originChildProps = {};
 
-  const getChildDom = () => {
-    return findDOMNode(childRef.current) || findDOMNode(domWrapperRef.current);
+  const getTargetDom = () => {
+    return (findDOMNode(childRef.current) ||
+      findDOMNode(domWrapperRef.current)) as HTMLElement;
   };
 
   const inPopupOrChild = (ele: any) => {
-    const childDOM = getChildDom();
+    const childDOM = getTargetDom();
     return childDOM?.contains(ele) || ele === childDOM;
   };
 
@@ -154,7 +161,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   React.useEffect(() => {
     if (clickToHide) {
       const onWindowClick = ({ target }: MouseEvent) => {
-        console.log('hello world!', openRef.current, event);
         if (openRef.current && !inPopupOrChild(target)) {
           triggerOpen(false);
         }
@@ -198,7 +204,14 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   // Render
   return (
     <>
-      <Portal open={mergedOpen}>Hello</Portal>
+      <Popup
+        prefixCls={prefixCls}
+        open={mergedOpen}
+        popup={popup}
+        className={popupClassName}
+        style={popupStyle}
+        target={getTargetDom}
+      />
       <DOMWrapper ref={domWrapperRef}>{triggerNode}</DOMWrapper>
     </>
   );
