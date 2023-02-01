@@ -54,21 +54,21 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const scaleY =
       Math.floor((popupRect.height / parseFloat(height)) * 100) / 100;
 
-    // console.log(
-    //   'Popup:',
-    //   scaleX,
-    //   scaleY,
-    //   popupRect.width,
-    //   popupRect.height,
-    //   width,
-    //   height,
-    // );
+    console.log(
+      'Popup Scale:',
+      scaleX,
+      scaleY,
+      // popupRect.width,
+      // popupRect.height,
+      // width,
+      // height,
+    );
 
     const nextOffsetX = targetRect.x - popupRect.x;
     const nextOffsetY = targetRect.y - popupRect.y;
 
-    setOffsetX(nextOffsetX);
-    setOffsetY(nextOffsetY);
+    setOffsetX(nextOffsetX / scaleX);
+    setOffsetY(nextOffsetY / scaleY);
   });
 
   const triggerAlign = () => {

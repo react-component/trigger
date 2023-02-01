@@ -6,6 +6,8 @@ import '../../assets/index.less';
 export default () => {
   console.log('Demo Render!');
 
+  const [scale, setScale] = React.useState('1');
+
   const rootRef = React.useRef<HTMLDivElement>();
   const popHolderRef = React.useRef<HTMLDivElement>();
 
@@ -15,14 +17,21 @@ export default () => {
       ref={rootRef}
       style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 50 }}
     >
+      <input
+        type="number"
+        value={scale}
+        onChange={(e) => setScale(e.target.value)}
+      />
       <div
         id="demo-holder"
         ref={popHolderRef}
         style={{
           position: 'relative',
+          width: 0,
+          height: 0,
           zIndex: 999,
           // Transform
-          transform: 'scale(2)',
+          transform: `scale(${scale})`,
           transformOrigin: 'top left',
         }}
       />
