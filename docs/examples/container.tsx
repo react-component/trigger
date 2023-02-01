@@ -7,12 +7,25 @@ export default () => {
   console.log('Demo Render!');
 
   const rootRef = React.useRef<HTMLDivElement>();
+  const popHolderRef = React.useRef<HTMLDivElement>();
 
   return (
     <div
+      id="demo-root"
       ref={rootRef}
       style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 50 }}
     >
+      <div
+        id="demo-holder"
+        ref={popHolderRef}
+        style={{
+          position: 'relative',
+          zIndex: 999,
+          // Transform
+          transform: 'scale(2)',
+          transformOrigin: 'top left',
+        }}
+      />
       <div
         style={{
           border: '1px solid red',
@@ -31,7 +44,7 @@ export default () => {
                 Popup
               </div>
             }
-            getPopupContainer={() => rootRef.current}
+            getPopupContainer={() => popHolderRef.current}
           >
             <span
               style={{
