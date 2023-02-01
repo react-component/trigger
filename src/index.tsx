@@ -95,6 +95,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     getPopupContainer,
   } = props;
 
+  // =========================== Popup ============================
+  const popupRef = React.useRef<HTMLDivElement>();
+
   // ========================== Children ==========================
   const domWrapperRef = React.useRef<DOMWrapper>();
   const childRef = React.useRef<HTMLElement>();
@@ -109,7 +112,12 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
 
   const inPopupOrChild = (ele: any) => {
     const childDOM = getTargetDom();
-    return childDOM?.contains(ele) || ele === childDOM;
+    return (
+      childDOM?.contains(ele) ||
+      ele === childDOM ||
+      popupRef.current?.contains(ele) ||
+      ele === popupRef.current
+    );
   };
 
   // ============================ Open ============================
@@ -206,6 +214,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   return (
     <>
       <Popup
+        ref={popupRef}
         prefixCls={prefixCls}
         open={mergedOpen}
         popup={popup}

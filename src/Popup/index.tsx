@@ -29,6 +29,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   const childNode = typeof popup === 'function' ? popup() : popup;
   const popupRef = React.useRef<HTMLDivElement>(null);
 
+  // ========================== Ref ===========================
+  React.useImperativeHandle(ref, () => popupRef.current);
+
   // ========================= Align ==========================
   const [offsetX, setOffsetX] = React.useState(0);
   const [offsetY, setOffsetY] = React.useState(0);
