@@ -145,12 +145,13 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const popupAlignPointBR = getAlignPoint(popupRect, ['b', 'r']);
 
     const overflow = placementInfo.overflow || {};
+    const { adjustX, adjustY } = overflow;
 
-    // >>> Top & Bottom
+    // >>>>>>>>>> Top & Bottom
     const nextPopupY = popupRect.y + nextOffsetY;
     const nextPopupBottom = nextPopupY + popupHeight;
 
-    const needAdjustY = overflow.adjustY || overflow.adjustY >= 0;
+    const needAdjustY = adjustY === true || adjustY >= 0;
 
     // Bottom to Top
     if (
@@ -170,12 +171,13 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       nextOffsetY = measureNextOffsetY;
     }
 
-    // >>> Left & Right
+    // >>>>>>>>>> Left & Right
     const nextPopupX = popupRect.x + nextOffsetX;
     const nextPopupRight = nextPopupX + popupWidth;
 
-    const needAdjustX = overflow.adjustX || overflow.adjustX >= 0;
+    const needAdjustX = adjustX === true || adjustX >= 0;
 
+    // >>>>> Flip
     // Right to Left
     if (needAdjustX && popupPoints[1] === 'l' && nextPopupRight > clientWidth) {
       const measureNextOffsetX = targetAlignPointTL.x - popupAlignPointBR.x;
@@ -188,6 +190,32 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       const measureNextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x;
 
       nextOffsetX = measureNextOffsetX;
+    }
+
+    // >>>>> Shift
+    if (adjustX === 'shift') {
+      // Left
+      if (nextPopupX < 0) {
+        console.log('no!');
+        nextOffsetX -= nextPopupX;
+      }
+
+      // Right
+      if (nextPopupRight > clientWidth) {
+        nextOffsetX -= nextPopupRight - clientWidth;
+      }
+    }
+
+    if (adjustY === 'shift') {
+      // Top
+      if (nextPopupY < 0) {
+        nextOffsetY -= nextPopupY;
+      }
+
+      // Bottom
+      if (nextPopupBottom > clientHeight) {
+        nextOffsetY -= nextPopupBottom - clientHeight;
+      }
     }
 
     setOffsetX(nextOffsetX / scaleX);
