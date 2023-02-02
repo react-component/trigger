@@ -14,6 +14,8 @@ export interface PopupProps {
   popup?: TriggerProps['popup'];
   target: HTMLElement;
   getPopupContainer?: TriggerProps['getPopupContainer'];
+  onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
@@ -25,13 +27,22 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     style,
     target,
     getPopupContainer,
+
+    onMouseEnter,
+    onMouseLeave,
   } = props;
 
   const childNode = typeof popup === 'function' ? popup() : popup;
-  const popupRef = React.useRef<HTMLDivElement>(null);
 
   // ========================== Ref ===========================
-  React.useImperativeHandle(ref, () => popupRef.current);
+  const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
+  const setPopupRef = React.useCallback((node: HTMLDivElement) => {
+    setPopupEle(node);
+  }, []);
+
+  React.useImperativeHandle(ref, () => popupEle);
+
+  
 
   // ========================= Align ==========================
   const [offsetX, setOffsetX] = React.useState(0);
@@ -39,7 +50,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   const alignCountRef = React.useRef(0);
 
   const onAlign = useEvent(() => {
-    const popupElement = popupRef.current;
+    const popupElement = popupEle;
 
     // Reset first
     const originTransform = popupElement.style.transform;
@@ -101,7 +112,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   }, [show, getPopupContainerNeedParams, target]);
 
   // ========================= Watch ==========================
-  useWatch(open, target, () => popupRef.current, triggerAlign);
+  useWatch(open, target, popupEle, triggerAlign);
 
   // ========================= Render =========================
   if (!show) {
@@ -120,7 +131,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       }
     >
       <div
-        ref={popupRef}
+        ref={setPopupRef}
         className={classNames(prefixCls, className)}
         style={{
           left: 0,
@@ -128,8 +139,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           transform: `translate3d(${offsetX}px, ${offsetY}px, 0)`,
           ...style,
         }}
-        onMouseEnter={null}
-        onMouseLeave={null}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         {childNode}
       </div>

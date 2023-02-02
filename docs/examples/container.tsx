@@ -10,6 +10,11 @@ export default () => {
 
   const rootRef = React.useRef<HTMLDivElement>();
   const popHolderRef = React.useRef<HTMLDivElement>();
+  const scrollRef = React.useRef<HTMLDivElement>();
+
+  React.useEffect(() => {
+    scrollRef.current.scrollLeft = 200;
+  }, []);
 
   return (
     <div
@@ -36,6 +41,7 @@ export default () => {
         }}
       />
       <div
+        ref={scrollRef}
         style={{
           border: '1px solid red',
           padding: 10,
@@ -45,14 +51,28 @@ export default () => {
           overflow: 'auto',
         }}
       >
-        <div style={{ height: '150vh', width: '150vw' }}>
+        <div
+          style={{
+            height: '150vh',
+            width: 'calc(200vw)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'start',
+          }}
+        >
           <Trigger
             action="click"
             popup={
-              <div style={{ background: 'yellow', border: '1px solid blue' }}>
+              <div
+                style={{
+                  background: 'yellow',
+                  border: '1px solid blue',
+                }}
+              >
                 Popup
               </div>
             }
+            popupVisible
             getPopupContainer={() => popHolderRef.current}
           >
             <span

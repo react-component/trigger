@@ -21,13 +21,13 @@ function collectScroller(ele: HTMLElement) {
 export default function useWatch(
   open: boolean,
   target: HTMLElement,
-  popup: () => HTMLElement,
+  popup: HTMLElement,
   onAlign: VoidFunction,
 ) {
   useLayoutEffect(() => {
-    if (open) {
+    if (open && target && popup) {
       const targetElement = target;
-      const popupElement = popup();
+      const popupElement = popup;
       const targetScrollList = collectScroller(targetElement);
       const popupScrollList = collectScroller(popupElement);
 
@@ -54,5 +54,5 @@ export default function useWatch(
         });
       };
     }
-  }, [open, target]);
+  }, [open, target, popup]);
 }

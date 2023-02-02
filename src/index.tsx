@@ -101,15 +101,26 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   // =========================== Popup ============================
   const popupRef = React.useRef<HTMLDivElement>();
 
+  // =========================== Target ===========================
+  // Use state to control here since `useRef` update not trigger render
+  const [childEle, setChildEle] = React.useState<HTMLElement>(null);
+  const [domWrapper, setDomWrapper] = React.useState<DOMWrapper>(null);
+
+  const setChildEleRef = React.useCallback((node: HTMLElement) => {
+    setChildEle(node);
+  }, []);
+
+  const setDomWrapperRef = React.useCallback((node: DOMWrapper) => {
+    setDomWrapper(node);
+  }, []);
+
+  const targetEle = (findDOMNode(childEle) ||
+    findDOMNode(domWrapper)) as HTMLElement;
+
   // ========================== Children ==========================
-  const domWrapperRef = React.useRef<DOMWrapper>();
-  const childRef = React.useRef<HTMLElement>();
   const child = React.Children.only(children) as React.ReactElement;
   const originChildProps = child?.props || {};
   const cloneProps: typeof originChildProps = {};
-
-  const targetEle = (findDOMNode(childRef.current) ||
-    findDOMNode(domWrapperRef.current)) as HTMLElement;
 
   const inPopupOrChild = useEvent((ele: any) => {
     const childDOM = targetEle;
@@ -122,12 +133,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   });
 
   // ============================ Open ============================
-  const delayRef = React.useRef<any>();
-
-  const clearDelay = () => {
-    clearTimeout(delayRef.current);
-  };
-
   const [mergedOpen, setMergedOpen] = useMergedState(
     defaultPopupVisible || false,
     {
@@ -137,13 +142,30 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   const openRef = React.useRef(mergedOpen);
   openRef.current = mergedOpen;
 
-  const triggerOpen = useEvent((nextOpen: boolean) => {
-    clearDelay();
-
+  const internalTriggerOpen = useEvent((nextOpen: boolean) => {
     if (mergedOpen !== nextOpen) {
       setMergedOpen(nextOpen);
     }
   });
+
+  // Trigger for delay
+  const delayRef = React.useRef<any>();
+
+  const clearDelay = () => {
+    clearTimeout(delayRef.current);
+  };
+
+  const triggerOpen = (nextOpen: boolean, delay = 0) => {
+    clearDelay();
+
+    if (delay === 0) {
+      internalTriggerOpen(nextOpen);
+    } else {
+      delayRef.current = setTimeout(() => {
+        internalTriggerOpen(nextOpen);
+      }, delay * 1000);
+    }
+  };
 
   React.useEffect(() => clearDelay, []);
 
@@ -151,15 +173,13 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   const [showActions, hideActions] = useAction(action, showAction, hideAction);
 
   // Util wrapper for trigger action
-  const wrapperAction = (eventName: string, nextOpen: boolean, delay = 0) => {
+  const wrapperAction = (
+    eventName: string,
+    nextOpen: boolean,
+    delay?: number,
+  ) => {
     cloneProps[eventName] = (...args: any[]) => {
-      if (delay === 0) {
-        triggerOpen(nextOpen);
-      } else {
-        delayRef.current = setTimeout(() => {
-          triggerOpen(nextOpen);
-        }, delay * 1000);
-      }
+      triggerOpen(nextOpen, delay);
 
       // Pass to origin
       originChildProps[eventName]?.(...args);
@@ -201,12 +221,24 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   }, [clickToHide]);
 
   // ======================= Action: Hover ========================
-  if (showActions.has('hover')) {
+  const hoverToShow = showActions.has('hover');
+  const hoverToHide = hideActions.has('hover');
+
+  let onPopupMouseEnter: VoidFunction;
+  let onPopupMouseLeave: VoidFunction;
+
+  if (hoverToShow) {
     wrapperAction('onMouseEnter', true, mouseEnterDelay);
+    onPopupMouseEnter = () => {
+      triggerOpen(true, mouseEnterDelay);
+    };
   }
 
-  if (hideActions.has('hover')) {
+  if (hoverToHide) {
     wrapperAction('onMouseLeave', false, mouseLeaveDelay);
+    onPopupMouseLeave = () => {
+      triggerOpen(false, mouseLeaveDelay);
+    };
   }
 
   // ======================= Action: Focus ========================
@@ -220,7 +252,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
 
   // =========================== Render ===========================
   // Child Node
-  const mergedRef = useComposeRef(childRef, (child as any).ref);
+  const mergedRef = useComposeRef(setChildEleRef, (child as any).ref);
   const triggerNode = React.cloneElement(child, {
     ...originChildProps,
     ...cloneProps,
@@ -239,8 +271,10 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         style={popupStyle}
         target={targetEle}
         getPopupContainer={getPopupContainer}
+        onMouseEnter={onPopupMouseEnter}
+        onMouseLeave={onPopupMouseLeave}
       />
-      <DOMWrapper ref={domWrapperRef}>{triggerNode}</DOMWrapper>
+      <DOMWrapper ref={setDomWrapperRef}>{triggerNode}</DOMWrapper>
     </>
   );
 });
