@@ -26,12 +26,21 @@ const builtinPlacements = {
     },
     offset: [0, -10],
   },
+  bottom: {
+    points: ['tc', 'bc'],
+    overflow: {
+      adjustX: 'shift' as const,
+      adjustY: true,
+    },
+    offset: [0, 10],
+  },
   left: {
     points: ['cr', 'cl'],
     overflow: {
       adjustX: true,
       adjustY: 'shift' as const,
     },
+    offset: [-10, 0],
   },
   right: {
     points: ['cl', 'cr'],
@@ -39,8 +48,11 @@ const builtinPlacements = {
       adjustX: true,
       adjustY: 'shift' as const,
     },
+    offset: [10, 0],
   },
 };
+
+const popupPlacement = 'right';
 
 export default () => {
   console.log('Demo Render!');
@@ -117,7 +129,7 @@ export default () => {
             }
             popupVisible
             getPopupContainer={() => popHolderRef.current}
-            popupPlacement="top"
+            popupPlacement={popupPlacement}
             builtinPlacements={builtinPlacements}
           >
             <span

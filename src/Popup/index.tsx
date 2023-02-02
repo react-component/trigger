@@ -127,7 +127,6 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     // Offset
     const { offset } = placementInfo;
     const [popupOffsetX = 0, popupOffsetY = 0] = offset || [];
-    console.log('offset', offset, popupOffsetX, popupOffsetY);
 
     // Placement
     let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x + popupOffsetX;
@@ -154,14 +153,16 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       popupPoints[0] === 't' &&
       nextPopupBottom > clientHeight
     ) {
-      const measureNextOffsetY = targetAlignPointTL.y - popupAlignPointBR.y;
+      const measureNextOffsetY =
+        targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
 
       nextOffsetY = measureNextOffsetY;
     }
 
     // Top to Bottom
     if (needAdjustY && popupPoints[0] === 'b' && nextPopupY < 0) {
-      const measureNextOffsetY = targetAlignPointBR.y - popupAlignPointTL.y;
+      const measureNextOffsetY =
+        targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
 
       nextOffsetY = measureNextOffsetY;
     }
@@ -175,14 +176,16 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     // >>>>> Flip
     // Right to Left
     if (needAdjustX && popupPoints[1] === 'l' && nextPopupRight > clientWidth) {
-      const measureNextOffsetX = targetAlignPointTL.x - popupAlignPointBR.x;
+      const measureNextOffsetX =
+        targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
 
       nextOffsetX = measureNextOffsetX;
     }
 
     // Left to Right
     if (needAdjustX && popupPoints[1] === 'r' && nextPopupX < 0) {
-      const measureNextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x;
+      const measureNextOffsetX =
+        targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
 
       nextOffsetX = measureNextOffsetX;
     }
