@@ -6,6 +6,41 @@ import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type { TriggerProps } from '../';
 import useWatch from '../hooks/useWatch';
+import type { AlignPointLeftRight, AlignPointTopBottom } from '../interface';
+
+type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
+
+function splitPoints(points: string = ''): Points {
+  return [points[0] as any, points[1] as any];
+}
+
+function getAlignPoint(rect: DOMRect, points: Points) {
+  const topBottom = points[0];
+  const leftRight = points[1];
+
+  let x: number;
+  let y: number;
+
+  // Top & Bottom
+  if (topBottom === 't') {
+    y = rect.y;
+  } else if (topBottom === 'b') {
+    y = rect.y + rect.height;
+  } else {
+    y = rect.y + rect.height / 2;
+  }
+
+  // Left & Right
+  if (leftRight === 'l') {
+    x = rect.x;
+  } else if (leftRight === 'r') {
+    x = rect.x + rect.width;
+  } else {
+    x = rect.x + rect.width / 2;
+  }
+
+  return { x, y };
+}
 
 export interface PopupProps {
   prefixCls: string;
@@ -15,6 +50,7 @@ export interface PopupProps {
   popup?: TriggerProps['popup'];
   target: HTMLElement;
   placement?: TriggerProps['popupPlacement'];
+  builtinPlacements?: TriggerProps['builtinPlacements'];
   getPopupContainer?: TriggerProps['getPopupContainer'];
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
@@ -30,7 +66,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     target,
 
     getPopupContainer,
-    placement = 'top',
+    placement,
+    builtinPlacements,
 
     onMouseEnter,
     onMouseLeave,
@@ -67,15 +104,16 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const { width, height } = getComputedStyle(popupElement);
     const { clientWidth, clientHeight } = document.documentElement;
 
+    const popupHeight = popupRect.height;
+    const popupWidth = popupRect.width;
+
     // Reset back
     popupElement.style.left = originLeft;
     popupElement.style.top = originTop;
 
     // Calculate scale
-    const scaleX =
-      Math.round((popupRect.width / parseFloat(width)) * 1000) / 1000;
-    const scaleY =
-      Math.round((popupRect.height / parseFloat(height)) * 1000) / 1000;
+    const scaleX = Math.round((popupWidth / parseFloat(width)) * 1000) / 1000;
+    const scaleY = Math.round((popupHeight / parseFloat(height)) * 1000) / 1000;
 
     // console.log(
     //   'Popup Scale:',
@@ -88,48 +126,68 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     // );
 
     // Placement
-    let nextOffsetX = targetRect.x - popupRect.x;
-    let nextOffsetY = targetRect.y - popupRect.y;
+    const placementInfo = builtinPlacements[placement] || {};
+    const [popupPoint, targetPoint] = placementInfo.points || [];
+    const targetPoints = splitPoints(targetPoint);
+    const popupPoints = splitPoints(popupPoint);
 
-    let placementOffsetX = nextOffsetX;
-    let placementOffsetY = nextOffsetY;
+    const targetAlignPoint = getAlignPoint(targetRect, targetPoints);
+    const popupAlignPoint = getAlignPoint(popupRect, popupPoints);
 
-    switch (placement) {
-      case 'top':
-        placementOffsetY -= popupRect.height;
-        break;
+    // Placement
+    let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x;
+    let nextOffsetY = targetAlignPoint.y - popupAlignPoint.y;
 
-      case 'bottom':
-        placementOffsetY += targetRect.height;
-        break;
+    // ================ Overflow =================
+    const targetAlignPointTL = getAlignPoint(targetRect, ['t', 'l']);
+    const popupAlignPointTL = getAlignPoint(popupRect, ['t', 'l']);
+    const targetAlignPointBR = getAlignPoint(targetRect, ['b', 'r']);
+    const popupAlignPointBR = getAlignPoint(popupRect, ['b', 'r']);
 
-      case 'left':
-        placementOffsetX -= popupRect.width;
-        break;
+    const overflow = placementInfo.overflow || {};
 
-      case 'right':
-        placementOffsetX += targetRect.width;
-        break;
+    // >>> Top & Bottom
+    const nextPopupY = popupRect.y + nextOffsetY;
+    const nextPopupBottom = nextPopupY + popupHeight;
 
-      default:
-        break;
+    const needAdjustY = overflow.adjustY || overflow.adjustY >= 0;
+
+    // Bottom to Top
+    if (
+      needAdjustY &&
+      popupPoints[0] === 't' &&
+      nextPopupBottom > clientHeight
+    ) {
+      const measureNextOffsetY = targetAlignPointTL.y - popupAlignPointBR.y;
+
+      nextOffsetY = measureNextOffsetY;
     }
 
-    // Check if in the screen
-    const nextPopupX = popupRect.x + placementOffsetX;
-    const nextPopupY = popupRect.y + placementOffsetY;
-    const nextPopupRight = nextPopupX + popupRect.width;
-    const nextPopupBottom = nextPopupY + popupRect.height;
+    // Top to Bottom
+    if (needAdjustY && popupPoints[0] === 'b' && nextPopupY < 0) {
+      const measureNextOffsetY = targetAlignPointBR.y - popupAlignPointTL.y;
 
-    if (
-      // In viewport
-      nextPopupX >= 0 &&
-      nextPopupRight <= clientWidth &&
-      nextPopupY >= 0 &&
-      nextPopupBottom <= clientHeight
-    ) {
-      nextOffsetX = placementOffsetX;
-      nextOffsetY = placementOffsetY;
+      nextOffsetY = measureNextOffsetY;
+    }
+
+    // >>> Left & Right
+    const nextPopupX = popupRect.x + nextOffsetX;
+    const nextPopupRight = nextPopupX + popupWidth;
+
+    const needAdjustX = overflow.adjustX || overflow.adjustX >= 0;
+
+    // Right to Left
+    if (needAdjustX && popupPoints[1] === 'l' && nextPopupRight > clientWidth) {
+      const measureNextOffsetX = targetAlignPointTL.x - popupAlignPointBR.x;
+
+      nextOffsetX = measureNextOffsetX;
+    }
+
+    // Left to Right
+    if (needAdjustX && popupPoints[1] === 'r' && nextPopupX < 0) {
+      const measureNextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x;
+
+      nextOffsetX = measureNextOffsetX;
     }
 
     setOffsetX(nextOffsetX / scaleX);

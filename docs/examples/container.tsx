@@ -3,6 +3,37 @@ import Trigger from 'rc-trigger';
 import React from 'react';
 import '../../assets/index.less';
 
+const builtinPlacements = {
+  topLeft: {
+    points: ['bl', 'tl'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+  },
+  bottomLeft: {
+    points: ['tl', 'bl'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+  },
+  left: {
+    points: ['cr', 'cl'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+  },
+  right: {
+    points: ['cl', 'cr'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+  },
+};
+
 export default () => {
   console.log('Demo Render!');
 
@@ -76,6 +107,7 @@ export default () => {
             popupVisible
             getPopupContainer={() => popHolderRef.current}
             popupPlacement="right"
+            builtinPlacements={builtinPlacements}
           >
             <span
               style={{

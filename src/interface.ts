@@ -76,15 +76,18 @@ export interface TriggerProps {
   mobile?: MobileConfig;
 }
 
+export type AlignPointTopBottom = 't' | 'b' | 'c';
+export type AlignPointLeftRight = 'l' | 'r' | 'c';
+
 /** Two char of 't' 'b' 'c' 'l' 'r'. Example: 'lt' */
-export type AlignPoint = string;
+export type AlignPoint = `${AlignPointTopBottom}${AlignPointLeftRight}`;
 
 export interface AlignType {
   /**
    * move point of source node to align with point of target node.
    * Such as ['tr','cc'], align top right point of source node with center point of target node.
    * Point can be 't'(top), 'b'(bottom), 'c'(center), 'l'(left), 'r'(right) */
-  points?: AlignPoint[];
+  points?: (string | AlignPoint)[];
   /**
    * offset source node by offset[0] in x and offset[1] in y.
    * If offset contains percentage string value, it is relative to sourceNode region.
