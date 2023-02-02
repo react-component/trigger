@@ -6,7 +6,7 @@ import '../../assets/index.less';
 export default () => {
   console.log('Demo Render!');
 
-  const [scale, setScale] = React.useState('1');
+  const [scale, setScale] = React.useState('2');
 
   const rootRef = React.useRef<HTMLDivElement>();
   const popHolderRef = React.useRef<HTMLDivElement>();
@@ -53,7 +53,8 @@ export default () => {
       >
         <div
           style={{
-            height: '150vh',
+            height: '200vh',
+            paddingTop: `100vh`,
             width: 'calc(200vw)',
             display: 'flex',
             justifyContent: 'center',
@@ -74,6 +75,7 @@ export default () => {
             }
             popupVisible
             getPopupContainer={() => popHolderRef.current}
+            popupPlacement="right"
           >
             <span
               style={{

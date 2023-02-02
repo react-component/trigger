@@ -1,5 +1,6 @@
 import Portal from '@rc-component/portal';
 import classNames from 'classnames';
+import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
@@ -13,6 +14,7 @@ export interface PopupProps {
   open: boolean;
   popup?: TriggerProps['popup'];
   target: HTMLElement;
+  placement?: TriggerProps['popupPlacement'];
   getPopupContainer?: TriggerProps['getPopupContainer'];
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
@@ -26,7 +28,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     prefixCls,
     style,
     target,
+
     getPopupContainer,
+    placement = 'top',
 
     onMouseEnter,
     onMouseLeave,
@@ -61,6 +65,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const targetRect = target.getBoundingClientRect();
     const popupRect = popupElement.getBoundingClientRect();
     const { width, height } = getComputedStyle(popupElement);
+    const { clientWidth, clientHeight } = document.documentElement;
 
     // Reset back
     popupElement.style.left = originLeft;
@@ -72,18 +77,60 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const scaleY =
       Math.round((popupRect.height / parseFloat(height)) * 1000) / 1000;
 
-    console.log(
-      'Popup Scale:',
-      scaleX,
-      scaleY,
-      // popupRect.width,
-      // popupRect.height,
-      // width,
-      // height,
-    );
+    // console.log(
+    //   'Popup Scale:',
+    //   scaleX,
+    //   scaleY,
+    //   // popupRect.width,
+    //   // popupRect.height,
+    //   // width,
+    //   // height,
+    // );
 
-    const nextOffsetX = targetRect.x - popupRect.x;
-    const nextOffsetY = targetRect.y - popupRect.y;
+    // Placement
+    let nextOffsetX = targetRect.x - popupRect.x;
+    let nextOffsetY = targetRect.y - popupRect.y;
+
+    let placementOffsetX = nextOffsetX;
+    let placementOffsetY = nextOffsetY;
+
+    switch (placement) {
+      case 'top':
+        placementOffsetY -= popupRect.height;
+        break;
+
+      case 'bottom':
+        placementOffsetY += targetRect.height;
+        break;
+
+      case 'left':
+        placementOffsetX -= popupRect.width;
+        break;
+
+      case 'right':
+        placementOffsetX += targetRect.width;
+        break;
+
+      default:
+        break;
+    }
+
+    // Check if in the screen
+    const nextPopupX = popupRect.x + placementOffsetX;
+    const nextPopupY = popupRect.y + placementOffsetY;
+    const nextPopupRight = nextPopupX + popupRect.width;
+    const nextPopupBottom = nextPopupY + popupRect.height;
+
+    if (
+      // In viewport
+      nextPopupX >= 0 &&
+      nextPopupRight <= clientWidth &&
+      nextPopupY >= 0 &&
+      nextPopupBottom <= clientHeight
+    ) {
+      nextOffsetX = placementOffsetX;
+      nextOffsetY = placementOffsetY;
+    }
 
     setOffsetX(nextOffsetX / scaleX);
     setOffsetY(nextOffsetY / scaleY);
@@ -126,27 +173,23 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   return (
     <Portal
       open={open}
-      getContainer={
-        getPopupContainer &&
-        (() => {
-          console.log('get target!', target);
-          return getPopupContainer(target);
-        })
-      }
+      getContainer={getPopupContainer && (() => getPopupContainer(target))}
     >
-      <div
-        ref={setPopupRef}
-        className={classNames(prefixCls, className)}
-        style={{
-          left: offsetX,
-          top: offsetY,
-          ...style,
-        }}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-        {childNode}
-      </div>
+      <ResizeObserver onResize={triggerAlign} disabled={!open}>
+        <div
+          ref={setPopupRef}
+          className={classNames(prefixCls, className)}
+          style={{
+            left: offsetX,
+            top: offsetY,
+            ...style,
+          }}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+        >
+          {childNode}
+        </div>
+      </ResizeObserver>
     </Portal>
   );
 });

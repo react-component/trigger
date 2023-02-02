@@ -1,5 +1,19 @@
 import type { CSSMotionProps } from 'rc-motion';
 
+export type Placement =
+  | 'top'
+  | 'left'
+  | 'right'
+  | 'bottom'
+  | 'topLeft'
+  | 'topRight'
+  | 'bottomLeft'
+  | 'bottomRight'
+  | 'leftTop'
+  | 'leftBottom'
+  | 'rightTop'
+  | 'rightBottom';
+
 export interface TriggerProps {
   children: React.ReactElement;
   action?: ActionType | ActionType[];

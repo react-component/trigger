@@ -5,7 +5,7 @@ import { useComposeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import DOMWrapper from './DOMWrapper';
 import useAction from './hooks/useAction';
-import type { ActionType } from './interface';
+import type { ActionType, Placement } from './interface';
 import Popup from './Popup';
 
 export interface TriggerRef {
@@ -26,7 +26,7 @@ export interface TriggerProps {
   prefixCls?: string;
   popupClassName?: string;
   // className?: string;
-  // popupPlacement?: string;
+  popupPlacement?: Placement;
   // builtinPlacements?: BuildInPlacements;
   mouseEnterDelay?: number;
   mouseLeaveDelay?: number;
@@ -96,6 +96,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     popupClassName,
     popupStyle,
     getPopupContainer,
+    popupPlacement,
   } = props;
 
   // =========================== Popup ============================
@@ -273,6 +274,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         getPopupContainer={getPopupContainer}
         onMouseEnter={onPopupMouseEnter}
         onMouseLeave={onPopupMouseLeave}
+        placement={popupPlacement}
       />
       <DOMWrapper ref={setDomWrapperRef}>{triggerNode}</DOMWrapper>
     </>
