@@ -18,6 +18,13 @@ const builtinPlacements = {
       adjustY: true,
     },
   },
+  top: {
+    points: ['bc', 'tc'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+  },
   left: {
     points: ['cr', 'cl'],
     overflow: {
@@ -99,6 +106,7 @@ export default () => {
                 style={{
                   background: 'yellow',
                   border: '1px solid blue',
+                  width: 200,
                 }}
               >
                 Popup
@@ -106,7 +114,7 @@ export default () => {
             }
             popupVisible
             getPopupContainer={() => popHolderRef.current}
-            popupPlacement="right"
+            popupPlacement="top"
             builtinPlacements={builtinPlacements}
           >
             <span
