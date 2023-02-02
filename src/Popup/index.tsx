@@ -115,16 +115,6 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const scaleX = Math.round((popupWidth / parseFloat(width)) * 1000) / 1000;
     const scaleY = Math.round((popupHeight / parseFloat(height)) * 1000) / 1000;
 
-    // console.log(
-    //   'Popup Scale:',
-    //   scaleX,
-    //   scaleY,
-    //   // popupRect.width,
-    //   // popupRect.height,
-    //   // width,
-    //   // height,
-    // );
-
     // Placement
     const placementInfo = builtinPlacements[placement] || {};
     const [popupPoint, targetPoint] = placementInfo.points || [];
@@ -134,9 +124,14 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     const targetAlignPoint = getAlignPoint(targetRect, targetPoints);
     const popupAlignPoint = getAlignPoint(popupRect, popupPoints);
 
+    // Offset
+    const { offset } = placementInfo;
+    const [popupOffsetX = 0, popupOffsetY = 0] = offset || [];
+    console.log('offset', offset, popupOffsetX, popupOffsetY);
+
     // Placement
-    let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x;
-    let nextOffsetY = targetAlignPoint.y - popupAlignPoint.y;
+    let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x + popupOffsetX;
+    let nextOffsetY = targetAlignPoint.y - popupAlignPoint.y + popupOffsetY;
 
     // ================ Overflow =================
     const targetAlignPointTL = getAlignPoint(targetRect, ['t', 'l']);

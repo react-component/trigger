@@ -24,6 +24,7 @@ const builtinPlacements = {
       adjustX: 'shift' as const,
       adjustY: true,
     },
+    offset: [0, -10],
   },
   left: {
     points: ['cr', 'cl'],
@@ -108,6 +109,7 @@ export default () => {
                   border: '1px solid blue',
                   width: 200,
                   height: 60,
+                  opacity: 0.9,
                 }}
               >
                 Popup
@@ -115,7 +117,7 @@ export default () => {
             }
             popupVisible
             getPopupContainer={() => popHolderRef.current}
-            popupPlacement="left"
+            popupPlacement="top"
             builtinPlacements={builtinPlacements}
           >
             <span
@@ -125,6 +127,7 @@ export default () => {
                 color: '#FFF',
                 paddingBlock: 30,
                 paddingInline: 70,
+                opacity: 0.9,
               }}
             >
               Target
