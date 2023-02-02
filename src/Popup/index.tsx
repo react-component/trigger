@@ -42,8 +42,6 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   React.useImperativeHandle(ref, () => popupEle);
 
-  
-
   // ========================= Align ==========================
   const [offsetX, setOffsetX] = React.useState(0);
   const [offsetY, setOffsetY] = React.useState(0);
@@ -52,17 +50,23 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   const onAlign = useEvent(() => {
     const popupElement = popupEle;
 
+    const originLeft = popupElement.style.left;
+    const originTop = popupElement.style.top;
+
     // Reset first
-    const originTransform = popupElement.style.transform;
-    popupElement.style.transform = '';
+    popupElement.style.left = '0';
+    popupElement.style.top = '0';
 
     // Calculate align style, we should consider `transform` case
     const targetRect = target.getBoundingClientRect();
     const popupRect = popupElement.getBoundingClientRect();
     const { width, height } = getComputedStyle(popupElement);
 
-    popupElement.style.transform = originTransform;
+    // Reset back
+    popupElement.style.left = originLeft;
+    popupElement.style.top = originTop;
 
+    // Calculate scale
     const scaleX =
       Math.round((popupRect.width / parseFloat(width)) * 1000) / 1000;
     const scaleY =
@@ -134,9 +138,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
         ref={setPopupRef}
         className={classNames(prefixCls, className)}
         style={{
-          left: 0,
-          top: 0,
-          transform: `translate3d(${offsetX}px, ${offsetY}px, 0)`,
+          left: offsetX,
+          top: offsetY,
           ...style,
         }}
         onMouseEnter={onMouseEnter}
