@@ -121,11 +121,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     }
   }, []);
 
-  const onTargetResize = (_: object, ele: HTMLElement) => {
-    const targetReact = ele.getBoundingClientRect();
-    console.log('>>>', targetReact);
-  };
-
   // ========================== Children ==========================
   const child = React.Children.only(children) as React.ReactElement;
   const originChildProps = child?.props || {};
@@ -136,8 +131,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     return (
       childDOM?.contains(ele) ||
       ele === childDOM ||
-      popupRef.current?.contains(ele) ||
-      ele === popupRef.current
+      popupEle?.contains(ele) ||
+      ele === popupEle
     );
   });
 
@@ -300,7 +295,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
       <ResizeObserver
         disabled={!mergedOpen && !stretch}
         ref={setTargetRef}
-        onResize={onTargetResize}
+        onResize={onAlign}
       >
         {triggerNode}
       </ResizeObserver>
