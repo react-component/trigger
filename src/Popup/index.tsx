@@ -17,10 +17,16 @@ export interface PopupProps {
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   zIndex?: number;
 
+  // Align
   ready: boolean;
   offsetX: number;
   offsetY: number;
   onAlign: VoidFunction;
+
+  // stretch
+  stretch?: string;
+  targetWidth?: number;
+  targetHeight?: number;
 }
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
@@ -42,6 +48,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     offsetX,
     offsetY,
     onAlign,
+
+    stretch,
+    targetWidth,
+    targetHeight,
   } = props;
 
   const childNode = typeof popup === 'function' ? popup() : popup;
@@ -76,6 +86,21 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
         visibility: 'hidden',
       };
 
+  const stretchStyle: React.CSSProperties = {};
+  if (stretch) {
+    if (stretch.includes('height') && targetHeight) {
+      stretchStyle.height = targetHeight;
+    } else if (stretch.includes('minHeight') && targetHeight) {
+      stretchStyle.minHeight = targetHeight;
+    }
+    if (stretch.includes('width') && targetWidth) {
+      stretchStyle.width = targetWidth;
+    } else if (stretch.includes('minWidth') && targetWidth) {
+      stretchStyle.minWidth = targetWidth;
+    }
+    console.log('????', stretch, stretchStyle);
+  }
+
   return (
     <Portal
       open={open}
@@ -87,6 +112,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           className={classNames(prefixCls, className)}
           style={{
             ...offsetStyle,
+            ...stretchStyle,
             boxSizing: 'border-box',
             zIndex,
             ...style,

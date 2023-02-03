@@ -42,10 +42,27 @@ export default function useAlign(
   target: HTMLElement,
   placement: string,
   builtinPlacements: any,
-): [ready: boolean, offsetX: number, offsetY: number, onAlign: VoidFunction] {
-  const [ready, setReady] = React.useState(false);
-  const [offsetX, setOffsetX] = React.useState(0);
-  const [offsetY, setOffsetY] = React.useState(0);
+): [
+  ready: boolean,
+  offsetX: number,
+  offsetY: number,
+  scaleX: number,
+  scaleY: number,
+  onAlign: VoidFunction,
+] {
+  const [offsetInfo, setOffsetInfo] = React.useState<{
+    ready: boolean;
+    offsetX: number;
+    offsetY: number;
+    scaleX: number;
+    scaleY: number;
+  }>({
+    ready: false,
+    offsetX: 0,
+    offsetY: 0,
+    scaleX: 1,
+    scaleY: 1,
+  });
   const alignCountRef = React.useRef(0);
 
   const onAlign = useEvent(() => {
@@ -181,9 +198,13 @@ export default function useAlign(
         }
       }
 
-      setReady(true);
-      setOffsetX(nextOffsetX / scaleX);
-      setOffsetY(nextOffsetY / scaleY);
+      setOffsetInfo({
+        ready: true,
+        offsetX: nextOffsetX / scaleX,
+        offsetY: nextOffsetY / scaleY,
+        scaleX,
+        scaleY,
+      });
     }
   });
 
@@ -200,8 +221,18 @@ export default function useAlign(
   };
 
   useLayoutEffect(() => {
-    setReady(false);
+    setOffsetInfo((ori) => ({
+      ...ori,
+      ready: false,
+    }));
   }, [placement]);
 
-  return [ready, offsetX, offsetY, triggerAlign];
+  return [
+    offsetInfo.ready,
+    offsetInfo.offsetX,
+    offsetInfo.offsetY,
+    offsetInfo.scaleX,
+    offsetInfo.scaleY,
+    triggerAlign,
+  ];
 }

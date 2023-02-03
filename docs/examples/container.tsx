@@ -127,6 +127,7 @@ export default () => {
                 Popup
               </div>
             }
+            popupStyle={{ border: '5px solid red' }}
             popupVisible
             getPopupContainer={() => popHolderRef.current}
             popupPlacement={popupPlacement}

@@ -173,6 +173,30 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
 
   React.useEffect(() => clearDelay, []);
 
+  // =========================== Align ============================
+  const [ready, offsetX, offsetY, scaleX, scaleY, onAlign] = useAlign(
+    popupEle,
+    targetEle,
+    popupPlacement,
+    builtinPlacements,
+  );
+
+  useWatch(mergedOpen, targetEle, popupEle, onAlign);
+
+  // ========================== Stretch ===========================
+  const [targetWidth, setTargetWidth] = React.useState(0);
+  const [targetHeight, setTargetHeight] = React.useState(0);
+
+  const onTargetResize = (_: object, ele: HTMLElement) => {
+    onAlign();
+
+    if (stretch) {
+      const rect = ele.getBoundingClientRect();
+      setTargetWidth(rect.width);
+      setTargetHeight(rect.height);
+    }
+  };
+
   // =========================== Action ===========================
   const [showActions, hideActions] = useAction(action, showAction, hideAction);
 
@@ -254,16 +278,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     wrapperAction('onBlur', false);
   }
 
-  // =========================== Align ============================
-  const [ready, offsetX, offsetY, onAlign] = useAlign(
-    popupEle,
-    targetEle,
-    popupPlacement,
-    builtinPlacements,
-  );
-
-  useWatch(mergedOpen, targetEle, popupEle, onAlign);
-
   // =========================== Render ===========================
   // Child Node
   const triggerNode = React.cloneElement(child, {
@@ -291,11 +305,15 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         offsetX={offsetX}
         offsetY={offsetY}
         onAlign={onAlign}
+        // Stretch
+        stretch={stretch}
+        targetWidth={targetWidth / scaleX}
+        targetHeight={targetHeight / scaleY}
       />
       <ResizeObserver
-        disabled={!mergedOpen && !stretch}
+        disabled={!mergedOpen}
         ref={setTargetRef}
-        onResize={onAlign}
+        onResize={onTargetResize}
       >
         {triggerNode}
       </ResizeObserver>
