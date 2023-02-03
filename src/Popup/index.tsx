@@ -1,9 +1,12 @@
 import Portal from '@rc-component/portal';
 import classNames from 'classnames';
+import type { CSSMotionProps } from 'rc-motion';
+import CSSMotion from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type { TriggerProps } from '../';
+import Mask from './Mask';
 
 export interface PopupProps {
   prefixCls: string;
@@ -15,6 +18,12 @@ export interface PopupProps {
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   zIndex?: number;
+
+  mask?: boolean;
+
+  // Motion
+  motion?: CSSMotionProps;
+  maskMotion?: CSSMotionProps;
 
   // Portal
   forceRender?: boolean;
@@ -42,6 +51,13 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     style,
     target,
 
+    // Mask
+    mask,
+
+    // Motion
+    motion,
+    maskMotion,
+
     // Portal
     forceRender,
     getPopupContainer,
@@ -64,6 +80,16 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   const childNode = typeof popup === 'function' ? popup() : popup;
 
+  // ========================== Open ==========================
+  const [inMotion, setInMotion] = React.useState(false);
+
+  useLayoutEffect(() => {
+    setInMotion(true);
+  }, [open]);
+
+  // We can not remove holder only when motion finished.
+  const isNodeVisible = open || inMotion;
+
   // ======================= Container ========================
   const getPopupContainerNeedParams = getPopupContainer?.length > 0;
 
@@ -83,17 +109,18 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     return null;
   }
 
+  // >>>>> Offset
   const offsetStyle: React.CSSProperties = ready
     ? {
         left: offsetX,
         top: offsetY,
       }
     : {
-        left: '-100vw',
-        top: '-100vh',
-        visibility: 'hidden',
+        left: '-1000vw',
+        top: '-1000vh',
       };
 
+  // >>>>> Stretch
   const stretchStyle: React.CSSProperties = {};
   if (stretch) {
     if (stretch.includes('height') && targetHeight) {
@@ -110,26 +137,52 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   return (
     <Portal
-      open={open}
+      open={forceRender || isNodeVisible}
       getContainer={getPopupContainer && (() => getPopupContainer(target))}
       autoDestroy={autoDestroy}
     >
+      <Mask
+        prefixCls={prefixCls}
+        open={open}
+        zIndex={zIndex}
+        mask={mask}
+        motion={maskMotion}
+      />
       <ResizeObserver onResize={onAlign} disabled={!open}>
-        <div
-          ref={ref}
-          className={classNames(prefixCls, className)}
-          style={{
-            ...offsetStyle,
-            ...stretchStyle,
-            boxSizing: 'border-box',
-            zIndex,
-            ...style,
+        <CSSMotion
+          motionAppear
+          motionEnter
+          motionLeave
+          removeOnLeave={false}
+          {...motion}
+          leavedClassName={`${prefixCls}-hidden`}
+          visible={open}
+          onVisibleChanged={(nextVisible) => {
+            motion?.onVisibleChanged?.(nextVisible);
+            setInMotion(false);
           }}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
         >
-          {childNode}
-        </div>
+          {({ className: motionClassName, style: motionStyle }) => {
+            return (
+              <div
+                ref={ref}
+                className={classNames(prefixCls, motionClassName, className)}
+                style={{
+                  ...offsetStyle,
+                  ...stretchStyle,
+                  ...motionStyle,
+                  boxSizing: 'border-box',
+                  zIndex,
+                  ...style,
+                }}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+              >
+                {childNode}
+              </div>
+            );
+          }}
+        </CSSMotion>
       </ResizeObserver>
     </Portal>
   );

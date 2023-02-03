@@ -1,4 +1,5 @@
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import { getWin } from '../util';
 
 function collectScroller(ele: HTMLElement) {
   const scrollerList: HTMLElement[] = [];
@@ -7,8 +8,7 @@ function collectScroller(ele: HTMLElement) {
   const scrollStyle = ['hidden', 'scroll', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY } =
-      current.ownerDocument.defaultView.getComputedStyle(current);
+    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
     if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
       scrollerList.push(current);
     }
@@ -33,7 +33,7 @@ export default function useWatch(
       const popupScrollList = collectScroller(popupElement);
 
       const mergedList = new Set([
-        window,
+        getWin(popupElement),
         ...targetScrollList,
         ...popupScrollList,
       ]);

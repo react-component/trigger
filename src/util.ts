@@ -1,4 +1,10 @@
-import type { AlignType, BuildInPlacements } from './interface';
+import type { CSSMotionProps } from 'rc-motion';
+import type {
+  AlignType,
+  AnimationType,
+  BuildInPlacements,
+  TransitionNameType,
+} from './interface';
 
 function isPointsEq(
   a1: string[],
@@ -41,4 +47,34 @@ export function getAlignPopupClassName(
   }
 
   return '';
+}
+
+/** @deprecated We should not use this if we can refactor all deps */
+export function getMotion(
+  prefixCls: string,
+  motion: CSSMotionProps,
+  animation: AnimationType,
+  transitionName: TransitionNameType,
+): CSSMotionProps {
+  if (motion) {
+    return motion;
+  }
+
+  if (animation) {
+    return {
+      motionName: `${prefixCls}-${animation}`,
+    };
+  }
+
+  if (transitionName) {
+    return {
+      motionName: transitionName,
+    };
+  }
+
+  return null;
+}
+
+export function getWin(ele: HTMLElement) {
+  return ele.ownerDocument.defaultView;
 }

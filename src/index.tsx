@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
@@ -7,24 +7,22 @@ import * as React from 'react';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
 import useWatch from './hooks/useWatch';
-import type { ActionType, AlignType, BuildInPlacements } from './interface';
+import type {
+  ActionType,
+  AlignType,
+  AnimationType,
+  BuildInPlacements,
+  TransitionNameType,
+} from './interface';
 import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
-import { getAlignPopupClassName } from './util';
+import { getAlignPopupClassName, getMotion, getWin } from './util';
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
 }
 
 // Removed Props List
-// /** @deprecated Please us `popupMotion` instead. */
-// popupTransitionName?: TransitionNameType;
-// /** @deprecated Please us `popupMotion` instead. */
-// popupAnimation?: AnimationType;
-// /** @deprecated Please us `maskMotion` instead. */
-// maskTransitionName?: TransitionNameType;
-// /** @deprecated Please us `maskMotion` instead. */
-// maskAnimation?: string;
 
 // Same as `autoDestroy`. Remove this
 // destroyPopupOnHide?: boolean;
@@ -47,8 +45,6 @@ export interface TriggerProps {
 
   zIndex?: number;
 
-  // mask?: boolean;
-  // maskClosable?: boolean;
   // onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
 
   stretch?: string;
@@ -58,11 +54,24 @@ export interface TriggerProps {
   // forceRender?: boolean;
   autoDestroy?: boolean;
 
+  // ==================== Mask =====================
+  mask?: boolean;
+  maskClosable?: boolean;
+
   // =================== Motion ====================
   /** Set popup motion. You can ref `rc-motion` for more info. */
   popupMotion?: CSSMotionProps;
   /** Set mask motion. You can ref `rc-motion` for more info. */
   maskMotion?: CSSMotionProps;
+
+  /** @deprecated Please us `popupMotion` instead. */
+  popupTransitionName?: TransitionNameType;
+  /** @deprecated Please us `popupMotion` instead. */
+  popupAnimation?: AnimationType;
+  /** @deprecated Please us `maskMotion` instead. */
+  maskTransitionName?: TransitionNameType;
+  /** @deprecated Please us `maskMotion` instead. */
+  maskAnimation?: AnimationType;
 
   // ==================== Delay ====================
   mouseEnterDelay?: number;
@@ -121,10 +130,14 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     focusDelay,
     blurDelay,
 
+    // Mask
+    mask,
+    maskClosable = true,
+
     // Portal
     getPopupContainer,
     // forceRender,
-    autoDestroy,
+    autoDestroy = false,
 
     // Popup
     popup,
@@ -142,6 +155,10 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     // Motion
     popupMotion,
     maskMotion,
+    popupTransitionName,
+    popupAnimation,
+    maskTransitionName,
+    maskAnimation,
 
     // Deprecated
     className,
@@ -183,6 +200,18 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
       ele === popupEle
     );
   });
+
+  // =========================== Motion ===========================
+  const mergePopupMotion = React.useMemo(
+    () =>
+      getMotion(prefixCls, popupMotion, popupAnimation, popupTransitionName),
+    [],
+  );
+
+  const mergeMaskMotion = React.useMemo(
+    () => getMotion(prefixCls, maskMotion, maskAnimation, maskTransitionName),
+    [],
+  );
 
   // ============================ Open ============================
   const [mergedOpen, setMergedOpen] = useMergedState(
@@ -298,20 +327,22 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   // Click to hide is special action since click popup element should not hide
   React.useEffect(() => {
-    if (clickToHide) {
+    if (clickToHide && popupEle && (!mask || maskClosable)) {
       const onWindowClick = ({ target }: MouseEvent) => {
         if (openRef.current && !inPopupOrChild(target)) {
           triggerOpen(false);
         }
       };
 
-      window.addEventListener('click', onWindowClick);
+      const win = getWin(popupEle);
+
+      win.addEventListener('click', onWindowClick);
 
       return () => {
-        window.removeEventListener('click', onWindowClick);
+        win.removeEventListener('click', onWindowClick);
       };
     }
-  }, [clickToHide]);
+  }, [clickToHide, popupEle, mask, maskClosable]);
 
   // ======================= Action: Hover ========================
   const hoverToShow = showActions.has('hover');
@@ -365,6 +396,11 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         onMouseEnter={onPopupMouseEnter}
         onMouseLeave={onPopupMouseLeave}
         zIndex={zIndex}
+        // Mask
+        mask={mask}
+        // Motion
+        motion={mergePopupMotion}
+        maskMotion={mergeMaskMotion}
         // Portal
         autoDestroy={autoDestroy}
         getPopupContainer={getPopupContainer}

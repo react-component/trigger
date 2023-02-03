@@ -6,6 +6,7 @@ import type {
   AlignPointTopBottom,
   AlignType,
 } from '../interface';
+import { getWin } from '../util';
 
 type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
 
@@ -98,7 +99,7 @@ export default function useAlign(
       const originTop = popupElement.style.top;
 
       const doc = popupElement.ownerDocument;
-      const win = doc.defaultView;
+      const win = getWin(popupElement);
 
       // Reset first
       popupElement.style.left = '0';
@@ -108,8 +109,7 @@ export default function useAlign(
       const targetRect = target.getBoundingClientRect();
       const popupRect = popupElement.getBoundingClientRect();
       const { width, height } = win.getComputedStyle(popupElement);
-      const { clientWidth, clientHeight } =
-      doc.documentElement;
+      const { clientWidth, clientHeight } = doc.documentElement;
 
       const popupHeight = popupRect.height;
       const popupWidth = popupRect.width;
