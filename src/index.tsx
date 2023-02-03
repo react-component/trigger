@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
@@ -8,11 +9,30 @@ import useAlign from './hooks/useAlign';
 import useWatch from './hooks/useWatch';
 import type { ActionType, AlignType, BuildInPlacements } from './interface';
 import Popup from './Popup';
+import TriggerWrapper from './TriggerWrapper';
 import { getAlignPopupClassName } from './util';
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
 }
+
+// Removed Props List
+// /** @deprecated Please us `popupMotion` instead. */
+// popupTransitionName?: TransitionNameType;
+// /** @deprecated Please us `popupMotion` instead. */
+// popupAnimation?: AnimationType;
+// /** @deprecated Please us `maskMotion` instead. */
+// maskTransitionName?: TransitionNameType;
+// /** @deprecated Please us `maskMotion` instead. */
+// maskAnimation?: string;
+
+// Same as `autoDestroy`. Remove this
+// destroyPopupOnHide?: boolean;
+
+// Seems this can be auto
+// getDocument?: (element?: HTMLElement) => Document;
+
+// popupAlign?: AlignType;
 
 export interface TriggerProps {
   children: React.ReactElement;
@@ -25,22 +45,24 @@ export interface TriggerProps {
   // afterPopupVisibleChange?: (visible: boolean) => void;
   prefixCls?: string;
 
-  // className?: string;
-
   zIndex?: number;
 
-  getPopupContainer?: (node: HTMLElement) => HTMLElement;
-  // getDocument?: (element?: HTMLElement) => HTMLDocument;
-  // forceRender?: boolean;
-  // destroyPopupOnHide?: boolean;
   // mask?: boolean;
   // maskClosable?: boolean;
   // onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
-  // popupAlign?: AlignType;
-
-  // autoDestroy?: boolean;
 
   stretch?: string;
+
+  // =================== Portal ====================
+  getPopupContainer?: (node: HTMLElement) => HTMLElement;
+  // forceRender?: boolean;
+  autoDestroy?: boolean;
+
+  // =================== Motion ====================
+  /** Set popup motion. You can ref `rc-motion` for more info. */
+  popupMotion?: CSSMotionProps;
+  /** Set mask motion. You can ref `rc-motion` for more info. */
+  maskMotion?: CSSMotionProps;
 
   // ==================== Delay ====================
   mouseEnterDelay?: number;
@@ -61,25 +83,16 @@ export interface TriggerProps {
 
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
-  // /** Set popup motion. You can ref `rc-motion` for more info. */
-  // popupMotion?: CSSMotionProps;
-  // /** Set mask motion. You can ref `rc-motion` for more info. */
-  // maskMotion?: CSSMotionProps;
+  // ================= Deprecated ==================
+  /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
+  className?: string;
 
-  // /** @deprecated Please us `popupMotion` instead. */
-  // popupTransitionName?: TransitionNameType;
-  // /** @deprecated Please us `popupMotion` instead. */
-  // popupAnimation?: AnimationType;
-  // /** @deprecated Please us `maskMotion` instead. */
-  // maskTransitionName?: TransitionNameType;
-  // /** @deprecated Please us `maskMotion` instead. */
-  // maskAnimation?: string;
-
-  // /**
-  //  * @private Get trigger DOM node.
-  //  * Used for some component is function component which can not access by `findDOMNode`
-  //  */
-  // getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
+  // =================== Private ===================
+  /**
+   * @private Get trigger DOM node.
+   * Used for some component is function component which can not access by `findDOMNode`
+   */
+  getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
 
   // // ========================== Mobile ==========================
   // /** @private Bump fixed position at bottom in mobile.
@@ -108,11 +121,16 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     focusDelay,
     blurDelay,
 
+    // Portal
+    getPopupContainer,
+    // forceRender,
+    autoDestroy,
+
     // Popup
     popup,
     popupClassName,
     popupStyle,
-    getPopupContainer,
+
     popupPlacement,
     builtinPlacements,
     zIndex,
@@ -120,6 +138,16 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     getPopupClassNameFromAlign,
 
     alignPoint,
+
+    // Motion
+    popupMotion,
+    maskMotion,
+
+    // Deprecated
+    className,
+
+    // Private
+    getTriggerDOMNode,
   } = props;
 
   // =========================== Popup ============================
@@ -320,6 +348,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   const triggerNode = React.cloneElement(child, {
     ...originChildProps,
     ...cloneProps,
+    className: classNames(originChildProps.className, className),
   });
 
   // Render
@@ -333,10 +362,12 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         className={classNames(popupClassName, alignedClassName)}
         style={popupStyle}
         target={targetEle}
-        getPopupContainer={getPopupContainer}
         onMouseEnter={onPopupMouseEnter}
         onMouseLeave={onPopupMouseLeave}
         zIndex={zIndex}
+        // Portal
+        autoDestroy={autoDestroy}
+        getPopupContainer={getPopupContainer}
         // Align
         ready={ready}
         offsetX={offsetX}
@@ -352,7 +383,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         ref={setTargetRef}
         onResize={onTargetResize}
       >
-        {triggerNode}
+        <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
+          {triggerNode}
+        </TriggerWrapper>
       </ResizeObserver>
     </>
   );

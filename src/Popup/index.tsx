@@ -12,10 +12,14 @@ export interface PopupProps {
   open: boolean;
   popup?: TriggerProps['popup'];
   target: HTMLElement;
-  getPopupContainer?: TriggerProps['getPopupContainer'];
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   zIndex?: number;
+
+  // Portal
+  forceRender?: boolean;
+  getPopupContainer?: TriggerProps['getPopupContainer'];
+  autoDestroy?: boolean;
 
   // Align
   ready: boolean;
@@ -38,7 +42,11 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     style,
     target,
 
+    // Portal
+    forceRender,
     getPopupContainer,
+    autoDestroy,
+
     zIndex,
 
     onMouseEnter,
@@ -104,6 +112,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     <Portal
       open={open}
       getContainer={getPopupContainer && (() => getPopupContainer(target))}
+      autoDestroy={autoDestroy}
     >
       <ResizeObserver onResize={onAlign} disabled={!open}>
         <div

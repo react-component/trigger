@@ -97,6 +97,9 @@ export default function useAlign(
       const originLeft = popupElement.style.left;
       const originTop = popupElement.style.top;
 
+      const doc = popupElement.ownerDocument;
+      const win = doc.defaultView;
+
       // Reset first
       popupElement.style.left = '0';
       popupElement.style.top = '0';
@@ -104,8 +107,9 @@ export default function useAlign(
       // Calculate align style, we should consider `transform` case
       const targetRect = target.getBoundingClientRect();
       const popupRect = popupElement.getBoundingClientRect();
-      const { width, height } = getComputedStyle(popupElement);
-      const { clientWidth, clientHeight } = document.documentElement;
+      const { width, height } = win.getComputedStyle(popupElement);
+      const { clientWidth, clientHeight } =
+      doc.documentElement;
 
       const popupHeight = popupRect.height;
       const popupWidth = popupRect.width;

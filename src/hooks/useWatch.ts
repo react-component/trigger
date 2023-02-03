@@ -7,7 +7,8 @@ function collectScroller(ele: HTMLElement) {
   const scrollStyle = ['hidden', 'scroll', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY } = getComputedStyle(current);
+    const { overflowX, overflowY } =
+      current.ownerDocument.defaultView.getComputedStyle(current);
     if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
       scrollerList.push(current);
     }
