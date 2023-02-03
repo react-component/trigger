@@ -23,10 +23,6 @@ export interface TriggerRef {
 }
 
 // Removed Props List
-
-// Same as `autoDestroy`. Remove this
-// destroyPopupOnHide?: boolean;
-
 // Seems this can be auto
 // getDocument?: (element?: HTMLElement) => Document;
 
@@ -38,9 +34,6 @@ export interface TriggerProps {
   showAction?: ActionType[];
   hideAction?: ActionType[];
 
-  // onPopupVisibleChange?: (visible: boolean) => void;
-  // onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
-  // afterPopupVisibleChange?: (visible: boolean) => void;
   prefixCls?: string;
 
   zIndex?: number;
@@ -49,10 +42,19 @@ export interface TriggerProps {
 
   stretch?: string;
 
+  // ==================== Open =====================
+  popupVisible?: boolean;
+  defaultPopupVisible?: boolean;
+  onPopupVisibleChange?: (visible: boolean) => void;
+  afterPopupVisibleChange?: (visible: boolean) => void;
+
   // =================== Portal ====================
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
   // forceRender?: boolean;
   autoDestroy?: boolean;
+
+  /** @deprecated Please use `autoDestroy` instead */
+  destroyPopupOnHide?: boolean;
 
   // ==================== Mask =====================
   mask?: boolean;
@@ -82,13 +84,12 @@ export interface TriggerProps {
 
   // ==================== Popup ====================
   popup: React.ReactNode | (() => React.ReactNode);
-  popupVisible?: boolean;
-  defaultPopupVisible?: boolean;
   popupPlacement?: string;
   builtinPlacements?: BuildInPlacements;
   popupClassName?: string;
   popupStyle?: React.CSSProperties;
   getPopupClassNameFromAlign?: (align: AlignType) => string;
+  onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
 
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
@@ -122,6 +123,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     // Open
     popupVisible,
     defaultPopupVisible,
+    onPopupVisibleChange,
+    afterPopupVisibleChange,
 
     // Delay
     mouseEnterDelay,
@@ -137,7 +140,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     // Portal
     getPopupContainer,
     // forceRender,
-    autoDestroy = false,
+    autoDestroy,
+    destroyPopupOnHide,
 
     // Popup
     popup,
@@ -151,6 +155,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     getPopupClassNameFromAlign,
 
     alignPoint,
+
+    onPopupClick,
 
     // Motion
     popupMotion,
@@ -166,6 +172,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     // Private
     getTriggerDOMNode,
   } = props;
+
+  const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
 
   // =========================== Popup ============================
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
@@ -226,6 +234,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   const internalTriggerOpen = useEvent((nextOpen: boolean) => {
     if (mergedOpen !== nextOpen) {
       setMergedOpen(nextOpen);
+      onPopupVisibleChange?.(nextOpen);
     }
   });
 
@@ -396,13 +405,16 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         onMouseEnter={onPopupMouseEnter}
         onMouseLeave={onPopupMouseLeave}
         zIndex={zIndex}
+        // Click
+        onClick={onPopupClick}
         // Mask
         mask={mask}
         // Motion
         motion={mergePopupMotion}
         maskMotion={mergeMaskMotion}
+        onVisibleChanged={afterPopupVisibleChange}
         // Portal
-        autoDestroy={autoDestroy}
+        autoDestroy={mergedAutoDestroy}
         getPopupContainer={getPopupContainer}
         // Align
         ready={ready}

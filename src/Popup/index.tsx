@@ -20,6 +20,10 @@ export interface PopupProps {
   zIndex?: number;
 
   mask?: boolean;
+  onVisibleChanged?: (visible: boolean) => void;
+
+  // Click
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 
   // Motion
   motion?: CSSMotionProps;
@@ -50,6 +54,11 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     prefixCls,
     style,
     target,
+
+    onVisibleChanged,
+
+    // Click
+    onClick,
 
     // Mask
     mask,
@@ -159,6 +168,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           visible={open}
           onVisibleChanged={(nextVisible) => {
             motion?.onVisibleChanged?.(nextVisible);
+            onVisibleChanged?.(nextVisible);
             setInMotion(false);
           }}
         >
@@ -177,6 +187,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                 }}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
+                onClick={onClick}
               >
                 {childNode}
               </div>
