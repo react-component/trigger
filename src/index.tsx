@@ -1,11 +1,9 @@
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
+import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
-import { useComposeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
-import DOMWrapper from './DOMWrapper';
 import useAction from './hooks/useAction';
-import type { ActionType, BuildInPlacements, Placement } from './interface';
+import type { ActionType, BuildInPlacements } from './interface';
 import Popup from './Popup';
 
 export interface TriggerRef {
@@ -30,7 +28,7 @@ export interface TriggerProps {
   builtinPlacements?: BuildInPlacements;
   mouseEnterDelay?: number;
   mouseLeaveDelay?: number;
-  // zIndex?: number;
+  zIndex?: number;
   // focusDelay?: number;
   // blurDelay?: number;
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
@@ -45,7 +43,7 @@ export interface TriggerProps {
   defaultPopupVisible?: boolean;
   // autoDestroy?: boolean;
 
-  // stretch?: string;
+  stretch?: string;
   // alignPoint?: boolean; // Maybe we can support user pass position in the future
 
   // /** Set popup motion. You can ref `rc-motion` for more info. */
@@ -98,6 +96,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     getPopupContainer,
     popupPlacement,
     builtinPlacements,
+    zIndex,
+    stretch,
   } = props;
 
   // =========================== Popup ============================
@@ -105,19 +105,13 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
 
   // =========================== Target ===========================
   // Use state to control here since `useRef` update not trigger render
-  const [childEle, setChildEle] = React.useState<HTMLElement>(null);
-  const [domWrapper, setDomWrapper] = React.useState<DOMWrapper>(null);
+  const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
 
-  const setChildEleRef = React.useCallback((node: HTMLElement) => {
-    setChildEle(node);
+  const setTargetRef = React.useCallback((node: HTMLElement) => {
+    if (node instanceof HTMLElement) {
+      setTargetEle(node);
+    }
   }, []);
-
-  const setDomWrapperRef = React.useCallback((node: DOMWrapper) => {
-    setDomWrapper(node);
-  }, []);
-
-  const targetEle = (findDOMNode(childEle) ||
-    findDOMNode(domWrapper)) as HTMLElement;
 
   // ========================== Children ==========================
   const child = React.Children.only(children) as React.ReactElement;
@@ -254,11 +248,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
 
   // =========================== Render ===========================
   // Child Node
-  const mergedRef = useComposeRef(setChildEleRef, (child as any).ref);
   const triggerNode = React.cloneElement(child, {
     ...originChildProps,
     ...cloneProps,
-    ref: mergedRef,
   });
 
   // Render
@@ -277,8 +269,10 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         onMouseLeave={onPopupMouseLeave}
         placement={popupPlacement}
         builtinPlacements={builtinPlacements}
+        zIndex={zIndex}
+        stretch={stretch}
       />
-      <DOMWrapper ref={setDomWrapperRef}>{triggerNode}</DOMWrapper>
+      <ResizeObserver ref={setTargetRef}>{triggerNode}</ResizeObserver>
     </>
   );
 });

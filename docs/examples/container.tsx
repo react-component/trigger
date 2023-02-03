@@ -57,7 +57,7 @@ const popupPlacement = 'right';
 export default () => {
   console.log('Demo Render!');
 
-  const [scale, setScale] = React.useState('2');
+  const [scale, setScale] = React.useState('1');
 
   const rootRef = React.useRef<HTMLDivElement>();
   const popHolderRef = React.useRef<HTMLDivElement>();
@@ -131,6 +131,7 @@ export default () => {
             getPopupContainer={() => popHolderRef.current}
             popupPlacement={popupPlacement}
             builtinPlacements={builtinPlacements}
+            stretch="height"
           >
             <span
               style={{

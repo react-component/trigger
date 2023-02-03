@@ -5,6 +5,7 @@ import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type { TriggerProps } from '../';
+import useStretch from '../hooks/useStretch';
 import useWatch from '../hooks/useWatch';
 import type { AlignPointLeftRight, AlignPointTopBottom } from '../interface';
 
@@ -54,6 +55,8 @@ export interface PopupProps {
   getPopupContainer?: TriggerProps['getPopupContainer'];
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
+  zIndex?: number;
+  stretch?: TriggerProps['stretch'];
 }
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
@@ -68,6 +71,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     getPopupContainer,
     placement,
     builtinPlacements,
+    zIndex,
+
+    stretch,
 
     onMouseEnter,
     onMouseLeave,
@@ -83,7 +89,11 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   React.useImperativeHandle(ref, () => popupEle);
 
+  // ======================== Stretch =========================
+  useStretch(target, stretch);
+
   // ========================= Align ==========================
+  const [ready, setReady] = React.useState(false);
   const [offsetX, setOffsetX] = React.useState(0);
   const [offsetY, setOffsetY] = React.useState(0);
   const alignCountRef = React.useRef(0);
@@ -194,7 +204,6 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     if (adjustX === 'shift') {
       // Left
       if (nextPopupX < 0) {
-        console.log('no!');
         nextOffsetX -= nextPopupX;
       }
 
@@ -216,6 +225,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       }
     }
 
+    setReady(true);
     setOffsetX(nextOffsetX / scaleX);
     setOffsetY(nextOffsetY / scaleY);
   });
@@ -231,6 +241,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       }
     });
   };
+
+  useLayoutEffect(() => {
+    setReady(false);
+  }, [placement]);
 
   // ======================= Container ========================
   const getPopupContainerNeedParams = getPopupContainer?.length > 0;
@@ -254,6 +268,17 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     return null;
   }
 
+  const offsetStyle: React.CSSProperties = ready
+    ? {
+        left: offsetX,
+        top: offsetY,
+      }
+    : {
+        left: '-100vw',
+        top: '-100vh',
+        visibility: 'hidden',
+      };
+
   return (
     <Portal
       open={open}
@@ -264,8 +289,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           ref={setPopupRef}
           className={classNames(prefixCls, className)}
           style={{
-            left: offsetX,
-            top: offsetY,
+            ...offsetStyle,
+            zIndex,
             ...style,
           }}
           onMouseEnter={onMouseEnter}
