@@ -51,7 +51,7 @@ export interface TriggerProps {
 
   // =================== Portal ====================
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
-  // forceRender?: boolean;
+  forceRender?: boolean;
   autoDestroy?: boolean;
 
   /** @deprecated Please use `autoDestroy` instead */
@@ -140,7 +140,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
     // Portal
     getPopupContainer,
-    // forceRender,
+    forceRender,
     autoDestroy,
     destroyPopupOnHide,
 
@@ -270,11 +270,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     setInMotion(true);
   }, [mergedOpen]);
 
-  const onVisibleChanged = (visible: boolean) => {
-    setInMotion(false);
-    afterPopupVisibleChange?.(visible);
-  };
-
   const [motionPrepareResolve, setMotionPrepareResolve] =
     React.useState<VoidFunction>(null);
 
@@ -287,20 +282,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
       onAlign();
     }
   });
-
-  // We will trigger align when motion is in prepare
-  const onPrepare = () =>
-    new Promise<void>((resolve) => {
-      setMotionPrepareResolve(() => resolve);
-    });
-
-  useLayoutEffect(() => {
-    if (motionPrepareResolve) {
-      onAlign();
-      motionPrepareResolve();
-      setMotionPrepareResolve(null);
-    }
-  }, [motionPrepareResolve]);
 
   useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
 
@@ -324,6 +305,27 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   React.useImperativeHandle(ref, () => ({
     forceAlign: triggerAlign,
   }));
+
+  // ========================== Motion ============================
+  const onVisibleChanged = (visible: boolean) => {
+    setInMotion(false);
+    onAlign();
+    afterPopupVisibleChange?.(visible);
+  };
+
+  // We will trigger align when motion is in prepare
+  const onPrepare = () =>
+    new Promise<void>((resolve) => {
+      setMotionPrepareResolve(() => resolve);
+    });
+
+  useLayoutEffect(() => {
+    if (motionPrepareResolve) {
+      onAlign();
+      motionPrepareResolve();
+      setMotionPrepareResolve(null);
+    }
+  }, [motionPrepareResolve]);
 
   // ========================== Stretch ===========================
   const [targetWidth, setTargetWidth] = React.useState(0);
@@ -456,6 +458,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         onVisibleChanged={onVisibleChanged}
         onPrepare={onPrepare}
         // Portal
+        forceRender={forceRender}
         autoDestroy={mergedAutoDestroy}
         getPopupContainer={getPopupContainer}
         // Align

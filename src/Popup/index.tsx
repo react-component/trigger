@@ -165,6 +165,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           motionEnter
           motionLeave
           removeOnLeave={false}
+          forceRender={forceRender}
           {...motion}
           onAppearPrepare={onPrepare}
           onEnterPrepare={onPrepare}

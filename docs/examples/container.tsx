@@ -113,6 +113,7 @@ export default () => {
           }}
         >
           <Trigger
+            forceRender
             action="click"
             popup={
               <div
@@ -128,7 +129,7 @@ export default () => {
               </div>
             }
             popupStyle={{ border: '5px solid red' }}
-            popupVisible
+            // popupVisible
             getPopupContainer={() => popHolderRef.current}
             popupPlacement={popupPlacement}
             builtinPlacements={builtinPlacements}
