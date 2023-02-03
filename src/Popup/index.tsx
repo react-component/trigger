@@ -12,7 +12,6 @@ export interface PopupProps {
   prefixCls: string;
   className?: string;
   style?: React.CSSProperties;
-  open: boolean;
   popup?: TriggerProps['popup'];
   target: HTMLElement;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
@@ -20,7 +19,12 @@ export interface PopupProps {
   zIndex?: number;
 
   mask?: boolean;
-  onVisibleChanged?: (visible: boolean) => void;
+  onVisibleChanged: (visible: boolean) => void;
+
+  // Open
+  open: boolean;
+  /** Tell Portal that should keep in screen. e.g. should wait all motion end */
+  keepDom: boolean;
 
   // Click
   onClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -39,6 +43,7 @@ export interface PopupProps {
   offsetX: number;
   offsetY: number;
   onAlign: VoidFunction;
+  onPrepare: () => Promise<void>;
 
   // stretch
   stretch?: string;
@@ -48,7 +53,6 @@ export interface PopupProps {
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   const {
-    open,
     popup,
     className,
     prefixCls,
@@ -56,6 +60,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     target,
 
     onVisibleChanged,
+
+    // Open
+    open,
+    keepDom,
 
     // Click
     onClick,
@@ -81,6 +89,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     offsetX,
     offsetY,
     onAlign,
+    onPrepare,
 
     stretch,
     targetWidth,
@@ -89,15 +98,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   const childNode = typeof popup === 'function' ? popup() : popup;
 
-  // ========================== Open ==========================
-  const [inMotion, setInMotion] = React.useState(false);
-
-  useLayoutEffect(() => {
-    setInMotion(true);
-  }, [open]);
-
   // We can not remove holder only when motion finished.
-  const isNodeVisible = open || inMotion;
+  const isNodeVisible = open || keepDom;
 
   // ======================= Container ========================
   const getPopupContainerNeedParams = getPopupContainer?.length > 0;
@@ -164,19 +166,22 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           motionLeave
           removeOnLeave={false}
           {...motion}
+          onAppearPrepare={onPrepare}
+          onEnterPrepare={onPrepare}
           leavedClassName={`${prefixCls}-hidden`}
           visible={open}
           onVisibleChanged={(nextVisible) => {
             motion?.onVisibleChanged?.(nextVisible);
-            onVisibleChanged?.(nextVisible);
-            setInMotion(false);
+            onVisibleChanged(nextVisible);
           }}
         >
           {({ className: motionClassName, style: motionStyle }) => {
+            const cls = classNames(prefixCls, motionClassName, className);
+
             return (
               <div
                 ref={ref}
-                className={classNames(prefixCls, motionClassName, className)}
+                className={cls}
                 style={{
                   ...offsetStyle,
                   ...stretchStyle,

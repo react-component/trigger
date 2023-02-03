@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
+import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import * as React from 'react';
 import useAction from './hooks/useAction';
@@ -210,15 +211,18 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   });
 
   // =========================== Motion ===========================
-  const mergePopupMotion = React.useMemo(
-    () =>
-      getMotion(prefixCls, popupMotion, popupAnimation, popupTransitionName),
-    [],
+  const mergePopupMotion = getMotion(
+    prefixCls,
+    popupMotion,
+    popupAnimation,
+    popupTransitionName,
   );
 
-  const mergeMaskMotion = React.useMemo(
-    () => getMotion(prefixCls, maskMotion, maskAnimation, maskTransitionName),
-    [],
+  const mergeMaskMotion = getMotion(
+    prefixCls,
+    maskMotion,
+    maskAnimation,
+    maskTransitionName,
   );
 
   // ============================ Open ============================
@@ -259,11 +263,46 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   React.useEffect(() => clearDelay, []);
 
+  // ========================== Motion ============================
+  const [inMotion, setInMotion] = React.useState(false);
+
+  useLayoutEffect(() => {
+    setInMotion(true);
+  }, [mergedOpen]);
+
+  const onVisibleChanged = (visible: boolean) => {
+    setInMotion(false);
+    afterPopupVisibleChange?.(visible);
+  };
+
+  const [motionPrepareResolve, setMotionPrepareResolve] =
+    React.useState<VoidFunction>(null);
+
   // =========================== Align ============================
   const [ready, offsetX, offsetY, scaleX, scaleY, alignInfo, onAlign] =
     useAlign(popupEle, targetEle, popupPlacement, builtinPlacements);
 
-  useWatch(mergedOpen, targetEle, popupEle, onAlign);
+  const triggerAlign = useEvent(() => {
+    if (!inMotion) {
+      onAlign();
+    }
+  });
+
+  // We will trigger align when motion is in prepare
+  const onPrepare = () =>
+    new Promise<void>((resolve) => {
+      setMotionPrepareResolve(() => resolve);
+    });
+
+  useLayoutEffect(() => {
+    if (motionPrepareResolve) {
+      onAlign();
+      motionPrepareResolve();
+      setMotionPrepareResolve(null);
+    }
+  }, [motionPrepareResolve]);
+
+  useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
 
   const alignedClassName = React.useMemo(() => {
     const baseClassName = getAlignPopupClassName(
@@ -283,7 +322,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   ]);
 
   React.useImperativeHandle(ref, () => ({
-    forceAlign: onAlign,
+    forceAlign: triggerAlign,
   }));
 
   // ========================== Stretch ===========================
@@ -291,7 +330,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   const [targetHeight, setTargetHeight] = React.useState(0);
 
   const onTargetResize = (_: object, ele: HTMLElement) => {
-    onAlign();
+    triggerAlign();
 
     if (stretch) {
       const rect = ele.getBoundingClientRect();
@@ -397,7 +436,6 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
       <Popup
         ref={setPopupRef}
         prefixCls={prefixCls}
-        open={mergedOpen}
         popup={popup}
         className={classNames(popupClassName, alignedClassName)}
         style={popupStyle}
@@ -405,6 +443,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         onMouseEnter={onPopupMouseEnter}
         onMouseLeave={onPopupMouseLeave}
         zIndex={zIndex}
+        // Open
+        open={mergedOpen}
+        keepDom={inMotion}
         // Click
         onClick={onPopupClick}
         // Mask
@@ -412,7 +453,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         // Motion
         motion={mergePopupMotion}
         maskMotion={mergeMaskMotion}
-        onVisibleChanged={afterPopupVisibleChange}
+        onVisibleChanged={onVisibleChanged}
+        onPrepare={onPrepare}
         // Portal
         autoDestroy={mergedAutoDestroy}
         getPopupContainer={getPopupContainer}
@@ -420,7 +462,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         ready={ready}
         offsetX={offsetX}
         offsetY={offsetY}
-        onAlign={onAlign}
+        onAlign={triggerAlign}
         // Stretch
         stretch={stretch}
         targetWidth={targetWidth / scaleX}
