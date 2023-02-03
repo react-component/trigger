@@ -52,7 +52,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'right';
+const popupPlacement = 'top';
 
 export default () => {
   console.log('Demo Render!');
@@ -132,7 +132,7 @@ export default () => {
             getPopupContainer={() => popHolderRef.current}
             popupPlacement={popupPlacement}
             builtinPlacements={builtinPlacements}
-            stretch="height"
+            stretch="minWidth"
           >
             <span
               style={{

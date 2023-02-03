@@ -1,7 +1,11 @@
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
-import type { AlignPointLeftRight, AlignPointTopBottom } from '../interface';
+import type {
+  AlignPointLeftRight,
+  AlignPointTopBottom,
+  AlignType,
+} from '../interface';
 
 type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
 
@@ -37,6 +41,24 @@ function getAlignPoint(rect: DOMRect, points: Points) {
   return { x, y };
 }
 
+function reversePoints(points: Points, index: number): string {
+  const reverseMap = {
+    t: 'b',
+    b: 't',
+    l: 'r',
+    r: 'l',
+  };
+
+  return points
+    .map((point, i) => {
+      if (i === index) {
+        return reverseMap[point] || 'c';
+      }
+      return point;
+    })
+    .join('');
+}
+
 export default function useAlign(
   popupEle: HTMLElement,
   target: HTMLElement,
@@ -48,6 +70,7 @@ export default function useAlign(
   offsetY: number,
   scaleX: number,
   scaleY: number,
+  align: AlignType,
   onAlign: VoidFunction,
 ] {
   const [offsetInfo, setOffsetInfo] = React.useState<{
@@ -56,12 +79,14 @@ export default function useAlign(
     offsetY: number;
     scaleX: number;
     scaleY: number;
+    align: AlignType;
   }>({
     ready: false,
     offsetX: 0,
     offsetY: 0,
     scaleX: 1,
     scaleY: 1,
+    align: builtinPlacements[placement] || {},
   });
   const alignCountRef = React.useRef(0);
 
@@ -95,13 +120,18 @@ export default function useAlign(
         Math.round((popupHeight / parseFloat(height)) * 1000) / 1000;
 
       // Placement
-      const placementInfo = builtinPlacements[placement] || {};
+      const placementInfo: AlignType = builtinPlacements[placement] || {};
       const [popupPoint, targetPoint] = placementInfo.points || [];
       const targetPoints = splitPoints(targetPoint);
       const popupPoints = splitPoints(popupPoint);
 
       const targetAlignPoint = getAlignPoint(targetRect, targetPoints);
       const popupAlignPoint = getAlignPoint(popupRect, popupPoints);
+
+      // Real align info may not same as origin one
+      const nextAlignInfo = {
+        ...placementInfo,
+      };
 
       // Offset
       const { offset } = placementInfo;
@@ -132,18 +162,22 @@ export default function useAlign(
         popupPoints[0] === 't' &&
         nextPopupBottom > clientHeight
       ) {
-        const measureNextOffsetY =
-          targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
+        nextOffsetY = targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
 
-        nextOffsetY = measureNextOffsetY;
+        nextAlignInfo.points = [
+          reversePoints(popupPoints, 0),
+          reversePoints(targetPoints, 0),
+        ];
       }
 
       // Top to Bottom
       if (needAdjustY && popupPoints[0] === 'b' && nextPopupY < 0) {
-        const measureNextOffsetY =
-          targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
+        nextOffsetY = targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
 
-        nextOffsetY = measureNextOffsetY;
+        nextAlignInfo.points = [
+          reversePoints(popupPoints, 0),
+          reversePoints(targetPoints, 0),
+        ];
       }
 
       // >>>>>>>>>> Left & Right
@@ -159,18 +193,22 @@ export default function useAlign(
         popupPoints[1] === 'l' &&
         nextPopupRight > clientWidth
       ) {
-        const measureNextOffsetX =
-          targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
+        nextOffsetX = targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
 
-        nextOffsetX = measureNextOffsetX;
+        nextAlignInfo.points = [
+          reversePoints(popupPoints, 1),
+          reversePoints(targetPoints, 1),
+        ];
       }
 
       // Left to Right
       if (needAdjustX && popupPoints[1] === 'r' && nextPopupX < 0) {
-        const measureNextOffsetX =
-          targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
+        nextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
 
-        nextOffsetX = measureNextOffsetX;
+        nextAlignInfo.points = [
+          reversePoints(popupPoints, 1),
+          reversePoints(targetPoints, 1),
+        ];
       }
 
       // >>>>> Shift
@@ -204,6 +242,7 @@ export default function useAlign(
         offsetY: nextOffsetY / scaleY,
         scaleX,
         scaleY,
+        align: nextAlignInfo,
       });
     }
   });
@@ -233,6 +272,7 @@ export default function useAlign(
     offsetInfo.offsetY,
     offsetInfo.scaleX,
     offsetInfo.scaleY,
+    offsetInfo.align,
     triggerAlign,
   ];
 }

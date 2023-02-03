@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
@@ -5,8 +6,9 @@ import * as React from 'react';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
 import useWatch from './hooks/useWatch';
-import type { ActionType, BuildInPlacements } from './interface';
+import type { ActionType, AlignType, BuildInPlacements } from './interface';
 import Popup from './Popup';
+import { getAlignPopupClassName } from './util';
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
@@ -17,17 +19,14 @@ export interface TriggerProps {
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
-  // getPopupClassNameFromAlign?: (align: AlignType) => string;
+
   // onPopupVisibleChange?: (visible: boolean) => void;
   // onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
   // afterPopupVisibleChange?: (visible: boolean) => void;
-  popup: React.ReactNode | (() => React.ReactNode);
-  popupStyle?: React.CSSProperties;
   prefixCls?: string;
-  popupClassName?: string;
+
   // className?: string;
-  popupPlacement?: string;
-  builtinPlacements?: BuildInPlacements;
+
   mouseEnterDelay?: number;
   mouseLeaveDelay?: number;
   zIndex?: number;
@@ -41,12 +40,22 @@ export interface TriggerProps {
   // maskClosable?: boolean;
   // onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
   // popupAlign?: AlignType;
-  popupVisible?: boolean;
-  defaultPopupVisible?: boolean;
+
   // autoDestroy?: boolean;
 
   stretch?: string;
-  // alignPoint?: boolean; // Maybe we can support user pass position in the future
+
+  // ==================== Popup ====================
+  popup: React.ReactNode | (() => React.ReactNode);
+  popupVisible?: boolean;
+  defaultPopupVisible?: boolean;
+  popupPlacement?: string;
+  builtinPlacements?: BuildInPlacements;
+  popupClassName?: string;
+  popupStyle?: React.CSSProperties;
+  getPopupClassNameFromAlign?: (align: AlignType) => string;
+
+  alignPoint?: boolean; // Maybe we can support user pass position in the future
 
   // /** Set popup motion. You can ref `rc-motion` for more info. */
   // popupMotion?: CSSMotionProps;
@@ -74,7 +83,7 @@ export interface TriggerProps {
   // mobile?: MobileConfig;
 }
 
-const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
+const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   const {
     prefixCls = 'rc-trigger-popup',
     children,
@@ -100,6 +109,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     builtinPlacements,
     zIndex,
     stretch,
+    getPopupClassNameFromAlign,
+
+    alignPoint,
   } = props;
 
   // =========================== Popup ============================
@@ -174,14 +186,31 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   React.useEffect(() => clearDelay, []);
 
   // =========================== Align ============================
-  const [ready, offsetX, offsetY, scaleX, scaleY, onAlign] = useAlign(
-    popupEle,
-    targetEle,
-    popupPlacement,
-    builtinPlacements,
-  );
+  const [ready, offsetX, offsetY, scaleX, scaleY, alignInfo, onAlign] =
+    useAlign(popupEle, targetEle, popupPlacement, builtinPlacements);
 
   useWatch(mergedOpen, targetEle, popupEle, onAlign);
+
+  const alignedClassName = React.useMemo(() => {
+    const baseClassName = getAlignPopupClassName(
+      builtinPlacements,
+      prefixCls,
+      alignInfo,
+      alignPoint,
+    );
+
+    return classNames(baseClassName, getPopupClassNameFromAlign?.(alignInfo));
+  }, [
+    alignInfo,
+    getPopupClassNameFromAlign,
+    builtinPlacements,
+    prefixCls,
+    alignPoint,
+  ]);
+
+  React.useImperativeHandle(ref, () => ({
+    forceAlign: onAlign,
+  }));
 
   // ========================== Stretch ===========================
   const [targetWidth, setTargetWidth] = React.useState(0);
@@ -293,7 +322,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         prefixCls={prefixCls}
         open={mergedOpen}
         popup={popup}
-        className={popupClassName}
+        className={classNames(popupClassName, alignedClassName)}
         style={popupStyle}
         target={targetEle}
         getPopupContainer={getPopupContainer}

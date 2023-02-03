@@ -98,7 +98,6 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     } else if (stretch.includes('minWidth') && targetWidth) {
       stretchStyle.minWidth = targetWidth;
     }
-    console.log('????', stretch, stretchStyle);
   }
 
   return (
