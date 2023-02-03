@@ -27,11 +27,8 @@ export interface TriggerProps {
 
   // className?: string;
 
-  mouseEnterDelay?: number;
-  mouseLeaveDelay?: number;
   zIndex?: number;
-  // focusDelay?: number;
-  // blurDelay?: number;
+
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
   // getDocument?: (element?: HTMLElement) => HTMLDocument;
   // forceRender?: boolean;
@@ -44,6 +41,13 @@ export interface TriggerProps {
   // autoDestroy?: boolean;
 
   stretch?: string;
+
+  // ==================== Delay ====================
+  mouseEnterDelay?: number;
+  mouseLeaveDelay?: number;
+
+  focusDelay?: number;
+  blurDelay?: number;
 
   // ==================== Popup ====================
   popup: React.ReactNode | (() => React.ReactNode);
@@ -93,12 +97,16 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     showAction,
     hideAction,
 
-    mouseEnterDelay,
-    mouseLeaveDelay = 0.1,
-
     // Open
     popupVisible,
     defaultPopupVisible,
+
+    // Delay
+    mouseEnterDelay,
+    mouseLeaveDelay = 0.1,
+
+    focusDelay,
+    blurDelay,
 
     // Popup
     popup,
@@ -300,11 +308,11 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   // ======================= Action: Focus ========================
   if (showActions.has('focus')) {
-    wrapperAction('onFocus', true);
+    wrapperAction('onFocus', true, focusDelay);
   }
 
   if (hideActions.has('focus')) {
-    wrapperAction('onBlur', false);
+    wrapperAction('onBlur', false, blurDelay);
   }
 
   // =========================== Render ===========================
