@@ -3,6 +3,8 @@ import useEvent from 'rc-util/lib/hooks/useEvent';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import * as React from 'react';
 import useAction from './hooks/useAction';
+import useAlign from './hooks/useAlign';
+import useWatch from './hooks/useWatch';
 import type { ActionType, BuildInPlacements } from './interface';
 import Popup from './Popup';
 
@@ -101,7 +103,13 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   } = props;
 
   // =========================== Popup ============================
-  const popupRef = React.useRef<HTMLDivElement>();
+  const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
+
+  const setPopupRef = React.useCallback((node: HTMLDivElement) => {
+    if (node instanceof HTMLElement) {
+      setPopupEle(node);
+    }
+  }, []);
 
   // =========================== Target ===========================
   // Use state to control here since `useRef` update not trigger render
@@ -112,6 +120,11 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
       setTargetEle(node);
     }
   }, []);
+
+  const onTargetResize = (_: object, ele: HTMLElement) => {
+    const targetReact = ele.getBoundingClientRect();
+    console.log('>>>', targetReact);
+  };
 
   // ========================== Children ==========================
   const child = React.Children.only(children) as React.ReactElement;
@@ -246,6 +259,16 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
     wrapperAction('onBlur', false);
   }
 
+  // =========================== Align ============================
+  const [ready, offsetX, offsetY, onAlign] = useAlign(
+    popupEle,
+    targetEle,
+    popupPlacement,
+    builtinPlacements,
+  );
+
+  useWatch(mergedOpen, targetEle, popupEle, onAlign);
+
   // =========================== Render ===========================
   // Child Node
   const triggerNode = React.cloneElement(child, {
@@ -257,7 +280,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
   return (
     <>
       <Popup
-        ref={popupRef}
+        ref={setPopupRef}
         prefixCls={prefixCls}
         open={mergedOpen}
         popup={popup}
@@ -267,12 +290,20 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props) => {
         getPopupContainer={getPopupContainer}
         onMouseEnter={onPopupMouseEnter}
         onMouseLeave={onPopupMouseLeave}
-        placement={popupPlacement}
-        builtinPlacements={builtinPlacements}
         zIndex={zIndex}
-        stretch={stretch}
+        // Align
+        ready={ready}
+        offsetX={offsetX}
+        offsetY={offsetY}
+        onAlign={onAlign}
       />
-      <ResizeObserver ref={setTargetRef}>{triggerNode}</ResizeObserver>
+      <ResizeObserver
+        disabled={!mergedOpen && !stretch}
+        ref={setTargetRef}
+        onResize={onTargetResize}
+      >
+        {triggerNode}
+      </ResizeObserver>
     </>
   );
 });

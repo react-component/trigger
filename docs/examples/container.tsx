@@ -141,6 +141,7 @@ export default () => {
                 paddingBlock: 30,
                 paddingInline: 70,
                 opacity: 0.9,
+                transform: 'scale(0.6)',
               }}
             >
               Target
