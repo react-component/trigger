@@ -27,6 +27,7 @@ export interface TriggerRef {
 // Seems this can be auto
 // getDocument?: (element?: HTMLElement) => Document;
 
+// New version will not wrap popup with `rc-trigger-popup-content` when multiple children
 
 export interface TriggerProps {
   children: React.ReactElement;
@@ -291,7 +292,13 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     scaleY,
     alignInfo,
     onAlign,
-  ] = useAlign(popupEle, targetEle, popupPlacement, builtinPlacements);
+  ] = useAlign(
+    popupEle,
+    targetEle,
+    popupPlacement,
+    builtinPlacements,
+    popupAlign,
+  );
 
   const triggerAlign = useEvent(() => {
     if (!inMotion) {
@@ -376,7 +383,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   // ======================= Action: Click ========================
   const clickToShow = showActions.has('click');
-  const clickToHide = hideActions.has('click');
+  const clickToHide =
+    hideActions.has('click') || hideActions.has('contextMenu');
 
   if (clickToShow || clickToHide) {
     cloneProps.onClick = (...args: any[]) => {
@@ -438,6 +446,17 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   if (hideActions.has('focus')) {
     wrapperAction('onBlur', false, blurDelay);
+  }
+
+  // ==================== Action: ContextMenu =====================
+  if (showActions.has('contextMenu')) {
+    cloneProps.onContextMenu = (event: MouseEvent, ...args: any[]) => {
+      triggerOpen(true);
+      event.preventDefault();
+
+      // Pass to origin
+      originChildProps.onContextMenu?.(event, ...args);
+    };
   }
 
   // ========================= ClassName ==========================

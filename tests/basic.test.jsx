@@ -48,47 +48,29 @@ describe('Trigger.Basic', () => {
       );
     });
 
-    it('wrapper children with div when multiple children', () => {
-      const { container } = render(
-        <Trigger
-          action={['click']}
-          popupAlign={placementAlignMap.left}
-          popup={[<div key={0} />, <div key={1} />]}
-        >
-          <div className="target">click</div>
-        </Trigger>,
-      );
-
-      trigger(container, '.target');
-
-      expect(
-        document.querySelectorAll('.rc-trigger-popup-content').length,
-      ).toBeTruthy();
-    });
-
     it('can change', () => {
       function getPopupContainer(node) {
         return node.parentNode;
       }
 
       const { container } = render(
-        <Trigger
-          action={['click']}
-          getPopupContainer={getPopupContainer}
-          popupAlign={placementAlignMap.left}
-          popup={<strong className="x-content">tooltip2</strong>}
-        >
-          <div className="target">click</div>
-        </Trigger>,
+        <div className="holder">
+          <Trigger
+            action={['click']}
+            getPopupContainer={getPopupContainer}
+            popupAlign={placementAlignMap.left}
+            popup={<strong className="x-content">tooltip2</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>
+        </div>,
         document.createElement('div'),
       );
 
       trigger(container, '.target');
 
       const popupDomNode = document.querySelector('.rc-trigger-popup');
-      expect(popupDomNode.parentNode.parentNode.parentNode).toBeInstanceOf(
-        HTMLDivElement,
-      );
+      expect(popupDomNode.parentNode).toBe(container.querySelector('.holder'));
     });
   });
 
@@ -166,12 +148,7 @@ describe('Trigger.Basic', () => {
       trigger(container, '.target', 'contextMenu');
       expect(isPopupHidden()).toBeFalsy();
 
-      act(() => {
-        triggerRef.current.onDocumentClick({
-          target: container.querySelector('.target'),
-        });
-        jest.runAllTimers();
-      });
+      fireEvent.click(document.querySelector('.target'));
 
       expect(isPopupHidden()).toBeTruthy();
     });

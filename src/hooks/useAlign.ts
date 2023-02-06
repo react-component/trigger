@@ -9,6 +9,10 @@ import { getWin } from '../util';
 
 type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
 
+function toNum(num: number) {
+  return Number.isNaN(num) ? 1 : num;
+}
+
 function splitPoints(points: string = ''): Points {
   return [points[0] as any, points[1] as any];
 }
@@ -125,12 +129,16 @@ export default function useAlign(
       popupElement.style.top = originTop;
 
       // Calculate scale
-      const scaleX = Math.round((popupWidth / parseFloat(width)) * 1000) / 1000;
-      const scaleY =
-        Math.round((popupHeight / parseFloat(height)) * 1000) / 1000;
+      const scaleX = toNum(
+        Math.round((popupWidth / parseFloat(width)) * 1000) / 1000,
+      );
+      const scaleY = toNum(
+        Math.round((popupHeight / parseFloat(height)) * 1000) / 1000,
+      );
 
       // Placement
-      const placementInfo: AlignType = builtinPlacements[placement] || popupAlign || {};
+      const placementInfo: AlignType =
+        builtinPlacements[placement] || popupAlign || {};
       const [popupPoint, targetPoint] = placementInfo.points || [];
       const targetPoints = splitPoints(targetPoint);
       const popupPoints = splitPoints(popupPoint);
