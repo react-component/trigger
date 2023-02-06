@@ -277,18 +277,12 @@ describe('Trigger.Basic', () => {
     });
 
     it('render at first time when forceRender=true', () => {
-      const triggerRef = React.createRef();
-      class Test extends React.Component {
-        render() {
-          return (
-            <Trigger ref={triggerRef} forceRender popup={<span>Hello!</span>}>
-              <span>Hey!</span>
-            </Trigger>
-          );
-        }
-      }
-      render(<Test />);
-      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
+      render(
+        <Trigger forceRender popup={<span>Hello!</span>}>
+          <span>Hey!</span>
+        </Trigger>,
+      );
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
     });
   });
 
