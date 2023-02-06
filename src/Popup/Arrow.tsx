@@ -15,8 +15,6 @@ export default function Arrow(props: ArrowProps) {
 
   const alignStyle: React.CSSProperties = {
     position: 'absolute',
-    // left: arrowX,
-    // top: arrowY,
   };
 
   const popupPoints = align.points[0];
@@ -25,8 +23,6 @@ export default function Arrow(props: ArrowProps) {
   const popupLR = popupPoints[1];
   const targetTB = targetPoints[0];
   const targetLR = targetPoints[1];
-
-  console.log('~~~>', align.points, arrowX, arrowY);
 
   // Top & Bottom
   if (popupTB === targetTB || !['t', 'b'].includes(popupTB)) {
