@@ -4,10 +4,12 @@ import type { AlignType } from '../interface';
 export interface ArrowProps {
   prefixCls: string;
   align: AlignType;
+  arrowX?: number;
+  arrowY?: number;
 }
 
 export default function Arrow(props: ArrowProps) {
-  const { prefixCls, align } = props;
+  const { prefixCls, align, arrowX = 0, arrowY = 0 } = props;
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
@@ -16,6 +18,9 @@ export default function Arrow(props: ArrowProps) {
   const alignStyle: React.CSSProperties = {
     position: 'absolute',
   };
+
+  // alignStyle.left = arrowX;
+  // alignStyle.top = arrowY;
 
   // Top & Bottom
   switch (points[0]) {
@@ -28,7 +33,7 @@ export default function Arrow(props: ArrowProps) {
       break;
 
     default:
-      alignStyle.top = '50%';
+      alignStyle.top = arrowY;
       break;
   }
 
@@ -43,7 +48,7 @@ export default function Arrow(props: ArrowProps) {
       break;
 
     default:
-      alignStyle.left = '50%';
+      alignStyle.left = arrowX;
       break;
   }
 

@@ -52,7 +52,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'right';
+const popupPlacement = 'top';
 
 export default () => {
   console.log('Demo Render!');
@@ -64,7 +64,7 @@ export default () => {
   const scrollRef = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
-    scrollRef.current.scrollLeft = window.innerWidth / 2;
+    scrollRef.current.scrollLeft = window.innerWidth;
     scrollRef.current.scrollTop = window.innerHeight / 2;
   }, []);
 
@@ -136,7 +136,7 @@ export default () => {
                 Popup
               </div>
             }
-            popupStyle={{ border: '5px solid red' }}
+            popupStyle={{ boxShadow: '0 0 5px red' }}
             popupVisible
             getPopupContainer={() => popHolderRef.current}
             popupPlacement={popupPlacement}

@@ -26,6 +26,8 @@ export interface PopupProps {
   // Arrow
   align?: AlignType;
   arrow?: boolean;
+  arrowX?: number;
+  arrowY?: number;
 
   // Open
   open: boolean;
@@ -80,6 +82,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     // Arrow
     arrow,
     align,
+    arrowX,
+    arrowY,
 
     // Motion
     motion,
@@ -205,7 +209,14 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                 onMouseLeave={onMouseLeave}
                 onClick={onClick}
               >
-                {arrow && <Arrow prefixCls={prefixCls} align={align} />}
+                {arrow && (
+                  <Arrow
+                    prefixCls={prefixCls}
+                    align={align}
+                    arrowX={arrowX}
+                    arrowY={arrowY}
+                  />
+                )}
                 {childNode}
               </div>
             );

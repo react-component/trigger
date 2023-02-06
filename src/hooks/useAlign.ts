@@ -68,6 +68,8 @@ export default function useAlign(
   ready: boolean,
   offsetX: number,
   offsetY: number,
+  arrowX: number,
+  arrowY: number,
   scaleX: number,
   scaleY: number,
   align: AlignType,
@@ -77,6 +79,8 @@ export default function useAlign(
     ready: boolean;
     offsetX: number;
     offsetY: number;
+    arrowX: number;
+    arrowY: number;
     scaleX: number;
     scaleY: number;
     align: AlignType;
@@ -84,6 +88,8 @@ export default function useAlign(
     ready: false,
     offsetX: 0,
     offsetY: 0,
+    arrowX: 0,
+    arrowY: 0,
     scaleX: 1,
     scaleY: 1,
     align: builtinPlacements[placement] || {},
@@ -257,10 +263,25 @@ export default function useAlign(
         }
       }
 
+      // Arrow center align
+      const popupLeft = popupRect.x + nextOffsetX;
+      const popupRight = popupLeft + popupWidth;
+      const targetLeft = targetRect.x;
+      const targetRight = targetLeft + targetRect.width;
+
+      const maxLeft = Math.max(popupLeft, targetLeft);
+      const minRight = Math.min(popupRight, targetRight);
+
+      const xCenter = (maxLeft + minRight) / 2;
+      const nextArrowX = xCenter - popupLeft;
+      console.log('>>>>', nextArrowX);
+
       setOffsetInfo({
         ready: true,
         offsetX: nextOffsetX / scaleX,
         offsetY: nextOffsetY / scaleY,
+        arrowX: nextArrowX / scaleX,
+        arrowY: nextArrowX / scaleY,
         scaleX,
         scaleY,
         align: nextAlignInfo,
@@ -291,6 +312,8 @@ export default function useAlign(
     offsetInfo.ready,
     offsetInfo.offsetX,
     offsetInfo.offsetY,
+    offsetInfo.arrowX,
+    offsetInfo.arrowY,
     offsetInfo.scaleX,
     offsetInfo.scaleY,
     offsetInfo.align,

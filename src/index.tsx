@@ -280,7 +280,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     React.useState<VoidFunction>(null);
 
   // =========================== Align ============================
-  const [ready, offsetX, offsetY, scaleX, scaleY, alignInfo, onAlign] =
+  const [ready, offsetX, offsetY, arrowX, arrowY, scaleX, scaleY, alignInfo, onAlign] =
     useAlign(popupEle, targetEle, popupPlacement, builtinPlacements);
 
   const triggerAlign = useEvent(() => {
@@ -474,6 +474,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         ready={ready}
         offsetX={offsetX}
         offsetY={offsetY}
+        arrowX={arrowX}
+        arrowY={arrowY}
         onAlign={triggerAlign}
         // Stretch
         stretch={stretch}
