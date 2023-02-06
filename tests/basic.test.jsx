@@ -43,7 +43,7 @@ describe('Trigger.Basic', () => {
       trigger(container, '.target');
 
       const popupDomNode = document.querySelector('.rc-trigger-popup');
-      expect(popupDomNode.parentNode.parentNode.parentNode).toBeInstanceOf(
+      expect(popupDomNode.parentNode.parentNode).toBeInstanceOf(
         HTMLBodyElement,
       );
     });
@@ -637,11 +637,9 @@ describe('Trigger.Basic', () => {
 
   // https://github.com/ant-design/ant-design/issues/21770
   it('support popupStyle, such as zIndex', () => {
-    const triggerRef = createRef();
     const style = { color: 'red', zIndex: 9999, top: 100, opacity: 0.93 };
     render(
       <Trigger
-        ref={triggerRef}
         popupVisible
         popupStyle={style}
         popup={<strong className="x-content">tooltip2</strong>}
@@ -650,11 +648,10 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    const popupDomNode = triggerRef.current.getPopupDomNode();
-    expect(popupDomNode.style.zIndex).toBe(style.zIndex.toString());
-    expect(popupDomNode.style.color).toBe(style.color);
-    expect(popupDomNode.style.top).toBe(`${style.top}px`);
-    expect(popupDomNode.style.opacity).toBe(style.opacity.toString());
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      ...style,
+      top: '100px',
+    });
   });
 
   describe('getContainer', () => {
