@@ -1,3 +1,4 @@
+import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type {
@@ -101,7 +102,7 @@ export default function useAlign(
   });
   const alignCountRef = React.useRef(0);
 
-  const onAlign = () => {
+  const onAlign = useEvent(() => {
     if (popupEle && target) {
       const popupElement = popupEle;
 
@@ -295,6 +296,7 @@ export default function useAlign(
       const yCenter = (maxTop + minBottom) / 2;
       const nextArrowY = yCenter - popupTop;
 
+
       setOffsetInfo({
         ready: true,
         offsetX: nextOffsetX / scaleX,
@@ -306,7 +308,7 @@ export default function useAlign(
         align: nextAlignInfo,
       });
     }
-  };
+  });
 
   const triggerAlign = () => {
     alignCountRef.current += 1;
