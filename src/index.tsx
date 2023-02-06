@@ -153,7 +153,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     popupStyle,
 
     popupPlacement,
-    builtinPlacements,
+    builtinPlacements = {},
     zIndex,
     stretch,
     getPopupClassNameFromAlign,
@@ -280,8 +280,17 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     React.useState<VoidFunction>(null);
 
   // =========================== Align ============================
-  const [ready, offsetX, offsetY, arrowX, arrowY, scaleX, scaleY, alignInfo, onAlign] =
-    useAlign(popupEle, targetEle, popupPlacement, builtinPlacements);
+  const [
+    ready,
+    offsetX,
+    offsetY,
+    arrowX,
+    arrowY,
+    scaleX,
+    scaleY,
+    alignInfo,
+    onAlign,
+  ] = useAlign(popupEle, targetEle, popupPlacement, builtinPlacements);
 
   const triggerAlign = useEvent(() => {
     if (!inMotion) {
@@ -430,12 +439,16 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     wrapperAction('onBlur', false, blurDelay);
   }
 
+  // ========================= ClassName ==========================
+  if (className) {
+    cloneProps.className = classNames(originChildProps.className, className);
+  }
+
   // =========================== Render ===========================
   // Child Node
   const triggerNode = React.cloneElement(child, {
     ...originChildProps,
     ...cloneProps,
-    className: classNames(originChildProps.className, className),
   });
 
   // Render
