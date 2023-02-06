@@ -1,3 +1,4 @@
+import * as React from 'react';
 import type { AlignType } from '../interface';
 
 export interface ArrowProps {
@@ -7,6 +8,8 @@ export interface ArrowProps {
 
 export default function Arrow(props: ArrowProps) {
   const { prefixCls, align } = props;
+
+  const arrowRef = React.useRef<HTMLDivElement>();
 
   const points = align.points[0];
 
@@ -44,5 +47,7 @@ export default function Arrow(props: ArrowProps) {
       break;
   }
 
-  return <div className={`${prefixCls}-arrow`} style={alignStyle} />;
+  return (
+    <div ref={arrowRef} className={`${prefixCls}-arrow`} style={alignStyle} />
+  );
 }

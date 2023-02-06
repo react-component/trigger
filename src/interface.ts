@@ -103,8 +103,10 @@ export interface AlignType {
    * If adjustY field is true, will adjust source node in y direction if source node is invisible.
    */
   overflow?: {
-    adjustX?: boolean | 'shift' | number;
-    adjustY?: boolean | 'shift' | number;
+    adjustX?: boolean | number;
+    adjustY?: boolean | number;
+    shiftX?: boolean | number;
+    shiftY?: boolean | number;
   };
   /**
    * Whether use css right instead of left to position

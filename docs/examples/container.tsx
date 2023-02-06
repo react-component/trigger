@@ -21,7 +21,7 @@ const builtinPlacements = {
   top: {
     points: ['bc', 'tc'],
     overflow: {
-      adjustX: 'shift' as const,
+      shiftX: 50,
       adjustY: true,
     },
     offset: [0, -10],
@@ -29,7 +29,7 @@ const builtinPlacements = {
   bottom: {
     points: ['tc', 'bc'],
     overflow: {
-      adjustX: 'shift' as const,
+      shiftX: true,
       adjustY: true,
     },
     offset: [0, 10],
@@ -38,7 +38,7 @@ const builtinPlacements = {
     points: ['cr', 'cl'],
     overflow: {
       adjustX: true,
-      adjustY: 'shift' as const,
+      shiftY: true,
     },
     offset: [-10, 0],
   },
@@ -46,7 +46,7 @@ const builtinPlacements = {
     points: ['cl', 'cr'],
     overflow: {
       adjustX: true,
-      adjustY: 'shift' as const,
+      shiftY: true,
     },
     offset: [10, 0],
   },
@@ -107,7 +107,7 @@ export default () => {
           style={{
             height: '200vh',
             paddingTop: `100vh`,
-            width: 'calc(200vw)',
+            width: 'calc(300vw)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'start',

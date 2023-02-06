@@ -32,8 +32,10 @@ export default function useWatch(
       const targetScrollList = collectScroller(targetElement);
       const popupScrollList = collectScroller(popupElement);
 
+      const win = getWin(popupElement);
+
       const mergedList = new Set([
-        getWin(popupElement),
+        win,
         ...targetScrollList,
         ...popupScrollList,
       ]);
@@ -46,12 +48,15 @@ export default function useWatch(
         scroller.addEventListener('scroll', notifyScroll, { passive: true });
       });
 
+      win.addEventListener('resize', notifyScroll, { passive: true });
+
       // First time always do align
       onAlign();
 
       return () => {
         mergedList.forEach((scroller) => {
           scroller.removeEventListener('scroll', notifyScroll);
+          win.removeEventListener('resize', notifyScroll);
         });
       };
     }

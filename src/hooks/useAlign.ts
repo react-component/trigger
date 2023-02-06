@@ -151,7 +151,7 @@ export default function useAlign(
       const popupAlignPointBR = getAlignPoint(popupRect, ['b', 'r']);
 
       const overflow = placementInfo.overflow || {};
-      const { adjustX, adjustY } = overflow;
+      const { adjustX, adjustY, shiftX, shiftY } = overflow;
 
       // >>>>>>>>>> Top & Bottom
       const nextPopupY = popupRect.y + nextOffsetY;
@@ -215,19 +215,29 @@ export default function useAlign(
       }
 
       // >>>>> Shift
-      if (adjustX === 'shift') {
+      const numShiftX = shiftX === true ? 0 : shiftX;
+      if (typeof numShiftX === 'number') {
         // Left
         if (nextPopupX < 0) {
           nextOffsetX -= nextPopupX;
+
+          if (targetRect.x + targetRect.width < numShiftX) {
+            nextOffsetX += targetRect.x + targetRect.width - numShiftX;
+          }
         }
 
         // Right
         if (nextPopupRight > clientWidth) {
           nextOffsetX -= nextPopupRight - clientWidth;
+
+          if (targetRect.x > clientWidth - numShiftX) {
+            nextOffsetX += targetRect.x - clientWidth + numShiftX;
+          }
         }
       }
 
-      if (adjustY === 'shift') {
+      const numShiftY = shiftY === true ? 0 : shiftY;
+      if (numShiftY >= 0) {
         // Top
         if (nextPopupY < 0) {
           nextOffsetY -= nextPopupY;
