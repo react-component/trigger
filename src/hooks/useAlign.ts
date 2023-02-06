@@ -64,6 +64,7 @@ export default function useAlign(
   target: HTMLElement,
   placement: string,
   builtinPlacements: any,
+  popupAlign?: AlignType,
 ): [
   ready: boolean,
   offsetX: number,
@@ -129,7 +130,7 @@ export default function useAlign(
         Math.round((popupHeight / parseFloat(height)) * 1000) / 1000;
 
       // Placement
-      const placementInfo: AlignType = builtinPlacements[placement] || {};
+      const placementInfo: AlignType = builtinPlacements[placement] || popupAlign || {};
       const [popupPoint, targetPoint] = placementInfo.points || [];
       const targetPoints = splitPoints(targetPoint);
       const popupPoints = splitPoints(popupPoint);

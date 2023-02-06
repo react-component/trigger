@@ -27,7 +27,6 @@ export interface TriggerRef {
 // Seems this can be auto
 // getDocument?: (element?: HTMLElement) => Document;
 
-// popupAlign?: AlignType;
 
 export interface TriggerProps {
   children: React.ReactElement;
@@ -87,6 +86,7 @@ export interface TriggerProps {
   popup: React.ReactNode | (() => React.ReactNode);
   popupPlacement?: string;
   builtinPlacements?: BuildInPlacements;
+  popupAlign?: AlignType;
   popupClassName?: string;
   popupStyle?: React.CSSProperties;
   getPopupClassNameFromAlign?: (align: AlignType) => string;
@@ -154,6 +154,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
     popupPlacement,
     builtinPlacements = {},
+    popupAlign,
     zIndex,
     stretch,
     getPopupClassNameFromAlign,

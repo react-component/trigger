@@ -605,10 +605,8 @@ describe('Trigger.Basic', () => {
   });
 
   it('Popup with mouseDown prevent', () => {
-    const triggerRef = createRef();
     const { container } = render(
       <Trigger
-        ref={triggerRef}
         action={['click']}
         popupAlign={placementAlignMap.left}
         popup={
@@ -632,9 +630,8 @@ describe('Trigger.Basic', () => {
     fireEvent.click(container.querySelector('h1'));
     expect(isPopupHidden()).toBeFalsy();
 
-    triggerRef.current.onDocumentClick({
-      target: document.querySelector('button'),
-    });
+    fireEvent.click(document.querySelector('button'));
+
     expect(isPopupHidden()).toBeFalsy();
   });
 
