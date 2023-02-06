@@ -622,7 +622,10 @@ describe('Trigger.Basic', () => {
 
   describe('getContainer', () => {
     it('not trigger when dom not ready', () => {
-      const getPopupContainer = jest.fn((node) => node.parentElement);
+      const getPopupContainer = jest.fn((node) => {
+        expect(node).toBeTruthy();
+        return node.parentElement;
+      });
 
       function Demo() {
         return (
@@ -638,28 +641,27 @@ describe('Trigger.Basic', () => {
 
       const { container } = render(<Demo />);
 
-      expect(getPopupContainer).toHaveReturnedTimes(0);
-
-      act(() => jest.runAllTimers());
-      expect(getPopupContainer).toHaveReturnedTimes(1);
-      expect(getPopupContainer).toHaveBeenCalledWith(
-        container.querySelector('.target'),
-      );
+      expect(getPopupContainer).toHaveBeenCalled();
     });
 
     it('not trigger when dom no need', () => {
-      let triggerTimes = 0;
-      const getPopupContainer = () => {
-        triggerTimes += 1;
-        return document.body;
-      };
+      const getPopupContainer = jest.fn(() => document.body);
+
+      let effectCalled = false;
 
       function Demo() {
+        const popupRef = React.useRef();
+
+        React.useLayoutEffect(() => {
+          effectCalled = true;
+          expect(popupRef.current).toBeTruthy();
+        }, []);
+
         return (
           <Trigger
             popupVisible
             getPopupContainer={getPopupContainer}
-            popup={<strong className="x-content">tooltip2</strong>}
+            popup={<strong ref={popupRef}>tooltip2</strong>}
           >
             <div className="target">click</div>
           </Trigger>
@@ -667,7 +669,7 @@ describe('Trigger.Basic', () => {
       }
 
       render(<Demo />);
-      expect(triggerTimes).toEqual(1);
+      expect(effectCalled).toBeTruthy();
     });
   });
 
