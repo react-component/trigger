@@ -94,6 +94,9 @@ export interface TriggerProps {
 
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
+  // ==================== Arrow ====================
+  arrow?: boolean;
+
   // ================= Deprecated ==================
   /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
   className?: string;
@@ -158,6 +161,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     alignPoint,
 
     onPopupClick,
+
+    // Arrow
+    arrow,
 
     // Motion
     popupMotion,
@@ -461,6 +467,9 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
         forceRender={forceRender}
         autoDestroy={mergedAutoDestroy}
         getPopupContainer={getPopupContainer}
+        // Arrow
+        align={alignInfo}
+        arrow={arrow}
         // Align
         ready={ready}
         offsetX={offsetX}

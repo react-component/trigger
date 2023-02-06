@@ -6,6 +6,8 @@ import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type { TriggerProps } from '../';
+import type { AlignType } from '../interface';
+import Arrow from './Arrow';
 import Mask from './Mask';
 
 export interface PopupProps {
@@ -20,6 +22,10 @@ export interface PopupProps {
 
   mask?: boolean;
   onVisibleChanged: (visible: boolean) => void;
+
+  // Arrow
+  align?: AlignType;
+  arrow?: boolean;
 
   // Open
   open: boolean;
@@ -70,6 +76,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
     // Mask
     mask,
+
+    // Arrow
+    arrow,
+    align,
 
     // Motion
     motion,
@@ -195,6 +205,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                 onMouseLeave={onMouseLeave}
                 onClick={onClick}
               >
+                {arrow && <Arrow prefixCls={prefixCls} align={align} />}
                 {childNode}
               </div>
             );

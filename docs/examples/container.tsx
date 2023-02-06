@@ -64,7 +64,8 @@ export default () => {
   const scrollRef = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
-    scrollRef.current.scrollLeft = 200;
+    scrollRef.current.scrollLeft = window.innerWidth / 2;
+    scrollRef.current.scrollTop = window.innerHeight / 2;
   }, []);
 
   return (
@@ -113,6 +114,7 @@ export default () => {
           }}
         >
           <Trigger
+            arrow
             forceRender
             action="click"
             popup={
@@ -129,7 +131,7 @@ export default () => {
               </div>
             }
             popupStyle={{ border: '5px solid red' }}
-            // popupVisible
+            popupVisible
             getPopupContainer={() => popHolderRef.current}
             popupPlacement={popupPlacement}
             builtinPlacements={builtinPlacements}
