@@ -180,6 +180,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
     // Private
     getTriggerDOMNode,
+
+    ...restProps
   } = props;
 
   const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
@@ -465,10 +467,37 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   }
 
   // =========================== Render ===========================
-  // Child Node
-  const triggerNode = React.cloneElement(child, {
+  const mergedChildrenProps = {
     ...originChildProps,
     ...cloneProps,
+  };
+
+  // Pass props into cloneProps for nest usage
+  const passedProps: Record<string, any> = {};
+  const passedEventList = [
+    'onContextMenu',
+    'onClick',
+    'onMouseDown',
+    'onTouchStart',
+    'onMouseEnter',
+    'onMouseLeave',
+    'onFocus',
+    'onBlur',
+  ];
+
+  passedEventList.forEach((eventName) => {
+    if (restProps[eventName]) {
+      passedProps[eventName] = (...args: any[]) => {
+        mergedChildrenProps[eventName]?.(...args);
+        restProps[eventName](...args);
+      };
+    }
+  });
+
+  // Child Node
+  const triggerNode = React.cloneElement(child, {
+    ...mergedChildrenProps,
+    ...passedProps,
   });
 
   // Render
