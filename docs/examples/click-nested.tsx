@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
-import React from 'react';
 import Trigger from 'rc-trigger';
+import React from 'react';
 import '../../assets/index.less';
 
 const builtinPlacements = {

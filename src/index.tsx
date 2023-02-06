@@ -2,9 +2,12 @@ import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
+import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import * as React from 'react';
+import type { TriggerContextProps } from './context';
+import TriggerContext from './context';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
 import useWatch from './hooks/useWatch';
@@ -186,13 +189,30 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
 
+  // ========================== Context ===========================
+  const subPopupElements = React.useRef<Record<string, HTMLElement>>({});
+
+  const parentContext = React.useContext(TriggerContext);
+  const context = React.useMemo<TriggerContextProps>(() => {
+    return {
+      registerSubPopup: (id, subPopupEle) => {
+        subPopupElements.current[id] = subPopupEle;
+
+        parentContext?.registerSubPopup(id, subPopupEle);
+      },
+    };
+  }, [parentContext]);
+
   // =========================== Popup ============================
+  const id = useId();
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
 
   const setPopupRef = React.useCallback((node: HTMLDivElement) => {
     if (node instanceof HTMLElement) {
       setPopupEle(node);
     }
+
+    parentContext?.registerSubPopup(id, node);
   }, []);
 
   // =========================== Target ===========================
@@ -216,7 +236,10 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
       childDOM?.contains(ele) ||
       ele === childDOM ||
       popupEle?.contains(ele) ||
-      ele === popupEle
+      ele === popupEle ||
+      Object.values(subPopupElements.current).some(
+        (subPopupEle) => subPopupEle.contains(ele) || ele === subPopupEle,
+      )
     );
   });
 
@@ -503,47 +526,49 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   // Render
   return (
     <>
-      <Popup
-        ref={setPopupRef}
-        prefixCls={prefixCls}
-        popup={popup}
-        className={classNames(popupClassName, alignedClassName)}
-        style={popupStyle}
-        target={targetEle}
-        onMouseEnter={onPopupMouseEnter}
-        onMouseLeave={onPopupMouseLeave}
-        zIndex={zIndex}
-        // Open
-        open={mergedOpen}
-        keepDom={inMotion}
-        // Click
-        onClick={onPopupClick}
-        // Mask
-        mask={mask}
-        // Motion
-        motion={mergePopupMotion}
-        maskMotion={mergeMaskMotion}
-        onVisibleChanged={onVisibleChanged}
-        onPrepare={onPrepare}
-        // Portal
-        forceRender={forceRender}
-        autoDestroy={mergedAutoDestroy}
-        getPopupContainer={getPopupContainer}
-        // Arrow
-        align={alignInfo}
-        arrow={arrow}
-        // Align
-        ready={ready}
-        offsetX={offsetX}
-        offsetY={offsetY}
-        arrowX={arrowX}
-        arrowY={arrowY}
-        onAlign={triggerAlign}
-        // Stretch
-        stretch={stretch}
-        targetWidth={targetWidth / scaleX}
-        targetHeight={targetHeight / scaleY}
-      />
+      <TriggerContext.Provider value={context}>
+        <Popup
+          ref={setPopupRef}
+          prefixCls={prefixCls}
+          popup={popup}
+          className={classNames(popupClassName, alignedClassName)}
+          style={popupStyle}
+          target={targetEle}
+          onMouseEnter={onPopupMouseEnter}
+          onMouseLeave={onPopupMouseLeave}
+          zIndex={zIndex}
+          // Open
+          open={mergedOpen}
+          keepDom={inMotion}
+          // Click
+          onClick={onPopupClick}
+          // Mask
+          mask={mask}
+          // Motion
+          motion={mergePopupMotion}
+          maskMotion={mergeMaskMotion}
+          onVisibleChanged={onVisibleChanged}
+          onPrepare={onPrepare}
+          // Portal
+          forceRender={forceRender}
+          autoDestroy={mergedAutoDestroy}
+          getPopupContainer={getPopupContainer}
+          // Arrow
+          align={alignInfo}
+          arrow={arrow}
+          // Align
+          ready={ready}
+          offsetX={offsetX}
+          offsetY={offsetY}
+          arrowX={arrowX}
+          arrowY={arrowY}
+          onAlign={triggerAlign}
+          // Stretch
+          stretch={stretch}
+          targetWidth={targetWidth / scaleX}
+          targetHeight={targetHeight / scaleY}
+        />
+      </TriggerContext.Provider>
       <ResizeObserver
         disabled={!mergedOpen}
         ref={setTargetRef}
