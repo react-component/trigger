@@ -237,15 +237,23 @@ export default function useAlign(
       }
 
       const numShiftY = shiftY === true ? 0 : shiftY;
-      if (numShiftY >= 0) {
+      if (typeof numShiftY === 'number') {
         // Top
         if (nextPopupY < 0) {
           nextOffsetY -= nextPopupY;
+
+          if (targetRect.y + targetRect.height < numShiftY) {
+            nextOffsetY += targetRect.y + targetRect.height - numShiftY;
+          }
         }
 
         // Bottom
         if (nextPopupBottom > clientHeight) {
           nextOffsetY -= nextPopupBottom - clientHeight;
+
+          if (targetRect.y > clientHeight - numShiftY) {
+            nextOffsetY += targetRect.y - clientHeight + numShiftY;
+          }
         }
       }
 

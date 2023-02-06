@@ -46,13 +46,13 @@ const builtinPlacements = {
     points: ['cl', 'cr'],
     overflow: {
       adjustX: true,
-      shiftY: true,
+      shiftY: 24,
     },
     offset: [10, 0],
   },
 };
 
-const popupPlacement = 'top';
+const popupPlacement = 'right';
 
 export default () => {
   console.log('Demo Render!');
@@ -72,12 +72,18 @@ export default () => {
     <div
       id="demo-root"
       ref={rootRef}
-      style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 50 }}
+      style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 16 }}
     >
       <input
         type="number"
         value={scale}
         onChange={(e) => setScale(e.target.value)}
+        style={{
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          zIndex: 9999,
+        }}
       />
       <div
         id="demo-holder"
