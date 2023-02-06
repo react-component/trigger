@@ -8,6 +8,8 @@ import type {
 } from '../interface';
 import { getWin } from '../util';
 
+type Rect = Record<'x' | 'y' | 'width' | 'height', number>;
+
 type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
 
 function toNum(num: number) {
@@ -18,7 +20,7 @@ function splitPoints(points: string = ''): Points {
   return [points[0] as any, points[1] as any];
 }
 
-function getAlignPoint(rect: DOMRect, points: Points) {
+function getAlignPoint(rect: Rect, points: Points) {
   const topBottom = points[0];
   const leftRight = points[1];
 
@@ -66,7 +68,7 @@ function reversePoints(points: Points, index: number): string {
 
 export default function useAlign(
   popupEle: HTMLElement,
-  target: HTMLElement,
+  target: HTMLElement | [x: number, y: number],
   placement: string,
   builtinPlacements: any,
   popupAlign?: AlignType,
@@ -117,7 +119,14 @@ export default function useAlign(
       popupElement.style.top = '0';
 
       // Calculate align style, we should consider `transform` case
-      const targetRect = target.getBoundingClientRect();
+      const targetRect = Array.isArray(target)
+        ? {
+            x: target[0],
+            y: target[1],
+            width: 0,
+            height: 0,
+          }
+        : target.getBoundingClientRect();
       const popupRect = popupElement.getBoundingClientRect();
       const { width, height } = win.getComputedStyle(popupElement);
       const { clientWidth, clientHeight } = doc.documentElement;
@@ -295,7 +304,6 @@ export default function useAlign(
 
       const yCenter = (maxTop + minBottom) / 2;
       const nextArrowY = yCenter - popupTop;
-
 
       setOffsetInfo({
         ready: true,

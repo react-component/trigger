@@ -307,6 +307,14 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     React.useState<VoidFunction>(null);
 
   // =========================== Align ============================
+  const [mousePos, setMousePos] = React.useState<[x: number, y: number]>([
+    0, 0,
+  ]);
+
+  const setMousePosByEvent = (event: React.MouseEvent) => {
+    setMousePos([event.clientX, event.clientY]);
+  };
+
   const [
     ready,
     offsetX,
@@ -319,7 +327,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     onAlign,
   ] = useAlign(
     popupEle,
-    targetEle,
+    alignPoint ? mousePos : targetEle,
     popupPlacement,
     builtinPlacements,
     popupAlign,
@@ -332,6 +340,10 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   });
 
   useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
+
+  useLayoutEffect(() => {
+    triggerAlign();
+  }, [mousePos]);
 
   const alignedClassName = React.useMemo(() => {
     const baseClassName = getAlignPopupClassName(
@@ -397,12 +409,14 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     eventName: string,
     nextOpen: boolean,
     delay?: number,
+    preEvent?: (event: any) => void,
   ) => {
-    cloneProps[eventName] = (...args: any[]) => {
+    cloneProps[eventName] = (event: any, ...args: any[]) => {
+      preEvent?.(event);
       triggerOpen(nextOpen, delay);
 
       // Pass to origin
-      originChildProps[eventName]?.(...args);
+      originChildProps[eventName]?.(event, ...args);
     };
   };
 
@@ -412,15 +426,19 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     hideActions.has('click') || hideActions.has('contextMenu');
 
   if (clickToShow || clickToHide) {
-    cloneProps.onClick = (...args: any[]) => {
+    cloneProps.onClick = (
+      event: React.MouseEvent<HTMLElement>,
+      ...args: any[]
+    ) => {
       if (openRef.current && clickToHide) {
         triggerOpen(false);
       } else if (!openRef.current && clickToShow) {
+        setMousePosByEvent(event);
         triggerOpen(true);
       }
 
       // Pass to origin
-      originChildProps.onClick?.(...args);
+      originChildProps.onClick?.(event, ...args);
     };
   }
 
@@ -451,10 +469,20 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
   let onPopupMouseLeave: VoidFunction;
 
   if (hoverToShow) {
-    wrapperAction('onMouseEnter', true, mouseEnterDelay);
+    wrapperAction('onMouseEnter', true, mouseEnterDelay, (event) => {
+      setMousePosByEvent(event);
+    });
     onPopupMouseEnter = () => {
       triggerOpen(true, mouseEnterDelay);
     };
+
+    // Align Point
+    if (alignPoint) {
+      cloneProps.onMouseMove = (event: React.MouseEvent) => {
+        setMousePosByEvent(event);
+        originChildProps.onMouseMove?.(event);
+      };
+    }
   }
 
   if (hoverToHide) {
@@ -475,7 +503,8 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
 
   // ==================== Action: ContextMenu =====================
   if (showActions.has('contextMenu')) {
-    cloneProps.onContextMenu = (event: MouseEvent, ...args: any[]) => {
+    cloneProps.onContextMenu = (event: React.MouseEvent, ...args: any[]) => {
+      setMousePosByEvent(event);
       triggerOpen(true);
       event.preventDefault();
 

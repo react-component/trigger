@@ -1,5 +1,5 @@
-import React, { createRef } from 'react';
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import React, { createRef } from 'react';
 import Trigger from '../src';
 import { getMouseEvent } from './util';
 
@@ -50,9 +50,7 @@ describe('Trigger.Point', () => {
     trigger(container, 'click', { pageX: 10, pageY: 20 });
 
     const popup = document.querySelector('.rc-trigger-popup');
-    expect(popup.style).toEqual(
-      expect.objectContaining({ left: '-989px', top: '-979px' }),
-    );
+    expect(popup).toHaveStyle({ left: '-989px', top: '-979px' });
   });
 
   it('hover', () => {
