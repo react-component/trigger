@@ -1,33 +1,41 @@
 /* eslint no-console:0 */
 
-import React from 'react';
 import Trigger from 'rc-trigger';
+import React from 'react';
 import '../../assets/index.less';
 
 const builtinPlacements = {
   left: {
     points: ['cr', 'cl'],
+    offset: [-10, 0],
   },
   right: {
     points: ['cl', 'cr'],
+    offset: [10, 0],
   },
   top: {
     points: ['bc', 'tc'],
+    offset: [0, -10],
   },
   bottom: {
     points: ['tc', 'bc'],
+    offset: [0, 10],
   },
   topLeft: {
     points: ['bl', 'tl'],
+    offset: [0, -10],
   },
   topRight: {
     points: ['br', 'tr'],
+    offset: [0, -10],
   },
   bottomRight: {
     points: ['tr', 'br'],
+    offset: [0, 10],
   },
   bottomLeft: {
     points: ['tl', 'bl'],
+    offset: [0, 10],
   },
 };
 
@@ -353,6 +361,7 @@ class Test extends React.Component<any, TestState> {
             // mouseLeaveDelay={0.1}
             action={Object.keys(state.trigger)}
             builtinPlacements={builtinPlacements}
+            arrow
             popupStyle={{
               border: '1px solid red',
               padding: 10,

@@ -266,22 +266,32 @@ export default function useAlign(
       // Arrow center align
       const popupLeft = popupRect.x + nextOffsetX;
       const popupRight = popupLeft + popupWidth;
+      const popupTop = popupRect.y + nextOffsetY;
+      const popupBottom = popupTop + popupHeight;
+
       const targetLeft = targetRect.x;
       const targetRight = targetLeft + targetRect.width;
+      const targetTop = targetRect.y;
+      const targetBottom = targetTop + targetRect.height;
 
       const maxLeft = Math.max(popupLeft, targetLeft);
       const minRight = Math.min(popupRight, targetRight);
 
       const xCenter = (maxLeft + minRight) / 2;
       const nextArrowX = xCenter - popupLeft;
-      console.log('>>>>', nextArrowX);
+
+      const maxTop = Math.max(popupTop, targetTop);
+      const minBottom = Math.min(popupBottom, targetBottom);
+
+      const yCenter = (maxTop + minBottom) / 2;
+      const nextArrowY = yCenter - popupTop;
 
       setOffsetInfo({
         ready: true,
         offsetX: nextOffsetX / scaleX,
         offsetY: nextOffsetY / scaleY,
         arrowX: nextArrowX / scaleX,
-        arrowY: nextArrowX / scaleY,
+        arrowY: nextArrowY / scaleY,
         scaleX,
         scaleY,
         align: nextAlignInfo,

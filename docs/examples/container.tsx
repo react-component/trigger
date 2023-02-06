@@ -7,9 +7,10 @@ const builtinPlacements = {
   topLeft: {
     points: ['bl', 'tl'],
     overflow: {
-      adjustX: true,
+      shiftX: 50,
       adjustY: true,
     },
+    offset: [0, -50],
   },
   bottomLeft: {
     points: ['tl', 'bl'],
@@ -52,7 +53,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'top';
+const popupPlacement = 'topLeft';
 
 export default () => {
   console.log('Demo Render!');
