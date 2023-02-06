@@ -288,10 +288,8 @@ describe('Trigger.Basic', () => {
 
   describe('destroyPopupOnHide', () => {
     it('defaults to false', () => {
-      const triggerRef = createRef();
       const { container } = render(
         <Trigger
-          ref={triggerRef}
           action={['click']}
           popupAlign={placementAlignMap.topRight}
           popup={<strong>trigger</strong>}
@@ -301,17 +299,15 @@ describe('Trigger.Basic', () => {
       );
 
       trigger(container, '.target');
-      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
 
       trigger(container, '.target');
-      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
 
     it('set true will destroy tooltip on hide', () => {
-      const triggerRef = createRef();
       const { container } = render(
         <Trigger
-          ref={triggerRef}
           action={['click']}
           destroyPopupOnHide
           popupAlign={placementAlignMap.topRight}
@@ -322,19 +318,17 @@ describe('Trigger.Basic', () => {
       );
 
       trigger(container, '.target');
-      expect(triggerRef.current.getPopupDomNode()).toBeTruthy();
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
 
       trigger(container, '.target');
-      expect(triggerRef.current.getPopupDomNode()).toBeFalsy();
+      expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
     });
   });
 
   describe('support autoDestroy', () => {
     it('defaults to false', () => {
-      const triggerRef = createRef();
       const { container } = render(
         <Trigger
-          ref={triggerRef}
           action={['click']}
           popupAlign={placementAlignMap.topRight}
           popup={<strong>trigger</strong>}
@@ -342,11 +336,12 @@ describe('Trigger.Basic', () => {
           <div className="target">click</div>
         </Trigger>,
       );
-      expect(triggerRef.current.props.autoDestroy).toBeFalsy();
+
       trigger(container, '.target');
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
-      act(() => jest.runAllTimers());
-      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+
+      trigger(container, '.target');
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
 
     it('set true will destroy portal on hide', () => {
