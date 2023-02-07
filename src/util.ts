@@ -7,8 +7,8 @@ import type {
 } from './interface';
 
 function isPointsEq(
-  a1: string[],
-  a2: string[],
+  a1: string[] = [],
+  a2: string[] = [],
   isAlignPoint: boolean,
 ): boolean {
   if (isAlignPoint) {
@@ -41,7 +41,7 @@ export function getAlignPopupClassName(
 
   for (let i = 0; i < placements.length; i += 1) {
     const placement = placements[i];
-    if (isPointsEq(builtinPlacements[placement].points, points, isAlignPoint)) {
+    if (isPointsEq(builtinPlacements[placement]?.points, points, isAlignPoint)) {
       return `${prefixCls}-placement-${placement}`;
     }
   }
