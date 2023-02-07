@@ -326,6 +326,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     alignInfo,
     onAlign,
   ] = useAlign(
+    mergedOpen,
     popupEle,
     alignPoint ? mousePos : targetEle,
     popupPlacement,
@@ -479,7 +480,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     // Align Point
     if (alignPoint) {
       cloneProps.onMouseMove = (event: React.MouseEvent) => {
-        setMousePosByEvent(event);
+        // setMousePosByEvent(event);
         originChildProps.onMouseMove?.(event);
       };
     }

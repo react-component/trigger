@@ -67,6 +67,7 @@ function reversePoints(points: Points, index: number): string {
 }
 
 export default function useAlign(
+  open: boolean,
   popupEle: HTMLElement,
   target: HTMLElement | [x: number, y: number],
   placement: string,
@@ -105,7 +106,7 @@ export default function useAlign(
   const alignCountRef = React.useRef(0);
 
   const onAlign = useEvent(() => {
-    if (popupEle && target) {
+    if (popupEle && target && open) {
       const popupElement = popupEle;
 
       const originLeft = popupElement.style.left;
@@ -330,12 +331,21 @@ export default function useAlign(
     });
   };
 
-  useLayoutEffect(() => {
+  // Reset ready status when placement & open changed
+  const resetReady = () => {
     setOffsetInfo((ori) => ({
       ...ori,
       ready: false,
     }));
-  }, [placement]);
+  };
+
+  useLayoutEffect(resetReady, [placement]);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      resetReady();
+    }
+  }, [open]);
 
   return [
     offsetInfo.ready,
