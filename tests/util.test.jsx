@@ -1,5 +1,3 @@
-import React from 'react';
-import { render } from '@testing-library/react';
 import { getMotion } from '../src/util';
 // import MockTrigger from '../src/mock';
 
@@ -17,40 +15,19 @@ describe('Trigger.Util', () => {
     const animation = 'animation';
 
     it('motion is first', () => {
-      expect(
-        getMotion({
-          prefixCls,
-          motion,
-          animation,
-          transitionName,
-        }),
-      ).toEqual({
+      expect(getMotion(prefixCls, motion, animation, transitionName)).toEqual({
         motionName: 'motion',
       });
     });
 
     it('animation is second', () => {
-      expect(
-        getMotion({
-          prefixCls,
-          motion: null,
-          animation,
-          transitionName,
-        }),
-      ).toEqual({
+      expect(getMotion(prefixCls, null, animation, transitionName)).toEqual({
         motionName: 'test-animation',
       });
     });
 
     it('transition is last', () => {
-      expect(
-        getMotion({
-          prefixCls,
-          motion: null,
-          animation: null,
-          transitionName,
-        }),
-      ).toEqual({
+      expect(getMotion(prefixCls, null, null, transitionName)).toEqual({
         motionName: 'transition',
       });
     });
