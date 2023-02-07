@@ -22,6 +22,8 @@ import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
 import { getAlignPopupClassName, getMotion, getWin } from './util';
 
+export type { BuildInPlacements, AlignType, ActionType };
+
 export interface TriggerRef {
   forceAlign: VoidFunction;
 }
@@ -42,7 +44,7 @@ export interface TriggerProps {
 
   zIndex?: number;
 
-  // onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
+  onPopupAlign?: (element: HTMLElement, align: AlignType) => void;
 
   stretch?: string;
 
@@ -166,6 +168,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     alignPoint,
 
     onPopupClick,
+    onPopupAlign,
 
     // Arrow
     arrow,
@@ -332,6 +335,7 @@ const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     popupPlacement,
     builtinPlacements,
     popupAlign,
+    onPopupAlign,
   );
 
   const triggerAlign = useEvent(() => {

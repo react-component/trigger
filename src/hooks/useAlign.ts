@@ -1,6 +1,7 @@
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
+import type { TriggerProps } from '..';
 import type {
   AlignPointLeftRight,
   AlignPointTopBottom,
@@ -73,6 +74,7 @@ export default function useAlign(
   placement: string,
   builtinPlacements: any,
   popupAlign?: AlignType,
+  onPopupAlign?: TriggerProps['onPopupAlign'],
 ): [
   ready: boolean,
   offsetX: number,
@@ -305,6 +307,8 @@ export default function useAlign(
 
       const yCenter = (maxTop + minBottom) / 2;
       const nextArrowY = yCenter - popupTop;
+
+      onPopupAlign?.(popupEle, nextAlignInfo);
 
       setOffsetInfo({
         ready: true,
