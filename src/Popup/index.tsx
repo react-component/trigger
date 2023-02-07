@@ -135,7 +135,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   }
 
   // >>>>> Offset
-  const offsetStyle: React.CSSProperties = ready
+  const offsetStyle: React.CSSProperties = ready || !open
     ? {
         left: offsetX,
         top: offsetY,
