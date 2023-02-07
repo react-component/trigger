@@ -13,6 +13,11 @@ export default function Arrow(props: ArrowProps) {
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
+  // Skip if no align
+  if (!align || !align.points) {
+    return null;
+  }
+
   const alignStyle: React.CSSProperties = {
     position: 'absolute',
   };
