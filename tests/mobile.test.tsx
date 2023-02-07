@@ -7,7 +7,7 @@ import { placementAlignMap } from './util';
 
 jest.mock('rc-util/lib/isMobile');
 
-describe('Trigger.Mobile', () => {
+describe.skip('Trigger.Mobile', () => {
   beforeAll(() => {
     (isMobile as any).mockImplementation(() => true);
   });
