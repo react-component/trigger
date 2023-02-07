@@ -135,29 +135,34 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   }
 
   // >>>>> Offset
-  const offsetStyle: React.CSSProperties = ready || !open
-    ? {
-        left: offsetX,
-        top: offsetY,
-      }
-    : {
-        left: '-1000vw',
-        top: '-1000vh',
-      };
+  const offsetStyle: React.CSSProperties =
+    ready || !open
+      ? {
+          left: offsetX,
+          top: offsetY,
+        }
+      : {
+          left: '-1000vw',
+          top: '-1000vh',
+        };
 
-  // >>>>> Stretch
-  const stretchStyle: React.CSSProperties = {};
+  // >>>>> Misc
+  const miscStyle: React.CSSProperties = {};
   if (stretch) {
     if (stretch.includes('height') && targetHeight) {
-      stretchStyle.height = targetHeight;
+      miscStyle.height = targetHeight;
     } else if (stretch.includes('minHeight') && targetHeight) {
-      stretchStyle.minHeight = targetHeight;
+      miscStyle.minHeight = targetHeight;
     }
     if (stretch.includes('width') && targetWidth) {
-      stretchStyle.width = targetWidth;
+      miscStyle.width = targetWidth;
     } else if (stretch.includes('minWidth') && targetWidth) {
-      stretchStyle.minWidth = targetWidth;
+      miscStyle.minWidth = targetWidth;
     }
+  }
+
+  if (!open) {
+    miscStyle.pointerEvents = 'none';
   }
 
   return (
@@ -180,10 +185,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           motionLeave
           removeOnLeave={false}
           forceRender={forceRender}
+          leavedClassName={`${prefixCls}-hidden`}
           {...motion}
           onAppearPrepare={onPrepare}
           onEnterPrepare={onPrepare}
-          leavedClassName={`${prefixCls}-hidden`}
           visible={open}
           onVisibleChanged={(nextVisible) => {
             motion?.onVisibleChanged?.(nextVisible);
@@ -199,7 +204,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                 className={cls}
                 style={{
                   ...offsetStyle,
-                  ...stretchStyle,
+                  ...miscStyle,
                   ...motionStyle,
                   boxSizing: 'border-box',
                   zIndex,
