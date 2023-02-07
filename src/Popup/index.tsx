@@ -1,87 +1,239 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
+import Portal from '@rc-component/portal';
+import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
-import isMobile from 'rc-util/lib/isMobile';
-import type {
-  StretchType,
-  AlignType,
-  TransitionNameType,
-  AnimationType,
-  Point,
-  MobileConfig,
-} from '../interface';
+import CSSMotion from 'rc-motion';
+import ResizeObserver from 'rc-resize-observer';
+import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import * as React from 'react';
+import type { TriggerProps } from '../';
+import type { AlignType } from '../interface';
+import Arrow from './Arrow';
 import Mask from './Mask';
-import type { PopupInnerRef } from './PopupInner';
-import PopupInner from './PopupInner';
-import MobilePopupInner from './MobilePopupInner';
 
 export interface PopupProps {
-  visible?: boolean;
-  style?: React.CSSProperties;
-  getClassNameFromAlign?: (align: AlignType) => string;
-  onAlign?: (element: HTMLElement, align: AlignType) => void;
-  getRootDomNode?: () => HTMLElement;
-  align?: AlignType;
-  destroyPopupOnHide?: boolean;
-  className?: string;
   prefixCls: string;
-  onMouseEnter?: React.MouseEventHandler<HTMLElement>;
-  onMouseLeave?: React.MouseEventHandler<HTMLElement>;
-  onMouseDown?: React.MouseEventHandler<HTMLElement>;
-  onTouchStart?: React.TouchEventHandler<HTMLElement>;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  stretch?: StretchType;
-  children?: React.ReactNode;
-  point?: Point;
+  className?: string;
+  style?: React.CSSProperties;
+  popup?: TriggerProps['popup'];
+  target: HTMLElement;
+  onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   zIndex?: number;
+
   mask?: boolean;
+  onVisibleChanged: (visible: boolean) => void;
+
+  // Arrow
+  align?: AlignType;
+  arrow?: boolean;
+  arrowX?: number;
+  arrowY?: number;
+
+  // Open
+  open: boolean;
+  /** Tell Portal that should keep in screen. e.g. should wait all motion end */
+  keepDom: boolean;
+
+  // Click
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 
   // Motion
-  motion: CSSMotionProps;
-  maskMotion: CSSMotionProps;
+  motion?: CSSMotionProps;
+  maskMotion?: CSSMotionProps;
+
+  // Portal
   forceRender?: boolean;
+  getPopupContainer?: TriggerProps['getPopupContainer'];
+  autoDestroy?: boolean;
 
-  // Legacy
-  animation: AnimationType;
-  transitionName: TransitionNameType;
-  maskAnimation: AnimationType;
-  maskTransitionName: TransitionNameType;
+  // Align
+  ready: boolean;
+  offsetX: number;
+  offsetY: number;
+  onAlign: VoidFunction;
+  onPrepare: () => Promise<void>;
 
-  // Mobile
-  mobile?: MobileConfig;
+  // stretch
+  stretch?: string;
+  targetWidth?: number;
+  targetHeight?: number;
 }
 
-const Popup = React.forwardRef<PopupInnerRef, PopupProps>(
-  ({ visible, mobile, ...props }, ref) => {
-    const [innerVisible, serInnerVisible] = useState(visible);
-    const [inMobile, setInMobile] = useState(false);
-    const cloneProps = { ...props, visible: innerVisible };
+const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
+  const {
+    popup,
+    className,
+    prefixCls,
+    style,
+    target,
 
-    // We check mobile in visible changed here.
-    // And this also delay set `innerVisible` to avoid popup component render flash
-    useEffect(() => {
-      serInnerVisible(visible);
-      if (visible && mobile) {
-        setInMobile(isMobile());
-      }
-    }, [visible, mobile]);
+    onVisibleChanged,
 
-    const popupNode: React.ReactNode = inMobile ? (
-      <MobilePopupInner {...cloneProps} mobile={mobile} ref={ref} />
-    ) : (
-      <PopupInner {...cloneProps} ref={ref} />
-    );
+    // Open
+    open,
+    keepDom,
 
-    // We can use fragment directly but this may failed some selector usage. Keep as origin logic
-    return (
-      <div>
-        <Mask {...cloneProps} />
-        {popupNode}
-      </div>
-    );
-  },
-);
+    // Click
+    onClick,
 
-Popup.displayName = 'Popup';
+    // Mask
+    mask,
+
+    // Arrow
+    arrow,
+    align,
+    arrowX,
+    arrowY,
+
+    // Motion
+    motion,
+    maskMotion,
+
+    // Portal
+    forceRender,
+    getPopupContainer,
+    autoDestroy,
+
+    zIndex,
+
+    onMouseEnter,
+    onMouseLeave,
+
+    ready,
+    offsetX,
+    offsetY,
+    onAlign,
+    onPrepare,
+
+    stretch,
+    targetWidth,
+    targetHeight,
+  } = props;
+
+  const childNode = typeof popup === 'function' ? popup() : popup;
+
+  // We can not remove holder only when motion finished.
+  const isNodeVisible = open || keepDom;
+
+  // ======================= Container ========================
+  const getPopupContainerNeedParams = getPopupContainer?.length > 0;
+
+  const [show, setShow] = React.useState(
+    !getPopupContainer || !getPopupContainerNeedParams,
+  );
+
+  // Delay to show since `getPopupContainer` need target element
+  useLayoutEffect(() => {
+    if (!show && getPopupContainerNeedParams && target) {
+      setShow(true);
+    }
+  }, [show, getPopupContainerNeedParams, target]);
+
+  // ========================= Render =========================
+  if (!show) {
+    return null;
+  }
+
+  // >>>>> Offset
+  const offsetStyle: React.CSSProperties =
+    ready || !open
+      ? {
+          left: offsetX,
+          top: offsetY,
+        }
+      : {
+          left: '-1000vw',
+          top: '-1000vh',
+        };
+
+  // >>>>> Misc
+  const miscStyle: React.CSSProperties = {};
+  if (stretch) {
+    if (stretch.includes('height') && targetHeight) {
+      miscStyle.height = targetHeight;
+    } else if (stretch.includes('minHeight') && targetHeight) {
+      miscStyle.minHeight = targetHeight;
+    }
+    if (stretch.includes('width') && targetWidth) {
+      miscStyle.width = targetWidth;
+    } else if (stretch.includes('minWidth') && targetWidth) {
+      miscStyle.minWidth = targetWidth;
+    }
+  }
+
+  if (!open) {
+    miscStyle.pointerEvents = 'none';
+  }
+
+  return (
+    <Portal
+      open={forceRender || isNodeVisible}
+      getContainer={getPopupContainer && (() => getPopupContainer(target))}
+      autoDestroy={autoDestroy}
+    >
+      <Mask
+        prefixCls={prefixCls}
+        open={open}
+        zIndex={zIndex}
+        mask={mask}
+        motion={maskMotion}
+      />
+      <ResizeObserver onResize={onAlign} disabled={!open}>
+        <CSSMotion
+          motionAppear
+          motionEnter
+          motionLeave
+          removeOnLeave={false}
+          forceRender={forceRender}
+          leavedClassName={`${prefixCls}-hidden`}
+          {...motion}
+          onAppearPrepare={onPrepare}
+          onEnterPrepare={onPrepare}
+          visible={open}
+          onVisibleChanged={(nextVisible) => {
+            motion?.onVisibleChanged?.(nextVisible);
+            onVisibleChanged(nextVisible);
+          }}
+        >
+          {({ className: motionClassName, style: motionStyle }) => {
+            const cls = classNames(prefixCls, motionClassName, className);
+
+            return (
+              <div
+                ref={ref}
+                className={cls}
+                style={{
+                  ...offsetStyle,
+                  ...miscStyle,
+                  ...motionStyle,
+                  boxSizing: 'border-box',
+                  zIndex,
+                  ...style,
+                }}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onClick={onClick}
+              >
+                {arrow && (
+                  <Arrow
+                    prefixCls={prefixCls}
+                    align={align}
+                    arrowX={arrowX}
+                    arrowY={arrowY}
+                  />
+                )}
+                {childNode}
+              </div>
+            );
+          }}
+        </CSSMotion>
+      </ResizeObserver>
+    </Portal>
+  );
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  Popup.displayName = 'Popup';
+}
 
 export default Popup;

@@ -1,5 +1,5 @@
-import React, { createRef } from 'react';
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import React from 'react';
 import Trigger from '../src';
 import { getMouseEvent } from './util';
 
@@ -35,52 +35,46 @@ describe('Trigger.Point', () => {
     }
   }
 
-  function trigger(container, eventName, data) {
+  async function trigger(container, eventName, data) {
     const pointRegion = container.querySelector('.point-region');
     fireEvent(pointRegion, getMouseEvent(eventName, data));
 
     // React scheduler will not hold when useEffect. We need repeat to tell that times go
     for (let i = 0; i < 10; i += 1) {
-      act(() => jest.runAllTimers());
+      await act(async () => {
+        jest.runAllTimers();
+        await Promise.resolve();
+      });
     }
   }
 
   it('onClick', async () => {
     const { container } = render(<Demo action={['click']} />);
-    trigger(container, 'click', { pageX: 10, pageY: 20 });
+    await trigger(container, 'click', { clientX: 11, clientY: 28 });
 
     const popup = document.querySelector('.rc-trigger-popup');
-    expect(popup.style).toEqual(
-      expect.objectContaining({ left: '-989px', top: '-979px' }),
-    );
+    expect(popup).toHaveStyle({ left: '11px', top: '28px' });
   });
 
-  it('hover', () => {
+  it('hover', async () => {
     const { container } = render(<Demo action={['hover']} />);
-    trigger(container, 'mouseenter', { pageX: 10, pageY: 20 });
-    trigger(container, 'mouseover', { pageX: 10, pageY: 20 });
+    await trigger(container, 'mouseenter', { clientX: 10, clientY: 20 });
+    await trigger(container, 'mouseover', { clientX: 9, clientY: 3 });
 
     const popup = document.querySelector('.rc-trigger-popup');
-    expect(popup.style).toEqual(
-      expect.objectContaining({ left: '-989px', top: '-979px' }),
-    );
+    expect(popup).toHaveStyle({ left: '9px', top: '3px' });
   });
 
   describe('contextMenu', () => {
-    it('basic', () => {
-      const triggerRef = createRef();
+    it('basic', async () => {
       const { container } = render(
-        <Demo
-          triggerRef={triggerRef}
-          action={['contextMenu']}
-          hideAction={['click']}
-        />,
+        <Demo action={['contextMenu']} hideAction={['click']} />,
       );
-      trigger(container, 'contextmenu', { pageX: 10, pageY: 20 });
+      await trigger(container, 'contextmenu', { clientX: 10, clientY: 20 });
 
       const popup = document.querySelector('.rc-trigger-popup');
       expect(popup.style).toEqual(
-        expect.objectContaining({ left: '-989px', top: '-979px' }),
+        expect.objectContaining({ left: '10px', top: '20px' }),
       );
 
       // Not trigger point update when close
@@ -91,41 +85,46 @@ describe('Trigger.Point', () => {
         },
       };
       Object.defineProperties(clickEvent, {
-        pageX: pagePropDefine,
-        pageY: pagePropDefine,
+        clientX: pagePropDefine,
+        clientY: pagePropDefine,
       });
-      act(() => triggerRef.current.onClick(clickEvent));
+      fireEvent(
+        container.querySelector('.point-region'),
+        getMouseEvent('click', clickEvent),
+      );
+
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
 
     // https://github.com/ant-design/ant-design/issues/17043
     it('not prevent default', (done) => {
-      const { container } = render(
-        <Demo showAction={['contextMenu']} hideAction={['click']} />,
-      );
-      trigger(container, 'contextmenu', { pageX: 10, pageY: 20 });
+      (async function () {
+        const { container } = render(
+          <Demo showAction={['contextMenu']} hideAction={['click']} />,
+        );
+        await trigger(container, 'contextmenu', { clientX: 10, clientY: 20 });
 
-      const popup = document.querySelector('.rc-trigger-popup');
-      expect(popup.style).toEqual(
-        expect.objectContaining({ left: '-989px', top: '-979px' }),
-      );
+        const popup = document.querySelector('.rc-trigger-popup');
+        expect(popup).toHaveStyle({ left: '10px', top: '20px' });
 
-      // Click to close
-      fireEvent(
-        document.querySelector('.rc-trigger-popup > *'),
-        getMouseEvent('click', {
-          preventDefault() {
-            done.fail();
-          },
-        }),
-      );
+        // Click to close
+        fireEvent(
+          document.querySelector('.rc-trigger-popup > *'),
+          getMouseEvent('click', {
+            preventDefault() {
+              done.fail();
+            },
+          }),
+        );
 
-      done();
+        done();
+      })();
     });
   });
 
   describe('placement', () => {
     function testPlacement(name, builtinPlacements, afterAll) {
-      it(name, () => {
+      it(name, async () => {
         const { container } = render(
           <Demo
             action={['click']}
@@ -133,11 +132,11 @@ describe('Trigger.Point', () => {
             popupPlacement="right"
           />,
         );
-        trigger(container, 'click', { pageX: 10, pageY: 20 });
+        await trigger(container, 'click', { clientX: 10, clientY: 20 });
 
         const popup = document.querySelector('.rc-trigger-popup');
         expect(popup.style).toEqual(
-          expect.objectContaining({ left: '-989px', top: '-979px' }),
+          expect.objectContaining({ left: '10px', top: '20px' }),
         );
 
         if (afterAll) {
@@ -154,7 +153,7 @@ describe('Trigger.Point', () => {
     });
 
     testPlacement(
-      'hit',
+      'hit builtin',
       {
         left: {
           points: ['tl'],
