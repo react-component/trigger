@@ -3,7 +3,7 @@ import { generateTrigger } from './index';
 
 interface MockPortalProps {
   children: React.ReactElement;
-  getContainer: () => HTMLElement;
+  getContainer?: () => HTMLElement;
 }
 
 const MockPortal: React.FC<MockPortalProps> = ({
@@ -11,7 +11,7 @@ const MockPortal: React.FC<MockPortalProps> = ({
   getContainer,
 }) => {
   React.useEffect(() => {
-    getContainer();
+    getContainer?.();
   });
 
   return children;
