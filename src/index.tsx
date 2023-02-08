@@ -1,3 +1,4 @@
+import Portal from '@rc-component/portal';
 import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
@@ -120,504 +121,513 @@ export interface TriggerProps {
   // mobile?: MobileConfig;
 }
 
-const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
-  const {
-    prefixCls = 'rc-trigger-popup',
-    children,
+export function generateTrigger(PortalComponent: React.ComponentType<any> = Portal) {
+  const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
+    const {
+      prefixCls = 'rc-trigger-popup',
+      children,
 
-    // Action
-    action = 'hover',
-    showAction,
-    hideAction,
+      // Action
+      action = 'hover',
+      showAction,
+      hideAction,
 
-    // Open
-    popupVisible,
-    defaultPopupVisible,
-    onPopupVisibleChange,
-    afterPopupVisibleChange,
+      // Open
+      popupVisible,
+      defaultPopupVisible,
+      onPopupVisibleChange,
+      afterPopupVisibleChange,
 
-    // Delay
-    mouseEnterDelay,
-    mouseLeaveDelay = 0.1,
+      // Delay
+      mouseEnterDelay,
+      mouseLeaveDelay = 0.1,
 
-    focusDelay,
-    blurDelay,
+      focusDelay,
+      blurDelay,
 
-    // Mask
-    mask,
-    maskClosable = true,
+      // Mask
+      mask,
+      maskClosable = true,
 
-    // Portal
-    getPopupContainer,
-    forceRender,
-    autoDestroy,
-    destroyPopupOnHide,
+      // Portal
+      getPopupContainer,
+      forceRender,
+      autoDestroy,
+      destroyPopupOnHide,
 
-    // Popup
-    popup,
-    popupClassName,
-    popupStyle,
+      // Popup
+      popup,
+      popupClassName,
+      popupStyle,
 
-    popupPlacement,
-    builtinPlacements = {},
-    popupAlign,
-    zIndex,
-    stretch,
-    getPopupClassNameFromAlign,
+      popupPlacement,
+      builtinPlacements = {},
+      popupAlign,
+      zIndex,
+      stretch,
+      getPopupClassNameFromAlign,
 
-    alignPoint,
-
-    onPopupClick,
-    onPopupAlign,
-
-    // Arrow
-    arrow,
-
-    // Motion
-    popupMotion,
-    maskMotion,
-    popupTransitionName,
-    popupAnimation,
-    maskTransitionName,
-    maskAnimation,
-
-    // Deprecated
-    className,
-
-    // Private
-    getTriggerDOMNode,
-
-    ...restProps
-  } = props;
-
-  const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
-
-  // ========================== Context ===========================
-  const subPopupElements = React.useRef<Record<string, HTMLElement>>({});
-
-  const parentContext = React.useContext(TriggerContext);
-  const context = React.useMemo<TriggerContextProps>(() => {
-    return {
-      registerSubPopup: (id, subPopupEle) => {
-        subPopupElements.current[id] = subPopupEle;
-
-        parentContext?.registerSubPopup(id, subPopupEle);
-      },
-    };
-  }, [parentContext]);
-
-  // =========================== Popup ============================
-  const id = useId();
-  const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
-
-  const setPopupRef = React.useCallback((node: HTMLDivElement) => {
-    if (node instanceof HTMLElement) {
-      setPopupEle(node);
-    }
-
-    parentContext?.registerSubPopup(id, node);
-  }, []);
-
-  // =========================== Target ===========================
-  // Use state to control here since `useRef` update not trigger render
-  const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
-
-  const setTargetRef = React.useCallback((node: HTMLElement) => {
-    if (node instanceof HTMLElement) {
-      setTargetEle(node);
-    }
-  }, []);
-
-  // ========================== Children ==========================
-  const child = React.Children.only(children) as React.ReactElement;
-  const originChildProps = child?.props || {};
-  const cloneProps: typeof originChildProps = {};
-
-  const inPopupOrChild = useEvent((ele: any) => {
-    const childDOM = targetEle;
-    return (
-      childDOM?.contains(ele) ||
-      ele === childDOM ||
-      popupEle?.contains(ele) ||
-      ele === popupEle ||
-      Object.values(subPopupElements.current).some(
-        (subPopupEle) => subPopupEle.contains(ele) || ele === subPopupEle,
-      )
-    );
-  });
-
-  // =========================== Motion ===========================
-  const mergePopupMotion = getMotion(
-    prefixCls,
-    popupMotion,
-    popupAnimation,
-    popupTransitionName,
-  );
-
-  const mergeMaskMotion = getMotion(
-    prefixCls,
-    maskMotion,
-    maskAnimation,
-    maskTransitionName,
-  );
-
-  // ============================ Open ============================
-  const [mergedOpen, setMergedOpen] = useMergedState(
-    defaultPopupVisible || false,
-    {
-      value: popupVisible,
-    },
-  );
-  const openRef = React.useRef(mergedOpen);
-  openRef.current = mergedOpen;
-
-  const internalTriggerOpen = useEvent((nextOpen: boolean) => {
-    if (mergedOpen !== nextOpen) {
-      setMergedOpen(nextOpen);
-      onPopupVisibleChange?.(nextOpen);
-    }
-  });
-
-  // Trigger for delay
-  const delayRef = React.useRef<any>();
-
-  const clearDelay = () => {
-    clearTimeout(delayRef.current);
-  };
-
-  const triggerOpen = (nextOpen: boolean, delay = 0) => {
-    clearDelay();
-
-    if (delay === 0) {
-      internalTriggerOpen(nextOpen);
-    } else {
-      delayRef.current = setTimeout(() => {
-        internalTriggerOpen(nextOpen);
-      }, delay * 1000);
-    }
-  };
-
-  React.useEffect(() => clearDelay, []);
-
-  // ========================== Motion ============================
-  const [inMotion, setInMotion] = React.useState(false);
-
-  useLayoutEffect(() => {
-    setInMotion(true);
-  }, [mergedOpen]);
-
-  const [motionPrepareResolve, setMotionPrepareResolve] =
-    React.useState<VoidFunction>(null);
-
-  // =========================== Align ============================
-  const [mousePos, setMousePos] = React.useState<[x: number, y: number]>([
-    0, 0,
-  ]);
-
-  const setMousePosByEvent = (event: React.MouseEvent) => {
-    setMousePos([event.clientX, event.clientY]);
-  };
-
-  const [
-    ready,
-    offsetX,
-    offsetY,
-    arrowX,
-    arrowY,
-    scaleX,
-    scaleY,
-    alignInfo,
-    onAlign,
-  ] = useAlign(
-    mergedOpen,
-    popupEle,
-    alignPoint ? mousePos : targetEle,
-    popupPlacement,
-    builtinPlacements,
-    popupAlign,
-    onPopupAlign,
-  );
-
-  const triggerAlign = useEvent(() => {
-    if (!inMotion) {
-      onAlign();
-    }
-  });
-
-  useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
-
-  useLayoutEffect(() => {
-    triggerAlign();
-  }, [mousePos]);
-
-  const alignedClassName = React.useMemo(() => {
-    const baseClassName = getAlignPopupClassName(
-      builtinPlacements,
-      prefixCls,
-      alignInfo,
       alignPoint,
-    );
 
-    return classNames(baseClassName, getPopupClassNameFromAlign?.(alignInfo));
-  }, [
-    alignInfo,
-    getPopupClassNameFromAlign,
-    builtinPlacements,
-    prefixCls,
-    alignPoint,
-  ]);
+      onPopupClick,
+      onPopupAlign,
 
-  React.useImperativeHandle(ref, () => ({
-    forceAlign: triggerAlign,
-  }));
+      // Arrow
+      arrow,
 
-  // ========================== Motion ============================
-  const onVisibleChanged = (visible: boolean) => {
-    setInMotion(false);
-    onAlign();
-    afterPopupVisibleChange?.(visible);
-  };
+      // Motion
+      popupMotion,
+      maskMotion,
+      popupTransitionName,
+      popupAnimation,
+      maskTransitionName,
+      maskAnimation,
 
-  // We will trigger align when motion is in prepare
-  const onPrepare = () =>
-    new Promise<void>((resolve) => {
-      setMotionPrepareResolve(() => resolve);
-    });
+      // Deprecated
+      className,
 
-  useLayoutEffect(() => {
-    if (motionPrepareResolve) {
-      onAlign();
-      motionPrepareResolve();
-      setMotionPrepareResolve(null);
-    }
-  }, [motionPrepareResolve]);
+      // Private
+      getTriggerDOMNode,
 
-  // ========================== Stretch ===========================
-  const [targetWidth, setTargetWidth] = React.useState(0);
-  const [targetHeight, setTargetHeight] = React.useState(0);
+      ...restProps
+    } = props;
 
-  const onTargetResize = (_: object, ele: HTMLElement) => {
-    triggerAlign();
+    const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
 
-    if (stretch) {
-      const rect = ele.getBoundingClientRect();
-      setTargetWidth(rect.width);
-      setTargetHeight(rect.height);
-    }
-  };
+    // ========================== Context ===========================
+    const subPopupElements = React.useRef<Record<string, HTMLElement>>({});
 
-  // =========================== Action ===========================
-  const [showActions, hideActions] = useAction(action, showAction, hideAction);
+    const parentContext = React.useContext(TriggerContext);
+    const context = React.useMemo<TriggerContextProps>(() => {
+      return {
+        registerSubPopup: (id, subPopupEle) => {
+          subPopupElements.current[id] = subPopupEle;
 
-  // Util wrapper for trigger action
-  const wrapperAction = (
-    eventName: string,
-    nextOpen: boolean,
-    delay?: number,
-    preEvent?: (event: any) => void,
-  ) => {
-    cloneProps[eventName] = (event: any, ...args: any[]) => {
-      preEvent?.(event);
-      triggerOpen(nextOpen, delay);
+          parentContext?.registerSubPopup(id, subPopupEle);
+        },
+      };
+    }, [parentContext]);
 
-      // Pass to origin
-      originChildProps[eventName]?.(event, ...args);
-    };
-  };
+    // =========================== Popup ============================
+    const id = useId();
+    const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
 
-  // ======================= Action: Click ========================
-  const clickToShow = showActions.has('click');
-  const clickToHide =
-    hideActions.has('click') || hideActions.has('contextMenu');
-
-  if (clickToShow || clickToHide) {
-    cloneProps.onClick = (
-      event: React.MouseEvent<HTMLElement>,
-      ...args: any[]
-    ) => {
-      if (openRef.current && clickToHide) {
-        triggerOpen(false);
-      } else if (!openRef.current && clickToShow) {
-        setMousePosByEvent(event);
-        triggerOpen(true);
+    const setPopupRef = React.useCallback((node: HTMLDivElement) => {
+      if (node instanceof HTMLElement) {
+        setPopupEle(node);
       }
 
-      // Pass to origin
-      originChildProps.onClick?.(event, ...args);
-    };
-  }
+      parentContext?.registerSubPopup(id, node);
+    }, []);
 
-  // Click to hide is special action since click popup element should not hide
-  React.useEffect(() => {
-    if (clickToHide && popupEle && (!mask || maskClosable)) {
-      const onWindowClick = ({ target }: MouseEvent) => {
-        if (openRef.current && !inPopupOrChild(target)) {
-          triggerOpen(false);
-        }
-      };
+    // =========================== Target ===========================
+    // Use state to control here since `useRef` update not trigger render
+    const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
 
-      const win = getWin(popupEle);
+    const setTargetRef = React.useCallback((node: HTMLElement) => {
+      if (node instanceof HTMLElement) {
+        setTargetEle(node);
+      }
+    }, []);
 
-      win.addEventListener('click', onWindowClick);
+    // ========================== Children ==========================
+    const child = React.Children.only(children) as React.ReactElement;
+    const originChildProps = child?.props || {};
+    const cloneProps: typeof originChildProps = {};
 
-      return () => {
-        win.removeEventListener('click', onWindowClick);
-      };
-    }
-  }, [clickToHide, popupEle, mask, maskClosable]);
-
-  // ======================= Action: Hover ========================
-  const hoverToShow = showActions.has('hover');
-  const hoverToHide = hideActions.has('hover');
-
-  let onPopupMouseEnter: VoidFunction;
-  let onPopupMouseLeave: VoidFunction;
-
-  if (hoverToShow) {
-    wrapperAction('onMouseEnter', true, mouseEnterDelay, (event) => {
-      setMousePosByEvent(event);
+    const inPopupOrChild = useEvent((ele: any) => {
+      const childDOM = targetEle;
+      return (
+        childDOM?.contains(ele) ||
+        ele === childDOM ||
+        popupEle?.contains(ele) ||
+        ele === popupEle ||
+        Object.values(subPopupElements.current).some(
+          (subPopupEle) => subPopupEle.contains(ele) || ele === subPopupEle,
+        )
+      );
     });
-    onPopupMouseEnter = () => {
-      triggerOpen(true, mouseEnterDelay);
+
+    // =========================== Motion ===========================
+    const mergePopupMotion = getMotion(
+      prefixCls,
+      popupMotion,
+      popupAnimation,
+      popupTransitionName,
+    );
+
+    const mergeMaskMotion = getMotion(
+      prefixCls,
+      maskMotion,
+      maskAnimation,
+      maskTransitionName,
+    );
+
+    // ============================ Open ============================
+    const [mergedOpen, setMergedOpen] = useMergedState(
+      defaultPopupVisible || false,
+      {
+        value: popupVisible,
+      },
+    );
+    const openRef = React.useRef(mergedOpen);
+    openRef.current = mergedOpen;
+
+    const internalTriggerOpen = useEvent((nextOpen: boolean) => {
+      if (mergedOpen !== nextOpen) {
+        setMergedOpen(nextOpen);
+        onPopupVisibleChange?.(nextOpen);
+      }
+    });
+
+    // Trigger for delay
+    const delayRef = React.useRef<any>();
+
+    const clearDelay = () => {
+      clearTimeout(delayRef.current);
     };
 
-    // Align Point
-    if (alignPoint) {
-      cloneProps.onMouseMove = (event: React.MouseEvent) => {
-        // setMousePosByEvent(event);
-        originChildProps.onMouseMove?.(event);
+    const triggerOpen = (nextOpen: boolean, delay = 0) => {
+      clearDelay();
+
+      if (delay === 0) {
+        internalTriggerOpen(nextOpen);
+      } else {
+        delayRef.current = setTimeout(() => {
+          internalTriggerOpen(nextOpen);
+        }, delay * 1000);
+      }
+    };
+
+    React.useEffect(() => clearDelay, []);
+
+    // ========================== Motion ============================
+    const [inMotion, setInMotion] = React.useState(false);
+
+    useLayoutEffect(() => {
+      setInMotion(true);
+    }, [mergedOpen]);
+
+    const [motionPrepareResolve, setMotionPrepareResolve] =
+      React.useState<VoidFunction>(null);
+
+    // =========================== Align ============================
+    const [mousePos, setMousePos] = React.useState<[x: number, y: number]>([
+      0, 0,
+    ]);
+
+    const setMousePosByEvent = (event: React.MouseEvent) => {
+      setMousePos([event.clientX, event.clientY]);
+    };
+
+    const [
+      ready,
+      offsetX,
+      offsetY,
+      arrowX,
+      arrowY,
+      scaleX,
+      scaleY,
+      alignInfo,
+      onAlign,
+    ] = useAlign(
+      mergedOpen,
+      popupEle,
+      alignPoint ? mousePos : targetEle,
+      popupPlacement,
+      builtinPlacements,
+      popupAlign,
+      onPopupAlign,
+    );
+
+    const triggerAlign = useEvent(() => {
+      if (!inMotion) {
+        onAlign();
+      }
+    });
+
+    useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
+
+    useLayoutEffect(() => {
+      triggerAlign();
+    }, [mousePos]);
+
+    const alignedClassName = React.useMemo(() => {
+      const baseClassName = getAlignPopupClassName(
+        builtinPlacements,
+        prefixCls,
+        alignInfo,
+        alignPoint,
+      );
+
+      return classNames(baseClassName, getPopupClassNameFromAlign?.(alignInfo));
+    }, [
+      alignInfo,
+      getPopupClassNameFromAlign,
+      builtinPlacements,
+      prefixCls,
+      alignPoint,
+    ]);
+
+    React.useImperativeHandle(ref, () => ({
+      forceAlign: triggerAlign,
+    }));
+
+    // ========================== Motion ============================
+    const onVisibleChanged = (visible: boolean) => {
+      setInMotion(false);
+      onAlign();
+      afterPopupVisibleChange?.(visible);
+    };
+
+    // We will trigger align when motion is in prepare
+    const onPrepare = () =>
+      new Promise<void>((resolve) => {
+        setMotionPrepareResolve(() => resolve);
+      });
+
+    useLayoutEffect(() => {
+      if (motionPrepareResolve) {
+        onAlign();
+        motionPrepareResolve();
+        setMotionPrepareResolve(null);
+      }
+    }, [motionPrepareResolve]);
+
+    // ========================== Stretch ===========================
+    const [targetWidth, setTargetWidth] = React.useState(0);
+    const [targetHeight, setTargetHeight] = React.useState(0);
+
+    const onTargetResize = (_: object, ele: HTMLElement) => {
+      triggerAlign();
+
+      if (stretch) {
+        const rect = ele.getBoundingClientRect();
+        setTargetWidth(rect.width);
+        setTargetHeight(rect.height);
+      }
+    };
+
+    // =========================== Action ===========================
+    const [showActions, hideActions] = useAction(
+      action,
+      showAction,
+      hideAction,
+    );
+
+    // Util wrapper for trigger action
+    const wrapperAction = (
+      eventName: string,
+      nextOpen: boolean,
+      delay?: number,
+      preEvent?: (event: any) => void,
+    ) => {
+      cloneProps[eventName] = (event: any, ...args: any[]) => {
+        preEvent?.(event);
+        triggerOpen(nextOpen, delay);
+
+        // Pass to origin
+        originChildProps[eventName]?.(event, ...args);
+      };
+    };
+
+    // ======================= Action: Click ========================
+    const clickToShow = showActions.has('click');
+    const clickToHide =
+      hideActions.has('click') || hideActions.has('contextMenu');
+
+    if (clickToShow || clickToHide) {
+      cloneProps.onClick = (
+        event: React.MouseEvent<HTMLElement>,
+        ...args: any[]
+      ) => {
+        if (openRef.current && clickToHide) {
+          triggerOpen(false);
+        } else if (!openRef.current && clickToShow) {
+          setMousePosByEvent(event);
+          triggerOpen(true);
+        }
+
+        // Pass to origin
+        originChildProps.onClick?.(event, ...args);
       };
     }
-  }
 
-  if (hoverToHide) {
-    wrapperAction('onMouseLeave', false, mouseLeaveDelay);
-    onPopupMouseLeave = () => {
-      triggerOpen(false, mouseLeaveDelay);
-    };
-  }
+    // Click to hide is special action since click popup element should not hide
+    React.useEffect(() => {
+      if (clickToHide && popupEle && (!mask || maskClosable)) {
+        const onWindowClick = ({ target }: MouseEvent) => {
+          if (openRef.current && !inPopupOrChild(target)) {
+            triggerOpen(false);
+          }
+        };
 
-  // ======================= Action: Focus ========================
-  if (showActions.has('focus')) {
-    wrapperAction('onFocus', true, focusDelay);
-  }
+        const win = getWin(popupEle);
 
-  if (hideActions.has('focus')) {
-    wrapperAction('onBlur', false, blurDelay);
-  }
+        win.addEventListener('click', onWindowClick);
 
-  // ==================== Action: ContextMenu =====================
-  if (showActions.has('contextMenu')) {
-    cloneProps.onContextMenu = (event: React.MouseEvent, ...args: any[]) => {
-      setMousePosByEvent(event);
-      triggerOpen(true);
-      event.preventDefault();
+        return () => {
+          win.removeEventListener('click', onWindowClick);
+        };
+      }
+    }, [clickToHide, popupEle, mask, maskClosable]);
 
-      // Pass to origin
-      originChildProps.onContextMenu?.(event, ...args);
-    };
-  }
+    // ======================= Action: Hover ========================
+    const hoverToShow = showActions.has('hover');
+    const hoverToHide = hideActions.has('hover');
 
-  // ========================= ClassName ==========================
-  if (className) {
-    cloneProps.className = classNames(originChildProps.className, className);
-  }
+    let onPopupMouseEnter: VoidFunction;
+    let onPopupMouseLeave: VoidFunction;
 
-  // =========================== Render ===========================
-  const mergedChildrenProps = {
-    ...originChildProps,
-    ...cloneProps,
-  };
+    if (hoverToShow) {
+      wrapperAction('onMouseEnter', true, mouseEnterDelay, (event) => {
+        setMousePosByEvent(event);
+      });
+      onPopupMouseEnter = () => {
+        triggerOpen(true, mouseEnterDelay);
+      };
 
-  // Pass props into cloneProps for nest usage
-  const passedProps: Record<string, any> = {};
-  const passedEventList = [
-    'onContextMenu',
-    'onClick',
-    'onMouseDown',
-    'onTouchStart',
-    'onMouseEnter',
-    'onMouseLeave',
-    'onFocus',
-    'onBlur',
-  ];
+      // Align Point
+      if (alignPoint) {
+        cloneProps.onMouseMove = (event: React.MouseEvent) => {
+          // setMousePosByEvent(event);
+          originChildProps.onMouseMove?.(event);
+        };
+      }
+    }
 
-  passedEventList.forEach((eventName) => {
-    if (restProps[eventName]) {
-      passedProps[eventName] = (...args: any[]) => {
-        mergedChildrenProps[eventName]?.(...args);
-        restProps[eventName](...args);
+    if (hoverToHide) {
+      wrapperAction('onMouseLeave', false, mouseLeaveDelay);
+      onPopupMouseLeave = () => {
+        triggerOpen(false, mouseLeaveDelay);
       };
     }
+
+    // ======================= Action: Focus ========================
+    if (showActions.has('focus')) {
+      wrapperAction('onFocus', true, focusDelay);
+    }
+
+    if (hideActions.has('focus')) {
+      wrapperAction('onBlur', false, blurDelay);
+    }
+
+    // ==================== Action: ContextMenu =====================
+    if (showActions.has('contextMenu')) {
+      cloneProps.onContextMenu = (event: React.MouseEvent, ...args: any[]) => {
+        setMousePosByEvent(event);
+        triggerOpen(true);
+        event.preventDefault();
+
+        // Pass to origin
+        originChildProps.onContextMenu?.(event, ...args);
+      };
+    }
+
+    // ========================= ClassName ==========================
+    if (className) {
+      cloneProps.className = classNames(originChildProps.className, className);
+    }
+
+    // =========================== Render ===========================
+    const mergedChildrenProps = {
+      ...originChildProps,
+      ...cloneProps,
+    };
+
+    // Pass props into cloneProps for nest usage
+    const passedProps: Record<string, any> = {};
+    const passedEventList = [
+      'onContextMenu',
+      'onClick',
+      'onMouseDown',
+      'onTouchStart',
+      'onMouseEnter',
+      'onMouseLeave',
+      'onFocus',
+      'onBlur',
+    ];
+
+    passedEventList.forEach((eventName) => {
+      if (restProps[eventName]) {
+        passedProps[eventName] = (...args: any[]) => {
+          mergedChildrenProps[eventName]?.(...args);
+          restProps[eventName](...args);
+        };
+      }
+    });
+
+    // Child Node
+    const triggerNode = React.cloneElement(child, {
+      ...mergedChildrenProps,
+      ...passedProps,
+    });
+
+    // Render
+    return (
+      <>
+        <TriggerContext.Provider value={context}>
+          <Popup
+            portal={PortalComponent}
+            ref={setPopupRef}
+            prefixCls={prefixCls}
+            popup={popup}
+            className={classNames(popupClassName, alignedClassName)}
+            style={popupStyle}
+            target={targetEle}
+            onMouseEnter={onPopupMouseEnter}
+            onMouseLeave={onPopupMouseLeave}
+            zIndex={zIndex}
+            // Open
+            open={mergedOpen}
+            keepDom={inMotion}
+            // Click
+            onClick={onPopupClick}
+            // Mask
+            mask={mask}
+            // Motion
+            motion={mergePopupMotion}
+            maskMotion={mergeMaskMotion}
+            onVisibleChanged={onVisibleChanged}
+            onPrepare={onPrepare}
+            // Portal
+            forceRender={forceRender}
+            autoDestroy={mergedAutoDestroy}
+            getPopupContainer={getPopupContainer}
+            // Arrow
+            align={alignInfo}
+            arrow={arrow}
+            // Align
+            ready={ready}
+            offsetX={offsetX}
+            offsetY={offsetY}
+            arrowX={arrowX}
+            arrowY={arrowY}
+            onAlign={triggerAlign}
+            // Stretch
+            stretch={stretch}
+            targetWidth={targetWidth / scaleX}
+            targetHeight={targetHeight / scaleY}
+          />
+        </TriggerContext.Provider>
+        <ResizeObserver
+          disabled={!mergedOpen}
+          ref={setTargetRef}
+          onResize={onTargetResize}
+        >
+          <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
+            {triggerNode}
+          </TriggerWrapper>
+        </ResizeObserver>
+      </>
+    );
   });
 
-  // Child Node
-  const triggerNode = React.cloneElement(child, {
-    ...mergedChildrenProps,
-    ...passedProps,
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    Trigger.displayName = 'Trigger';
+  }
 
-  // Render
-  return (
-    <>
-      <TriggerContext.Provider value={context}>
-        <Popup
-          ref={setPopupRef}
-          prefixCls={prefixCls}
-          popup={popup}
-          className={classNames(popupClassName, alignedClassName)}
-          style={popupStyle}
-          target={targetEle}
-          onMouseEnter={onPopupMouseEnter}
-          onMouseLeave={onPopupMouseLeave}
-          zIndex={zIndex}
-          // Open
-          open={mergedOpen}
-          keepDom={inMotion}
-          // Click
-          onClick={onPopupClick}
-          // Mask
-          mask={mask}
-          // Motion
-          motion={mergePopupMotion}
-          maskMotion={mergeMaskMotion}
-          onVisibleChanged={onVisibleChanged}
-          onPrepare={onPrepare}
-          // Portal
-          forceRender={forceRender}
-          autoDestroy={mergedAutoDestroy}
-          getPopupContainer={getPopupContainer}
-          // Arrow
-          align={alignInfo}
-          arrow={arrow}
-          // Align
-          ready={ready}
-          offsetX={offsetX}
-          offsetY={offsetY}
-          arrowX={arrowX}
-          arrowY={arrowY}
-          onAlign={triggerAlign}
-          // Stretch
-          stretch={stretch}
-          targetWidth={targetWidth / scaleX}
-          targetHeight={targetHeight / scaleY}
-        />
-      </TriggerContext.Provider>
-      <ResizeObserver
-        disabled={!mergedOpen}
-        ref={setTargetRef}
-        onResize={onTargetResize}
-      >
-        <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
-          {triggerNode}
-        </TriggerWrapper>
-      </ResizeObserver>
-    </>
-  );
-});
-
-if (process.env.NODE_ENV !== 'production') {
-  Trigger.displayName = 'Trigger';
+  return Trigger;
 }
 
-export default Trigger;
+export default generateTrigger(Portal);

@@ -1,4 +1,3 @@
-import Portal from '@rc-component/portal';
 import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import CSSMotion from 'rc-motion';
@@ -45,6 +44,7 @@ export interface PopupProps {
   forceRender?: boolean;
   getPopupContainer?: TriggerProps['getPopupContainer'];
   autoDestroy?: boolean;
+  portal: React.ComponentType<any>;
 
   // Align
   ready: boolean;
@@ -93,6 +93,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     forceRender,
     getPopupContainer,
     autoDestroy,
+    portal: Portal,
 
     zIndex,
 
