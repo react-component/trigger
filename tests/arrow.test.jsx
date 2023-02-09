@@ -80,7 +80,6 @@ describe('Trigger.Arrow', () => {
 
         await awaitFakeTimer();
 
-        console.log(document.body.innerHTML);
         expect(document.querySelector('.rc-trigger-popup-arrow')).toHaveStyle(
           style,
         );
@@ -130,5 +129,31 @@ describe('Trigger.Arrow', () => {
         left: 0,
       },
     );
+
+    it('not aligned', async () => {
+      render(
+        <Trigger
+          popupVisible
+          popupAlign={{
+            points: ['cl', 'cr'],
+            autoArrow: false,
+          }}
+          popup={<strong>trigger</strong>}
+          arrow
+        >
+          <div />
+        </Trigger>,
+      );
+
+      await awaitFakeTimer();
+
+      // Not have other align style
+      const { style  } = document.querySelector('.rc-trigger-popup-arrow')
+      expect(style.position).toBeTruthy();
+      expect(style.left).toBeFalsy();
+      expect(style.right).toBeFalsy();
+      expect(style.top).toBeFalsy();
+      expect(style.bottom).toBeFalsy();
+    });
   });
 });
