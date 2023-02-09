@@ -148,7 +148,7 @@ describe('Trigger.Arrow', () => {
       await awaitFakeTimer();
 
       // Not have other align style
-      const { style  } = document.querySelector('.rc-trigger-popup-arrow')
+      const { style } = document.querySelector('.rc-trigger-popup-arrow');
       expect(style.position).toBeTruthy();
       expect(style.left).toBeFalsy();
       expect(style.right).toBeFalsy();
