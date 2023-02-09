@@ -35,7 +35,8 @@ export interface AlignType {
    * offset target node by offset[0] in x and offset[1] in y.
    * If targetOffset contains percentage string value, it is relative to targetNode region.
    */
-  targetOffset?: number[];
+  // zombieJ: removed in major version. Just keep def comment here in case we need it back.
+  // targetOffset?: number[];
   /**
    * If adjustX field is true, will adjust source node in x direction if source node is invisible.
    * If adjustY field is true, will adjust source node in y direction if source node is invisible.
