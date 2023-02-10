@@ -1,0 +1,83 @@
+/* eslint no-console:0 */
+import React from 'react';
+import '../../assets/index.less';
+import Trigger from '../../src';
+
+const builtinPlacements = {
+  topLeft: {
+    points: ['bl', 'tl'],
+    overflow: {
+      shiftX: 50,
+      adjustY: true,
+    },
+    offset: [0, 0],
+  },
+};
+
+const popupPlacement = 'topLeft';
+
+export default () => {
+  const containerRef = React.useRef<HTMLDivElement>();
+
+  React.useEffect(() => {
+    containerRef.current.scrollLeft = document.defaultView.innerWidth;
+    containerRef.current.scrollTop = document.defaultView.innerHeight;
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 64,
+        overflow: `auto`,
+        border: '1px solid red',
+      }}
+      ref={containerRef}
+    >
+      <div
+        style={{
+          width: `300vw`,
+          height: `300vh`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Trigger
+          arrow
+          popup={
+            <div
+              style={{
+                background: 'yellow',
+                border: '1px solid blue',
+                width: 200,
+                height: 60,
+                opacity: 0.9,
+              }}
+            >
+              Popup
+            </div>
+          }
+          popupVisible
+          getPopupContainer={() => containerRef.current}
+          popupPlacement={popupPlacement}
+          builtinPlacements={builtinPlacements}
+        >
+          <span
+            style={{
+              display: 'inline-block',
+              background: 'green',
+              color: '#FFF',
+              paddingBlock: 30,
+              paddingInline: 70,
+              opacity: 0.9,
+              transform: 'scale(0.6)',
+            }}
+          >
+            Target
+          </span>
+        </Trigger>
+      </div>
+    </div>
+  );
+};
