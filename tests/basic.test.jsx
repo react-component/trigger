@@ -828,4 +828,18 @@ describe('Trigger.Basic', () => {
 
     expect(onPopupClick).toHaveBeenCalled();
   });
+
+  it('find real dom node if children not support `forwardRef`', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const Node = () => <p />;
+
+    render(
+      <Trigger popup={<p>trigger</p>}>
+        <Node />
+      </Trigger>,
+    );
+
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
 });
