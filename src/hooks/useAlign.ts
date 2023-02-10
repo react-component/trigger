@@ -122,14 +122,23 @@ export default function useAlign(
       popupElement.style.top = '0';
 
       // Calculate align style, we should consider `transform` case
-      const targetRect = Array.isArray(target)
-        ? {
-            x: target[0],
-            y: target[1],
-            width: 0,
-            height: 0,
-          }
-        : target.getBoundingClientRect();
+      let targetRect: Rect;
+      if (Array.isArray(target)) {
+        targetRect = {
+          x: target[0],
+          y: target[1],
+          width: 0,
+          height: 0,
+        };
+      } else {
+        const rect = target.getBoundingClientRect();
+        targetRect = {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+        };
+      }
       const popupRect = popupElement.getBoundingClientRect();
       const { width, height } = win.getComputedStyle(popupElement);
       const { clientWidth, clientHeight } = doc.documentElement;
@@ -152,6 +161,16 @@ export default function useAlign(
       // Placement
       const placementInfo: AlignType =
         builtinPlacements[placement] || popupAlign || {};
+
+      // Offset
+      const { offset, targetOffset } = placementInfo;
+      const [popupOffsetX = 0, popupOffsetY = 0] = offset || [];
+      const [targetOffsetX = 0, targetOffsetY = 0] = targetOffset || [];
+
+      targetRect.x += targetOffsetX;
+      targetRect.y += targetOffsetY;
+
+      // Points
       const [popupPoint, targetPoint] = placementInfo.points || [];
       const targetPoints = splitPoints(targetPoint);
       const popupPoints = splitPoints(popupPoint);
@@ -164,11 +183,7 @@ export default function useAlign(
         ...placementInfo,
       };
 
-      // Offset
-      const { offset } = placementInfo;
-      const [popupOffsetX = 0, popupOffsetY = 0] = offset || [];
-
-      // Placement
+      // Next Offset
       let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x + popupOffsetX;
       let nextOffsetY = targetAlignPoint.y - popupAlignPoint.y + popupOffsetY;
 

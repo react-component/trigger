@@ -10,7 +10,8 @@ const builtinPlacements = {
       shiftX: 50,
       adjustY: true,
     },
-    offset: [0, -50],
+    offset: [0, 0],
+    targetOffset: [10, 0],
   },
   bottomLeft: {
     points: ['tl', 'bl'],
