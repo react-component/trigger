@@ -41,7 +41,9 @@ export function getAlignPopupClassName(
 
   for (let i = 0; i < placements.length; i += 1) {
     const placement = placements[i];
-    if (isPointsEq(builtinPlacements[placement]?.points, points, isAlignPoint)) {
+    if (
+      isPointsEq(builtinPlacements[placement]?.points, points, isAlignPoint)
+    ) {
       return `${prefixCls}-placement-${placement}`;
     }
   }
@@ -77,4 +79,22 @@ export function getMotion(
 
 export function getWin(ele: HTMLElement) {
   return ele.ownerDocument.defaultView;
+}
+
+export function collectScroller(ele: HTMLElement) {
+  const scrollerList: HTMLElement[] = [];
+  let current = ele?.parentElement;
+
+  const scrollStyle = ['hidden', 'scroll', 'auto'];
+
+  while (current) {
+    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
+    if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
+      scrollerList.push(current);
+    }
+
+    current = current.parentElement;
+  }
+
+  return scrollerList;
 }

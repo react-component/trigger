@@ -4,8 +4,32 @@ import '../../assets/index.less';
 import Trigger from '../../src';
 
 const builtinPlacements = {
-  topLeft: {
-    points: ['bl', 'tl'],
+  top: {
+    points: ['bc', 'tc'],
+    overflow: {
+      shiftX: 0,
+      adjustY: true,
+    },
+    offset: [0, 0],
+  },
+  left: {
+    points: ['cr', 'cl'],
+    overflow: {
+      adjustX: true,
+      shiftY: true,
+    },
+    offset: [0, 0],
+  },
+  right: {
+    points: ['cl', 'cr'],
+    overflow: {
+      adjustX: true,
+      shiftY: true,
+    },
+    offset: [0, 0],
+  },
+  bottom: {
+    points: ['tc', 'bc'],
     overflow: {
       shiftX: 50,
       adjustY: true,
@@ -14,7 +38,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'topLeft';
+const popupPlacement = 'top';
 
 export default () => {
   const containerRef = React.useRef<HTMLDivElement>();

@@ -7,7 +7,7 @@ import type {
   AlignPointTopBottom,
   AlignType,
 } from '../interface';
-import { getWin } from '../util';
+import { collectScroller, getWin } from '../util';
 
 type Rect = Record<'x' | 'y' | 'width' | 'height', number>;
 
@@ -107,6 +107,15 @@ export default function useAlign(
   });
   const alignCountRef = React.useRef(0);
 
+  const scrollerList = React.useMemo(() => {
+    if (!popupEle) {
+      return [];
+    }
+
+    return collectScroller(popupEle);
+  }, [popupEle]);
+
+  // ========================= Align =========================
   const onAlign = useEvent(() => {
     if (popupEle && target && open) {
       const popupElement = popupEle;
@@ -145,6 +154,43 @@ export default function useAlign(
 
       const popupHeight = popupRect.height;
       const popupWidth = popupRect.width;
+
+      // Get bounding of visible area
+      const visibleArea = {
+        left: 0,
+        top: 0,
+        right: clientWidth,
+        bottom: clientHeight,
+      };
+
+      (scrollerList || []).forEach((ele) => {
+        const eleRect = ele.getBoundingClientRect();
+        const {
+          offsetHeight: eleOutHeight,
+          clientHeight: eleInnerHeight,
+          offsetWidth: eleOutWidth,
+          clientWidth: eleInnerWidth,
+        } = ele;
+
+        const scaleX = toNum(
+          Math.round((eleRect.width / eleOutWidth) * 1000) / 1000,
+        );
+        const scaleY = toNum(
+          Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
+        );
+
+        const scrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
+        const scrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
+        const eleRight = eleRect.x + eleRect.width - scrollWidth;
+        const eleBottom = eleRect.y + eleRect.height - scrollHeight;
+
+        visibleArea.left = Math.max(visibleArea.left, eleRect.left);
+        visibleArea.top = Math.max(visibleArea.top, eleRect.top);
+        visibleArea.right = Math.min(visibleArea.right, eleRight);
+        visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
+      });
+
+      console.log('Final:', visibleArea);
 
       // Reset back
       popupElement.style.left = originLeft;
@@ -206,7 +252,7 @@ export default function useAlign(
       if (
         needAdjustY &&
         popupPoints[0] === 't' &&
-        nextPopupBottom > clientHeight
+        nextPopupBottom > visibleArea.bottom
       ) {
         nextOffsetY = targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
 
@@ -217,7 +263,7 @@ export default function useAlign(
       }
 
       // Top to Bottom
-      if (needAdjustY && popupPoints[0] === 'b' && nextPopupY < 0) {
+      if (needAdjustY && popupPoints[0] === 'b' && nextPopupY < visibleArea.top) {
         nextOffsetY = targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
 
         nextAlignInfo.points = [
@@ -237,7 +283,7 @@ export default function useAlign(
       if (
         needAdjustX &&
         popupPoints[1] === 'l' &&
-        nextPopupRight > clientWidth
+        nextPopupRight > visibleArea.right
       ) {
         nextOffsetX = targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
 
@@ -248,7 +294,7 @@ export default function useAlign(
       }
 
       // Left to Right
-      if (needAdjustX && popupPoints[1] === 'r' && nextPopupX < 0) {
+      if (needAdjustX && popupPoints[1] === 'r' && nextPopupX < visibleArea.left) {
         nextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
 
         nextAlignInfo.points = [
