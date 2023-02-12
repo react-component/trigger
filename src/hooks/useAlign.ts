@@ -190,8 +190,6 @@ export default function useAlign(
         visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
       });
 
-      console.log('Final:', visibleArea);
-
       // Reset back
       popupElement.style.left = originLeft;
       popupElement.style.top = originTop;
@@ -263,7 +261,11 @@ export default function useAlign(
       }
 
       // Top to Bottom
-      if (needAdjustY && popupPoints[0] === 'b' && nextPopupY < visibleArea.top) {
+      if (
+        needAdjustY &&
+        popupPoints[0] === 'b' &&
+        nextPopupY < visibleArea.top
+      ) {
         nextOffsetY = targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
 
         nextAlignInfo.points = [
@@ -294,7 +296,11 @@ export default function useAlign(
       }
 
       // Left to Right
-      if (needAdjustX && popupPoints[1] === 'r' && nextPopupX < visibleArea.left) {
+      if (
+        needAdjustX &&
+        popupPoints[1] === 'r' &&
+        nextPopupX < visibleArea.left
+      ) {
         nextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
 
         nextAlignInfo.points = [
@@ -307,20 +313,21 @@ export default function useAlign(
       const numShiftX = shiftX === true ? 0 : shiftX;
       if (typeof numShiftX === 'number') {
         // Left
-        if (nextPopupX < 0) {
-          nextOffsetX -= nextPopupX;
+        if (nextPopupX < visibleArea.left) {
+          nextOffsetX -= nextPopupX - visibleArea.left;
 
-          if (targetRect.x + targetRect.width < numShiftX) {
-            nextOffsetX += targetRect.x + targetRect.width - numShiftX;
+          if (targetRect.x + targetRect.width < visibleArea.left + numShiftX) {
+            nextOffsetX +=
+              targetRect.x - visibleArea.left + targetRect.width - numShiftX;
           }
         }
 
         // Right
-        if (nextPopupRight > clientWidth) {
-          nextOffsetX -= nextPopupRight - clientWidth;
+        if (nextPopupRight > visibleArea.right) {
+          nextOffsetX -= nextPopupRight - visibleArea.right;
 
-          if (targetRect.x > clientWidth - numShiftX) {
-            nextOffsetX += targetRect.x - clientWidth + numShiftX;
+          if (targetRect.x > visibleArea.right - numShiftX) {
+            nextOffsetX += targetRect.x - visibleArea.right + numShiftX;
           }
         }
       }
@@ -328,20 +335,21 @@ export default function useAlign(
       const numShiftY = shiftY === true ? 0 : shiftY;
       if (typeof numShiftY === 'number') {
         // Top
-        if (nextPopupY < 0) {
-          nextOffsetY -= nextPopupY;
+        if (nextPopupY < visibleArea.top) {
+          nextOffsetY -= nextPopupY - visibleArea.top;
 
-          if (targetRect.y + targetRect.height < numShiftY) {
-            nextOffsetY += targetRect.y + targetRect.height - numShiftY;
+          if (targetRect.y + targetRect.height < visibleArea.top + numShiftY) {
+            nextOffsetY +=
+              targetRect.y - visibleArea.top + targetRect.height - numShiftY;
           }
         }
 
         // Bottom
-        if (nextPopupBottom > clientHeight) {
-          nextOffsetY -= nextPopupBottom - clientHeight;
+        if (nextPopupBottom > visibleArea.bottom) {
+          nextOffsetY -= nextPopupBottom - visibleArea.bottom;
 
-          if (targetRect.y > clientHeight - numShiftY) {
-            nextOffsetY += targetRect.y - clientHeight + numShiftY;
+          if (targetRect.y > visibleArea.bottom - numShiftY) {
+            nextOffsetY += targetRect.y - visibleArea.bottom + numShiftY;
           }
         }
       }
