@@ -17,18 +17,6 @@ function isPointsEq(
   return a1[0] === a2[0] && a1[1] === a2[1];
 }
 
-export function getAlignFromPlacement(
-  builtinPlacements: BuildInPlacements,
-  placementStr: string,
-  align: AlignType,
-): AlignType {
-  const baseAlign = builtinPlacements[placementStr] || {};
-  return {
-    ...baseAlign,
-    ...align,
-  };
-}
-
 export function getAlignPopupClassName(
   builtinPlacements: BuildInPlacements,
   prefixCls: string,
