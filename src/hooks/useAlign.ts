@@ -240,11 +240,18 @@ export default function useAlign(
       const overflow = placementInfo.overflow || {};
       const { adjustX, adjustY, shiftX, shiftY } = overflow;
 
+      const supportAdjust = (val: boolean | number) => {
+        if (typeof val === 'boolean') {
+          return val;
+        }
+        return val >= 0;
+      };
+
       // >>>>>>>>>> Top & Bottom
       const nextPopupY = popupRect.y + nextOffsetY;
       const nextPopupBottom = nextPopupY + popupHeight;
 
-      const needAdjustY = adjustY === true || adjustY >= 0;
+      const needAdjustY = supportAdjust(adjustY);
 
       // Bottom to Top
       if (
@@ -278,7 +285,7 @@ export default function useAlign(
       const nextPopupX = popupRect.x + nextOffsetX;
       const nextPopupRight = nextPopupX + popupWidth;
 
-      const needAdjustX = adjustX === true || adjustX >= 0;
+      const needAdjustX = supportAdjust(adjustX);
 
       // >>>>> Flip
       // Right to Left
