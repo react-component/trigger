@@ -1,23 +1,5 @@
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import { getWin } from '../util';
-
-function collectScroller(ele: HTMLElement) {
-  const scrollerList: HTMLElement[] = [];
-  let current = ele?.parentElement;
-
-  const scrollStyle = ['hidden', 'scroll', 'auto'];
-
-  while (current) {
-    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
-    if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
-      scrollerList.push(current);
-    }
-
-    current = current.parentElement;
-  }
-
-  return scrollerList;
-}
+import { collectScroller, getWin } from '../util';
 
 export default function useWatch(
   open: boolean,
