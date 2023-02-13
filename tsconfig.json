@@ -13,6 +13,5 @@
       "@@/*": [".dumi/tmp/*"],
       "rc-trigger": ["src/index.tsx"]
     }
-  },
-  "include": [".dumi/**/*", ".dumirc.ts", "./src/**/*.ts", "./src/**/*.tsx", "./docs/**/*.tsx"]
+  }
 }
