@@ -3,11 +3,13 @@ import type { CSSMotionProps } from 'rc-motion';
 import CSSMotion from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import canUseDom from 'rc-util/lib/Dom/canUseDom';
 import * as React from 'react';
 import type { TriggerProps } from '../';
 import type { AlignType } from '../interface';
 import Arrow from './Arrow';
 import Mask from './Mask';
+import ServerPortal from './ServerPortal';
 
 export interface PopupProps {
   prefixCls: string;
@@ -93,7 +95,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     forceRender,
     getPopupContainer,
     autoDestroy,
-    portal: Portal,
+    portal,
 
     zIndex,
 
@@ -165,6 +167,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   if (!open) {
     miscStyle.pointerEvents = 'none';
   }
+
+  const Portal = canUseDom() ? portal: ServerPortal;
 
   return (
     <Portal
