@@ -3,6 +3,7 @@ import type { CSSMotionProps } from 'rc-motion';
 import CSSMotion from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import { composeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import type { TriggerProps } from '../';
 import type { AlignType } from '../interface';
@@ -180,54 +181,61 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
         motion={maskMotion}
       />
       <ResizeObserver onResize={onAlign} disabled={!open}>
-        <CSSMotion
-          motionAppear
-          motionEnter
-          motionLeave
-          removeOnLeave={false}
-          forceRender={forceRender}
-          leavedClassName={`${prefixCls}-hidden`}
-          {...motion}
-          onAppearPrepare={onPrepare}
-          onEnterPrepare={onPrepare}
-          visible={open}
-          onVisibleChanged={(nextVisible) => {
-            motion?.onVisibleChanged?.(nextVisible);
-            onVisibleChanged(nextVisible);
-          }}
-        >
-          {({ className: motionClassName, style: motionStyle }) => {
-            const cls = classNames(prefixCls, motionClassName, className);
+        {(resizeObserverRef) => {
+          return (
+            <CSSMotion
+              motionAppear
+              motionEnter
+              motionLeave
+              removeOnLeave={false}
+              forceRender={forceRender}
+              leavedClassName={`${prefixCls}-hidden`}
+              {...motion}
+              onAppearPrepare={onPrepare}
+              onEnterPrepare={onPrepare}
+              visible={open}
+              onVisibleChanged={(nextVisible) => {
+                motion?.onVisibleChanged?.(nextVisible);
+                onVisibleChanged(nextVisible);
+              }}
+            >
+              {(
+                { className: motionClassName, style: motionStyle },
+                motionRef,
+              ) => {
+                const cls = classNames(prefixCls, motionClassName, className);
 
-            return (
-              <div
-                ref={ref}
-                className={cls}
-                style={{
-                  ...offsetStyle,
-                  ...miscStyle,
-                  ...motionStyle,
-                  boxSizing: 'border-box',
-                  zIndex,
-                  ...style,
-                }}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                onClick={onClick}
-              >
-                {arrow && (
-                  <Arrow
-                    prefixCls={prefixCls}
-                    align={align}
-                    arrowX={arrowX}
-                    arrowY={arrowY}
-                  />
-                )}
-                {childNode}
-              </div>
-            );
-          }}
-        </CSSMotion>
+                return (
+                  <div
+                    ref={composeRef(resizeObserverRef, ref, motionRef)}
+                    className={cls}
+                    style={{
+                      ...offsetStyle,
+                      ...miscStyle,
+                      ...motionStyle,
+                      boxSizing: 'border-box',
+                      zIndex,
+                      ...style,
+                    }}
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}
+                    onClick={onClick}
+                  >
+                    {arrow && (
+                      <Arrow
+                        prefixCls={prefixCls}
+                        align={align}
+                        arrowX={arrowX}
+                        arrowY={arrowY}
+                      />
+                    )}
+                    {childNode}
+                  </div>
+                );
+              }}
+            </CSSMotion>
+          );
+        }}
       </ResizeObserver>
     </Portal>
   );

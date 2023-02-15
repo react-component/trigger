@@ -71,96 +71,98 @@ export default () => {
   }, []);
 
   return (
-    <div
-      id="demo-root"
-      ref={rootRef}
-      style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 16 }}
-    >
-      <input
-        type="number"
-        value={scale}
-        onChange={(e) => setScale(e.target.value)}
-        style={{
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          zIndex: 9999,
-        }}
-      />
+    <React.StrictMode>
       <div
-        id="demo-holder"
-        ref={popHolderRef}
-        style={{
-          position: 'relative',
-          width: 0,
-          height: 0,
-          zIndex: 999,
-          // Transform
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
-        }}
-      />
-      <div
-        ref={scrollRef}
-        style={{
-          border: '1px solid red',
-          padding: 10,
-          height: '100vh',
-          background: '#FFF',
-          position: 'relative',
-          overflow: 'auto',
-        }}
+        id="demo-root"
+        ref={rootRef}
+        style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 16 }}
       >
-        <div
+        <input
+          type="number"
+          value={scale}
+          onChange={(e) => setScale(e.target.value)}
           style={{
-            height: '200vh',
-            paddingTop: `100vh`,
-            width: 'calc(300vw)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'start',
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            zIndex: 9999,
+          }}
+        />
+        <div
+          id="demo-holder"
+          ref={popHolderRef}
+          style={{
+            position: 'relative',
+            width: 0,
+            height: 0,
+            zIndex: 999,
+            // Transform
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+          }}
+        />
+        <div
+          ref={scrollRef}
+          style={{
+            border: '1px solid red',
+            padding: 10,
+            height: '100vh',
+            background: '#FFF',
+            position: 'relative',
+            overflow: 'auto',
           }}
         >
-          <Trigger
-            arrow
-            forceRender
-            action="click"
-            popup={
-              <div
+          <div
+            style={{
+              height: '200vh',
+              paddingTop: `100vh`,
+              width: 'calc(300vw)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'start',
+            }}
+          >
+            <Trigger
+              arrow
+              // forceRender
+              action="click"
+              popup={
+                <div
+                  style={{
+                    background: 'yellow',
+                    border: '1px solid blue',
+                    width: 200,
+                    height: 60,
+                    opacity: 0.9,
+                  }}
+                >
+                  Popup
+                </div>
+              }
+              popupStyle={{ boxShadow: '0 0 5px red' }}
+              // popupVisible
+              // getPopupContainer={() => popHolderRef.current}
+              popupPlacement={popupPlacement}
+              builtinPlacements={builtinPlacements}
+              stretch="minWidth"
+            >
+              <span
                 style={{
-                  background: 'yellow',
-                  border: '1px solid blue',
-                  width: 200,
-                  height: 60,
+                  display: 'inline-block',
+                  background: 'green',
+                  color: '#FFF',
+                  paddingBlock: 30,
+                  paddingInline: 70,
                   opacity: 0.9,
+                  transform: 'scale(0.6)',
                 }}
               >
-                Popup
-              </div>
-            }
-            popupStyle={{ boxShadow: '0 0 5px red' }}
-            popupVisible
-            getPopupContainer={() => popHolderRef.current}
-            popupPlacement={popupPlacement}
-            builtinPlacements={builtinPlacements}
-            stretch="minWidth"
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                background: 'green',
-                color: '#FFF',
-                paddingBlock: 30,
-                paddingInline: 70,
-                opacity: 0.9,
-                transform: 'scale(0.6)',
-              }}
-            >
-              Target
-            </span>
-          </Trigger>
+                Target
+              </span>
+            </Trigger>
+          </div>
         </div>
       </div>
-    </div>
+    </React.StrictMode>
   );
 };
