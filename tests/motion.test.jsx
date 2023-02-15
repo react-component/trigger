@@ -39,7 +39,7 @@ describe('Trigger.Motion', () => {
     fireEvent.click(target);
 
     expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
-      'bamboo-enter',
+      'bamboo-appear',
     );
 
     expect(

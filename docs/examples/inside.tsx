@@ -51,7 +51,7 @@ export default () => {
   return (
     <div
       style={{
-        position: 'fixed',
+        position: 'absolute',
         inset: 64,
         overflow: `auto`,
         border: '1px solid red',

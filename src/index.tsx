@@ -121,7 +121,9 @@ export interface TriggerProps {
   // mobile?: MobileConfig;
 }
 
-export function generateTrigger(PortalComponent: React.ComponentType<any> = Portal) {
+export function generateTrigger(
+  PortalComponent: React.ComponentType<any> = Portal,
+) {
   const Trigger = React.forwardRef<TriggerRef, TriggerProps>((props, ref) => {
     const {
       prefixCls = 'rc-trigger-popup',
@@ -303,9 +305,13 @@ export function generateTrigger(PortalComponent: React.ComponentType<any> = Port
 
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
+    const mountRef = React.useRef(true);
 
     useLayoutEffect(() => {
-      setInMotion(true);
+      if (!mountRef.current || mergedOpen) {
+        setInMotion(true);
+      }
+      mountRef.current = true;
     }, [mergedOpen]);
 
     const [motionPrepareResolve, setMotionPrepareResolve] =
