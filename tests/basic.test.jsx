@@ -1,11 +1,16 @@
 /* eslint-disable max-classes-per-file */
 
-import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+} from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React, { createRef, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from '../src';
-import { placementAlignMap } from './util';
+import { placementAlignMap, awaitFakeTimer } from './util';
 
 describe('Trigger.Basic', () => {
   beforeEach(() => {
@@ -841,5 +846,49 @@ describe('Trigger.Basic', () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
+  });
+  it('should trigger align when popupAlign had updated', async () => {
+    const onPopupAlign = jest.fn();
+    const App = () => {
+      const [placementAlign, setPlacementAlign] = React.useState(
+        placementAlignMap.leftTop,
+      );
+      const [open, setOpen] = React.useState(true);
+      return (
+        <>
+          <Trigger
+            popupVisible={open}
+            popupAlign={placementAlign}
+            onPopupAlign={onPopupAlign}
+            popup={<strong className="x-content">tooltip2</strong>}
+          >
+            <div>
+              <div
+                id="btn"
+                onClick={() => {
+                  setPlacementAlign(prev => prev === placementAlignMap.left ? placementAlignMap.leftTop: placementAlignMap.left);
+                }}
+              >
+                click
+              </div>
+              <div id="close" onClick={() => {
+                setOpen(false);
+              }}>close</div>
+            </div>
+          </Trigger>
+        </>
+      );
+    };
+    render(<App />);
+    await awaitFakeTimer();
+    expect(onPopupAlign).toHaveBeenCalledTimes(1);
+    fireEvent.click(document.querySelector('#btn'));
+    await awaitFakeTimer();
+    expect(onPopupAlign).toHaveBeenCalledTimes(2);
+    fireEvent.click(document.querySelector('#close'));
+    await awaitFakeTimer();
+    fireEvent.click(document.querySelector('#btn'));
+    await awaitFakeTimer();
+    expect(onPopupAlign).toHaveBeenCalledTimes(2);
   });
 });

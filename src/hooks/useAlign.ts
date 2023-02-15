@@ -204,7 +204,7 @@ export default function useAlign(
 
       // Placement
       const placementInfo: AlignType =
-        builtinPlacements[placement] || popupAlign || {};
+        popupAlign || builtinPlacements[placement] || {};
 
       // Offset
       const { offset, targetOffset } = placementInfo;

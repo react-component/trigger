@@ -358,6 +358,11 @@ export function generateTrigger(
       triggerAlign();
     }, [mousePos]);
 
+    useLayoutEffect(() => {
+      if(!mergedOpen) return;
+      triggerAlign();
+    }, [JSON.stringify(popupAlign)]);
+
     const alignedClassName = React.useMemo(() => {
       const baseClassName = getAlignPopupClassName(
         builtinPlacements,
