@@ -3,6 +3,7 @@ import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React from 'react';
 import type { TriggerProps } from '../src';
 import Trigger from '../src';
+import { awaitFakeTimer } from "./util";
 
 import { _rs } from 'rc-resize-observer';
 
@@ -32,15 +33,6 @@ describe('Trigger.Align', () => {
     cleanup();
     jest.useRealTimers();
   });
-
-  async function awaitFakeTimer() {
-    for (let i = 0; i < 10; i += 1) {
-      await act(async () => {
-        jest.advanceTimersByTime(100);
-        await Promise.resolve();
-      });
-    }
-  }
 
   it('not show', async () => {
     const onAlign = jest.fn();

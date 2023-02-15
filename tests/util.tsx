@@ -1,3 +1,5 @@
+import { act } from "@testing-library/react";
+
 const autoAdjustOverflow = {
   adjustX: 1,
   adjustY: 1,
@@ -90,4 +92,14 @@ export function getMouseEvent(type: string, values = {}): FakeMouseEvent {
     ...values,
   };
   return new FakeMouseEvent(type, values);
+}
+
+
+export async function awaitFakeTimer() {
+  for (let i = 0; i < 10; i += 1) {
+    await act(async () => {
+      jest.advanceTimersByTime(100);
+      await Promise.resolve();
+    });
+  }
 }
