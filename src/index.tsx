@@ -349,9 +349,13 @@ export function generateTrigger(PortalComponent: React.ComponentType<any> = Port
     useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
 
     useLayoutEffect(() => {
+      triggerAlign();
+    }, [mousePos]);
+
+    useLayoutEffect(() => {
       if(!mergedOpen) return;
       triggerAlign();
-    }, [mousePos, JSON.stringify(popupAlign), mergedOpen]);
+    }, [JSON.stringify(popupAlign)]);
 
     const alignedClassName = React.useMemo(() => {
       const baseClassName = getAlignPopupClassName(
