@@ -3,7 +3,7 @@ import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React from 'react';
 import type { TriggerProps } from '../src';
 import Trigger from '../src';
-import { awaitFakeTimer } from "./util";
+import { awaitFakeTimer } from './util';
 
 import { _rs } from 'rc-resize-observer';
 
@@ -107,5 +107,27 @@ describe('Trigger.Align', () => {
 
     await awaitFakeTimer();
     expect(onAlign).toHaveBeenCalled();
+  });
+
+  it('placement is higher than popupAlign', async () => {
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        builtinPlacements={{
+          top: {},
+        }}
+        popupPlacement="top"
+        popupAlign={{}}
+      >
+        <span />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-top'),
+    ).toBeTruthy();
   });
 });
