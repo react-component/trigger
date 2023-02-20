@@ -388,10 +388,10 @@ export default function useAlign(
 
       setOffsetInfo({
         ready: true,
-        offsetX: nextOffsetX / scaleX,
-        offsetY: nextOffsetY / scaleY,
-        arrowX: nextArrowX / scaleX,
-        arrowY: nextArrowY / scaleY,
+        offsetX: Math.round(nextOffsetX / scaleX),
+        offsetY: Math.round(nextOffsetY / scaleY),
+        arrowX: Math.round(nextArrowX / scaleX),
+        arrowY: Math.round(nextArrowY / scaleY),
         scaleX,
         scaleY,
         align: nextAlignInfo,
