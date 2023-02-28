@@ -35,6 +35,7 @@ const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 10],
+    htmlRegion: 'scroll' as const,
   },
   left: {
     points: ['cr', 'cl'],
@@ -164,7 +165,7 @@ export default () => {
         </div>
       </div>
 
-      <div style={{ height: '100vh' }} />
+      {/* <div style={{ height: '100vh' }} /> */}
     </React.StrictMode>
   );
 };
