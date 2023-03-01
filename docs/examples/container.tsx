@@ -35,6 +35,7 @@ const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 10],
+    htmlRegion: 'scroll' as const,
   },
   left: {
     points: ['cr', 'cl'],
@@ -54,7 +55,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'topLeft';
+const popupPlacement = 'bottom';
 
 export default () => {
   console.log('Demo Render!');
@@ -140,7 +141,7 @@ export default () => {
                 </div>
               }
               popupStyle={{ boxShadow: '0 0 5px red' }}
-              // popupVisible
+              popupVisible
               // getPopupContainer={() => popHolderRef.current}
               popupPlacement={popupPlacement}
               builtinPlacements={builtinPlacements}
@@ -163,6 +164,8 @@ export default () => {
           </div>
         </div>
       </div>
+
+      {/* <div style={{ height: '100vh' }} /> */}
     </React.StrictMode>
   );
 };

@@ -126,6 +126,10 @@ export default function useAlign(
       const doc = popupElement.ownerDocument;
       const win = getWin(popupElement);
 
+      // Placement
+      const placementInfo: AlignType =
+        builtinPlacements[placement] || popupAlign || {};
+
       // Reset first
       popupElement.style.left = '0';
       popupElement.style.top = '0';
@@ -150,18 +154,34 @@ export default function useAlign(
       }
       const popupRect = popupElement.getBoundingClientRect();
       const { width, height } = win.getComputedStyle(popupElement);
-      const { clientWidth, clientHeight } = doc.documentElement;
+      const {
+        clientWidth,
+        clientHeight,
+        scrollWidth,
+        scrollHeight,
+        scrollTop,
+        scrollLeft,
+      } = doc.documentElement;
 
       const popupHeight = popupRect.height;
       const popupWidth = popupRect.width;
 
       // Get bounding of visible area
-      const visibleArea = {
-        left: 0,
-        top: 0,
-        right: clientWidth,
-        bottom: clientHeight,
-      };
+      const visibleArea =
+        placementInfo.htmlRegion === 'scroll'
+          ? // Scroll region should take scrollLeft & scrollTop into account
+            {
+              left: -scrollLeft,
+              top: -scrollTop,
+              right: scrollWidth - scrollLeft,
+              bottom: scrollHeight - scrollTop,
+            }
+          : {
+              left: 0,
+              top: 0,
+              right: clientWidth,
+              bottom: clientHeight,
+            };
 
       (scrollerList || []).forEach((ele) => {
         const eleRect = ele.getBoundingClientRect();
@@ -179,10 +199,10 @@ export default function useAlign(
           Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
         );
 
-        const scrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
-        const scrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
-        const eleRight = eleRect.x + eleRect.width - scrollWidth;
-        const eleBottom = eleRect.y + eleRect.height - scrollHeight;
+        const eleScrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
+        const eleScrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
+        const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
+        const eleBottom = eleRect.y + eleRect.height - eleScrollHeight;
 
         visibleArea.left = Math.max(visibleArea.left, eleRect.left);
         visibleArea.top = Math.max(visibleArea.top, eleRect.top);
@@ -201,10 +221,6 @@ export default function useAlign(
       const scaleY = toNum(
         Math.round((popupHeight / parseFloat(height)) * 1000) / 1000,
       );
-
-      // Placement
-      const placementInfo: AlignType =
-        builtinPlacements[placement] || popupAlign || {};
 
       // Offset
       const { offset, targetOffset } = placementInfo;
