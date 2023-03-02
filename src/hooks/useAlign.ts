@@ -199,11 +199,6 @@ export default function useAlign(
           Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
         );
 
-        // No need to align since it's not visible in view
-        if (scaleX === 0 || scaleY === 0) {
-          return;
-        }
-
         const eleScrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
         const eleScrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
         const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
@@ -226,6 +221,11 @@ export default function useAlign(
       const scaleY = toNum(
         Math.round((popupHeight / parseFloat(height)) * 1000) / 1000,
       );
+
+      // No need to align since it's not visible in view
+      if (scaleX === 0 || scaleY === 0) {
+        return;
+      }
 
       // Offset
       const { offset, targetOffset } = placementInfo;
