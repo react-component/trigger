@@ -579,6 +579,15 @@ export function generateTrigger(
     // Render
     return (
       <>
+        <ResizeObserver
+          disabled={!mergedOpen}
+          ref={setTargetRef}
+          onResize={onTargetResize}
+        >
+          <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
+            {triggerNode}
+          </TriggerWrapper>
+        </ResizeObserver>
         <TriggerContext.Provider value={context}>
           <Popup
             portal={PortalComponent}
@@ -623,15 +632,6 @@ export function generateTrigger(
             targetHeight={targetHeight / scaleY}
           />
         </TriggerContext.Provider>
-        <ResizeObserver
-          disabled={!mergedOpen}
-          ref={setTargetRef}
-          onResize={onTargetResize}
-        >
-          <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
-            {triggerNode}
-          </TriggerWrapper>
-        </ResizeObserver>
       </>
     );
   });
