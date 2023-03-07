@@ -12,11 +12,43 @@ const builtinPlacements = {
     },
     offset: [0, 0],
   },
+  topLeft: {
+    points: ['bl', 'tl'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+    offset: [0, 0],
+  },
+  topRight: {
+    points: ['br', 'tr'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+    offset: [0, 0],
+  },
   left: {
     points: ['cr', 'cl'],
     overflow: {
       adjustX: true,
       shiftY: true,
+    },
+    offset: [0, 0],
+  },
+  leftTop: {
+    points: ['tr', 'tl'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
+    },
+    offset: [0, 0],
+  },
+  leftBottom: {
+    points: ['br', 'bl'],
+    overflow: {
+      adjustX: true,
+      adjustY: true,
     },
     offset: [0, 0],
   },
@@ -38,7 +70,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'top';
+const popupPlacement = 'leftBottom';
 
 export default () => {
   const containerRef = React.useRef<HTMLDivElement>();

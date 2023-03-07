@@ -166,6 +166,9 @@ export default function useAlign(
       const popupHeight = popupRect.height;
       const popupWidth = popupRect.width;
 
+      const targetHeight = targetRect.height;
+      const targetWidth = targetRect.width;
+
       // Get bounding of visible area
       const visibleArea =
         placementInfo.htmlRegion === 'scroll'
@@ -274,13 +277,20 @@ export default function useAlign(
 
       const needAdjustY = supportAdjust(adjustY);
 
+      const sameTB = popupPoints[0] === targetPoints[0];
+
       // Bottom to Top
       if (
         needAdjustY &&
         popupPoints[0] === 't' &&
         nextPopupBottom > visibleArea.bottom
       ) {
-        nextOffsetY = targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
+        if (sameTB) {
+          nextOffsetY -= popupHeight - targetHeight;
+        } else {
+          nextOffsetY =
+            targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
+        }
 
         nextAlignInfo.points = [
           reversePoints(popupPoints, 0),
@@ -294,7 +304,12 @@ export default function useAlign(
         popupPoints[0] === 'b' &&
         nextPopupY < visibleArea.top
       ) {
-        nextOffsetY = targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
+        if (sameTB) {
+          nextOffsetY += popupHeight - targetHeight;
+        } else {
+          nextOffsetY =
+            targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
+        }
 
         nextAlignInfo.points = [
           reversePoints(popupPoints, 0),
@@ -309,13 +324,20 @@ export default function useAlign(
       const needAdjustX = supportAdjust(adjustX);
 
       // >>>>> Flip
+      const sameLR = popupPoints[1] === targetPoints[1];
+
       // Right to Left
       if (
         needAdjustX &&
         popupPoints[1] === 'l' &&
         nextPopupRight > visibleArea.right
       ) {
-        nextOffsetX = targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
+        if (sameLR) {
+          nextOffsetX -= popupWidth - targetWidth;
+        } else {
+          nextOffsetX =
+            targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
+        }
 
         nextAlignInfo.points = [
           reversePoints(popupPoints, 1),
@@ -329,7 +351,12 @@ export default function useAlign(
         popupPoints[1] === 'r' &&
         nextPopupX < visibleArea.left
       ) {
-        nextOffsetX = targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
+        if (sameLR) {
+          nextOffsetX += popupWidth - targetWidth;
+        } else {
+          nextOffsetX =
+            targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
+        }
 
         nextAlignInfo.points = [
           reversePoints(popupPoints, 1),
@@ -344,9 +371,9 @@ export default function useAlign(
         if (nextPopupX < visibleArea.left) {
           nextOffsetX -= nextPopupX - visibleArea.left;
 
-          if (targetRect.x + targetRect.width < visibleArea.left + numShiftX) {
+          if (targetRect.x + targetWidth < visibleArea.left + numShiftX) {
             nextOffsetX +=
-              targetRect.x - visibleArea.left + targetRect.width - numShiftX;
+              targetRect.x - visibleArea.left + targetWidth - numShiftX;
           }
         }
 
@@ -366,9 +393,9 @@ export default function useAlign(
         if (nextPopupY < visibleArea.top) {
           nextOffsetY -= nextPopupY - visibleArea.top;
 
-          if (targetRect.y + targetRect.height < visibleArea.top + numShiftY) {
+          if (targetRect.y + targetHeight < visibleArea.top + numShiftY) {
             nextOffsetY +=
-              targetRect.y - visibleArea.top + targetRect.height - numShiftY;
+              targetRect.y - visibleArea.top + targetHeight - numShiftY;
           }
         }
 
@@ -389,9 +416,9 @@ export default function useAlign(
       const popupBottom = popupTop + popupHeight;
 
       const targetLeft = targetRect.x;
-      const targetRight = targetLeft + targetRect.width;
+      const targetRight = targetLeft + targetWidth;
       const targetTop = targetRect.y;
-      const targetBottom = targetTop + targetRect.height;
+      const targetBottom = targetTop + targetHeight;
 
       const maxLeft = Math.max(popupLeft, targetLeft);
       const minRight = Math.min(popupRight, targetRight);
