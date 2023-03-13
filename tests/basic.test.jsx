@@ -896,7 +896,7 @@ describe('Trigger.Basic', () => {
     expect(onPopupAlign).toHaveBeenCalledTimes(2);
   });
 
-  it.only('popupVisible switch `undefined` and `false` should work', async () => {
+  it('popupVisible switch `undefined` and `false` should work', async () => {
     const Demo = (props) => (
       <Trigger
         action={['click']}
