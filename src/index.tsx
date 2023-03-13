@@ -5,7 +5,6 @@ import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import * as React from 'react';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
@@ -266,12 +265,24 @@ export function generateTrigger(
     );
 
     // ============================ Open ============================
-    const [mergedOpen, setMergedOpen] = useMergedState(
+    const [internalOpen, setInternalOpen] = React.useState(
       defaultPopupVisible || false,
-      {
-        value: popupVisible,
-      },
     );
+
+    // Render still use props as first priority
+    const mergedOpen = popupVisible ?? internalOpen;
+
+    // We use effect sync here in case `popupVisible` back to `undefined`
+    const setMergedOpen = useEvent((nextOpen: boolean) => {
+      if (popupVisible === undefined) {
+        setInternalOpen(nextOpen);
+      }
+    });
+
+    useLayoutEffect(() => {
+      setInternalOpen(popupVisible || false);
+    }, [popupVisible]);
+
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
 

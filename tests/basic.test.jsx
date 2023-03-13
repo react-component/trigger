@@ -1,16 +1,11 @@
 /* eslint-disable max-classes-per-file */
 
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-} from '@testing-library/react';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React, { createRef, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from '../src';
-import { placementAlignMap, awaitFakeTimer } from './util';
+import { awaitFakeTimer, placementAlignMap } from './util';
 
 describe('Trigger.Basic', () => {
   beforeEach(() => {
@@ -866,14 +861,23 @@ describe('Trigger.Basic', () => {
               <div
                 id="btn"
                 onClick={() => {
-                  setPlacementAlign(prev => prev === placementAlignMap.left ? placementAlignMap.leftTop: placementAlignMap.left);
+                  setPlacementAlign((prev) =>
+                    prev === placementAlignMap.left
+                      ? placementAlignMap.leftTop
+                      : placementAlignMap.left,
+                  );
                 }}
               >
                 click
               </div>
-              <div id="close" onClick={() => {
-                setOpen(false);
-              }}>close</div>
+              <div
+                id="close"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                close
+              </div>
             </div>
           </Trigger>
         </>
@@ -890,5 +894,33 @@ describe('Trigger.Basic', () => {
     fireEvent.click(document.querySelector('#btn'));
     await awaitFakeTimer();
     expect(onPopupAlign).toHaveBeenCalledTimes(2);
+  });
+
+  it.only('popupVisible switch `undefined` and `false` should work', async () => {
+    const Demo = (props) => (
+      <Trigger
+        action={['click']}
+        popupAlign={placementAlignMap.topRight}
+        popup={<strong>trigger</strong>}
+        {...props}
+      >
+        <div className="target">click</div>
+      </Trigger>
+    );
+
+    const { container, rerender } = render(<Demo />);
+
+    trigger(container, '.target');
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+
+    // Back to false
+    rerender(<Demo popupVisible={false} />);
+    await awaitFakeTimer();
+    expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
+
+    // Back to undefined
+    rerender(<Demo popupVisible={undefined} />);
+    await awaitFakeTimer();
+    expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
   });
 });
