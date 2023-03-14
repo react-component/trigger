@@ -223,10 +223,10 @@ export function generateTrigger(
 
     // =========================== Target ===========================
     // Use state to control here since `useRef` update not trigger render
-    const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
+    const [targetEle, setTargetEle] = React.useState<HTMLElement | SVGElement>(null);
 
-    const setTargetRef = React.useCallback((node: HTMLElement) => {
-      if (node instanceof HTMLElement) {
+    const setTargetRef = React.useCallback((node: HTMLElement | SVGElement) => {
+      if (node instanceof HTMLElement || node instanceof SVGElement) {
         setTargetEle(node);
       }
     }, []);

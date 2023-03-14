@@ -3,7 +3,7 @@ import { collectScroller, getWin } from '../util';
 
 export default function useWatch(
   open: boolean,
-  target: HTMLElement,
+  target: HTMLElement | SVGElement,
   popup: HTMLElement,
   onAlign: VoidFunction,
 ) {

@@ -70,7 +70,7 @@ function reversePoints(points: Points, index: number): string {
 export default function useAlign(
   open: boolean,
   popupEle: HTMLElement,
-  target: HTMLElement | [x: number, y: number],
+  target: HTMLElement | SVGElement | [x: number, y: number],
   placement: string,
   builtinPlacements: any,
   popupAlign?: AlignType,

@@ -15,7 +15,7 @@ export interface PopupProps {
   className?: string;
   style?: React.CSSProperties;
   popup?: TriggerProps['popup'];
-  target: HTMLElement;
+  target: HTMLElement | SVGElement;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   zIndex?: number;

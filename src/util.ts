@@ -69,7 +69,7 @@ export function getWin(ele: HTMLElement) {
   return ele.ownerDocument.defaultView;
 }
 
-export function collectScroller(ele: HTMLElement) {
+export function collectScroller(ele: HTMLElement | SVGElement) {
   const scrollerList: HTMLElement[] = [];
   let current = ele?.parentElement;
 
