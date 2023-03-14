@@ -226,7 +226,11 @@ export default function useAlign(
       );
 
       // No need to align since it's not visible in view
-      if (scaleX === 0 || scaleY === 0) {
+      if (
+        scaleX === 0 ||
+        scaleY === 0 ||
+        (target instanceof HTMLElement && !target.offsetParent)
+      ) {
         return;
       }
 

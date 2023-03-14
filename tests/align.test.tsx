@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React from 'react';
-import type { TriggerProps } from '../src';
+import type { TriggerProps, TriggerRef } from '../src';
 import Trigger from '../src';
 import { awaitFakeTimer } from './util';
 
@@ -14,6 +14,8 @@ export const triggerResize = (target: Element) => {
 };
 
 describe('Trigger.Align', () => {
+  let targetVisible = true;
+
   beforeAll(() => {
     spyElementPrototypes(HTMLDivElement, {
       getBoundingClientRect: () => ({
@@ -23,9 +25,16 @@ describe('Trigger.Align', () => {
         height: 100,
       }),
     });
+
+    spyElementPrototypes(HTMLElement, {
+      offsetParent: {
+        get: () => (targetVisible ? document.body : null),
+      },
+    });
   });
 
   beforeEach(() => {
+    targetVisible = true;
     jest.useFakeTimers();
   });
 
@@ -129,5 +138,42 @@ describe('Trigger.Align', () => {
     expect(
       document.querySelector('.rc-trigger-popup-placement-top'),
     ).toBeTruthy();
+  });
+
+  it('invisible should not align', async () => {
+    const onPopupAlign = jest.fn();
+    const triggerRef = React.createRef<TriggerRef>();
+
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        popupAlign={{}}
+        onPopupAlign={onPopupAlign}
+        ref={triggerRef}
+      >
+        <span />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    expect(onPopupAlign).toHaveBeenCalled();
+    onPopupAlign.mockReset();
+
+    for (let i = 0; i < 10; i += 1) {
+      triggerRef.current!.forceAlign();
+
+      await awaitFakeTimer();
+      expect(onPopupAlign).toHaveBeenCalled();
+      onPopupAlign.mockReset();
+    }
+
+    // Make invisible
+    targetVisible = false;
+
+    triggerRef.current!.forceAlign();
+    await awaitFakeTimer();
+    expect(onPopupAlign).not.toHaveBeenCalled();
   });
 });

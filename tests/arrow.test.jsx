@@ -8,6 +8,14 @@ import {
 import Trigger from '../src';
 
 describe('Trigger.Arrow', () => {
+  beforeAll(() => {
+    spyElementPrototypes(HTMLElement, {
+      offsetParent: {
+        get: () => document.body,
+      },
+    });
+  });
+
   beforeEach(() => {
     jest.useFakeTimers();
   });
