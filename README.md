@@ -1,11 +1,11 @@
-# rc-trigger
+# @rc-component/trigger
 
 React Trigger Component
 
-[![NPM version][npm-image]][npm-url] [![build status][github-actions-image]][github-actions-url] [![Test coverage][coveralls-image]][coveralls-url] [![Dependencies][david-image]][david-url] [![DevDependencies][david-dev-image]][david-dev-url] [![npm download][download-image]][download-url] [![bundle size][bundlephobia-image]][bundlephobia-url] [![dumi][dumi-image]][dumi-url]
+[![NPM version][npm-image]][npm-url] [![build status][github-actions-image]][github-actions-url] [![Test coverage][coveralls-image]][coveralls-url] [![npm download][download-image]][download-url] [![bundle size][bundlephobia-image]][bundlephobia-url] [![dumi][dumi-image]][dumi-url]
 
-[npm-image]: http://img.shields.io/npm/v/rc-trigger.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/rc-trigger
+[npm-image]: http://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square
+[npm-url]: http://npmjs.org/package/@rc-component/trigger
 [github-actions-image]: https://github.com/react-component/trigger/workflows/CI/badge.svg
 [github-actions-url]: https://github.com/react-component/trigger/actions
 [circleci-image]: https://img.shields.io/circleci/react-component/trigger/master?style=flat-square
@@ -16,16 +16,16 @@ React Trigger Component
 [david-image]: https://david-dm.org/react-component/trigger/status.svg?style=flat-square
 [david-dev-url]: https://david-dm.org/react-component/trigger?type=dev
 [david-dev-image]: https://david-dm.org/react-component/trigger/dev-status.svg?style=flat-square
-[download-image]: https://img.shields.io/npm/dm/rc-trigger.svg?style=flat-square
-[download-url]: https://npmjs.org/package/rc-trigger
-[bundlephobia-url]: https://bundlephobia.com/result?p=rc-trigger
-[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-trigger
+[download-image]: https://img.shields.io/npm/dm/@rc-component/trigger.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@rc-component/trigger
+[bundlephobia-url]: https://bundlephobia.com/result?p=@rc-component/trigger
+[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/@rc-component/trigger
 [dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
 [dumi-url]: https://github.com/umijs/dumi
 
 ## Install
 
-[![rc-trigger](https://nodei.co/npm/rc-trigger.png)](https://npmjs.org/package/rc-trigger)
+[![@rc-component/trigger](https://nodei.co/npm/@rc-component/trigger.png)](https://npmjs.org/package/@rc-component/trigger)
 
 ## Usage
 
@@ -34,7 +34,7 @@ Include the default [styling](https://github.com/react-component/trigger/blob/ma
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Trigger from 'rc-trigger';
+import Trigger from '@rc-component/trigger';
 
 ReactDOM.render((
   <Trigger
