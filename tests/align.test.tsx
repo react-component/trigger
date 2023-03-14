@@ -23,6 +23,12 @@ describe('Trigger.Align', () => {
         height: 100,
       }),
     });
+
+    spyElementPrototypes(HTMLElement, {
+      offsetParent: {
+        get: () => document.body,
+      },
+    });
   });
 
   beforeEach(() => {
