@@ -61,6 +61,7 @@ export default () => {
   console.log('Demo Render!');
 
   const [scale, setScale] = React.useState('1');
+  const [targetVisible, setTargetVisible] = React.useState(true);
 
   const rootRef = React.useRef<HTMLDivElement>();
   const popHolderRef = React.useRef<HTMLDivElement>();
@@ -78,17 +79,28 @@ export default () => {
         ref={rootRef}
         style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 16 }}
       >
-        <input
-          type="number"
-          value={scale}
-          onChange={(e) => setScale(e.target.value)}
+        <div
           style={{
             position: 'fixed',
             left: 0,
             top: 0,
             zIndex: 9999,
           }}
-        />
+        >
+          <input
+            type="number"
+            value={scale}
+            onChange={(e) => setScale(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setTargetVisible((v) => !v);
+            }}
+          >
+            Target Visible: ({String(targetVisible)})
+          </button>
+        </div>
         <div
           id="demo-holder"
           ref={popHolderRef}
@@ -149,13 +161,13 @@ export default () => {
             >
               <span
                 style={{
-                  display: 'inline-block',
                   background: 'green',
                   color: '#FFF',
                   paddingBlock: 30,
                   paddingInline: 70,
                   opacity: 0.9,
                   transform: 'scale(0.6)',
+                  display: targetVisible ? 'inline-block' : 'none',
                 }}
               >
                 Target
