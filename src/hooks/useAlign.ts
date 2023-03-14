@@ -1,4 +1,4 @@
-import isVisible from 'rc-util/lib/dom/isVisible';
+import isVisible from 'rc-util/lib/Dom/isVisible';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
