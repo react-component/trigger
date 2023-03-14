@@ -1,3 +1,4 @@
+import isVisible from 'rc-util/lib/dom/isVisible';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
@@ -229,7 +230,7 @@ export default function useAlign(
       if (
         scaleX === 0 ||
         scaleY === 0 ||
-        (target instanceof HTMLElement && !target.offsetParent)
+        (target instanceof HTMLElement && !isVisible(target))
       ) {
         return;
       }
