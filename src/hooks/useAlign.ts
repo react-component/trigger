@@ -128,8 +128,10 @@ export default function useAlign(
       const win = getWin(popupElement);
 
       // Placement
-      const placementInfo: AlignType =
-        builtinPlacements[placement] || popupAlign || {};
+      const placementInfo: AlignType = {
+        ...builtinPlacements[placement],
+        ...popupAlign,
+      };
 
       // Reset first
       popupElement.style.left = '0';

@@ -176,4 +176,33 @@ describe('Trigger.Align', () => {
     await awaitFakeTimer();
     expect(onPopupAlign).not.toHaveBeenCalled();
   });
+
+  it('align should merge into placement', async () => {
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        builtinPlacements={{
+          top: {
+            targetOffset: [0, 0],
+          },
+        }}
+        popupPlacement="top"
+        popupAlign={{
+          targetOffset: [903, 1128],
+        }}
+      >
+        <span />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-top'),
+    ).toHaveStyle({
+      left: `753px`,
+      top: `978px`,
+    });
+  });
 });
