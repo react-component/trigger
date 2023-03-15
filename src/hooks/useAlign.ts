@@ -1,3 +1,4 @@
+import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
 import isVisible from 'rc-util/lib/Dom/isVisible';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
@@ -232,7 +233,7 @@ export default function useAlign(
       if (
         scaleX === 0 ||
         scaleY === 0 ||
-        (target instanceof HTMLElement && !isVisible(target))
+        (isDOM(target) && !isVisible(target))
       ) {
         return;
       }

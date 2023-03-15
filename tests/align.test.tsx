@@ -31,6 +31,11 @@ describe('Trigger.Align', () => {
         get: () => (targetVisible ? document.body : null),
       },
     });
+    spyElementPrototypes(SVGElement, {
+      offsetParent: {
+        get: () => (targetVisible ? document.body : null),
+      },
+    });
   });
 
   beforeEach(() => {
@@ -192,7 +197,7 @@ describe('Trigger.Align', () => {
           targetOffset: [903, 1128],
         }}
       >
-        <span />
+        <svg />
       </Trigger>,
     );
 
