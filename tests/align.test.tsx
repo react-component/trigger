@@ -192,7 +192,7 @@ describe('Trigger.Align', () => {
           targetOffset: [903, 1128],
         }}
       >
-        <span />
+        <svg />
       </Trigger>,
     );
 
