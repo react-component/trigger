@@ -129,7 +129,9 @@ export default function useAlign(
 
       // Placement
       const placementInfo: AlignType =
-        builtinPlacements[placement] || popupAlign || {};
+        {...builtinPlacements[placement],
+          ...popupAlign,
+        };
 
       // Reset first
       popupElement.style.left = '0';
