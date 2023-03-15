@@ -1,4 +1,4 @@
-import isVisible from 'rc-util/lib/Dom/isVisible';
+import isVisible from 'rc-util/lib/dom/isVisible';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
@@ -128,10 +128,10 @@ export default function useAlign(
       const win = getWin(popupElement);
 
       // Placement
-      const placementInfo: AlignType =
-        {...builtinPlacements[placement],
-          ...popupAlign,
-        };
+      const placementInfo: AlignType = {
+        ...builtinPlacements[placement],
+        ...popupAlign,
+      };
 
       // Reset first
       popupElement.style.left = '0';
