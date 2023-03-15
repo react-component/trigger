@@ -198,8 +198,6 @@ describe('Trigger.Align', () => {
 
     await awaitFakeTimer();
 
-    console.log(document.body.innerHTML);
-
     expect(
       document.querySelector('.rc-trigger-popup-placement-top'),
     ).toHaveStyle({
