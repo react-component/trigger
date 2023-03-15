@@ -31,6 +31,11 @@ describe('Trigger.Align', () => {
         get: () => (targetVisible ? document.body : null),
       },
     });
+    spyElementPrototypes(SVGElement, {
+      offsetParent: {
+        get: () => (targetVisible ? document.body : null),
+      },
+    });
   });
 
   beforeEach(() => {
