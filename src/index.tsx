@@ -2,10 +2,10 @@ import Portal from '@rc-component/portal';
 import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
+import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
 import * as React from 'react';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
@@ -214,23 +214,23 @@ export function generateTrigger(
     const id = useId();
     const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
 
-    const setPopupRef = React.useCallback((node: HTMLDivElement) => {
-      if (isDOM(node)) {
+    const setPopupRef = useEvent((node: HTMLDivElement) => {
+      if (isDOM(node) && popupEle !== node) {
         setPopupEle(node);
       }
 
       parentContext?.registerSubPopup(id, node);
-    }, []);
+    });
 
     // =========================== Target ===========================
     // Use state to control here since `useRef` update not trigger render
     const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
 
-    const setTargetRef = React.useCallback((node: HTMLElement) => {
-      if (isDOM(node)) {
+    const setTargetRef = useEvent((node: HTMLElement) => {
+      if (isDOM(node) && targetEle !== node) {
         setTargetEle(node);
       }
-    }, []);
+    });
 
     // ========================== Children ==========================
     const child = React.Children.only(children) as React.ReactElement;
