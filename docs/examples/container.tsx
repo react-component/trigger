@@ -55,7 +55,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'bottom';
+const popupPlacement = 'right';
 
 export default () => {
   console.log('Demo Render!');

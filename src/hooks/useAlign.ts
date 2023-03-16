@@ -267,6 +267,25 @@ export default function useAlign(
       let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x + popupOffsetX;
       let nextOffsetY = targetAlignPoint.y - popupAlignPoint.y + popupOffsetY;
 
+      // ============== Intersection ===============
+      // Get area by position. Used for check if flip area is better
+      function getIntersectionVisibleArea(x: number, y: number) {
+        const r = x + popupWidth;
+        const b = y + popupHeight;
+
+        const visibleX = Math.max(x, visibleArea.left);
+        const visibleY = Math.max(y, visibleArea.top);
+        const visibleR = Math.min(r, visibleArea.right);
+        const visibleB = Math.min(b, visibleArea.bottom);
+
+        return (visibleR - visibleX) * (visibleB - visibleY);
+      }
+
+      const originIntersectionVisibleArea = getIntersectionVisibleArea(
+        nextOffsetX,
+        nextOffsetY,
+      );
+
       // ================ Overflow =================
       const targetAlignPointTL = getAlignPoint(targetRect, ['t', 'l']);
       const popupAlignPointTL = getAlignPoint(popupRect, ['t', 'l']);
@@ -297,17 +316,26 @@ export default function useAlign(
         popupPoints[0] === 't' &&
         nextPopupBottom > visibleArea.bottom
       ) {
+        let tmpNextOffsetY: number;
+
         if (sameTB) {
-          nextOffsetY -= popupHeight - targetHeight;
+          tmpNextOffsetY -= popupHeight - targetHeight;
         } else {
-          nextOffsetY =
+          tmpNextOffsetY =
             targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
         }
 
-        nextAlignInfo.points = [
-          reversePoints(popupPoints, 0),
-          reversePoints(targetPoints, 0),
-        ];
+        if (
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >
+          originIntersectionVisibleArea
+        ) {
+          nextOffsetY = tmpNextOffsetY;
+
+          nextAlignInfo.points = [
+            reversePoints(popupPoints, 0),
+            reversePoints(targetPoints, 0),
+          ];
+        }
       }
 
       // Top to Bottom
@@ -316,17 +344,26 @@ export default function useAlign(
         popupPoints[0] === 'b' &&
         nextPopupY < visibleArea.top
       ) {
+        let tmpNextOffsetY: number;
+
         if (sameTB) {
-          nextOffsetY += popupHeight - targetHeight;
+          tmpNextOffsetY += popupHeight - targetHeight;
         } else {
-          nextOffsetY =
+          tmpNextOffsetY =
             targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
         }
 
-        nextAlignInfo.points = [
-          reversePoints(popupPoints, 0),
-          reversePoints(targetPoints, 0),
-        ];
+        if (
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >
+          originIntersectionVisibleArea
+        ) {
+          nextOffsetY = tmpNextOffsetY;
+
+          nextAlignInfo.points = [
+            reversePoints(popupPoints, 0),
+            reversePoints(targetPoints, 0),
+          ];
+        }
       }
 
       // >>>>>>>>>> Left & Right
@@ -344,17 +381,26 @@ export default function useAlign(
         popupPoints[1] === 'l' &&
         nextPopupRight > visibleArea.right
       ) {
+        let tmpNextOffsetX: number;
+
         if (sameLR) {
-          nextOffsetX -= popupWidth - targetWidth;
+          tmpNextOffsetX -= popupWidth - targetWidth;
         } else {
-          nextOffsetX =
+          tmpNextOffsetX =
             targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
         }
 
-        nextAlignInfo.points = [
-          reversePoints(popupPoints, 1),
-          reversePoints(targetPoints, 1),
-        ];
+        if (
+          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >
+          originIntersectionVisibleArea
+        ) {
+          nextOffsetX = tmpNextOffsetX;
+
+          nextAlignInfo.points = [
+            reversePoints(popupPoints, 1),
+            reversePoints(targetPoints, 1),
+          ];
+        }
       }
 
       // Left to Right
@@ -363,17 +409,26 @@ export default function useAlign(
         popupPoints[1] === 'r' &&
         nextPopupX < visibleArea.left
       ) {
+        let tmpNextOffsetX: number;
+
         if (sameLR) {
-          nextOffsetX += popupWidth - targetWidth;
+          tmpNextOffsetX += popupWidth - targetWidth;
         } else {
-          nextOffsetX =
+          tmpNextOffsetX =
             targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
         }
 
-        nextAlignInfo.points = [
-          reversePoints(popupPoints, 1),
-          reversePoints(targetPoints, 1),
-        ];
+        if (
+          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >
+          originIntersectionVisibleArea
+        ) {
+          nextOffsetX = tmpNextOffsetX;
+
+          nextAlignInfo.points = [
+            reversePoints(popupPoints, 1),
+            reversePoints(targetPoints, 1),
+          ];
+        }
       }
 
       // >>>>> Shift
