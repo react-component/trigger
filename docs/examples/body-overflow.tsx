@@ -4,6 +4,8 @@ import React from 'react';
 import '../../assets/index.less';
 
 export default () => {
+  const [open, setOpen] = React.useState(false);
+
   return (
     <React.StrictMode>
       <style
@@ -19,7 +21,13 @@ export default () => {
       <Trigger
         arrow
         // forceRender
-        action="click"
+        // action="click"
+        popupVisible={open}
+        onPopupVisibleChange={(next) => {
+          console.log('Visible Change:', next);
+          setOpen(next);
+        }}
+        popupTransitionName="rc-trigger-popup-zoom"
         popup={
           <div
             style={{
@@ -30,9 +38,16 @@ export default () => {
               opacity: 0.9,
             }}
           >
-            Popup
+            <button
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              Close
+            </button>
           </div>
         }
+        // popupVisible
         popupStyle={{ boxShadow: '0 0 5px red' }}
         popupAlign={{
           points: ['tc', 'bc'],
@@ -40,7 +55,6 @@ export default () => {
             shiftX: 50,
             adjustY: true,
           },
-          offset: [0, -10],
           htmlRegion: 'scroll',
         }}
       >
