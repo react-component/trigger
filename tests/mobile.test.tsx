@@ -50,7 +50,9 @@ describe('Trigger.Mobile', () => {
     expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
   });
 
+  // ====================================================================================
   // ZombieJ: back when we plan to support mobile
+
   function getTrigger(props?: any) {
     return (
       <Trigger
@@ -67,7 +69,7 @@ describe('Trigger.Mobile', () => {
     );
   }
 
-  it('mobile config', () => {
+  it.skip('mobile config', () => {
     const { container } = render(
       getTrigger({
         mobile: {
@@ -88,7 +90,7 @@ describe('Trigger.Mobile', () => {
     });
   });
 
-  it('popupRender', () => {
+  it.skip('popupRender', () => {
     const { container } = render(
       getTrigger({
         mobile: {
@@ -106,7 +108,7 @@ describe('Trigger.Mobile', () => {
     expect(document.querySelector('.rc-trigger-popup')).toMatchSnapshot();
   });
 
-  it('click inside not close', () => {
+  it.skip('click inside not close', () => {
     const triggerRef = React.createRef<any>();
     const { container } = render(getTrigger({ ref: triggerRef }));
     fireEvent.click(container.querySelector('.target'));
@@ -121,7 +123,7 @@ describe('Trigger.Mobile', () => {
     expect(triggerRef.current.state.popupVisible).toBeFalsy();
   });
 
-  it('legacy array children', () => {
+  it.skip('legacy array children', () => {
     const { container } = render(
       getTrigger({
         popup: [<div key={0}>Light</div>, <div key={1}>Bamboo</div>],
