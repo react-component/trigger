@@ -1,100 +1,137 @@
-import React, { createRef } from 'react';
-import isMobile from 'rc-util/lib/isMobile';
 import { act, fireEvent, render } from '@testing-library/react';
-import type { TriggerProps } from '../src';
+import isMobile from 'rc-util/lib/isMobile';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
 
 jest.mock('rc-util/lib/isMobile');
 
-describe.skip('Trigger.Mobile', () => {
+describe('Trigger.Mobile', () => {
   beforeAll(() => {
     (isMobile as any).mockImplementation(() => true);
   });
 
-  function getTrigger(
-    props?: Partial<
-      TriggerProps & React.ClassAttributes<InstanceType<typeof Trigger>>
-    >,
-  ) {
-    return (
-      <Trigger
-        action={['click']}
-        popupAlign={placementAlignMap.left}
-        popup={<strong className="x-content" />}
-        mask
-        maskClosable
-        mobile={{}}
-        {...props}
-      >
-        <div className="target">click</div>
-      </Trigger>
-    );
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
+  function flush() {
+    act(() => {
+      jest.runAllTimers();
+    });
   }
 
-  it('mobile config', () => {
-    const { container } = render(
-      getTrigger({
-        mobile: {
-          popupClassName: 'mobile-popup',
-          popupStyle: { background: 'red' },
-        },
-      }),
+  it('auto change hover to click', () => {
+    render(
+      <Trigger
+        popupAlign={placementAlignMap.left}
+        popup={<strong>trigger</strong>}
+      >
+        <div className="target" />
+      </Trigger>,
     );
 
-    fireEvent.click(container.querySelector('.target'));
+    flush();
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
 
-    expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
-      'mobile-popup',
-    );
+    // Hover not work
+    fireEvent.mouseEnter(document.querySelector('.target'));
+    flush();
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
 
-    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
-      background: 'red',
-    });
+    // Click work
+    fireEvent.click(document.querySelector('.target'));
+    flush();
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
   });
 
-  it('popupRender', () => {
-    const { container } = render(
-      getTrigger({
-        mobile: {
-          popupRender: (node) => (
-            <>
-              <div>Light</div>
-              {node}
-            </>
-          ),
-        },
-      }),
-    );
+  // function getTrigger(
+  //   props?: Partial<
+  //     TriggerProps & React.ClassAttributes<InstanceType<typeof Trigger>>
+  //   >,
+  // ) {
+  //   return (
+  //     <Trigger
+  //       action={['click']}
+  //       popupAlign={placementAlignMap.left}
+  //       popup={<strong className="x-content" />}
+  //       mask
+  //       maskClosable
+  //       mobile={{}}
+  //       {...props}
+  //     >
+  //       <div className="target">click</div>
+  //     </Trigger>
+  //   );
+  // }
 
-    fireEvent.click(container.querySelector('.target'));
-    expect(document.querySelector('.rc-trigger-popup')).toMatchSnapshot();
-  });
+  // it('mobile config', () => {
+  //   const { container } = render(
+  //     getTrigger({
+  //       mobile: {
+  //         popupClassName: 'mobile-popup',
+  //         popupStyle: { background: 'red' },
+  //       },
+  //     }),
+  //   );
 
-  it('click inside not close', () => {
-    const triggerRef = createRef<InstanceType<typeof Trigger>>();
-    const { container } = render(getTrigger({ ref: triggerRef }));
-    fireEvent.click(container.querySelector('.target'));
-    expect(triggerRef.current.state.popupVisible).toBeTruthy();
-    fireEvent.click(document.querySelector('.x-content'));
-    expect(triggerRef.current.state.popupVisible).toBeTruthy();
+  //   fireEvent.click(container.querySelector('.target'));
 
-    // Document click
-    act(() => {
-      fireEvent.mouseDown(document);
-    });
-    expect(triggerRef.current.state.popupVisible).toBeFalsy();
-  });
+  //   expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
+  //     'mobile-popup',
+  //   );
 
-  it('legacy array children', () => {
-    const { container } = render(
-      getTrigger({
-        popup: [<div key={0}>Light</div>, <div key={1}>Bamboo</div>],
-      }),
-    );
-    fireEvent.click(container.querySelector('.target'));
-    expect(document.querySelectorAll('.rc-trigger-popup-content')).toHaveLength(
-      1,
-    );
-  });
+  //   expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+  //     background: 'red',
+  //   });
+  // });
+
+  // it('popupRender', () => {
+  //   const { container } = render(
+  //     getTrigger({
+  //       mobile: {
+  //         popupRender: (node) => (
+  //           <>
+  //             <div>Light</div>
+  //             {node}
+  //           </>
+  //         ),
+  //       },
+  //     }),
+  //   );
+
+  //   fireEvent.click(container.querySelector('.target'));
+  //   expect(document.querySelector('.rc-trigger-popup')).toMatchSnapshot();
+  // });
+
+  // it('click inside not close', () => {
+  //   const triggerRef = createRef<InstanceType<typeof Trigger>>();
+  //   const { container } = render(getTrigger({ ref: triggerRef }));
+  //   fireEvent.click(container.querySelector('.target'));
+  //   expect(triggerRef.current.state.popupVisible).toBeTruthy();
+  //   fireEvent.click(document.querySelector('.x-content'));
+  //   expect(triggerRef.current.state.popupVisible).toBeTruthy();
+
+  //   // Document click
+  //   act(() => {
+  //     fireEvent.mouseDown(document);
+  //   });
+  //   expect(triggerRef.current.state.popupVisible).toBeFalsy();
+  // });
+
+  // it('legacy array children', () => {
+  //   const { container } = render(
+  //     getTrigger({
+  //       popup: [<div key={0}>Light</div>, <div key={1}>Bamboo</div>],
+  //     }),
+  //   );
+  //   fireEvent.click(container.querySelector('.target'));
+  //   expect(document.querySelectorAll('.rc-trigger-popup-content')).toHaveLength(
+  //     1,
+  //   );
+  // });
 });

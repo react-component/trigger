@@ -199,7 +199,7 @@ export function generateTrigger(
 
     // =========================== Mobile ===========================
     const [mobile, setMobile] = React.useState(false);
-    React.useEffect(() => {
+    useLayoutEffect(() => {
       setMobile(isMobile());
     }, []);
 
