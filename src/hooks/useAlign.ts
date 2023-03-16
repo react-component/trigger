@@ -191,6 +191,10 @@ export default function useAlign(
             };
 
       (scrollerList || []).forEach((ele) => {
+        if (ele instanceof HTMLBodyElement) {
+          return;
+        }
+
         const eleRect = ele.getBoundingClientRect();
         const {
           offsetHeight: eleOutHeight,
