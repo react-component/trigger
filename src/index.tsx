@@ -6,6 +6,7 @@ import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import isMobile from 'rc-util/lib/isMobile';
 import * as React from 'react';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
@@ -195,6 +196,12 @@ export function generateTrigger(
     } = props;
 
     const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
+
+    // =========================== Mobile ===========================
+    const [mobile, setMobile] = React.useState(false);
+    useLayoutEffect(() => {
+      setMobile(isMobile());
+    }, []);
 
     // ========================== Context ===========================
     const subPopupElements = React.useRef<Record<string, HTMLElement>>({});
@@ -435,6 +442,7 @@ export function generateTrigger(
 
     // =========================== Action ===========================
     const [showActions, hideActions] = useAction(
+      mobile,
       action,
       showAction,
       hideAction,

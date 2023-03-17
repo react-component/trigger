@@ -1,22 +1,59 @@
-import React, { createRef } from 'react';
-import isMobile from 'rc-util/lib/isMobile';
 import { act, fireEvent, render } from '@testing-library/react';
-import type { TriggerProps } from '../src';
+import isMobile from 'rc-util/lib/isMobile';
+import React from 'react';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
 
 jest.mock('rc-util/lib/isMobile');
 
-describe.skip('Trigger.Mobile', () => {
+describe('Trigger.Mobile', () => {
   beforeAll(() => {
     (isMobile as any).mockImplementation(() => true);
   });
 
-  function getTrigger(
-    props?: Partial<
-      TriggerProps & React.ClassAttributes<InstanceType<typeof Trigger>>
-    >,
-  ) {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
+  function flush() {
+    act(() => {
+      jest.runAllTimers();
+    });
+  }
+
+  it('auto change hover to click', () => {
+    render(
+      <Trigger
+        popupAlign={placementAlignMap.left}
+        popup={<strong>trigger</strong>}
+      >
+        <div className="target" />
+      </Trigger>,
+    );
+
+    flush();
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Hover not work
+    fireEvent.mouseEnter(document.querySelector('.target'));
+    flush();
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Click work
+    fireEvent.click(document.querySelector('.target'));
+    flush();
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+  });
+
+  // ====================================================================================
+  // ZombieJ: back when we plan to support mobile
+
+  function getTrigger(props?: any) {
     return (
       <Trigger
         action={['click']}
@@ -32,7 +69,7 @@ describe.skip('Trigger.Mobile', () => {
     );
   }
 
-  it('mobile config', () => {
+  it.skip('mobile config', () => {
     const { container } = render(
       getTrigger({
         mobile: {
@@ -53,7 +90,7 @@ describe.skip('Trigger.Mobile', () => {
     });
   });
 
-  it('popupRender', () => {
+  it.skip('popupRender', () => {
     const { container } = render(
       getTrigger({
         mobile: {
@@ -71,8 +108,8 @@ describe.skip('Trigger.Mobile', () => {
     expect(document.querySelector('.rc-trigger-popup')).toMatchSnapshot();
   });
 
-  it('click inside not close', () => {
-    const triggerRef = createRef<InstanceType<typeof Trigger>>();
+  it.skip('click inside not close', () => {
+    const triggerRef = React.createRef<any>();
     const { container } = render(getTrigger({ ref: triggerRef }));
     fireEvent.click(container.querySelector('.target'));
     expect(triggerRef.current.state.popupVisible).toBeTruthy();
@@ -86,7 +123,7 @@ describe.skip('Trigger.Mobile', () => {
     expect(triggerRef.current.state.popupVisible).toBeFalsy();
   });
 
-  it('legacy array children', () => {
+  it.skip('legacy array children', () => {
     const { container } = render(
       getTrigger({
         popup: [<div key={0}>Light</div>, <div key={1}>Bamboo</div>],
