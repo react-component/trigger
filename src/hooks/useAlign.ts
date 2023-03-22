@@ -316,7 +316,7 @@ export default function useAlign(
         popupPoints[0] === 't' &&
         nextPopupBottom > visibleArea.bottom
       ) {
-        let tmpNextOffsetY: number;
+        let tmpNextOffsetY: number = nextOffsetY;
 
         if (sameTB) {
           tmpNextOffsetY -= popupHeight - targetHeight;
@@ -344,7 +344,7 @@ export default function useAlign(
         popupPoints[0] === 'b' &&
         nextPopupY < visibleArea.top
       ) {
-        let tmpNextOffsetY: number;
+        let tmpNextOffsetY: number = nextOffsetY;
 
         if (sameTB) {
           tmpNextOffsetY += popupHeight - targetHeight;
@@ -381,7 +381,7 @@ export default function useAlign(
         popupPoints[1] === 'l' &&
         nextPopupRight > visibleArea.right
       ) {
-        let tmpNextOffsetX: number;
+        let tmpNextOffsetX: number = nextOffsetX;
 
         if (sameLR) {
           tmpNextOffsetX -= popupWidth - targetWidth;
@@ -409,7 +409,7 @@ export default function useAlign(
         popupPoints[1] === 'r' &&
         nextPopupX < visibleArea.left
       ) {
-        let tmpNextOffsetX: number;
+        let tmpNextOffsetX: number = nextOffsetX;
 
         if (sameLR) {
           tmpNextOffsetX += popupWidth - targetWidth;
