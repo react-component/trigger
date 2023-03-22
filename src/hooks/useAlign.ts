@@ -409,7 +409,7 @@ export default function useAlign(
         popupPoints[1] === 'r' &&
         nextPopupX < visibleArea.left
       ) {
-        let tmpNextOffsetX: number= nextOffsetX;
+        let tmpNextOffsetX: number = nextOffsetX;
 
         if (sameLR) {
           tmpNextOffsetX += popupWidth - targetWidth;
