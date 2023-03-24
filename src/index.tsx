@@ -7,6 +7,7 @@ import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import isMobile from 'rc-util/lib/isMobile';
+import warning from 'rc-util/lib/warning';
 import * as React from 'react';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
@@ -246,10 +247,13 @@ export function generateTrigger(
 
     const inPopupOrChild = useEvent((ele: any) => {
       const childDOM = targetEle;
+
       return (
         childDOM?.contains(ele) ||
+        (childDOM?.getRootNode() as ShadowRoot)?.host === ele ||
         ele === childDOM ||
         popupEle?.contains(ele) ||
+        (popupEle?.getRootNode() as ShadowRoot)?.host === ele ||
         ele === popupEle ||
         Object.values(subPopupElements.current).some(
           (subPopupEle) => subPopupEle.contains(ele) || ele === subPopupEle,
@@ -497,13 +501,38 @@ export function generateTrigger(
 
         const win = getWin(popupEle);
 
+        const targetRoot = targetEle?.getRootNode();
+
         win.addEventListener('click', onWindowClick);
+
+        // shadow root
+        const inShadow = targetRoot && targetRoot !== targetEle.ownerDocument;
+        if (inShadow) {
+          (targetRoot as ShadowRoot).addEventListener('click', onWindowClick);
+        }
+
+        // Warning if target and popup not in same root
+        if (process.env.NODE_ENV !== 'production') {
+          const popupRoot = popupEle.getRootNode();
+
+          warning(
+            targetRoot === popupRoot,
+            `trigger element and popup element should in same shadow root.`,
+          );
+        }
 
         return () => {
           win.removeEventListener('click', onWindowClick);
+
+          if (inShadow) {
+            (targetRoot as ShadowRoot).removeEventListener(
+              'click',
+              onWindowClick,
+            );
+          }
         };
       }
-    }, [clickToHide, popupEle, mask, maskClosable]);
+    }, [clickToHide, targetEle, popupEle, mask, maskClosable]);
 
     // ======================= Action: Hover ========================
     const hoverToShow = showActions.has('hover');
