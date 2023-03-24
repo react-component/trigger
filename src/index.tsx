@@ -7,6 +7,7 @@ import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import isMobile from 'rc-util/lib/isMobile';
+import warning from 'rc-util/lib/warning';
 import * as React from 'react';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
@@ -508,6 +509,16 @@ export function generateTrigger(
         const inShadow = targetRoot && targetRoot !== targetEle.ownerDocument;
         if (inShadow) {
           (targetRoot as ShadowRoot).addEventListener('click', onWindowClick);
+        }
+
+        // Warning if target and popup not in same root
+        if (process.env.NODE_ENV !== 'production') {
+          const popupRoot = popupEle.getRootNode();
+
+          warning(
+            targetRoot === popupRoot,
+            `trigger element and popup element should in same shadow root.`,
+          );
         }
 
         return () => {
