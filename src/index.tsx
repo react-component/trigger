@@ -256,7 +256,7 @@ export function generateTrigger(
         (popupEle?.getRootNode() as ShadowRoot)?.host === ele ||
         ele === popupEle ||
         Object.values(subPopupElements.current).some(
-          (subPopupEle) => subPopupEle.contains(ele) || ele === subPopupEle,
+          (subPopupEle) => subPopupEle?.contains(ele) || ele === subPopupEle,
         )
       );
     });
