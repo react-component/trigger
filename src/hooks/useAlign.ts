@@ -431,7 +431,7 @@ export default function useAlign(
         }
       }
 
-      // >>>>> Shift
+      // ================== Shift ==================
       const numShiftX = shiftX === true ? 0 : shiftX;
       if (typeof numShiftX === 'number') {
         // Left
@@ -476,6 +476,7 @@ export default function useAlign(
         }
       }
 
+      // ================== Arrow ==================
       // Arrow center align
       const popupLeft = popupRect.x + nextOffsetX;
       const popupRight = popupLeft + popupWidth;
