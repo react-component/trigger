@@ -24,6 +24,13 @@ const builtinPlacements = {
 };
 
 export default () => {
+  const containerRef = React.useRef<HTMLDivElement>();
+
+  React.useEffect(() => {
+    console.clear();
+    containerRef.current.scrollTop = document.defaultView.innerHeight * 0.75;
+  }, []);
+
   return (
     <React.StrictMode>
       <div
@@ -31,6 +38,7 @@ export default () => {
         style={{ background: 'rgba(0, 0, 255, 0.1)', padding: 16 }}
       >
         <div
+          ref={containerRef}
           style={{
             border: '1px solid red',
             padding: 10,
