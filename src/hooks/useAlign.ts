@@ -305,10 +305,21 @@ export default function useAlign(
         return val >= 0;
       };
 
-      // >>>>>>>>>> Top & Bottom
-      const nextPopupY = popupRect.y + nextOffsetY;
-      const nextPopupBottom = nextPopupY + popupHeight;
+      // Prepare position
+      let nextPopupY: number;
+      let nextPopupBottom: number;
+      let nextPopupX: number;
+      let nextPopupRight: number;
 
+      function syncNextPopupPosition() {
+        nextPopupY = popupRect.y + nextOffsetY;
+        nextPopupBottom = nextPopupY + popupHeight;
+        nextPopupX = popupRect.x + nextOffsetX;
+        nextPopupRight = nextPopupX + popupWidth;
+      }
+      syncNextPopupPosition();
+
+      // >>>>>>>>>> Top & Bottom
       const needAdjustY = supportAdjust(adjustY);
 
       const sameTB = popupPoints[0] === targetPoints[0];
@@ -370,9 +381,6 @@ export default function useAlign(
       }
 
       // >>>>>>>>>> Left & Right
-      const nextPopupX = popupRect.x + nextOffsetX;
-      const nextPopupRight = nextPopupX + popupWidth;
-
       const needAdjustX = supportAdjust(adjustX);
 
       // >>>>> Flip
@@ -435,6 +443,8 @@ export default function useAlign(
       }
 
       // ============================ Shift ============================
+      syncNextPopupPosition();
+
       const numShiftX = shiftX === true ? 0 : shiftX;
       if (typeof numShiftX === 'number') {
         // Left
