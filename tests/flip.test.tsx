@@ -189,11 +189,7 @@ describe('Trigger.Align', () => {
   });
 
   describe('flip when scroll', () => {
-    const popupRect = {
-      width: 100,
-      height: 100,
-    };
-
+    let domSpy: ReturnType<typeof spyElementPrototypes> | undefined;
     /**
      * 模拟有滚动条时
      * popupRect的x,y值等于popupElement相对与target的位置减去target相对与视口的位置
@@ -202,24 +198,21 @@ describe('Trigger.Align', () => {
      * 重置pupupElement位置 https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L137-L139
      * 获取popupRect https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L159
      */
-    Object.defineProperty(popupRect, 'x', {
-      get() {
-        return -1000 - spanRect.x;
-      }
-    });
-
-    Object.defineProperty(popupRect, 'y', {
-      get() {
-        return -1000 - spanRect.y;
-      }
-    });
-
     beforeAll(() => {
-      spyElementPrototypes(HTMLDivElement, {
+      domSpy = spyElementPrototypes(HTMLDivElement, {
         getBoundingClientRect() {
-          return popupRect;
+          return {
+            x: -1000 - spanRect.x,
+            y: -1000 - spanRect.y,
+            width: 100,
+            height: 100,
+          };
         }
       });
+    });
+
+    afterAll(() => {
+      domSpy.mockRestore();
     });
 
     describe('not flip if cant', () => {
