@@ -192,7 +192,7 @@ describe('Trigger.Align', () => {
     let domSpy: ReturnType<typeof spyElementPrototypes> | undefined;
     /**
      * 模拟有滚动条时
-     * popupRect的x,y值等于popupElement相对与target的位置减去target相对与视口的位置
+     * popupRect的x,y值等于popupElement相对与target的位置加上target相对与视口的位置
      * 假设popupElement相对与target的位置x,y均为-1000
      * 
      * 重置pupupElement位置 https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L137-L139
@@ -202,8 +202,8 @@ describe('Trigger.Align', () => {
       domSpy = spyElementPrototypes(HTMLDivElement, {
         getBoundingClientRect() {
           return {
-            x: -1000 - spanRect.x,
-            y: -1000 - spanRect.y,
+            x: -1000 + spanRect.x,
+            y: -1000 + spanRect.y,
             width: 100,
             height: 100,
           };
