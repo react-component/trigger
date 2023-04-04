@@ -2,7 +2,12 @@
 
 React Trigger Component
 
-[![NPM version][npm-image]][npm-url] [![build status][github-actions-image]][github-actions-url] [![Test coverage][coveralls-image]][coveralls-url] [![npm download][download-image]][download-url] [![bundle size][bundlephobia-image]][bundlephobia-url] [![dumi][dumi-image]][dumi-url]
+[![NPM version][npm-image]][npm-url]
+[![npm download][download-image]][download-url]
+[![build status][github-actions-image]][github-actions-url]
+[![Test coverage][codecov-image]][codecov-url]
+[![bundle size][bundlephobia-image]][bundlephobia-url]
+[![dumi][dumi-image]][dumi-url]
 
 [npm-image]: http://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/@rc-component/trigger
@@ -10,8 +15,8 @@ React Trigger Component
 [github-actions-url]: https://github.com/react-component/trigger/actions
 [circleci-image]: https://img.shields.io/circleci/react-component/trigger/master?style=flat-square
 [circleci-url]: https://circleci.com/gh/react-component/trigger
-[coveralls-image]: https://img.shields.io/coveralls/react-component/trigger.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/react-component/trigger?branch=master
+[codecov-image]: https://img.shields.io/codecov/c/github/react-component/trigger/master.svg?style=flat-square
+[codecov-url]: https://app.codecov.io/gh/react-component/trigger
 [david-url]: https://david-dm.org/react-component/trigger
 [david-image]: https://david-dm.org/react-component/trigger/status.svg?style=flat-square
 [david-dev-url]: https://david-dm.org/react-component/trigger?type=dev
