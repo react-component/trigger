@@ -41,6 +41,13 @@ describe('Trigger.Align', () => {
     height: 1,
   };
 
+  let popupRect = {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+  };
+
   beforeAll(() => {
     spyElementPrototypes(HTMLElement, {
       clientWidth: {
@@ -53,12 +60,7 @@ describe('Trigger.Align', () => {
 
     spyElementPrototypes(HTMLDivElement, {
       getBoundingClientRect() {
-        return {
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 100,
-        };
+        return popupRect;
       },
     });
 
@@ -81,6 +83,12 @@ describe('Trigger.Align', () => {
       y: 0,
       width: 1,
       height: 1,
+    };
+    popupRect = {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
     };
     jest.useFakeTimers();
   });
@@ -188,129 +196,78 @@ describe('Trigger.Align', () => {
     });
   });
 
-  describe('flip when scroll', () => {
-    let domSpy: ReturnType<typeof spyElementPrototypes> | undefined;
-    /**
-     * 模拟有滚动条时
-     * popupRect的x,y值等于popupElement相对与target的位置加上target相对与视口的位置
-     * 假设popupElement相对与target的位置x,y均为-1000
-     * 
-     * 重置pupupElement位置 https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L137-L139
-     * 获取popupRect https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L159
-     */
-    beforeAll(() => {
-      domSpy = spyElementPrototypes(HTMLDivElement, {
-        getBoundingClientRect() {
-          return {
-            x: -1000 + spanRect.x,
-            y: -1000 + spanRect.y,
-            width: 100,
-            height: 100,
-          };
-        }
-      });
+  // `getPopupContainer` sometime makes the popup 0/0 not start at left top.
+  // We need cal the real visible position
+  /*
+
+  *******************
+  *          Target *
+  *          *************
+  *          *   Popup   *
+  *          *************
+  *                 *
+  *******************
+
+  To:
+
+  *******************
+  *          Target *
+  *   ************* *
+  *   *   Popup   * *
+  *   ************* *
+  *                 *
+  *******************
+
+  */
+  it('popup start position not at left top', async () => {
+    spanRect.x = 99;
+    spanRect.y = 0;
+
+    popupRect = {
+      x: 100,
+      y: 1,
+      width: 100,
+      height: 100,
+    };
+
+    render(
+      <Trigger
+        popupVisible
+        popupPlacement="topLeft"
+        builtinPlacements={{
+          topLeft: {
+            points: ['tl', 'bl'],
+            overflow: {
+              adjustX: true,
+              adjustY: true,
+            },
+          },
+          topRight: {
+            points: ['tr', 'br'],
+            overflow: {
+              adjustX: true,
+              adjustY: true,
+            },
+          },
+        }}
+        popup={<strong>trigger</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
     });
 
-    afterAll(() => {
-      domSpy.mockRestore();
-    });
+    // Flip
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-topRight'),
+    ).toBeTruthy();
 
-    describe('not flip if cant', () => {
-      const list = [
-        {
-          placement: 'right',
-          x: 10,
-          className: '.rc-trigger-popup-placement-right',
-        },
-        {
-          placement: 'left',
-          x: 90,
-          className: '.rc-trigger-popup-placement-left',
-        },
-        {
-          placement: 'top',
-          y: 90,
-          className: '.rc-trigger-popup-placement-top',
-        },
-        {
-          placement: 'bottom',
-          y: 10,
-          className: '.rc-trigger-popup-placement-bottom',
-        },
-      ];
-  
-      list.forEach(({ placement, x = 0, y = 0, className }) => {
-        it(placement, async () => {
-          spanRect.x = x;
-          spanRect.y = y;
-  
-          render(
-            <Trigger
-              popupVisible
-              popupPlacement={placement}
-              builtinPlacements={builtinPlacements}
-              popup={<strong>trigger</strong>}
-            >
-              <span className="target" />
-            </Trigger>,
-          );
-  
-          await act(async () => {
-            await Promise.resolve();
-          });
-  
-          expect(document.querySelector(className)).toBeTruthy();
-        });
-      });
-    });
-  
-    describe('flip if can', () => {
-      const list = [
-        {
-          placement: 'right',
-          x: 90,
-          className: '.rc-trigger-popup-placement-left',
-        },
-        {
-          placement: 'left',
-          x: 10,
-          className: '.rc-trigger-popup-placement-right',
-        },
-        {
-          placement: 'top',
-          y: 10,
-          className: '.rc-trigger-popup-placement-bottom',
-        },
-        {
-          placement: 'bottom',
-          y: 90,
-          className: '.rc-trigger-popup-placement-top',
-        },
-      ];
-  
-      list.forEach(({ placement, x = 0, y = 0, className }) => {
-        it(placement, async () => {
-          spanRect.x = x;
-          spanRect.y = y;
-  
-          render(
-            <Trigger
-              popupVisible
-              popupPlacement={placement}
-              builtinPlacements={builtinPlacements}
-              popup={<strong>trigger</strong>}
-            >
-              <span className="target" />
-            </Trigger>,
-          );
-  
-          await act(async () => {
-            await Promise.resolve();
-          });
-  
-          expect(document.querySelector(className)).toBeTruthy();
-        });
-      });
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      left: `-100px`, // (left: 100) - (offset: 100) = 0
+      top: `0px`,
     });
   });
 });
