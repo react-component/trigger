@@ -54,8 +54,8 @@ describe('Trigger.Align', () => {
     spyElementPrototypes(HTMLDivElement, {
       getBoundingClientRect() {
         return {
-          x: -100,
-          y: -100,
+          x: 0,
+          y: 0,
           width: 100,
           height: 100,
         };
@@ -184,6 +184,139 @@ describe('Trigger.Align', () => {
         });
 
         expect(document.querySelector(className)).toBeTruthy();
+      });
+    });
+  });
+
+  describe('flip when scroll', () => {
+    const popupRect = {
+      width: 100,
+      height: 100,
+    };
+
+    /**
+     * 模拟有滚动条时
+     * popupRect的x,y值等于popupElement相对与target的位置减去target相对与视口的位置
+     * 假设popupElement相对与target的位置x,y均为-1000
+     * 
+     * 重置pupupElement位置 https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L137-L139
+     * 获取popupRect https://github.com/react-component/trigger/blob/e6fa971f97196ea791d0799f25c318c9d8c0ae0f/src/hooks/useAlign.ts#L159
+     */
+    Object.defineProperty(popupRect, 'x', {
+      get() {
+        return -1000 - spanRect.x;
+      }
+    });
+
+    Object.defineProperty(popupRect, 'y', {
+      get() {
+        return -1000 - spanRect.y;
+      }
+    });
+
+    beforeAll(() => {
+      spyElementPrototypes(HTMLDivElement, {
+        getBoundingClientRect() {
+          return popupRect;
+        }
+      });
+    });
+
+    describe('not flip if cant', () => {
+      const list = [
+        {
+          placement: 'right',
+          x: 10,
+          className: '.rc-trigger-popup-placement-right',
+        },
+        {
+          placement: 'left',
+          x: 90,
+          className: '.rc-trigger-popup-placement-left',
+        },
+        {
+          placement: 'top',
+          y: 90,
+          className: '.rc-trigger-popup-placement-top',
+        },
+        {
+          placement: 'bottom',
+          y: 10,
+          className: '.rc-trigger-popup-placement-bottom',
+        },
+      ];
+  
+      list.forEach(({ placement, x = 0, y = 0, className }) => {
+        it(placement, async () => {
+          spanRect.x = x;
+          spanRect.y = y;
+  
+          render(
+            <Trigger
+              popupVisible
+              popupPlacement={placement}
+              builtinPlacements={builtinPlacements}
+              popup={<strong>trigger</strong>}
+            >
+              <span className="target" />
+            </Trigger>,
+          );
+  
+          await act(async () => {
+            await Promise.resolve();
+          });
+  
+          expect(document.querySelector(className)).toBeTruthy();
+        });
+      });
+    });
+  
+    describe('flip if can', () => {
+      const list = [
+        {
+          placement: 'right',
+          x: 90,
+          className: '.rc-trigger-popup-placement-left',
+        },
+        {
+          placement: 'left',
+          x: 10,
+          className: '.rc-trigger-popup-placement-right',
+        },
+        {
+          placement: 'top',
+          y: 10,
+          className: '.rc-trigger-popup-placement-bottom',
+        },
+        {
+          placement: 'bottom',
+          y: 90,
+          className: '.rc-trigger-popup-placement-top',
+        },
+      ];
+  
+      list.forEach(({ placement, x = 0, y = 0, className }) => {
+        it(placement, async () => {
+          spanRect.x = x;
+          spanRect.y = y;
+  
+          render(
+            <Trigger
+              popupVisible
+              popupPlacement={placement}
+              builtinPlacements={builtinPlacements}
+              popup={<strong>trigger</strong>}
+            >
+              <span className="target" />
+            </Trigger>,
+          );
+  
+          await act(async () => {
+            await Promise.resolve();
+          });
+  
+          expect(document.querySelector(className)).toBeTruthy();
+        });
       });
     });
   });
