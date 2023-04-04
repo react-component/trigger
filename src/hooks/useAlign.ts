@@ -269,19 +269,19 @@ export default function useAlign(
 
       // ============== Intersection ===============
       // Get area by position. Used for check if flip area is better
-      function getIntersectionVisibleArea(offsetX: number, offsetY: number) {
-        const x = popupRect.x + offsetX;
-        const y = popupRect.y + offsetY;
+      function getIntersectionVisibleArea(ox: number, oy: number) {
+        const l = popupRect.x + ox;
+        const t = popupRect.y + oy;
 
-        const r = x + popupWidth;
-        const b = y + popupHeight;
+        const r = l + popupWidth;
+        const b = t + popupHeight;
 
-        const visibleX = Math.max(x, visibleArea.left);
-        const visibleY = Math.max(y, visibleArea.top);
+        const visibleL = Math.max(l, visibleArea.left);
+        const visibleT = Math.max(t, visibleArea.top);
         const visibleR = Math.min(r, visibleArea.right);
         const visibleB = Math.min(b, visibleArea.bottom);
 
-        return (visibleR - visibleX) * (visibleB - visibleY);
+        return (visibleR - visibleL) * (visibleB - visibleT);
       }
 
       const originIntersectionVisibleArea = getIntersectionVisibleArea(
