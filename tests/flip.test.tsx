@@ -1,6 +1,7 @@
 import { act, cleanup, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import Trigger from '../src';
+import { getVisibleArea } from '../src/util';
 
 const builtinPlacements = {
   top: {
@@ -268,6 +269,94 @@ describe('Trigger.Align', () => {
     expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
       left: `-100px`, // (left: 100) - (offset: 100) = 0
       top: `0px`,
+    });
+  });
+
+  // Static parent should not affect popup position
+  // https://github.com/ant-design/ant-design/issues/41644
+  it('static parent should not affect popup position', async () => {
+    /*
+
+    ********************
+    *                  *
+    *  **************  *
+    *  *   Affect   *  *
+    *  * ********** *  *
+    *  * *   Not  * *  *
+    *  * ********** *  *
+    *                  *
+    *  **************  *
+    *                  *
+    ********************
+
+    */
+    const initArea = {
+      left: 0,
+      right: 500,
+      top: 0,
+      bottom: 500,
+    };
+
+    // Affected area
+    const affectEle = document.createElement('div');
+    document.body.appendChild(affectEle);
+
+    affectEle.style.position = 'absolute';
+    Object.defineProperties(affectEle, {
+      offsetHeight: {
+        get: () => 300,
+      },
+      offsetWidth: {
+        get: () => 300,
+      },
+      clientHeight: {
+        get: () => 300,
+      },
+      clientWidth: {
+        get: () => 300,
+      },
+    });
+    affectEle.getBoundingClientRect = () =>
+      ({
+        x: 100,
+        y: 100,
+        width: 300,
+        height: 300,
+      } as any);
+
+    // Skip area
+    const skipEle = document.createElement('div');
+    document.body.appendChild(skipEle);
+
+    skipEle.style.position = 'static';
+    Object.defineProperties(skipEle, {
+      offsetHeight: {
+        get: () => 100,
+      },
+      offsetWidth: {
+        get: () => 100,
+      },
+      clientHeight: {
+        get: () => 100,
+      },
+      clientWidth: {
+        get: () => 100,
+      },
+    });
+    skipEle.getBoundingClientRect = () =>
+      ({
+        x: 200,
+        y: 200,
+        width: 100,
+        height: 100,
+      } as any);
+
+    const visibleArea = getVisibleArea(initArea, [affectEle, skipEle]);
+    expect(visibleArea).toEqual({
+      left: 100,
+      right: 400,
+      top: 100,
+      bottom: 400,
     });
   });
 });

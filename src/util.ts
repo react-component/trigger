@@ -74,19 +74,15 @@ export function getWin(ele: HTMLElement) {
  * @param ele       The element to be detected
  * @param areaOnly  Only return the parent which will cut visible area
  */
-export function collectScroller(ele: HTMLElement, areaOnly?: boolean) {
+export function collectScroller(ele: HTMLElement) {
   const scrollerList: HTMLElement[] = [];
   let current = ele?.parentElement;
 
   const scrollStyle = ['hidden', 'scroll', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY, position } =
-      getWin(current).getComputedStyle(current);
-    if (
-      (!areaOnly || position !== 'static') &&
-      (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY))
-    ) {
+    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
+    if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
       scrollerList.push(current);
     }
 
@@ -118,6 +114,12 @@ export function getVisibleArea(
       return;
     }
 
+    // Skip if static position which will not affect visible area
+    const { position } = getWin(ele).getComputedStyle(ele);
+    if (position === 'static') {
+      return;
+    }
+
     const eleRect = ele.getBoundingClientRect();
     const {
       offsetHeight: eleOutHeight,
@@ -138,8 +140,8 @@ export function getVisibleArea(
     const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
     const eleBottom = eleRect.y + eleRect.height - eleScrollHeight;
 
-    visibleArea.left = Math.max(visibleArea.left, eleRect.left);
-    visibleArea.top = Math.max(visibleArea.top, eleRect.top);
+    visibleArea.left = Math.max(visibleArea.left, eleRect.x);
+    visibleArea.top = Math.max(visibleArea.top, eleRect.y);
     visibleArea.right = Math.min(visibleArea.right, eleRight);
     visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
   });
