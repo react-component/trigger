@@ -359,4 +359,73 @@ describe('Trigger.Align', () => {
       bottom: 400,
     });
   });
+
+  // e.g. adjustY + shiftX may make popup out but push back in screen
+  // which should keep flip
+  /*
+
+  *************      Screen
+  *   Popup   ********************
+  *************                  *
+     * Target *                  *
+     **********                  *
+              *                  *
+              ********************
+
+  To:
+
+                    Screen
+              ********************
+     **********                  *
+     * Target *                  *
+     ******************          *
+          *   Popup   *          *
+          ************************
+
+  */
+  it('out of screen should keep flip', async () => {
+    spanRect.x = -200;
+    spanRect.y = 0;
+
+    popupRect = {
+      x: 0,
+      y: 0,
+      width: 200,
+      height: 200,
+    };
+
+    render(
+      <Trigger
+        popupVisible
+        popupPlacement="top"
+        builtinPlacements={{
+          top: {
+            points: ['bc', 'tc'],
+            overflow: {
+              shiftX: true,
+              adjustY: true,
+            },
+          },
+          bottom: {
+            points: ['tc', 'bc'],
+            overflow: {
+              shiftX: true,
+              adjustY: true,
+            },
+          },
+        }}
+        popup={<strong>trigger</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-bottom'),
+    ).toBeTruthy();
+  });
 });

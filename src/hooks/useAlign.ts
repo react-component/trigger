@@ -248,7 +248,7 @@ export default function useAlign(
         const visibleR = Math.min(r, visibleArea.right);
         const visibleB = Math.min(b, visibleArea.bottom);
 
-        return (visibleR - visibleL) * (visibleB - visibleT);
+        return Math.max(0, (visibleR - visibleL) * (visibleB - visibleT));
       }
 
       const originIntersectionVisibleArea = getIntersectionVisibleArea(
@@ -307,7 +307,7 @@ export default function useAlign(
         }
 
         if (
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
           originIntersectionVisibleArea
         ) {
           nextOffsetY = tmpNextOffsetY;
@@ -335,7 +335,7 @@ export default function useAlign(
         }
 
         if (
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
           originIntersectionVisibleArea
         ) {
           nextOffsetY = tmpNextOffsetY;
@@ -369,7 +369,7 @@ export default function useAlign(
         }
 
         if (
-          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >
+          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >=
           originIntersectionVisibleArea
         ) {
           nextOffsetX = tmpNextOffsetX;
@@ -397,7 +397,7 @@ export default function useAlign(
         }
 
         if (
-          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >
+          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >=
           originIntersectionVisibleArea
         ) {
           nextOffsetX = tmpNextOffsetX;
