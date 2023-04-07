@@ -37,6 +37,7 @@ export default () => {
           builtinPlacements={builtinPlacements}
           popupPlacement="top"
           stretch="minWidth"
+          getPopupContainer={(e) => e.parentElement!}
         >
           <span
             style={{

@@ -110,7 +110,7 @@ export default function useAlign(
       return [];
     }
 
-    return collectScroller(popupEle);
+    return collectScroller(popupEle, true);
   }, [popupEle]);
 
   // ========================= Align =========================
