@@ -9,15 +9,11 @@ import type {
   AlignPointTopBottom,
   AlignType,
 } from '../interface';
-import { collectScroller, getWin } from '../util';
+import { collectScroller, getVisibleArea, getWin, toNum } from '../util';
 
 type Rect = Record<'x' | 'y' | 'width' | 'height', number>;
 
 type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
-
-function toNum(num: number) {
-  return Number.isNaN(num) ? 1 : num;
-}
 
 function splitPoints(points: string = ''): Points {
   return [points[0] as any, points[1] as any];
@@ -174,7 +170,7 @@ export default function useAlign(
       const targetWidth = targetRect.width;
 
       // Get bounding of visible area
-      const visibleArea =
+      let visibleArea =
         placementInfo.htmlRegion === 'scroll'
           ? // Scroll region should take scrollLeft & scrollTop into account
             {
@@ -190,36 +186,7 @@ export default function useAlign(
               bottom: clientHeight,
             };
 
-      (scrollerList || []).forEach((ele) => {
-        if (ele instanceof HTMLBodyElement) {
-          return;
-        }
-
-        const eleRect = ele.getBoundingClientRect();
-        const {
-          offsetHeight: eleOutHeight,
-          clientHeight: eleInnerHeight,
-          offsetWidth: eleOutWidth,
-          clientWidth: eleInnerWidth,
-        } = ele;
-
-        const scaleX = toNum(
-          Math.round((eleRect.width / eleOutWidth) * 1000) / 1000,
-        );
-        const scaleY = toNum(
-          Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
-        );
-
-        const eleScrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
-        const eleScrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
-        const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
-        const eleBottom = eleRect.y + eleRect.height - eleScrollHeight;
-
-        visibleArea.left = Math.max(visibleArea.left, eleRect.left);
-        visibleArea.top = Math.max(visibleArea.top, eleRect.top);
-        visibleArea.right = Math.min(visibleArea.right, eleRight);
-        visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
-      });
+      visibleArea = getVisibleArea(visibleArea, scrollerList);
 
       // Reset back
       popupElement.style.left = originLeft;

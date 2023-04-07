@@ -86,3 +86,54 @@ export function collectScroller(ele: HTMLElement) {
 
   return scrollerList;
 }
+
+export function toNum(num: number) {
+  return Number.isNaN(num) ? 1 : num;
+}
+
+export interface VisibleArea {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
+export function getVisibleArea(
+  initArea: VisibleArea,
+  scrollerList?: HTMLElement[],
+) {
+  const visibleArea = { ...initArea };
+
+  (scrollerList || []).forEach((ele) => {
+    if (ele instanceof HTMLBodyElement) {
+      return;
+    }
+
+    const eleRect = ele.getBoundingClientRect();
+    const {
+      offsetHeight: eleOutHeight,
+      clientHeight: eleInnerHeight,
+      offsetWidth: eleOutWidth,
+      clientWidth: eleInnerWidth,
+    } = ele;
+
+    const scaleX = toNum(
+      Math.round((eleRect.width / eleOutWidth) * 1000) / 1000,
+    );
+    const scaleY = toNum(
+      Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
+    );
+
+    const eleScrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
+    const eleScrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
+    const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
+    const eleBottom = eleRect.y + eleRect.height - eleScrollHeight;
+
+    visibleArea.left = Math.max(visibleArea.left, eleRect.left);
+    visibleArea.top = Math.max(visibleArea.top, eleRect.top);
+    visibleArea.right = Math.min(visibleArea.right, eleRight);
+    visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
+  });
+
+  return visibleArea;
+}
