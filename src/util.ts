@@ -69,6 +69,11 @@ export function getWin(ele: HTMLElement) {
   return ele.ownerDocument.defaultView;
 }
 
+/**
+ * Get all the scrollable parent elements of the element
+ * @param ele       The element to be detected
+ * @param areaOnly  Only return the parent which will cut visible area
+ */
 export function collectScroller(ele: HTMLElement) {
   const scrollerList: HTMLElement[] = [];
   let current = ele?.parentElement;
@@ -85,4 +90,61 @@ export function collectScroller(ele: HTMLElement) {
   }
 
   return scrollerList;
+}
+
+export function toNum(num: number) {
+  return Number.isNaN(num) ? 1 : num;
+}
+
+export interface VisibleArea {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
+export function getVisibleArea(
+  initArea: VisibleArea,
+  scrollerList?: HTMLElement[],
+) {
+  const visibleArea = { ...initArea };
+
+  (scrollerList || []).forEach((ele) => {
+    if (ele instanceof HTMLBodyElement) {
+      return;
+    }
+
+    // Skip if static position which will not affect visible area
+    const { position } = getWin(ele).getComputedStyle(ele);
+    if (position === 'static') {
+      return;
+    }
+
+    const eleRect = ele.getBoundingClientRect();
+    const {
+      offsetHeight: eleOutHeight,
+      clientHeight: eleInnerHeight,
+      offsetWidth: eleOutWidth,
+      clientWidth: eleInnerWidth,
+    } = ele;
+
+    const scaleX = toNum(
+      Math.round((eleRect.width / eleOutWidth) * 1000) / 1000,
+    );
+    const scaleY = toNum(
+      Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
+    );
+
+    const eleScrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
+    const eleScrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
+    const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
+    const eleBottom = eleRect.y + eleRect.height - eleScrollHeight;
+
+    visibleArea.left = Math.max(visibleArea.left, eleRect.x);
+    visibleArea.top = Math.max(visibleArea.top, eleRect.y);
+    visibleArea.right = Math.min(visibleArea.right, eleRight);
+    visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
+  });
+
+  return visibleArea;
 }
