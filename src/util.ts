@@ -69,15 +69,24 @@ export function getWin(ele: HTMLElement) {
   return ele.ownerDocument.defaultView;
 }
 
-export function collectScroller(ele: HTMLElement) {
+/**
+ * Get all the scrollable parent elements of the element
+ * @param ele       The element to be detected
+ * @param areaOnly  Only return the parent which will cut visible area
+ */
+export function collectScroller(ele: HTMLElement, areaOnly?: boolean) {
   const scrollerList: HTMLElement[] = [];
   let current = ele?.parentElement;
 
   const scrollStyle = ['hidden', 'scroll', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
-    if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
+    const { overflowX, overflowY, position } =
+      getWin(current).getComputedStyle(current);
+    if (
+      (!areaOnly || position !== 'static') &&
+      (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY))
+    ) {
       scrollerList.push(current);
     }
 

@@ -3,7 +3,7 @@ import React from 'react';
 import '../../assets/index.less';
 import Trigger from '../../src';
 
-const builtinPlacements = {
+export const builtinPlacements = {
   top: {
     points: ['bc', 'tc'],
     overflow: {
