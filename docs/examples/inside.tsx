@@ -87,7 +87,7 @@ export default () => {
       <div style={{ position: 'fixed', top: 0, left: 0 }}>
         <button
           onClick={() => {
-            setPopupHeight(popupHeight === 60 ? 100 : 60);
+            setPopupHeight(popupHeight === 60 ? 200 : 60);
           }}
         >
           Popup Height: {popupHeight}

@@ -113,6 +113,24 @@ export default function useAlign(
     return collectScroller(popupEle);
   }, [popupEle]);
 
+  // ========================= Flip ==========================
+  // We will memo flip info.
+  // If size change to make flip, it will memo the flip info and use it in next align.
+  const prevFlipRef = React.useRef<{
+    tb?: boolean;
+    bt?: boolean;
+    lr?: boolean;
+    rl?: boolean;
+  }>({});
+
+  const resetFlipCache = () => {
+    prevFlipRef.current = {};
+  };
+
+  if (!open) {
+    resetFlipCache();
+  }
+
   // ========================= Align =========================
   const onAlign = useEvent(() => {
     if (popupEle && target && open) {
@@ -295,7 +313,7 @@ export default function useAlign(
       if (
         needAdjustY &&
         popupPoints[0] === 't' &&
-        nextPopupBottom > visibleArea.bottom
+        (nextPopupBottom > visibleArea.bottom || prevFlipRef.current.bt)
       ) {
         let tmpNextOffsetY: number = nextOffsetY;
 
@@ -310,12 +328,15 @@ export default function useAlign(
           getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
           originIntersectionVisibleArea
         ) {
+          prevFlipRef.current.bt = true;
           nextOffsetY = tmpNextOffsetY;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 0),
             reversePoints(targetPoints, 0),
           ];
+        } else {
+          prevFlipRef.current.bt = false;
         }
       }
 
@@ -323,7 +344,7 @@ export default function useAlign(
       if (
         needAdjustY &&
         popupPoints[0] === 'b' &&
-        nextPopupY < visibleArea.top
+        (nextPopupY < visibleArea.top || prevFlipRef.current.tb)
       ) {
         let tmpNextOffsetY: number = nextOffsetY;
 
@@ -338,12 +359,15 @@ export default function useAlign(
           getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
           originIntersectionVisibleArea
         ) {
+          prevFlipRef.current.tb = true;
           nextOffsetY = tmpNextOffsetY;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 0),
             reversePoints(targetPoints, 0),
           ];
+        } else {
+          prevFlipRef.current.tb = false;
         }
       }
 
@@ -357,7 +381,7 @@ export default function useAlign(
       if (
         needAdjustX &&
         popupPoints[1] === 'l' &&
-        nextPopupRight > visibleArea.right
+        (nextPopupRight > visibleArea.right || prevFlipRef.current.rl)
       ) {
         let tmpNextOffsetX: number = nextOffsetX;
 
@@ -372,12 +396,15 @@ export default function useAlign(
           getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >=
           originIntersectionVisibleArea
         ) {
+          prevFlipRef.current.rl = true;
           nextOffsetX = tmpNextOffsetX;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 1),
             reversePoints(targetPoints, 1),
           ];
+        } else {
+          prevFlipRef.current.rl = false;
         }
       }
 
@@ -385,7 +412,7 @@ export default function useAlign(
       if (
         needAdjustX &&
         popupPoints[1] === 'r' &&
-        nextPopupX < visibleArea.left
+        (nextPopupX < visibleArea.left || prevFlipRef.current.lr)
       ) {
         let tmpNextOffsetX: number = nextOffsetX;
 
@@ -400,12 +427,15 @@ export default function useAlign(
           getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >=
           originIntersectionVisibleArea
         ) {
+          prevFlipRef.current.lr = true;
           nextOffsetX = tmpNextOffsetX;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 1),
             reversePoints(targetPoints, 1),
           ];
+        } else {
+          prevFlipRef.current.lr = false;
         }
       }
 
