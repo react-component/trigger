@@ -70,9 +70,11 @@ export const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'leftBottom';
+const popupPlacement = 'top';
 
 export default () => {
+  const [popupHeight, setPopupHeight] = React.useState(60);
+
   const containerRef = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
@@ -81,59 +83,70 @@ export default () => {
   }, []);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        inset: 64,
-        overflow: `auto`,
-        border: '1px solid red',
-      }}
-      ref={containerRef}
-    >
+    <>
+      <div style={{ position: 'fixed', top: 0, left: 0 }}>
+        <button
+          onClick={() => {
+            setPopupHeight(popupHeight === 60 ? 100 : 60);
+          }}
+        >
+          Popup Height: {popupHeight}
+        </button>
+      </div>
       <div
         style={{
-          width: `300vw`,
-          height: `300vh`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: 'absolute',
+          inset: 64,
+          overflow: `auto`,
+          border: '1px solid red',
         }}
+        ref={containerRef}
       >
-        <Trigger
-          arrow
-          popup={
-            <div
+        <div
+          style={{
+            width: `300vw`,
+            height: `300vh`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Trigger
+            arrow
+            popup={
+              <div
+                style={{
+                  background: 'yellow',
+                  border: '1px solid blue',
+                  width: 200,
+                  height: popupHeight,
+                  opacity: 0.9,
+                }}
+              >
+                Popup
+              </div>
+            }
+            popupVisible
+            getPopupContainer={() => containerRef.current}
+            popupPlacement={popupPlacement}
+            builtinPlacements={builtinPlacements}
+          >
+            <span
               style={{
-                background: 'yellow',
-                border: '1px solid blue',
-                width: 200,
-                height: 60,
+                display: 'inline-block',
+                background: 'green',
+                color: '#FFF',
+                paddingBlock: 30,
+                paddingInline: 70,
                 opacity: 0.9,
+                transform: 'scale(0.6)',
               }}
             >
-              Popup
-            </div>
-          }
-          popupVisible
-          getPopupContainer={() => containerRef.current}
-          popupPlacement={popupPlacement}
-          builtinPlacements={builtinPlacements}
-        >
-          <span
-            style={{
-              display: 'inline-block',
-              background: 'green',
-              color: '#FFF',
-              paddingBlock: 30,
-              paddingInline: 70,
-              opacity: 0.9,
-              transform: 'scale(0.6)',
-            }}
-          >
-            Target
-          </span>
-        </Trigger>
+              Target
+            </span>
+          </Trigger>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
