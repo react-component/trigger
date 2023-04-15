@@ -27,6 +27,7 @@ export interface PopupProps {
   // Arrow
   align?: AlignType;
   arrow?: boolean;
+  arrowClassName?: string;
   arrowX?: number;
   arrowY?: number;
 
@@ -83,6 +84,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
     // Arrow
     arrow,
+    arrowClassName,
     align,
     arrowX,
     arrowY,
@@ -225,6 +227,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                     {arrow && (
                       <Arrow
                         prefixCls={prefixCls}
+                        className={arrowClassName}
                         align={align}
                         arrowX={arrowX}
                         arrowY={arrowY}

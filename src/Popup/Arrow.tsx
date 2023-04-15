@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import type { AlignType } from '../interface';
 
 export interface ArrowProps {
@@ -6,10 +7,11 @@ export interface ArrowProps {
   align: AlignType;
   arrowX?: number;
   arrowY?: number;
+  className?: string;
 }
 
 export default function Arrow(props: ArrowProps) {
-  const { prefixCls, align, arrowX = 0, arrowY = 0 } = props;
+  const { prefixCls, className, align, arrowX = 0, arrowY = 0 } = props;
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
@@ -51,6 +53,6 @@ export default function Arrow(props: ArrowProps) {
   }
 
   return (
-    <div ref={arrowRef} className={`${prefixCls}-arrow`} style={alignStyle} />
+    <div ref={arrowRef} className={classNames(`${prefixCls}-arrow`, className)} style={alignStyle} />
   );
 }

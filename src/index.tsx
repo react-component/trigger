@@ -105,6 +105,7 @@ export interface TriggerProps {
 
   // ==================== Arrow ====================
   arrow?: boolean;
+  arrowClassName?: string;
 
   // ================= Deprecated ==================
   /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
@@ -178,6 +179,7 @@ export function generateTrigger(
 
       // Arrow
       arrow,
+      arrowClassName,
 
       // Motion
       popupMotion,
@@ -668,6 +670,7 @@ export function generateTrigger(
             // Arrow
             align={alignInfo}
             arrow={arrow}
+            arrowClassName={arrowClassName}
             // Align
             ready={ready}
             offsetX={offsetX}

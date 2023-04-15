@@ -163,5 +163,27 @@ describe('Trigger.Arrow', () => {
       expect(style.top).toBeFalsy();
       expect(style.bottom).toBeFalsy();
     });
+
+    it('arrow classname', async () => {
+      render(
+        <Trigger
+          popupVisible
+          popupAlign={{
+            points: ['cl', 'cr'],
+            autoArrow: false,
+          }}
+          popup={<strong>trigger</strong>}
+          arrow
+          arrowClassName='abc'
+        >
+          <div />
+        </Trigger>,
+      );
+
+      await awaitFakeTimer();
+
+      const arrowDom = document.querySelector('.rc-trigger-popup-arrow');
+      expect(arrowDom.classList.contains('abc')).toBeTruthy();
+    });
   });
 });
