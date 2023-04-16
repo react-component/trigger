@@ -173,8 +173,9 @@ describe('Trigger.Arrow', () => {
             autoArrow: false,
           }}
           popup={<strong>trigger</strong>}
-          arrow
-          arrowClassName='abc'
+          arrow={{
+            className: 'abc',
+          }}
         >
           <div />
         </Trigger>,
