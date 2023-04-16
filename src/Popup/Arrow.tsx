@@ -11,7 +11,7 @@ export interface ArrowProps {
 export default function Arrow(props: ArrowProps) {
   const { prefixCls, align, arrow } = props;
 
-  const {arrowX = 0, arrowY = 0, className } = arrow || {};
+  const {x = 0, y = 0, className } = arrow || {};
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
@@ -35,7 +35,7 @@ export default function Arrow(props: ArrowProps) {
 
     // Top & Bottom
     if (popupTB === targetTB || !['t', 'b'].includes(popupTB)) {
-      alignStyle.top = arrowY;
+      alignStyle.top = y;
     } else if (popupTB === 't') {
       alignStyle.top = 0;
     } else {
@@ -44,7 +44,7 @@ export default function Arrow(props: ArrowProps) {
 
     // Left & Right
     if (popupLR === targetLR || !['l', 'r'].includes(popupLR)) {
-      alignStyle.left = arrowX;
+      alignStyle.left = x;
     } else if (popupLR === 'l') {
       alignStyle.left = 0;
     } else {

@@ -18,6 +18,7 @@ import type {
   ActionType,
   AlignType,
   ArrowType,
+  ArrowTypeOuter,
   AnimationType,
   BuildInPlacements,
   TransitionNameType,
@@ -26,7 +27,7 @@ import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
 import { getAlignPopupClassName, getMotion, getWin } from './util';
 
-export type { BuildInPlacements, AlignType, ActionType };
+export type { BuildInPlacements, AlignType, ActionType, ArrowTypeOuter as ArrowType };
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
@@ -37,10 +38,6 @@ export interface TriggerRef {
 // getDocument?: (element?: HTMLElement) => Document;
 
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
-
-export interface Arrow {
-  className?: string
-}
 
 export interface TriggerProps {
   children: React.ReactElement;
@@ -109,7 +106,7 @@ export interface TriggerProps {
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
   // ==================== Arrow ====================
-  arrow?: boolean | Arrow;
+  arrow?: boolean | ArrowTypeOuter;
 
   // ================= Deprecated ==================
   /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
@@ -634,8 +631,8 @@ export function generateTrigger(
 
     if (arrow) {
       innerArrow = {
-        arrowX,
-        arrowY
+        x: arrowX,
+        y: arrowY
       };
       if (arrow === true) {
         //
