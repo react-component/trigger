@@ -1,17 +1,17 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import type { AlignType } from '../interface';
+import type { AlignType, ArrowType } from '../interface';
 
 export interface ArrowProps {
   prefixCls: string;
   align: AlignType;
-  arrowX?: number;
-  arrowY?: number;
-  className?: string;
+  arrow: ArrowType;
 }
 
 export default function Arrow(props: ArrowProps) {
-  const { prefixCls, className, align, arrowX = 0, arrowY = 0 } = props;
+  const { prefixCls, align, arrow } = props;
+
+  const {arrowX = 0, arrowY = 0, className } = arrow || {}
 
   const arrowRef = React.useRef<HTMLDivElement>();
 

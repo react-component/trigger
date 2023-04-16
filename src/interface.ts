@@ -70,6 +70,12 @@ export interface AlignType {
   ignoreShake?: boolean;
 }
 
+export interface ArrowType {
+  className?: string;
+  arrowX?: number;
+  arrowY?: number;
+}
+
 export type BuildInPlacements = Record<string, AlignType>;
 
 export type StretchType = string;

@@ -17,6 +17,7 @@ import useWatch from './hooks/useWatch';
 import type {
   ActionType,
   AlignType,
+  ArrowType,
   AnimationType,
   BuildInPlacements,
   TransitionNameType,
@@ -36,6 +37,10 @@ export interface TriggerRef {
 // getDocument?: (element?: HTMLElement) => Document;
 
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
+
+export interface Arrow {
+  className?: string
+}
 
 export interface TriggerProps {
   children: React.ReactElement;
@@ -104,8 +109,7 @@ export interface TriggerProps {
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
   // ==================== Arrow ====================
-  arrow?: boolean;
-  arrowClassName?: string;
+  arrow?: boolean | Arrow;
 
   // ================= Deprecated ==================
   /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
@@ -179,7 +183,6 @@ export function generateTrigger(
 
       // Arrow
       arrow,
-      arrowClassName,
 
       // Motion
       popupMotion,
@@ -627,6 +630,20 @@ export function generateTrigger(
       ...passedProps,
     });
 
+    let innerArrow: ArrowType = null
+
+    if (arrow) {
+      innerArrow = {
+        arrowX,
+        arrowY
+      }
+      if (arrow === true) {
+        //
+      } else {
+        Object.assign(innerArrow, arrow)
+      }
+    }
+
     // Render
     return (
       <>
@@ -669,14 +686,11 @@ export function generateTrigger(
             getPopupContainer={getPopupContainer}
             // Arrow
             align={alignInfo}
-            arrow={arrow}
-            arrowClassName={arrowClassName}
+            arrow={innerArrow}
             // Align
             ready={ready}
             offsetX={offsetX}
             offsetY={offsetY}
-            arrowX={arrowX}
-            arrowY={arrowY}
             onAlign={triggerAlign}
             // Stretch
             stretch={stretch}
