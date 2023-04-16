@@ -630,17 +630,17 @@ export function generateTrigger(
       ...passedProps,
     });
 
-    let innerArrow: ArrowType = null
+    let innerArrow: ArrowType;
 
     if (arrow) {
       innerArrow = {
         arrowX,
         arrowY
-      }
+      };
       if (arrow === true) {
         //
       } else {
-        Object.assign(innerArrow, arrow)
+        Object.assign(innerArrow, arrow);
       }
     }
 
