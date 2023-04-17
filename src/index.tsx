@@ -629,14 +629,13 @@ export function generateTrigger(
 
     let innerArrow: ArrowType;
 
+    // true and Object likely
     if (arrow) {
       innerArrow = {
         x: arrowX,
         y: arrowY
       };
-      if (arrow === true) {
-        //
-      } else {
+      if (arrow !== true) {
         Object.assign(innerArrow, arrow);
       }
     }
