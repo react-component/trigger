@@ -11,7 +11,7 @@ export interface ArrowProps {
 export default function Arrow(props: ArrowProps) {
   const { prefixCls, align, arrow } = props;
 
-  const {x = 0, y = 0, className } = arrow || {};
+  const { x = 0, y = 0, className } = arrow || {};
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
