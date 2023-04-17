@@ -632,7 +632,7 @@ export function generateTrigger(
       ...(arrow !== true ? arrow : {}),
       x: arrowX,
       y: arrowY
-    }: null
+    }: null;
 
     // Render
     return (
