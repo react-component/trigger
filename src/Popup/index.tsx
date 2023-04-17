@@ -9,6 +9,7 @@ import type { TriggerProps } from '../';
 import type { AlignType } from '../interface';
 import Arrow from './Arrow';
 import Mask from './Mask';
+import PopupContent from './PopupContent';
 
 export interface PopupProps {
   prefixCls: string;
@@ -229,7 +230,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                         arrowY={arrowY}
                       />
                     )}
-                    {childNode}
+                    <PopupContent cache={!open}>{childNode}</PopupContent>
                   </div>
                 );
               }}
