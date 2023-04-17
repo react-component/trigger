@@ -100,4 +100,44 @@ describe('Trigger.Motion', () => {
       pointerEvents: 'none',
     });
   });
+
+  it('no update when close', () => {
+    const genTrigger = ({ children, ...props }) => (
+      <Trigger
+        popup={children}
+        popupMotion={{
+          motionName: 'bamboo',
+        }}
+        popupVisible
+        {...props}
+      >
+        <span />
+      </Trigger>
+    );
+
+    const { rerender } = render(
+      genTrigger({
+        children: <div className="bamboo" />,
+      }),
+    );
+
+    expect(document.querySelector('.bamboo')).toBeTruthy();
+
+    // rerender when open
+    rerender(
+      genTrigger({
+        children: <div className="little" />,
+      }),
+    );
+    expect(document.querySelector('.little')).toBeTruthy();
+
+    // rerender when close
+    rerender(
+      genTrigger({
+        popupVisible: false,
+        children: <div className="light" />,
+      }),
+    );
+    expect(document.querySelector('.little')).toBeTruthy();
+  });
 });
