@@ -45,7 +45,7 @@
     "@testing-library/react": "^13.0.0",
     "@types/classnames": "^2.2.10",
     "@types/jest": "^26.0.15",
-    "@types/react": "^16.8.19",
+    "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "cross-env": "^7.0.1",
     "dumi": "^2.1.0",
