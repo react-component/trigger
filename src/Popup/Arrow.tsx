@@ -1,15 +1,17 @@
 import * as React from 'react';
-import type { AlignType } from '../interface';
+import classNames from 'classnames';
+import type { AlignType, ArrowType } from '../interface';
 
 export interface ArrowProps {
   prefixCls: string;
   align: AlignType;
-  arrowX?: number;
-  arrowY?: number;
+  arrow: ArrowType;
 }
 
 export default function Arrow(props: ArrowProps) {
-  const { prefixCls, align, arrowX = 0, arrowY = 0 } = props;
+  const { prefixCls, align, arrow } = props;
+
+  const { x = 0, y = 0, className } = arrow || {};
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
@@ -33,7 +35,7 @@ export default function Arrow(props: ArrowProps) {
 
     // Top & Bottom
     if (popupTB === targetTB || !['t', 'b'].includes(popupTB)) {
-      alignStyle.top = arrowY;
+      alignStyle.top = y;
     } else if (popupTB === 't') {
       alignStyle.top = 0;
     } else {
@@ -42,7 +44,7 @@ export default function Arrow(props: ArrowProps) {
 
     // Left & Right
     if (popupLR === targetLR || !['l', 'r'].includes(popupLR)) {
-      alignStyle.left = arrowX;
+      alignStyle.left = x;
     } else if (popupLR === 'l') {
       alignStyle.left = 0;
     } else {
@@ -51,6 +53,6 @@ export default function Arrow(props: ArrowProps) {
   }
 
   return (
-    <div ref={arrowRef} className={`${prefixCls}-arrow`} style={alignStyle} />
+    <div ref={arrowRef} className={classNames(`${prefixCls}-arrow`, className)} style={alignStyle} />
   );
 }

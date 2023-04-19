@@ -17,6 +17,8 @@ import useWatch from './hooks/useWatch';
 import type {
   ActionType,
   AlignType,
+  ArrowType,
+  ArrowTypeOuter,
   AnimationType,
   BuildInPlacements,
   TransitionNameType,
@@ -25,7 +27,7 @@ import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
 import { getAlignPopupClassName, getMotion, getWin } from './util';
 
-export type { BuildInPlacements, AlignType, ActionType };
+export type { BuildInPlacements, AlignType, ActionType, ArrowTypeOuter as ArrowType };
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
@@ -104,7 +106,7 @@ export interface TriggerProps {
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
   // ==================== Arrow ====================
-  arrow?: boolean;
+  arrow?: boolean | ArrowTypeOuter;
 
   // ================= Deprecated ==================
   /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
@@ -625,6 +627,13 @@ export function generateTrigger(
       ...passedProps,
     });
 
+    const innerArrow: ArrowType = arrow ? {
+      // true and Object likely
+      ...(arrow !== true ? arrow : {}),
+      x: arrowX,
+      y: arrowY
+    }: null;
+
     // Render
     return (
       <>
@@ -667,13 +676,11 @@ export function generateTrigger(
             getPopupContainer={getPopupContainer}
             // Arrow
             align={alignInfo}
-            arrow={arrow}
+            arrow={innerArrow}
             // Align
             ready={ready}
             offsetX={offsetX}
             offsetY={offsetY}
-            arrowX={arrowX}
-            arrowY={arrowY}
             onAlign={triggerAlign}
             // Stretch
             stretch={stretch}
