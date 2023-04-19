@@ -44,7 +44,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.0.0",
     "@types/classnames": "^2.2.10",
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^29.5.1",
     "@types/react": "^16.8.19",
     "@types/react-dom": "^18.0.11",
     "cross-env": "^7.0.1",
