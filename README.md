@@ -65,8 +65,6 @@ ReactDOM.render((
 
 http://localhost:9001
 
-online example: http://react-component.github.io/trigger/
-
 ## Development
 
 ```
@@ -252,74 +250,10 @@ npm start
 
 ```
 npm test
-npm run chrome-test
-```
-
-## Coverage
-
-```
 npm run coverage
 ```
 
 open coverage/ dir
-
-## React 16 Note
-
-After React 16, you won't access popup element's ref in parent component's componentDidMount, which means following code won't work.
-
-```javascript
-class App extends React.Component {
-  componentDidMount() {
-    this.input.focus(); // error, this.input is undefined.
-  }
-
-  render() {
-    return (
-      <Trigger
-        action={['click']}
-        popup={<div><input ref={node => this.input = node} type="text" /></div>}
-      >
-        <button>click</button>
-      </Trigger>
-    )
-  }
-}
-```
-
-Consider wrap your popup element to a separate component:
-
-```javascript
-class InputPopup extends React.Component {
-  componentDidMount() {
-    this.props.onMount();
-  }
-
-  render() {
-    return (
-      <div>
-        <input ref={this.props.inputRef} type="text" />
-      </div>
-    );
-  }
-}
-
-class App extends React.Component {
-  handlePopupMount() {
-    this.input.focus(); // error, this.input is undefined.
-  }
-
-  render() {
-    return (
-      <Trigger
-        action={['click']}
-        popup={<InputPopup inputRef={node => this.input = node} onMount={this.handlePopupMount} />}
-      >
-        <button>click</button>
-      </Trigger>
-    )
-  }
-}
-```
 
 ## License
 
