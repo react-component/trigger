@@ -850,8 +850,10 @@ describe('Trigger.Basic', () => {
     expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
   });
+
   it('should trigger align when popupAlign had updated', async () => {
     const onPopupAlign = jest.fn();
+
     const App = () => {
       const [placementAlign, setPlacementAlign] = React.useState(
         placementAlignMap.leftTop,
@@ -892,16 +894,21 @@ describe('Trigger.Basic', () => {
       );
     };
     render(<App />);
-    await awaitFakeTimer();
-    expect(onPopupAlign).toHaveBeenCalledTimes(1);
-    fireEvent.click(document.querySelector('#btn'));
+
+    // CSSMotion will trigger `onPrepare` even when motion not support
+    // Which means align will trigger twice on `prepare` & `visibleChanged`
     await awaitFakeTimer();
     expect(onPopupAlign).toHaveBeenCalledTimes(2);
+    fireEvent.click(document.querySelector('#btn'));
+
+    await awaitFakeTimer();
+    expect(onPopupAlign).toHaveBeenCalledTimes(3);
+
     fireEvent.click(document.querySelector('#close'));
     await awaitFakeTimer();
     fireEvent.click(document.querySelector('#btn'));
     await awaitFakeTimer();
-    expect(onPopupAlign).toHaveBeenCalledTimes(2);
+    expect(onPopupAlign).toHaveBeenCalledTimes(3);
   });
 
   it('popupVisible switch `undefined` and `false` should work', async () => {
