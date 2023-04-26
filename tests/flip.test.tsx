@@ -6,9 +6,15 @@ import Trigger from '../src';
 import { getVisibleArea } from '../src/util';
 
 const flush = async () => {
-  await act(async () => {
-    await Promise.resolve();
-  });
+  for (let i = 0; i < 10; i += 1) {
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+  }
 };
 
 const builtinPlacements = {
