@@ -162,7 +162,7 @@ describe('Trigger.Basic', () => {
     });
 
     describe('afterPopupVisibleChange can be triggered', () => {
-      it('uncontrolled', () => {
+      it('uncontrolled', async () => {
         let triggered = 0;
         const { container } = render(
           <Trigger
@@ -178,22 +178,23 @@ describe('Trigger.Basic', () => {
         );
 
         trigger(container, '.target');
+
+        await awaitFakeTimer();
+
         expect(triggered).toBe(1);
       });
 
-      it('controlled', () => {
-        const demoRef = createRef();
+      it('controlled', async () => {
         let triggered = 0;
 
-        class Demo extends React.Component {
-          state = {
-            visible: false,
-          };
+        const Demo = () => {
+          const [visible, setVisible] = React.useState(false);
 
-          render() {
-            return (
+          return (
+            <>
+              <button onClick={() => setVisible((v) => !v)} />
               <Trigger
-                popupVisible={this.state.visible}
+                popupVisible={visible}
                 popupAlign={placementAlignMap.left}
                 afterPopupVisibleChange={() => {
                   triggered += 1;
@@ -202,21 +203,18 @@ describe('Trigger.Basic', () => {
               >
                 <div className="target">click</div>
               </Trigger>
-            );
-          }
-        }
+            </>
+          );
+        };
 
-        render(<Demo ref={demoRef} />);
-        act(() => {
-          demoRef.current.setState({ visible: true });
-          jest.runAllTimers();
-        });
+        const { container } = render(<Demo />);
+
+        fireEvent.click(container.querySelector('button'));
+        await awaitFakeTimer();
         expect(triggered).toBe(1);
 
-        act(() => {
-          demoRef.current.setState({ visible: false });
-          jest.runAllTimers();
-        });
+        fireEvent.click(container.querySelector('button'));
+        await awaitFakeTimer();
         expect(triggered).toBe(2);
       });
     });
@@ -850,8 +848,10 @@ describe('Trigger.Basic', () => {
     expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
   });
+
   it('should trigger align when popupAlign had updated', async () => {
     const onPopupAlign = jest.fn();
+
     const App = () => {
       const [placementAlign, setPlacementAlign] = React.useState(
         placementAlignMap.leftTop,
@@ -892,16 +892,21 @@ describe('Trigger.Basic', () => {
       );
     };
     render(<App />);
-    await awaitFakeTimer();
-    expect(onPopupAlign).toHaveBeenCalledTimes(1);
-    fireEvent.click(document.querySelector('#btn'));
+
+    // CSSMotion will trigger `onPrepare` even when motion not support
+    // Which means align will trigger twice on `prepare` & `visibleChanged`
     await awaitFakeTimer();
     expect(onPopupAlign).toHaveBeenCalledTimes(2);
+    fireEvent.click(document.querySelector('#btn'));
+
+    await awaitFakeTimer();
+    expect(onPopupAlign).toHaveBeenCalledTimes(3);
+
     fireEvent.click(document.querySelector('#close'));
     await awaitFakeTimer();
     fireEvent.click(document.querySelector('#btn'));
     await awaitFakeTimer();
-    expect(onPopupAlign).toHaveBeenCalledTimes(2);
+    expect(onPopupAlign).toHaveBeenCalledTimes(3);
   });
 
   it('popupVisible switch `undefined` and `false` should work', async () => {
