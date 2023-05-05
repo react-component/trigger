@@ -936,4 +936,56 @@ describe('Trigger.Basic', () => {
     await awaitFakeTimer();
     expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
   });
+
+  describe('click window to hide', () => {
+    it('should hide', async () => {
+      const onPopupVisibleChange = jest.fn();
+
+      const { container } = render(
+        <Trigger
+          onPopupVisibleChange={onPopupVisibleChange}
+          action="click"
+          popup={<strong>trigger</strong>}
+        >
+          <div className="target" />
+        </Trigger>,
+      );
+
+      fireEvent.click(container.querySelector('.target'));
+      await awaitFakeTimer();
+      expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
+      onPopupVisibleChange.mockReset();
+
+      // Click outside to close
+      fireEvent.mouseDown(document.body);
+      fireEvent.click(document.body);
+      await awaitFakeTimer();
+      expect(onPopupVisibleChange).toHaveBeenCalledWith(false);
+    });
+
+    it('should not hide when mouseDown inside but mouseUp outside', async () => {
+      const onPopupVisibleChange = jest.fn();
+
+      const { container } = render(
+        <Trigger
+          onPopupVisibleChange={onPopupVisibleChange}
+          action="click"
+          popup={<strong>trigger</strong>}
+        >
+          <div className="target" />
+        </Trigger>,
+      );
+
+      fireEvent.click(container.querySelector('.target'));
+      await awaitFakeTimer();
+      expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
+      onPopupVisibleChange.mockReset();
+
+      // Click outside to close
+      fireEvent.mouseDown(document.querySelector('strong'));
+      fireEvent.click(document.body);
+      await awaitFakeTimer();
+      expect(onPopupVisibleChange).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -17,9 +17,9 @@ import useWatch from './hooks/useWatch';
 import type {
   ActionType,
   AlignType,
+  AnimationType,
   ArrowType,
   ArrowTypeOuter,
-  AnimationType,
   BuildInPlacements,
   TransitionNameType,
 } from './interface';
@@ -27,7 +27,12 @@ import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
 import { getAlignPopupClassName, getMotion, getWin } from './util';
 
-export type { BuildInPlacements, AlignType, ActionType, ArrowTypeOuter as ArrowType };
+export type {
+  BuildInPlacements,
+  AlignType,
+  ActionType,
+  ArrowTypeOuter as ArrowType,
+};
 
 export interface TriggerRef {
   forceAlign: VoidFunction;
@@ -495,8 +500,16 @@ export function generateTrigger(
     // Click to hide is special action since click popup element should not hide
     React.useEffect(() => {
       if (clickToHide && popupEle && (!mask || maskClosable)) {
+        let clickInside = false;
+
+        // User may mouseDown inside and drag out of popup and mouse up
+        // Record here to prevent close
+        const onWindowMouseDown = ({ target }: MouseEvent) => {
+          clickInside = inPopupOrChild(target);
+        };
+
         const onWindowClick = ({ target }: MouseEvent) => {
-          if (openRef.current && !inPopupOrChild(target)) {
+          if (openRef.current && !clickInside && !inPopupOrChild(target)) {
             triggerOpen(false);
           }
         };
@@ -505,11 +518,16 @@ export function generateTrigger(
 
         const targetRoot = targetEle?.getRootNode();
 
+        win.addEventListener('mousedown', onWindowMouseDown);
         win.addEventListener('click', onWindowClick);
 
         // shadow root
         const inShadow = targetRoot && targetRoot !== targetEle.ownerDocument;
         if (inShadow) {
+          (targetRoot as ShadowRoot).addEventListener(
+            'mousedown',
+            onWindowMouseDown,
+          );
           (targetRoot as ShadowRoot).addEventListener('click', onWindowClick);
         }
 
@@ -524,9 +542,14 @@ export function generateTrigger(
         }
 
         return () => {
+          win.removeEventListener('mousedown', onWindowMouseDown);
           win.removeEventListener('click', onWindowClick);
 
           if (inShadow) {
+            (targetRoot as ShadowRoot).removeEventListener(
+              'mousedown',
+              onWindowMouseDown,
+            );
             (targetRoot as ShadowRoot).removeEventListener(
               'click',
               onWindowClick,
@@ -627,12 +650,14 @@ export function generateTrigger(
       ...passedProps,
     });
 
-    const innerArrow: ArrowType = arrow ? {
-      // true and Object likely
-      ...(arrow !== true ? arrow : {}),
-      x: arrowX,
-      y: arrowY
-    }: null;
+    const innerArrow: ArrowType = arrow
+      ? {
+          // true and Object likely
+          ...(arrow !== true ? arrow : {}),
+          x: arrowX,
+          y: arrowY,
+        }
+      : null;
 
     // Render
     return (
