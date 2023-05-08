@@ -55,7 +55,7 @@ const builtinPlacements = {
   },
 };
 
-const popupPlacement = 'right';
+const popupPlacement = 'top';
 
 export default () => {
   console.log('Demo Render!');
@@ -152,12 +152,16 @@ export default () => {
                   Popup
                 </div>
               }
+              popupTransitionName="rc-trigger-popup-zoom"
               popupStyle={{ boxShadow: '0 0 5px red' }}
               // popupVisible
               // getPopupContainer={() => popHolderRef.current}
               popupPlacement={popupPlacement}
               builtinPlacements={builtinPlacements}
               stretch="minWidth"
+              onPopupAlign={(domNode, align) => {
+                console.log('onPopupAlign:', domNode, align);
+              }}
             >
               <span
                 style={{

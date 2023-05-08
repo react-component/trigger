@@ -206,14 +206,18 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                   <div
                     ref={composeRef(resizeObserverRef, ref, motionRef)}
                     className={cls}
-                    style={{
-                      ...offsetStyle,
-                      ...miscStyle,
-                      ...motionStyle,
-                      boxSizing: 'border-box',
-                      zIndex,
-                      ...style,
-                    }}
+                    style={
+                      {
+                        '--arrow-x': `${arrow.x || 0}px`,
+                        '--arrow-y': `${arrow.y || 0}px`,
+                        ...offsetStyle,
+                        ...miscStyle,
+                        ...motionStyle,
+                        boxSizing: 'border-box',
+                        zIndex,
+                        ...style,
+                      } as React.CSSProperties
+                    }
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
                     onClick={onClick}
