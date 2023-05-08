@@ -208,8 +208,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                     className={cls}
                     style={
                       {
-                        '--arrow-x': `${arrow.x || 0}px`,
-                        '--arrow-y': `${arrow.y || 0}px`,
+                        '--arrow-x': `${arrow?.x || 0}px`,
+                        '--arrow-y': `${arrow?.y || 0}px`,
                         ...offsetStyle,
                         ...miscStyle,
                         ...motionStyle,
