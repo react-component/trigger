@@ -194,7 +194,7 @@ describe('Trigger.Align', () => {
         }}
         popupPlacement="top"
         popupAlign={{
-          targetOffset: [903, 1128],
+          targetOffset: [-903, -1128],
         }}
       >
         <svg />
@@ -208,6 +208,29 @@ describe('Trigger.Align', () => {
     ).toHaveStyle({
       left: `753px`,
       top: `978px`,
+    });
+  });
+
+  it('targetOffset support ptg', async () => {
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        popupAlign={{
+          targetOffset: ['50%', '-50%'],
+        }}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    // Correct this if I miss understand the value calculation
+    // from https://github.com/yiminghe/dom-align/blob/master/src/getElFuturePos.js
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      left: `-50px`,
+      top: `50px`,
     });
   });
 });
