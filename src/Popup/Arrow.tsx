@@ -1,17 +1,19 @@
-import * as React from 'react';
 import classNames from 'classnames';
-import type { AlignType, ArrowType } from '../interface';
+import * as React from 'react';
+import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';
 
 export interface ArrowProps {
   prefixCls: string;
   align: AlignType;
-  arrow: ArrowType;
+  arrow: ArrowTypeOuter;
+  arrowPos: ArrowPos;
 }
 
 export default function Arrow(props: ArrowProps) {
-  const { prefixCls, align, arrow } = props;
+  const { prefixCls, align, arrow, arrowPos } = props;
 
-  const { x = 0, y = 0, className } = arrow || {};
+  const { className } = arrow || {};
+  const { x = 0, y = 0 } = arrowPos;
 
   const arrowRef = React.useRef<HTMLDivElement>();
 
@@ -53,6 +55,10 @@ export default function Arrow(props: ArrowProps) {
   }
 
   return (
-    <div ref={arrowRef} className={classNames(`${prefixCls}-arrow`, className)} style={alignStyle} />
+    <div
+      ref={arrowRef}
+      className={classNames(`${prefixCls}-arrow`, className)}
+      style={alignStyle}
+    />
   );
 }

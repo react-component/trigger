@@ -6,7 +6,7 @@ import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import { composeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import type { TriggerProps } from '../';
-import type { AlignType, ArrowType } from '../interface';
+import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';
 import Arrow from './Arrow';
 import Mask from './Mask';
 import PopupContent from './PopupContent';
@@ -26,7 +26,8 @@ export interface PopupProps {
 
   // Arrow
   align?: AlignType;
-  arrow?: ArrowType;
+  arrow?: ArrowTypeOuter;
+  arrowPos: ArrowPos;
 
   // Open
   open: boolean;
@@ -81,6 +82,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
     // Arrow
     arrow,
+    arrowPos,
     align,
 
     // Motion
@@ -208,8 +210,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                     className={cls}
                     style={
                       {
-                        '--arrow-x': `${arrow?.x || 0}px`,
-                        '--arrow-y': `${arrow?.y || 0}px`,
+                        '--arrow-x': `${arrowPos.x || 0}px`,
+                        '--arrow-y': `${arrowPos.y || 0}px`,
                         ...offsetStyle,
                         ...miscStyle,
                         ...motionStyle,
@@ -226,6 +228,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                       <Arrow
                         prefixCls={prefixCls}
                         arrow={arrow}
+                        arrowPos={arrowPos}
                         align={align}
                       />
                     )}

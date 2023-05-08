@@ -76,10 +76,10 @@ export interface ArrowTypeOuter {
   className?: string;
 }
 
-export type ArrowType = ArrowTypeOuter & {
+export type ArrowPos = {
   x?: number;
   y?: number;
-}
+};
 
 export type BuildInPlacements = Record<string, AlignType>;
 
