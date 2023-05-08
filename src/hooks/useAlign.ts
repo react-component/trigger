@@ -8,12 +8,34 @@ import type {
   AlignPointLeftRight,
   AlignPointTopBottom,
   AlignType,
+  OffsetType,
 } from '../interface';
 import { collectScroller, getVisibleArea, getWin, toNum } from '../util';
 
 type Rect = Record<'x' | 'y' | 'width' | 'height', number>;
 
 type Points = [topBottom: AlignPointTopBottom, leftRight: AlignPointLeftRight];
+
+function getUnitOffset(size: number, offset: OffsetType = 0) {
+  const offsetStr = `${offset}`;
+  const cells = offsetStr.match(/^(.*)\%$/);
+  if (cells) {
+    return size * (parseFloat(cells[1]) / 100);
+  }
+  return parseFloat(offsetStr);
+}
+
+function getNumberOffset(
+  rect: { width: number; height: number },
+  offset?: OffsetType[],
+) {
+  const [offsetX, offsetY] = offset || [];
+
+  return [
+    getUnitOffset(rect.width, offsetX),
+    getUnitOffset(rect.height, offsetY),
+  ];
+}
 
 function splitPoints(points: string = ''): Points {
   return [points[0] as any, points[1] as any];
@@ -229,11 +251,14 @@ export default function useAlign(
 
       // Offset
       const { offset, targetOffset } = placementInfo;
-      const [popupOffsetX = 0, popupOffsetY = 0] = offset || [];
-      const [targetOffsetX = 0, targetOffsetY = 0] = targetOffset || [];
+      const [popupOffsetX, popupOffsetY] = getNumberOffset(popupRect, offset);
+      const [targetOffsetX, targetOffsetY] = getNumberOffset(
+        targetRect,
+        targetOffset,
+      );
 
-      targetRect.x += targetOffsetX;
-      targetRect.y += targetOffsetY;
+      targetRect.x -= targetOffsetX;
+      targetRect.y -= targetOffsetY;
 
       // Points
       const [popupPoint, targetPoint] = placementInfo.points || [];

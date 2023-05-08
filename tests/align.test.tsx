@@ -194,7 +194,7 @@ describe('Trigger.Align', () => {
         }}
         popupPlacement="top"
         popupAlign={{
-          targetOffset: [903, 1128],
+          targetOffset: [-903, -1128],
         }}
       >
         <svg />
