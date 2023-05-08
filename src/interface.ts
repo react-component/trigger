@@ -74,12 +74,13 @@ export interface AlignType {
 
 export interface ArrowTypeOuter {
   className?: string;
+  content?: React.ReactNode;
 }
 
-export type ArrowType = ArrowTypeOuter & {
+export type ArrowPos = {
   x?: number;
   y?: number;
-}
+};
 
 export type BuildInPlacements = Record<string, AlignType>;
 

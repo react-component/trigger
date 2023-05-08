@@ -187,4 +187,26 @@ describe('Trigger.Arrow', () => {
       expect(arrowDom.classList.contains('abc')).toBeTruthy();
     });
   });
+
+  it('content', async () => {
+    render(
+      <Trigger
+        popupVisible
+        popupAlign={{
+          points: ['cl', 'cr'],
+          autoArrow: false,
+        }}
+        popup={<strong>trigger</strong>}
+        arrow={{
+          content: <span className="my-content" />,
+        }}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    expect(document.querySelector('.my-content')).toBeTruthy();
+  });
 });

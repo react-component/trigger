@@ -18,7 +18,7 @@ import type {
   ActionType,
   AlignType,
   AnimationType,
-  ArrowType,
+  ArrowPos,
   ArrowTypeOuter,
   BuildInPlacements,
   TransitionNameType,
@@ -650,12 +650,15 @@ export function generateTrigger(
       ...passedProps,
     });
 
-    const innerArrow: ArrowType = arrow
+    const arrowPos: ArrowPos = {
+      x: arrowX,
+      y: arrowY,
+    };
+
+    const innerArrow: ArrowTypeOuter = arrow
       ? {
           // true and Object likely
           ...(arrow !== true ? arrow : {}),
-          x: arrowX,
-          y: arrowY,
         }
       : null;
 
@@ -702,6 +705,7 @@ export function generateTrigger(
             // Arrow
             align={alignInfo}
             arrow={innerArrow}
+            arrowPos={arrowPos}
             // Align
             ready={ready}
             offsetX={offsetX}
