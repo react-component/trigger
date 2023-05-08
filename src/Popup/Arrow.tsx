@@ -12,7 +12,7 @@ export interface ArrowProps {
 export default function Arrow(props: ArrowProps) {
   const { prefixCls, align, arrow, arrowPos } = props;
 
-  const { className } = arrow || {};
+  const { className, content } = arrow || {};
   const { x = 0, y = 0 } = arrowPos;
 
   const arrowRef = React.useRef<HTMLDivElement>();
@@ -59,6 +59,8 @@ export default function Arrow(props: ArrowProps) {
       ref={arrowRef}
       className={classNames(`${prefixCls}-arrow`, className)}
       style={alignStyle}
-    />
+    >
+      {content}
+    </div>
   );
 }

@@ -136,7 +136,7 @@ export default () => {
             }}
           >
             <Trigger
-              arrow
+              arrow={{ content: 'Arrow' }}
               // forceRender
               action="click"
               popup={

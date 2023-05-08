@@ -74,6 +74,7 @@ export interface AlignType {
 
 export interface ArrowTypeOuter {
   className?: string;
+  content?: React.ReactNode;
 }
 
 export type ArrowPos = {
