@@ -81,8 +81,9 @@ export function collectScroller(ele: HTMLElement) {
   const scrollStyle = ['hidden', 'scroll', 'clip', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
-    if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
+    const { overflowX, overflowY, overflow } =
+      getWin(current).getComputedStyle(current);
+    if ([overflowX, overflowY, overflow].some((o) => scrollStyle.includes(o))) {
       scrollerList.push(current);
     }
 
@@ -92,8 +93,12 @@ export function collectScroller(ele: HTMLElement) {
   return scrollerList;
 }
 
-export function toNum(num: number) {
-  return Number.isNaN(num) ? 1 : num;
+export function toNum(num: number, defaultValue = 1) {
+  return Number.isNaN(num) ? defaultValue : num;
+}
+
+function getPxValue(val: string) {
+  return toNum(parseFloat(val), 0);
 }
 
 export interface VisibleArea {
@@ -130,9 +135,6 @@ export function getVisibleArea(
   scrollerList?: HTMLElement[],
 ) {
   const visibleArea = { ...initArea };
-
-  // To enable uglify `parseFloat` instead of fully func name here.
-  const getPxValue = parseFloat;
 
   (scrollerList || []).forEach((ele) => {
     if (ele instanceof HTMLBodyElement) {
