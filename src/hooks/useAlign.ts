@@ -227,6 +227,7 @@ export default function useAlign(
             };
 
       visibleArea = getVisibleArea(visibleArea, scrollerList);
+      console.log('VisibleArea:', visibleArea);
 
       // Reset back
       popupElement.style.left = originLeft;
