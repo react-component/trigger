@@ -78,11 +78,12 @@ export function collectScroller(ele: HTMLElement) {
   const scrollerList: HTMLElement[] = [];
   let current = ele?.parentElement;
 
-  const scrollStyle = ['hidden', 'scroll', 'auto'];
+  const scrollStyle = ['hidden', 'scroll', 'clip', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY } = getWin(current).getComputedStyle(current);
-    if (scrollStyle.includes(overflowX) || scrollStyle.includes(overflowY)) {
+    const { overflowX, overflowY, overflow } =
+      getWin(current).getComputedStyle(current);
+    if ([overflowX, overflowY, overflow].some((o) => scrollStyle.includes(o))) {
       scrollerList.push(current);
     }
 
@@ -92,8 +93,12 @@ export function collectScroller(ele: HTMLElement) {
   return scrollerList;
 }
 
-export function toNum(num: number) {
-  return Number.isNaN(num) ? 1 : num;
+export function toNum(num: number, defaultValue = 1) {
+  return Number.isNaN(num) ? defaultValue : num;
+}
+
+function getPxValue(val: string) {
+  return toNum(parseFloat(val), 0);
 }
 
 export interface VisibleArea {
@@ -103,6 +108,28 @@ export interface VisibleArea {
   bottom: number;
 }
 
+/**
+ *
+ *
+ *  **************************************
+ *  *              Border                *
+ *  *     **************************     *
+ *  *     *                  *     *     *
+ *  *  B  *                  *  S  *  B  *
+ *  *  o  *                  *  c  *  o  *
+ *  *  r  *      Content     *  r  *  r  *
+ *  *  d  *                  *  o  *  d  *
+ *  *  e  *                  *  l  *  e  *
+ *  *  r  ********************  l  *  r  *
+ *  *     *        Scroll          *     *
+ *  *     **************************     *
+ *  *              Border                *
+ *  **************************************
+ *
+ */
+/**
+ * Get visible area of element
+ */
 export function getVisibleArea(
   initArea: VisibleArea,
   scrollerList?: HTMLElement[],
@@ -115,10 +142,14 @@ export function getVisibleArea(
     }
 
     // Skip if static position which will not affect visible area
-    const { position } = getWin(ele).getComputedStyle(ele);
-    if (position === 'static') {
-      return;
-    }
+    const {
+      overflow,
+      overflowClipMargin,
+      borderTopWidth,
+      borderBottomWidth,
+      borderLeftWidth,
+      borderRightWidth,
+    } = getWin(ele).getComputedStyle(ele);
 
     const eleRect = ele.getBoundingClientRect();
     const {
@@ -128,6 +159,11 @@ export function getVisibleArea(
       clientWidth: eleInnerWidth,
     } = ele;
 
+    const borderTopNum = getPxValue(borderTopWidth);
+    const borderBottomNum = getPxValue(borderBottomWidth);
+    const borderLeftNum = getPxValue(borderLeftWidth);
+    const borderRightNum = getPxValue(borderRightWidth);
+
     const scaleX = toNum(
       Math.round((eleRect.width / eleOutWidth) * 1000) / 1000,
     );
@@ -135,13 +171,49 @@ export function getVisibleArea(
       Math.round((eleRect.height / eleOutHeight) * 1000) / 1000,
     );
 
-    const eleScrollWidth = (eleOutWidth - eleInnerWidth) * scaleX;
-    const eleScrollHeight = (eleOutHeight - eleInnerHeight) * scaleY;
-    const eleRight = eleRect.x + eleRect.width - eleScrollWidth;
-    const eleBottom = eleRect.y + eleRect.height - eleScrollHeight;
+    // Original visible area
+    const eleScrollWidth =
+      (eleOutWidth - eleInnerWidth - borderLeftNum - borderRightNum) * scaleX;
+    const eleScrollHeight =
+      (eleOutHeight - eleInnerHeight - borderTopNum - borderBottomNum) * scaleY;
 
-    visibleArea.left = Math.max(visibleArea.left, eleRect.x);
-    visibleArea.top = Math.max(visibleArea.top, eleRect.y);
+    // Cut border size
+    const scaledBorderTopWidth = borderTopNum * scaleY;
+    const scaledBorderBottomWidth = borderBottomNum * scaleY;
+    const scaledBorderLeftWidth = borderLeftNum * scaleX;
+    const scaledBorderRightWidth = borderRightNum * scaleX;
+
+    // Clip margin
+    let clipMarginWidth = 0;
+    let clipMarginHeight = 0;
+    if (overflow === 'clip') {
+      const clipNum = getPxValue(overflowClipMargin);
+      clipMarginWidth = clipNum * scaleX;
+      clipMarginHeight = clipNum * scaleY;
+    }
+
+    // Region
+    const eleLeft = eleRect.x + scaledBorderLeftWidth - clipMarginWidth;
+    const eleTop = eleRect.y + scaledBorderTopWidth - clipMarginHeight;
+
+    const eleRight =
+      eleLeft +
+      eleRect.width +
+      2 * clipMarginWidth -
+      scaledBorderLeftWidth -
+      scaledBorderRightWidth -
+      eleScrollWidth;
+
+    const eleBottom =
+      eleTop +
+      eleRect.height +
+      2 * clipMarginHeight -
+      scaledBorderTopWidth -
+      scaledBorderBottomWidth -
+      eleScrollHeight;
+
+    visibleArea.left = Math.max(visibleArea.left, eleLeft);
+    visibleArea.top = Math.max(visibleArea.top, eleTop);
     visibleArea.right = Math.min(visibleArea.right, eleRight);
     visibleArea.bottom = Math.min(visibleArea.bottom, eleBottom);
   });

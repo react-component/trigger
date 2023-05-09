@@ -1,6 +1,7 @@
 import { act, cleanup, render } from '@testing-library/react';
 import { _rs } from 'rc-resize-observer';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import * as React from 'react';
 import type { TriggerProps } from '../src';
 import Trigger from '../src';
 import { getVisibleArea } from '../src/util';
@@ -49,6 +50,11 @@ const builtinPlacements = {
 };
 
 describe('Trigger.Align', () => {
+  let eleRect = {
+    width: 100,
+    height: 100,
+  };
+
   let spanRect = {
     x: 0,
     y: 0,
@@ -66,10 +72,16 @@ describe('Trigger.Align', () => {
   beforeAll(() => {
     spyElementPrototypes(HTMLElement, {
       clientWidth: {
-        get: () => 100,
+        get: () => eleRect.width,
       },
       clientHeight: {
-        get: () => 100,
+        get: () => eleRect.height,
+      },
+      offsetWidth: {
+        get: () => eleRect.width,
+      },
+      offsetHeight: {
+        get: () => eleRect.height,
       },
     });
 
@@ -93,6 +105,10 @@ describe('Trigger.Align', () => {
   });
 
   beforeEach(() => {
+    eleRect = {
+      width: 100,
+      height: 100,
+    };
     spanRect = {
       x: 0,
       y: 0,
@@ -280,24 +296,7 @@ describe('Trigger.Align', () => {
     });
   });
 
-  // Static parent should not affect popup position
-  // https://github.com/ant-design/ant-design/issues/41644
-  it('static parent should not affect popup position', async () => {
-    /*
-
-    ********************
-    *                  *
-    *  **************  *
-    *  *   Affect   *  *
-    *  * ********** *  *
-    *  * *   Not  * *  *
-    *  * ********** *  *
-    *                  *
-    *  **************  *
-    *                  *
-    ********************
-
-    */
+  it('overflowClipMargin support', async () => {
     const initArea = {
       left: 0,
       right: 500,
@@ -310,6 +309,18 @@ describe('Trigger.Align', () => {
     document.body.appendChild(affectEle);
 
     affectEle.style.position = 'absolute';
+    affectEle.style.overflow = 'clip';
+    affectEle.style.overflowClipMargin = '50px';
+
+    const oriGetComputedStyle = window.getComputedStyle;
+    window.getComputedStyle = (ele: HTMLElement) => {
+      const retObj = oriGetComputedStyle(ele);
+      if (ele.style.overflowClipMargin) {
+        retObj.overflowClipMargin = ele.style.overflowClipMargin;
+      }
+      return retObj;
+    };
+
     Object.defineProperties(affectEle, {
       offsetHeight: {
         get: () => 300,
@@ -332,40 +343,15 @@ describe('Trigger.Align', () => {
         height: 300,
       } as any);
 
-    // Skip area
-    const skipEle = document.createElement('div');
-    document.body.appendChild(skipEle);
-
-    skipEle.style.position = 'static';
-    Object.defineProperties(skipEle, {
-      offsetHeight: {
-        get: () => 100,
-      },
-      offsetWidth: {
-        get: () => 100,
-      },
-      clientHeight: {
-        get: () => 100,
-      },
-      clientWidth: {
-        get: () => 100,
-      },
-    });
-    skipEle.getBoundingClientRect = () =>
-      ({
-        x: 200,
-        y: 200,
-        width: 100,
-        height: 100,
-      } as any);
-
-    const visibleArea = getVisibleArea(initArea, [affectEle, skipEle]);
+    const visibleArea = getVisibleArea(initArea, [affectEle]);
     expect(visibleArea).toEqual({
-      left: 100,
-      right: 400,
-      top: 100,
-      bottom: 400,
+      left: 50,
+      right: 450,
+      top: 50,
+      bottom: 450,
     });
+
+    window.getComputedStyle = oriGetComputedStyle;
   });
 
   // e.g. adjustY + shiftX may make popup out but push back in screen
