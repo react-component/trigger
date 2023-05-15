@@ -225,7 +225,8 @@ export default function useAlign(
       };
 
       let visibleArea =
-        placementInfo.htmlRegion === 'scroll'
+        placementInfo.htmlRegion === 'scroll' ||
+        placementInfo.htmlRegion === 'visibleFirst'
           ? // Scroll region should take scrollLeft & scrollTop into account
             scrollRegion
           : visibleRegion;
@@ -384,8 +385,13 @@ export default function useAlign(
             targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
         }
 
+        console.log(
+          '>>>',
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY),
+          originIntersectionVisibleArea,
+        );
         if (
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >
           originIntersectionVisibleArea
         ) {
           prevFlipRef.current.tb = true;

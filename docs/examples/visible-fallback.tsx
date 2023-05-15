@@ -1,9 +1,10 @@
 /* eslint no-console:0 */
+import type { AlignType, TriggerRef } from 'rc-trigger';
 import Trigger from 'rc-trigger';
 import React from 'react';
 import '../../assets/index.less';
 
-const builtinPlacements = {
+const builtinPlacements: Record<string, AlignType> = {
   top: {
     points: ['bc', 'tc'],
     overflow: {
@@ -11,6 +12,7 @@ const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    htmlRegion: 'visibleFirst',
   },
   bottom: {
     points: ['tc', 'bc'],
@@ -19,17 +21,28 @@ const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    htmlRegion: 'visibleFirst',
   },
 };
 
-const popupPlacement = 'top';
-
 export default () => {
-  const [scale, setScale] = React.useState('1');
+  const [enoughTop, setEnoughTop] = React.useState(false);
+
+  const triggerRef = React.useRef<TriggerRef>();
+
+  React.useEffect(() => {
+    triggerRef.current?.forceAlign();
+  }, [enoughTop]);
 
   return (
     <React.StrictMode>
       <p>`visible` should not show in hidden region if still scrollable</p>
+
+      <label>
+        <input type="checkbox" onChange={() => setEnoughTop((v) => !v)} />
+        Enough Top
+      </label>
+
       <div
         style={{
           position: 'absolute',
@@ -46,6 +59,7 @@ export default () => {
           arrow
           action="click"
           popupVisible
+          ref={triggerRef}
           popup={
             <div
               style={{
@@ -62,7 +76,7 @@ export default () => {
           }
           getPopupContainer={(n) => n.parentNode as any}
           popupStyle={{ boxShadow: '0 0 5px red' }}
-          popupPlacement={popupPlacement}
+          popupPlacement={enoughTop ? 'bottom' : 'top'}
           builtinPlacements={builtinPlacements}
           stretch="minWidth"
         >
@@ -78,7 +92,7 @@ export default () => {
               height: 100,
               position: 'absolute',
               left: '50%',
-              top: 90,
+              top: enoughTop ? 200 : 90,
               transform: 'translateX(-50%)',
             }}
           >
