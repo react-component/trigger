@@ -29,11 +29,13 @@ export default () => {
 
   return (
     <React.StrictMode>
+      <p>`visible` should not show in hidden region if still scrollable</p>
       <div
         style={{
           position: 'absolute',
           left: '50%',
           top: `calc(100vh - 100px - 90px - 50px)`,
+          transform: 'translateX(-50%)',
           boxShadow: '0 0 1px blue',
           overflow: 'hidden',
           width: 500,
@@ -49,13 +51,13 @@ export default () => {
               style={{
                 background: 'yellow',
                 border: '1px solid blue',
-                width: 100,
+                width: 300,
                 height: 100,
                 opacity: 0.9,
                 boxSizing: 'border-box',
               }}
             >
-              Popup
+              Should Always place bottom
             </div>
           }
           getPopupContainer={(n) => n.parentNode as any}
@@ -75,8 +77,9 @@ export default () => {
               width: 100,
               height: 100,
               position: 'absolute',
-              left: 0,
+              left: '50%',
               top: 90,
+              transform: 'translateX(-50%)',
             }}
           >
             Target

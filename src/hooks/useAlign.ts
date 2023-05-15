@@ -210,21 +210,25 @@ export default function useAlign(
       const targetWidth = targetRect.width;
 
       // Get bounding of visible area
+      const visibleRegion = {
+        left: 0,
+        top: 0,
+        right: clientWidth,
+        bottom: clientHeight,
+      };
+
+      const scrollRegion = {
+        left: -scrollLeft,
+        top: -scrollTop,
+        right: scrollWidth - scrollLeft,
+        bottom: scrollHeight - scrollTop,
+      };
+
       let visibleArea =
         placementInfo.htmlRegion === 'scroll'
           ? // Scroll region should take scrollLeft & scrollTop into account
-            {
-              left: -scrollLeft,
-              top: -scrollTop,
-              right: scrollWidth - scrollLeft,
-              bottom: scrollHeight - scrollTop,
-            }
-          : {
-              left: 0,
-              top: 0,
-              right: clientWidth,
-              bottom: clientHeight,
-            };
+            scrollRegion
+          : visibleRegion;
 
       visibleArea = getVisibleArea(visibleArea, scrollerList);
 
