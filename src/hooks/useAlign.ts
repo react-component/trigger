@@ -240,7 +240,7 @@ export default function useAlign(
       // When set to `visibleFirst`,
       // the check `adjust` logic will use `visibleRegion` for check first.
       const adjustCheckVisibleArea = isVisibleFirst
-        ? getVisibleArea(visibleRegion, scrollerList)
+        ? visibleRegionArea
         : visibleArea;
 
       // Reset back
@@ -419,9 +419,21 @@ export default function useAlign(
             targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
         }
 
+        const newVisibleArea = getIntersectionVisibleArea(
+          nextOffsetX,
+          tmpNextOffsetY,
+        );
+        const newVisibleRecommendArea = getIntersectionVisibleArea(
+          nextOffsetX,
+          tmpNextOffsetY,
+          visibleRegionArea,
+        );
+
         if (
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
-          originIntersectionVisibleArea
+          newVisibleArea >= originIntersectionVisibleArea &&
+          // `visibleFirst` will do additional check for best match
+          (!isVisibleFirst ||
+            originIntersectionRecommendArea <= newVisibleRecommendArea)
         ) {
           prevFlipRef.current.tb = true;
           nextOffsetY = tmpNextOffsetY;
