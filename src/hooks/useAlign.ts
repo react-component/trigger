@@ -224,14 +224,24 @@ export default function useAlign(
         bottom: scrollHeight - scrollTop,
       };
 
-      let visibleArea =
-        placementInfo.htmlRegion === 'scroll' ||
-        placementInfo.htmlRegion === 'visibleFirst'
-          ? // Scroll region should take scrollLeft & scrollTop into account
-            scrollRegion
-          : visibleRegion;
+      let { htmlRegion } = placementInfo;
+      const VISIBLE_FIRST = 'visibleFirst' as const;
+      if (htmlRegion !== 'scroll' && htmlRegion !== 'visible') {
+        htmlRegion = VISIBLE_FIRST;
+      }
+      const isVisibleFirst = htmlRegion === VISIBLE_FIRST;
 
-      visibleArea = getVisibleArea(visibleArea, scrollerList);
+      const scrollRegionArea = getVisibleArea(scrollRegion, scrollerList);
+      const visibleRegionArea = getVisibleArea(visibleRegion, scrollerList);
+
+      const visibleArea =
+        htmlRegion === 'visible' ? visibleRegionArea : scrollRegionArea;
+
+      // When set to `visibleFirst`,
+      // the check `adjust` logic will use `visibleRegion` for check first.
+      const adjustCheckVisibleArea = isVisibleFirst
+        ? getVisibleArea(visibleRegion, scrollerList)
+        : visibleArea;
 
       // Reset back
       popupElement.style.left = originLeft;
@@ -284,17 +294,21 @@ export default function useAlign(
 
       // ============== Intersection ===============
       // Get area by position. Used for check if flip area is better
-      function getIntersectionVisibleArea(offsetX: number, offsetY: number) {
+      function getIntersectionVisibleArea(
+        offsetX: number,
+        offsetY: number,
+        area = visibleArea,
+      ) {
         const l = popupRect.x + offsetX;
         const t = popupRect.y + offsetY;
 
         const r = l + popupWidth;
         const b = t + popupHeight;
 
-        const visibleL = Math.max(l, visibleArea.left);
-        const visibleT = Math.max(t, visibleArea.top);
-        const visibleR = Math.min(r, visibleArea.right);
-        const visibleB = Math.min(b, visibleArea.bottom);
+        const visibleL = Math.max(l, area.left);
+        const visibleT = Math.max(t, area.top);
+        const visibleR = Math.min(r, area.right);
+        const visibleB = Math.min(b, area.bottom);
 
         return Math.max(0, (visibleR - visibleL) * (visibleB - visibleT));
       }
@@ -302,6 +316,13 @@ export default function useAlign(
       const originIntersectionVisibleArea = getIntersectionVisibleArea(
         nextOffsetX,
         nextOffsetY,
+      );
+
+      // As `visibleFirst`, we prepare this for check
+      const originIntersectionRecommendArea = getIntersectionVisibleArea(
+        nextOffsetX,
+        nextOffsetY,
+        visibleRegionArea,
       );
 
       // ========================== Overflow ===========================
@@ -343,7 +364,8 @@ export default function useAlign(
       if (
         needAdjustY &&
         popupPoints[0] === 't' &&
-        (nextPopupBottom > visibleArea.bottom || prevFlipRef.current.bt)
+        (nextPopupBottom > adjustCheckVisibleArea.bottom ||
+          prevFlipRef.current.bt)
       ) {
         let tmpNextOffsetY: number = nextOffsetY;
 
@@ -354,9 +376,21 @@ export default function useAlign(
             targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
         }
 
+        const newVisibleArea = getIntersectionVisibleArea(
+          nextOffsetX,
+          tmpNextOffsetY,
+        );
+        const newVisibleRecommendArea = getIntersectionVisibleArea(
+          nextOffsetX,
+          tmpNextOffsetY,
+          visibleRegionArea,
+        );
+
         if (
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
-          originIntersectionVisibleArea
+          newVisibleArea >= originIntersectionVisibleArea &&
+          // `visibleFirst` will do additional check for best match
+          (!isVisibleFirst ||
+            originIntersectionRecommendArea <= newVisibleRecommendArea)
         ) {
           prevFlipRef.current.bt = true;
           nextOffsetY = tmpNextOffsetY;
@@ -374,7 +408,7 @@ export default function useAlign(
       if (
         needAdjustY &&
         popupPoints[0] === 'b' &&
-        (nextPopupY < visibleArea.top || prevFlipRef.current.tb)
+        (nextPopupY < adjustCheckVisibleArea.top || prevFlipRef.current.tb)
       ) {
         let tmpNextOffsetY: number = nextOffsetY;
 
@@ -385,13 +419,8 @@ export default function useAlign(
             targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
         }
 
-        console.log(
-          '>>>',
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY),
-          originIntersectionVisibleArea,
-        );
         if (
-          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >
+          getIntersectionVisibleArea(nextOffsetX, tmpNextOffsetY) >=
           originIntersectionVisibleArea
         ) {
           prevFlipRef.current.tb = true;
@@ -416,7 +445,8 @@ export default function useAlign(
       if (
         needAdjustX &&
         popupPoints[1] === 'l' &&
-        (nextPopupRight > visibleArea.right || prevFlipRef.current.rl)
+        (nextPopupRight > adjustCheckVisibleArea.right ||
+          prevFlipRef.current.rl)
       ) {
         let tmpNextOffsetX: number = nextOffsetX;
 
@@ -447,7 +477,7 @@ export default function useAlign(
       if (
         needAdjustX &&
         popupPoints[1] === 'r' &&
-        (nextPopupX < visibleArea.left || prevFlipRef.current.lr)
+        (nextPopupX < adjustCheckVisibleArea.left || prevFlipRef.current.lr)
       ) {
         let tmpNextOffsetX: number = nextOffsetX;
 

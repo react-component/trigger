@@ -26,7 +26,7 @@ const builtinPlacements: Record<string, AlignType> = {
 };
 
 export default () => {
-  const [enoughTop, setEnoughTop] = React.useState(false);
+  const [enoughTop, setEnoughTop] = React.useState(true);
 
   const triggerRef = React.useRef<TriggerRef>();
 
@@ -36,11 +36,15 @@ export default () => {
 
   return (
     <React.StrictMode>
-      <p>`visible` should not show in hidden region if still scrollable</p>
+      <p>`visibleFirst` should not show in hidden region if still scrollable</p>
 
       <label>
-        <input type="checkbox" onChange={() => setEnoughTop((v) => !v)} />
-        Enough Top
+        <input
+          type="checkbox"
+          checked={enoughTop}
+          onChange={() => setEnoughTop((v) => !v)}
+        />
+        Enough Top (Placement: bottom)
       </label>
 
       <div
