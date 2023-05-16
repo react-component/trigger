@@ -2,7 +2,7 @@ import { act, cleanup, render } from '@testing-library/react';
 import { _rs } from 'rc-resize-observer';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import * as React from 'react';
-import type { TriggerProps } from '../src';
+import type { AlignType, TriggerProps } from '../src';
 import Trigger from '../src';
 import { getVisibleArea } from '../src/util';
 
@@ -18,7 +18,7 @@ const flush = async () => {
   }
 };
 
-const builtinPlacements = {
+const builtinPlacements: Record<string, AlignType> = {
   top: {
     points: ['bc', 'tc'],
     overflow: {

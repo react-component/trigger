@@ -52,10 +52,17 @@ export interface AlignType {
   autoArrow?: boolean;
   /**
    * Config visible region check of html node. Default `visible`:
-   *  - `visible`: The visible region of user browser window. Use `clientHeight` for check.
-   *  - `scroll`: The whole region of the html scroll area. Use `scrollHeight` for check.
+   *  - `visible`:
+   *    The visible region of user browser window.
+   *    Use `clientHeight` for check.
+   *    If `visible` region not satisfy, fallback to `scroll`.
+   *  - `scroll`:
+   *    The whole region of the html scroll area.
+   *    Use `scrollHeight` for check.
+   *  - `visibleFirst`:
+   *    Similar to `visible`, but if `visible` region not satisfy, fallback to `scroll`.
    */
-  htmlRegion?: 'visible' | 'scroll';
+  htmlRegion?: 'visible' | 'scroll' | 'visibleFirst';
   /**
    * Whether use css right instead of left to position
    */
