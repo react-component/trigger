@@ -470,9 +470,21 @@ export default function useAlign(
             targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
         }
 
+        const newVisibleArea = getIntersectionVisibleArea(
+          tmpNextOffsetX,
+          nextOffsetY,
+        );
+        const newVisibleRecommendArea = getIntersectionVisibleArea(
+          tmpNextOffsetX,
+          nextOffsetY,
+          visibleRegionArea,
+        );
+
         if (
-          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >=
-          originIntersectionVisibleArea
+          newVisibleArea >= originIntersectionVisibleArea &&
+          // `visibleFirst` will do additional check for best match
+          (!isVisibleFirst ||
+            originIntersectionRecommendArea <= newVisibleRecommendArea)
         ) {
           prevFlipRef.current.rl = true;
           nextOffsetX = tmpNextOffsetX;
@@ -501,9 +513,21 @@ export default function useAlign(
             targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
         }
 
+        const newVisibleArea = getIntersectionVisibleArea(
+          tmpNextOffsetX,
+          nextOffsetY,
+        );
+        const newVisibleRecommendArea = getIntersectionVisibleArea(
+          tmpNextOffsetX,
+          nextOffsetY,
+          visibleRegionArea,
+        );
+
         if (
-          getIntersectionVisibleArea(tmpNextOffsetX, nextOffsetY) >=
-          originIntersectionVisibleArea
+          newVisibleArea >= originIntersectionVisibleArea &&
+          // `visibleFirst` will do additional check for best match
+          (!isVisibleFirst ||
+            originIntersectionRecommendArea <= newVisibleRecommendArea)
         ) {
           prevFlipRef.current.lr = true;
           nextOffsetX = tmpNextOffsetX;
