@@ -388,10 +388,12 @@ export default function useAlign(
         );
 
         if (
-          newVisibleArea >= originIntersectionVisibleArea &&
-          // `visibleFirst` will do additional check for best match
-          (!isVisibleFirst ||
-            originIntersectionRecommendArea <= newVisibleRecommendArea)
+          // Of course use larger one
+          newVisibleArea > originIntersectionVisibleArea ||
+          (newVisibleArea === originIntersectionVisibleArea &&
+            (!isVisibleFirst ||
+              // Choose recommend one
+              newVisibleRecommendArea >= originIntersectionRecommendArea))
         ) {
           prevFlipRef.current.bt = true;
           nextOffsetY = tmpNextOffsetY;
@@ -431,10 +433,12 @@ export default function useAlign(
         );
 
         if (
-          newVisibleArea >= originIntersectionVisibleArea &&
-          // `visibleFirst` will do additional check for best match
-          (!isVisibleFirst ||
-            originIntersectionRecommendArea <= newVisibleRecommendArea)
+          // Of course use larger one
+          newVisibleArea > originIntersectionVisibleArea ||
+          (newVisibleArea === originIntersectionVisibleArea &&
+            (!isVisibleFirst ||
+              // Choose recommend one
+              newVisibleRecommendArea >= originIntersectionRecommendArea))
         ) {
           prevFlipRef.current.tb = true;
           nextOffsetY = tmpNextOffsetY;
@@ -481,10 +485,12 @@ export default function useAlign(
         );
 
         if (
-          newVisibleArea >= originIntersectionVisibleArea &&
-          // `visibleFirst` will do additional check for best match
-          (!isVisibleFirst ||
-            originIntersectionRecommendArea <= newVisibleRecommendArea)
+          // Of course use larger one
+          newVisibleArea > originIntersectionVisibleArea ||
+          (newVisibleArea === originIntersectionVisibleArea &&
+            (!isVisibleFirst ||
+              // Choose recommend one
+              newVisibleRecommendArea >= originIntersectionRecommendArea))
         ) {
           prevFlipRef.current.rl = true;
           nextOffsetX = tmpNextOffsetX;
@@ -524,10 +530,12 @@ export default function useAlign(
         );
 
         if (
-          newVisibleArea >= originIntersectionVisibleArea &&
-          // `visibleFirst` will do additional check for best match
-          (!isVisibleFirst ||
-            originIntersectionRecommendArea <= newVisibleRecommendArea)
+          // Of course use larger one
+          newVisibleArea > originIntersectionVisibleArea ||
+          (newVisibleArea === originIntersectionVisibleArea &&
+            (!isVisibleFirst ||
+              // Choose recommend one
+              newVisibleRecommendArea >= originIntersectionRecommendArea))
         ) {
           prevFlipRef.current.lr = true;
           nextOffsetX = tmpNextOffsetX;

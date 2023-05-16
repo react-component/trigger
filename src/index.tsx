@@ -386,7 +386,7 @@ export function generateTrigger(
 
     useLayoutEffect(() => {
       triggerAlign();
-    }, [mousePos]);
+    }, [mousePos, popupPlacement]);
 
     // When no builtinPlacements and popupAlign changed
     useLayoutEffect(() => {
