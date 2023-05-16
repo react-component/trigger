@@ -225,9 +225,10 @@ export default function useAlign(
       };
 
       let { htmlRegion } = placementInfo;
+      const VISIBLE = 'visible' as const;
       const VISIBLE_FIRST = 'visibleFirst' as const;
-      if (htmlRegion !== 'scroll' && htmlRegion !== 'visible') {
-        htmlRegion = VISIBLE_FIRST;
+      if (htmlRegion !== 'scroll' && htmlRegion !== VISIBLE_FIRST) {
+        htmlRegion = VISIBLE;
       }
       const isVisibleFirst = htmlRegion === VISIBLE_FIRST;
 
@@ -235,7 +236,7 @@ export default function useAlign(
       const visibleRegionArea = getVisibleArea(visibleRegion, scrollerList);
 
       const visibleArea =
-        htmlRegion === 'visible' ? visibleRegionArea : scrollRegionArea;
+        htmlRegion === VISIBLE ? visibleRegionArea : scrollRegionArea;
 
       // When set to `visibleFirst`,
       // the check `adjust` logic will use `visibleRegion` for check first.
