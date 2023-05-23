@@ -320,7 +320,6 @@ export function generateTrigger(
     };
 
     const triggerOpen = (nextOpen: boolean, delay = 0) => {
-      console.error('Open:', nextOpen, delay);
       clearDelay();
 
       if (delay === 0) {
