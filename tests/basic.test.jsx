@@ -987,5 +987,37 @@ describe('Trigger.Basic', () => {
       await awaitFakeTimer();
       expect(onPopupVisibleChange).not.toHaveBeenCalled();
     });
+
+    // https://github.com/ant-design/ant-design/issues/42526
+    it('not hide when click button', async () => {
+      const Demo = () => {
+        const [open, setOpen] = React.useState(false);
+        return (
+          <>
+            <button
+              onClick={() => {
+                setOpen(true);
+              }}
+            />
+            <Trigger
+              onPopupVisibleChange={setOpen}
+              action="click"
+              popupVisible={open}
+              popup={<strong>trigger</strong>}
+            >
+              <div className="target" />
+            </Trigger>
+          </>
+        );
+      };
+
+      const { container } = render(<Demo />);
+
+      fireEvent.click(container.querySelector('button'));
+      fireEvent.click(window);
+      await awaitFakeTimer();
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeFalsy();
+    });
   });
 });

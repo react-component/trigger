@@ -7,13 +7,13 @@ import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import isMobile from 'rc-util/lib/isMobile';
-import warning from 'rc-util/lib/warning';
 import * as React from 'react';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
 import useWatch from './hooks/useWatch';
+import useWinClick from './hooks/useWinClick';
 import type {
   ActionType,
   AlignType,
@@ -25,7 +25,7 @@ import type {
 } from './interface';
 import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
-import { getAlignPopupClassName, getMotion, getWin } from './util';
+import { getAlignPopupClassName, getMotion } from './util';
 
 export type {
   BuildInPlacements,
@@ -498,66 +498,16 @@ export function generateTrigger(
     }
 
     // Click to hide is special action since click popup element should not hide
-    React.useEffect(() => {
-      if (clickToHide && popupEle && (!mask || maskClosable)) {
-        let clickInside = false;
-
-        // User may mouseDown inside and drag out of popup and mouse up
-        // Record here to prevent close
-        const onWindowMouseDown = ({ target }: MouseEvent) => {
-          clickInside = inPopupOrChild(target);
-        };
-
-        const onWindowClick = ({ target }: MouseEvent) => {
-          if (openRef.current && !clickInside && !inPopupOrChild(target)) {
-            triggerOpen(false);
-          }
-        };
-
-        const win = getWin(popupEle);
-
-        const targetRoot = targetEle?.getRootNode();
-
-        win.addEventListener('mousedown', onWindowMouseDown);
-        win.addEventListener('click', onWindowClick);
-
-        // shadow root
-        const inShadow = targetRoot && targetRoot !== targetEle.ownerDocument;
-        if (inShadow) {
-          (targetRoot as ShadowRoot).addEventListener(
-            'mousedown',
-            onWindowMouseDown,
-          );
-          (targetRoot as ShadowRoot).addEventListener('click', onWindowClick);
-        }
-
-        // Warning if target and popup not in same root
-        if (process.env.NODE_ENV !== 'production') {
-          const popupRoot = popupEle.getRootNode();
-
-          warning(
-            targetRoot === popupRoot,
-            `trigger element and popup element should in same shadow root.`,
-          );
-        }
-
-        return () => {
-          win.removeEventListener('mousedown', onWindowMouseDown);
-          win.removeEventListener('click', onWindowClick);
-
-          if (inShadow) {
-            (targetRoot as ShadowRoot).removeEventListener(
-              'mousedown',
-              onWindowMouseDown,
-            );
-            (targetRoot as ShadowRoot).removeEventListener(
-              'click',
-              onWindowClick,
-            );
-          }
-        };
-      }
-    }, [clickToHide, targetEle, popupEle, mask, maskClosable]);
+    useWinClick(
+      mergedOpen,
+      clickToHide,
+      targetEle,
+      popupEle,
+      mask,
+      maskClosable,
+      inPopupOrChild,
+      triggerOpen,
+    );
 
     // ======================= Action: Hover ========================
     const hoverToShow = showActions.has('hover');

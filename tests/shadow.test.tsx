@@ -35,6 +35,9 @@ describe('Trigger.Shadow', () => {
   );
 
   const renderShadow = (props?: any) => {
+    const noRelatedSpan = document.createElement('span');
+    document.body.appendChild(noRelatedSpan);
+
     const host = document.createElement('div');
     document.body.appendChild(host);
 
