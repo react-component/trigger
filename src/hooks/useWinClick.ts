@@ -1,4 +1,5 @@
 import { warning } from 'rc-util';
+import { getShadowRoot } from 'rc-util/lib/Dom/shadow';
 import raf from 'rc-util/lib/raf';
 import * as React from 'react';
 import { getWin } from '../util';
@@ -62,13 +63,10 @@ export default function useWinClick(
       win.addEventListener('click', onWindowClick);
 
       // shadow root
-      const inShadow = targetRoot && targetRoot !== targetEle.ownerDocument;
-      if (inShadow) {
-        (targetRoot as ShadowRoot).addEventListener(
-          'mousedown',
-          onWindowMouseDown,
-        );
-        (targetRoot as ShadowRoot).addEventListener('click', onWindowClick);
+      const targetShadowRoot = getShadowRoot(targetEle);
+      if (targetShadowRoot) {
+        targetShadowRoot.addEventListener('mousedown', onWindowMouseDown);
+        targetShadowRoot.addEventListener('click', onWindowClick);
       }
 
       // Warning if target and popup not in same root
@@ -85,15 +83,9 @@ export default function useWinClick(
         win.removeEventListener('mousedown', onWindowMouseDown);
         win.removeEventListener('click', onWindowClick);
 
-        if (inShadow) {
-          (targetRoot as ShadowRoot).removeEventListener(
-            'mousedown',
-            onWindowMouseDown,
-          );
-          (targetRoot as ShadowRoot).removeEventListener(
-            'click',
-            onWindowClick,
-          );
+        if (targetShadowRoot) {
+          targetShadowRoot.removeEventListener('mousedown', onWindowMouseDown);
+          targetShadowRoot.removeEventListener('click', onWindowClick);
         }
       };
     }

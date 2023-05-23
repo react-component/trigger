@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import type { CSSMotionProps } from 'rc-motion';
 import ResizeObserver from 'rc-resize-observer';
 import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
+import { getShadowRoot } from 'rc-util/lib/Dom/shadow';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
@@ -257,10 +258,10 @@ export function generateTrigger(
 
       return (
         childDOM?.contains(ele) ||
-        (childDOM?.getRootNode() as ShadowRoot)?.host === ele ||
+        getShadowRoot(childDOM)?.host === ele ||
         ele === childDOM ||
         popupEle?.contains(ele) ||
-        (popupEle?.getRootNode() as ShadowRoot)?.host === ele ||
+        getShadowRoot(popupEle)?.host === ele ||
         ele === popupEle ||
         Object.values(subPopupElements.current).some(
           (subPopupEle) => subPopupEle?.contains(ele) || ele === subPopupEle,

@@ -1,5 +1,6 @@
 import { act, cleanup, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import React from 'react';
 import Trigger from '../src';
 
 /*
@@ -134,8 +135,6 @@ describe('Trigger.Flip+Shift', () => {
     await act(async () => {
       await Promise.resolve();
     });
-
-    console.log(document.body.innerHTML);
 
     expect(
       document.querySelector('.rc-trigger-popup-placement-bottom'),
