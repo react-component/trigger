@@ -60,6 +60,7 @@ const popupPlacement = 'top';
 export default () => {
   console.log('Demo Render!');
 
+  const [visible, setVisible] = React.useState(false);
   const [scale, setScale] = React.useState('1');
   const [targetVisible, setTargetVisible] = React.useState(true);
 
@@ -99,6 +100,13 @@ export default () => {
             }}
           >
             Target Visible: ({String(targetVisible)})
+          </button>
+          <button
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
+            Trigger Visible
           </button>
         </div>
         <div
@@ -154,7 +162,10 @@ export default () => {
               }
               popupTransitionName="rc-trigger-popup-zoom"
               popupStyle={{ boxShadow: '0 0 5px red' }}
-              // popupVisible
+              popupVisible={visible}
+              onPopupVisibleChange={(nextVisible) => {
+                setVisible(nextVisible);
+              }}
               // getPopupContainer={() => popHolderRef.current}
               popupPlacement={popupPlacement}
               builtinPlacements={builtinPlacements}
