@@ -57,8 +57,6 @@ export default function useWinClick(
 
       const win = getWin(popupEle);
 
-      const targetRoot = targetEle?.getRootNode();
-
       win.addEventListener('mousedown', onWindowMouseDown);
       win.addEventListener('click', onWindowClick);
 
@@ -71,7 +69,8 @@ export default function useWinClick(
 
       // Warning if target and popup not in same root
       if (process.env.NODE_ENV !== 'production') {
-        const popupRoot = popupEle.getRootNode();
+        const targetRoot = targetEle?.getRootNode?.();
+        const popupRoot = popupEle.getRootNode?.();
 
         warning(
           targetRoot === popupRoot,
