@@ -336,13 +336,11 @@ export function generateTrigger(
 
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
-    const mountRef = React.useRef(true);
 
-    useLayoutEffect(() => {
-      if (!mountRef.current || mergedOpen) {
+    useLayoutEffect((firstMount) => {
+      if (!firstMount || mergedOpen) {
         setInMotion(true);
       }
-      mountRef.current = true;
     }, [mergedOpen]);
 
     const [motionPrepareResolve, setMotionPrepareResolve] =
