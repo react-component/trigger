@@ -36,35 +36,43 @@ export default function useWinClick(
   // Click to hide is special action since click popup element should not hide
   React.useEffect(() => {
     if (clickToHide && popupEle && (!mask || maskClosable)) {
-      let clickInside = false;
+      const genClickEvents = () => {
+        let clickInside = false;
 
-      // User may mouseDown inside and drag out of popup and mouse up
-      // Record here to prevent close
-      const onWindowMouseDown = ({ target }: MouseEvent) => {
-        clickInside = inPopupOrChild(target);
+        // User may mouseDown inside and drag out of popup and mouse up
+        // Record here to prevent close
+        const onWindowMouseDown = ({ target }: MouseEvent) => {
+          clickInside = inPopupOrChild(target);
+        };
+
+        const onWindowClick = ({ target }: MouseEvent) => {
+          if (
+            !lockRef.current &&
+            openRef.current &&
+            !clickInside &&
+            !inPopupOrChild(target)
+          ) {
+            triggerOpen(false);
+          }
+        };
+
+        return [onWindowMouseDown, onWindowClick];
       };
 
-      const onWindowClick = ({ target }: MouseEvent) => {
-        if (
-          !lockRef.current &&
-          openRef.current &&
-          !clickInside &&
-          !inPopupOrChild(target)
-        ) {
-          triggerOpen(false);
-        }
-      };
+      // Events
+      const [onWinMouseDown, onWinClick] = genClickEvents();
+      const [onShadowMouseDown, onShadowClick] = genClickEvents();
 
       const win = getWin(popupEle);
 
-      win.addEventListener('mousedown', onWindowMouseDown);
-      win.addEventListener('click', onWindowClick);
+      win.addEventListener('mousedown', onWinMouseDown);
+      win.addEventListener('click', onWinClick);
 
       // shadow root
       const targetShadowRoot = getShadowRoot(targetEle);
       if (targetShadowRoot) {
-        targetShadowRoot.addEventListener('mousedown', onWindowMouseDown);
-        targetShadowRoot.addEventListener('click', onWindowClick);
+        targetShadowRoot.addEventListener('mousedown', onShadowMouseDown);
+        targetShadowRoot.addEventListener('click', onShadowClick);
       }
 
       // Warning if target and popup not in same root
@@ -79,12 +87,12 @@ export default function useWinClick(
       }
 
       return () => {
-        win.removeEventListener('mousedown', onWindowMouseDown);
-        win.removeEventListener('click', onWindowClick);
+        win.removeEventListener('mousedown', onWinMouseDown);
+        win.removeEventListener('click', onWinClick);
 
         if (targetShadowRoot) {
-          targetShadowRoot.removeEventListener('mousedown', onWindowMouseDown);
-          targetShadowRoot.removeEventListener('click', onWindowClick);
+          targetShadowRoot.removeEventListener('mousedown', onShadowMouseDown);
+          targetShadowRoot.removeEventListener('click', onShadowClick);
         }
       };
     }
