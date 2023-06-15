@@ -555,21 +555,21 @@ export default function useAlign(
       const numShiftX = shiftX === true ? 0 : shiftX;
       if (typeof numShiftX === 'number') {
         // Left
-        if (nextPopupX < visibleArea.left) {
-          nextOffsetX -= nextPopupX - visibleArea.left;
+        if (nextPopupX < visibleRegionArea.left) {
+          nextOffsetX -= nextPopupX - visibleRegionArea.left;
 
-          if (targetRect.x + targetWidth < visibleArea.left + numShiftX) {
+          if (targetRect.x + targetWidth < visibleRegionArea.left + numShiftX) {
             nextOffsetX +=
-              targetRect.x - visibleArea.left + targetWidth - numShiftX;
+              targetRect.x - visibleRegionArea.left + targetWidth - numShiftX;
           }
         }
 
         // Right
-        if (nextPopupRight > visibleArea.right) {
-          nextOffsetX -= nextPopupRight - visibleArea.right;
+        if (nextPopupRight > visibleRegionArea.right) {
+          nextOffsetX -= nextPopupRight - visibleRegionArea.right;
 
-          if (targetRect.x > visibleArea.right - numShiftX) {
-            nextOffsetX += targetRect.x - visibleArea.right + numShiftX;
+          if (targetRect.x > visibleRegionArea.right - numShiftX) {
+            nextOffsetX += targetRect.x - visibleRegionArea.right + numShiftX;
           }
         }
       }
@@ -577,21 +577,21 @@ export default function useAlign(
       const numShiftY = shiftY === true ? 0 : shiftY;
       if (typeof numShiftY === 'number') {
         // Top
-        if (nextPopupY < visibleArea.top) {
-          nextOffsetY -= nextPopupY - visibleArea.top;
+        if (nextPopupY < visibleRegionArea.top) {
+          nextOffsetY -= nextPopupY - visibleRegionArea.top;
 
-          if (targetRect.y + targetHeight < visibleArea.top + numShiftY) {
+          if (targetRect.y + targetHeight < visibleRegionArea.top + numShiftY) {
             nextOffsetY +=
-              targetRect.y - visibleArea.top + targetHeight - numShiftY;
+              targetRect.y - visibleRegionArea.top + targetHeight - numShiftY;
           }
         }
 
         // Bottom
-        if (nextPopupBottom > visibleArea.bottom) {
-          nextOffsetY -= nextPopupBottom - visibleArea.bottom;
+        if (nextPopupBottom > visibleRegionArea.bottom) {
+          nextOffsetY -= nextPopupBottom - visibleRegionArea.bottom;
 
-          if (targetRect.y > visibleArea.bottom - numShiftY) {
-            nextOffsetY += targetRect.y - visibleArea.bottom + numShiftY;
+          if (targetRect.y > visibleRegionArea.bottom - numShiftY) {
+            nextOffsetY += targetRect.y - visibleRegionArea.bottom + numShiftY;
           }
         }
       }
