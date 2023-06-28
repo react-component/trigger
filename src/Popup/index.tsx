@@ -142,7 +142,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   // >>>>> Offset
   const AUTO = 'auto' as const;
 
-  let offsetStyle: React.CSSProperties = {
+  const offsetStyle: React.CSSProperties = {
     left: '-1000vw',
     top: '-1000vh',
     right: AUTO,
