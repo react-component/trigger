@@ -1,9 +1,15 @@
 /* eslint no-console:0 */
 import React from 'react';
 import '../../assets/index.less';
-import Trigger from '../../src';
+import Trigger, { BuildInPlacements } from '../../src';
 
-export const builtinPlacements = {
+const experimentalConfig = {
+  _experimental: {
+    dynamicInset: true,
+  },
+};
+
+export const builtinPlacements: BuildInPlacements = {
   top: {
     points: ['bc', 'tc'],
     overflow: {
@@ -11,6 +17,7 @@ export const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   topLeft: {
     points: ['bl', 'tl'],
@@ -19,6 +26,7 @@ export const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   topRight: {
     points: ['br', 'tr'],
@@ -27,6 +35,7 @@ export const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   left: {
     points: ['cr', 'cl'],
@@ -35,6 +44,7 @@ export const builtinPlacements = {
       shiftY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   leftTop: {
     points: ['tr', 'tl'],
@@ -43,6 +53,7 @@ export const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   leftBottom: {
     points: ['br', 'bl'],
@@ -51,6 +62,7 @@ export const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   right: {
     points: ['cl', 'cr'],
@@ -59,6 +71,7 @@ export const builtinPlacements = {
       shiftY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
   bottom: {
     points: ['tc', 'bc'],
@@ -67,6 +80,7 @@ export const builtinPlacements = {
       adjustY: true,
     },
     offset: [0, 0],
+    ...experimentalConfig,
   },
 };
 
@@ -106,6 +120,9 @@ export default () => {
           style={{
             width: `300vw`,
             height: `300vh`,
+            // width: 500,
+            // height: 500,
+            background: `rgba(0, 0, 255, 0.1)`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

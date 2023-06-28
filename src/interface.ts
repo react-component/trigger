@@ -28,6 +28,17 @@ export interface AlignType {
    * Such as ['tr','cc'], align top right point of source node with center point of target node.
    * Point can be 't'(top), 'b'(bottom), 'c'(center), 'l'(left), 'r'(right) */
   points?: (string | AlignPoint)[];
+
+  /**
+   * @private Do not use in your production code
+   */
+  _experimental?: {
+    /**
+     * @private Do not use in your production code. Auto adjust align logic
+     */
+    dynamicInset?: boolean;
+  };
+
   /**
    * offset source node by offset[0] in x and offset[1] in y.
    * If offset contains percentage string value, it is relative to sourceNode region.
