@@ -551,8 +551,13 @@ export function generateTrigger(
     // ==================== Action: ContextMenu =====================
     if (showActions.has('contextMenu')) {
       cloneProps.onContextMenu = (event: React.MouseEvent, ...args: any[]) => {
-        setMousePosByEvent(event);
-        triggerOpen(true);
+        if (openRef.current && hideActions.has('contextMenu')) {
+          triggerOpen(false);
+        } else {
+          setMousePosByEvent(event);
+          triggerOpen(true);
+        }
+
         event.preventDefault();
 
         // Pass to origin
@@ -606,9 +611,9 @@ export function generateTrigger(
 
     const innerArrow: ArrowTypeOuter = arrow
       ? {
-          // true and Object likely
-          ...(arrow !== true ? arrow : {}),
-        }
+        // true and Object likely
+        ...(arrow !== true ? arrow : {}),
+      }
       : null;
 
     // Render
