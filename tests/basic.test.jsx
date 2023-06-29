@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import { act, cleanup, fireEvent, render ,mount} from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React, { createRef, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
@@ -35,7 +35,16 @@ describe('Trigger.Basic', () => {
       .querySelector('.rc-trigger-popup')
       .className.includes('-hidden');
   }
-
+  function isPopupClassHidden(name) {
+    return document
+      .querySelector(name).className.includes('-hidden')
+  }
+  function isPopupAllHidden() {
+    const popupArr = document
+      .querySelectorAll('.rc-trigger-popup')
+  
+    return Array.from(popupArr).every(item => item.className.includes('-hidden'))
+  }
   describe('getPopupContainer', () => {
     it('defaults to document.body', () => {
       const { container } = render(
@@ -160,7 +169,46 @@ describe('Trigger.Basic', () => {
 
       expect(isPopupHidden()).toBeTruthy();
     });
+    it('contextMenu all close ', () => {
+      const triggerRef1 = createRef();
+      const triggerRef2 = createRef();
+      const { container } = render(
+        <>
+          <Trigger
+            ref={triggerRef1}
+            popupClassName='trigger-popup1'
+            action={['contextMenu']}
+            popupAlign={placementAlignMap.left}
+            popup={<strong>trigger1</strong>}
+          >
+            <div className="target1">contextMenu 1</div>
+          </Trigger>
+          <Trigger
+            ref={triggerRef2}
+            action={['contextMenu']}
+            popupClassName='trigger-popup2'
+            popupAlign={placementAlignMap.right}
+            popup={<strong>trigger2</strong>}
+          >
+            <div className="target2">contextMenu 2</div>
+          </Trigger>
+        </>,
+      );
+   
+      trigger(container, '.target1', 'contextMenu');
+      trigger(container, '.target2', 'contextMenu');
+      // console.log(isPopupClassHidden('.trigger-popup1'),isPopupClassHidden('.trigger-popup2'),'==================');
+      expect(isPopupClassHidden('.trigger-popup1')).toBeTruthy();
+      expect(isPopupClassHidden('.trigger-popup2')).toBeFalsy();
 
+      trigger(container, '.target1', 'contextMenu');
+      expect(isPopupClassHidden('.trigger-popup1')).toBeFalsy();
+      expect(isPopupClassHidden('.trigger-popup2')).toBeTruthy();
+
+      fireEvent.click(document.body);
+      expect(isPopupAllHidden()).toBeTruthy();
+      // expect(isPopupClassHidden('.trigger-popup2')).toBeTruthy();
+    });
     describe('afterPopupVisibleChange can be triggered', () => {
       it('uncontrolled', async () => {
         let triggered = 0;
@@ -836,7 +884,7 @@ describe('Trigger.Basic', () => {
   });
 
   it('find real dom node if children not support `forwardRef`', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
     const Node = () => <p />;
 
     render(
