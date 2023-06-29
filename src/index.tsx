@@ -359,6 +359,8 @@ export function generateTrigger(
       ready,
       offsetX,
       offsetY,
+      offsetR,
+      offsetB,
       arrowX,
       arrowY,
       scaleX,
@@ -659,6 +661,8 @@ export function generateTrigger(
             ready={ready}
             offsetX={offsetX}
             offsetY={offsetY}
+            offsetR={offsetR}
+            offsetB={offsetB}
             onAlign={triggerAlign}
             // Stretch
             stretch={stretch}

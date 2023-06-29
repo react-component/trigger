@@ -99,6 +99,8 @@ export default function useAlign(
   ready: boolean,
   offsetX: number,
   offsetY: number,
+  offsetR: number,
+  offsetB: number,
   arrowX: number,
   arrowY: number,
   scaleX: number,
@@ -110,6 +112,8 @@ export default function useAlign(
     ready: boolean;
     offsetX: number;
     offsetY: number;
+    offsetR: number;
+    offsetB: number;
     arrowX: number;
     arrowY: number;
     scaleX: number;
@@ -119,6 +123,8 @@ export default function useAlign(
     ready: false,
     offsetX: 0,
     offsetY: 0,
+    offsetR: 0,
+    offsetB: 0,
     arrowX: 0,
     arrowY: 0,
     scaleX: 1,
@@ -160,6 +166,8 @@ export default function useAlign(
 
       const originLeft = popupElement.style.left;
       const originTop = popupElement.style.top;
+      const originRight = popupElement.style.right;
+      const originBottom = popupElement.style.bottom;
 
       const doc = popupElement.ownerDocument;
       const win = getWin(popupElement);
@@ -173,6 +181,8 @@ export default function useAlign(
       // Reset first
       popupElement.style.left = '0';
       popupElement.style.top = '0';
+      popupElement.style.right = 'auto';
+      popupElement.style.bottom = 'auto';
 
       // Calculate align style, we should consider `transform` case
       let targetRect: Rect;
@@ -244,9 +254,19 @@ export default function useAlign(
         ? visibleRegionArea
         : visibleArea;
 
+      // Record right & bottom align data
+      popupElement.style.left = 'auto';
+      popupElement.style.top = 'auto';
+      popupElement.style.right = '0';
+      popupElement.style.bottom = '0';
+
+      const popupMirrorRect = popupElement.getBoundingClientRect();
+
       // Reset back
       popupElement.style.left = originLeft;
       popupElement.style.top = originTop;
+      popupElement.style.right = originRight;
+      popupElement.style.bottom = originBottom;
 
       // Calculate scale
       const scaleX = toNum(
@@ -622,10 +642,18 @@ export default function useAlign(
 
       onPopupAlign?.(popupEle, nextAlignInfo);
 
+      // Additional calculate right & bottom position
+      const offsetX4Right =
+        popupMirrorRect.right - popupRect.x - (nextOffsetX + popupRect.width);
+      const offsetY4Bottom =
+        popupMirrorRect.bottom - popupRect.y - (nextOffsetY + popupRect.height);
+
       setOffsetInfo({
         ready: true,
         offsetX: nextOffsetX / scaleX,
         offsetY: nextOffsetY / scaleY,
+        offsetR: offsetX4Right / scaleX,
+        offsetB: offsetY4Bottom / scaleY,
         arrowX: nextArrowX / scaleX,
         arrowY: nextArrowY / scaleY,
         scaleX,
@@ -667,6 +695,8 @@ export default function useAlign(
     offsetInfo.ready,
     offsetInfo.offsetX,
     offsetInfo.offsetY,
+    offsetInfo.offsetR,
+    offsetInfo.offsetB,
     offsetInfo.arrowX,
     offsetInfo.arrowY,
     offsetInfo.scaleX,
