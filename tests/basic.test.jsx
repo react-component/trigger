@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import { act, cleanup, fireEvent, render ,mount} from '@testing-library/react';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React, { createRef, StrictMode } from 'react';
 import ReactDOM from 'react-dom';
@@ -197,7 +197,6 @@ describe('Trigger.Basic', () => {
    
       trigger(container, '.target1', 'contextMenu');
       trigger(container, '.target2', 'contextMenu');
-      // console.log(isPopupClassHidden('.trigger-popup1'),isPopupClassHidden('.trigger-popup2'),'==================');
       expect(isPopupClassHidden('.trigger-popup1')).toBeTruthy();
       expect(isPopupClassHidden('.trigger-popup2')).toBeFalsy();
 
@@ -207,7 +206,6 @@ describe('Trigger.Basic', () => {
 
       fireEvent.click(document.body);
       expect(isPopupAllHidden()).toBeTruthy();
-      // expect(isPopupClassHidden('.trigger-popup2')).toBeTruthy();
     });
     describe('afterPopupVisibleChange can be triggered', () => {
       it('uncontrolled', async () => {
