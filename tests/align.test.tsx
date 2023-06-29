@@ -23,6 +23,8 @@ describe('Trigger.Align', () => {
         y: 100,
         width: 100,
         height: 100,
+        right: 200,
+        bottom: 200,
       }),
     });
 
@@ -231,6 +233,29 @@ describe('Trigger.Align', () => {
     expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
       left: `-50px`,
       top: `50px`,
+    });
+  });
+
+  it('support dynamicInset', async () => {
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        popupAlign={{
+          points: ['bc', 'tc'],
+          _experimental: {
+            dynamicInset: true,
+          },
+        }}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      bottom: `100px`,
     });
   });
 });

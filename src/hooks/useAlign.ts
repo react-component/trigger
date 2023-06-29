@@ -644,13 +644,9 @@ export default function useAlign(
 
       // Additional calculate right & bottom position
       const offsetX4Right =
-        popupMirrorRect.right -
-        popupRect.left -
-        (nextOffsetX + popupRect.width);
+        popupMirrorRect.right - popupRect.x - (nextOffsetX + popupRect.width);
       const offsetY4Bottom =
-        popupMirrorRect.bottom -
-        popupRect.top -
-        (nextOffsetY + popupRect.height);
+        popupMirrorRect.bottom - popupRect.y - (nextOffsetY + popupRect.height);
 
       setOffsetInfo({
         ready: true,
