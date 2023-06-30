@@ -67,12 +67,14 @@ export default function useWinClick(
 
       win.addEventListener('mousedown', onWinMouseDown);
       win.addEventListener('click', onWinClick);
+      win.addEventListener('contextmenu', onWinClick);
 
       // shadow root
       const targetShadowRoot = getShadowRoot(targetEle);
       if (targetShadowRoot) {
         targetShadowRoot.addEventListener('mousedown', onShadowMouseDown);
         targetShadowRoot.addEventListener('click', onShadowClick);
+        targetShadowRoot.addEventListener('contextmenu', onShadowClick);
       }
 
       // Warning if target and popup not in same root
@@ -89,10 +91,12 @@ export default function useWinClick(
       return () => {
         win.removeEventListener('mousedown', onWinMouseDown);
         win.removeEventListener('click', onWinClick);
+        win.removeEventListener('contextmenu', onWinClick);
 
         if (targetShadowRoot) {
           targetShadowRoot.removeEventListener('mousedown', onShadowMouseDown);
           targetShadowRoot.removeEventListener('click', onShadowClick);
+          targetShadowRoot.removeEventListener('contextmenu', onShadowClick);
         }
       };
     }
