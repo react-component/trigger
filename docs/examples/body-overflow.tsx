@@ -1,7 +1,25 @@
 /* eslint no-console:0 */
 import Trigger from 'rc-trigger';
 import React from 'react';
+import { createPortal } from 'react-dom';
 import '../../assets/index.less';
+
+const PortalDemo = () => {
+  return createPortal(
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        background: 'red',
+        zIndex: 999,
+      }}
+    >
+      PortalNode
+    </div>,
+    document.body,
+  );
+};
 
 export default () => {
   const [open, setOpen] = React.useState(false);
@@ -47,6 +65,8 @@ export default () => {
             >
               Close
             </button>
+
+            <PortalDemo />
           </div>
         }
         // popupVisible
