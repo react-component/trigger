@@ -36,14 +36,14 @@ describe('Trigger.Basic', () => {
       .className.includes('-hidden');
   }
   function isPopupClassHidden(name) {
-    return document
-      .querySelector(name).className.includes('-hidden')
+    return document.querySelector(name).className.includes('-hidden');
   }
   function isPopupAllHidden() {
-    const popupArr = document
-      .querySelectorAll('.rc-trigger-popup')
-  
-    return Array.from(popupArr).every(item => item.className.includes('-hidden'))
+    const popupArr = document.querySelectorAll('.rc-trigger-popup');
+
+    return Array.from(popupArr).every((item) =>
+      item.className.includes('-hidden'),
+    );
   }
   describe('getPopupContainer', () => {
     it('defaults to document.body', () => {
@@ -176,7 +176,7 @@ describe('Trigger.Basic', () => {
         <>
           <Trigger
             ref={triggerRef1}
-            popupClassName='trigger-popup1'
+            popupClassName="trigger-popup1"
             action={['contextMenu']}
             popupAlign={placementAlignMap.left}
             popup={<strong>trigger1</strong>}
@@ -186,7 +186,7 @@ describe('Trigger.Basic', () => {
           <Trigger
             ref={triggerRef2}
             action={['contextMenu']}
-            popupClassName='trigger-popup2'
+            popupClassName="trigger-popup2"
             popupAlign={placementAlignMap.right}
             popup={<strong>trigger2</strong>}
           >
@@ -194,7 +194,7 @@ describe('Trigger.Basic', () => {
           </Trigger>
         </>,
       );
-   
+
       trigger(container, '.target1', 'contextMenu');
       trigger(container, '.target2', 'contextMenu');
       expect(isPopupClassHidden('.trigger-popup1')).toBeTruthy();
@@ -882,7 +882,7 @@ describe('Trigger.Basic', () => {
   });
 
   it('find real dom node if children not support `forwardRef`', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const Node = () => <p />;
 
     render(
@@ -1065,5 +1065,31 @@ describe('Trigger.Basic', () => {
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
       expect(document.querySelector('.rc-trigger-popup-hidden')).toBeFalsy();
     });
+  });
+
+  it('not trigger open when hover hidden popup node', () => {
+    const onPopupVisibleChange = jest.fn();
+
+    const { container } = render(
+      <Trigger
+        onPopupVisibleChange={onPopupVisibleChange}
+        action="hover"
+        popup={<strong className="popup">trigger</strong>}
+        getPopupContainer={() => container}
+      >
+        <div className="target" />
+      </Trigger>,
+    );
+
+    trigger(container, '.target', 'mouseEnter');
+    expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
+    onPopupVisibleChange.mockReset();
+
+    trigger(container, '.target', 'mouseLeave');
+    expect(onPopupVisibleChange).toHaveBeenCalledWith(false);
+    onPopupVisibleChange.mockReset();
+
+    trigger(container, '.popup', 'mouseEnter');
+    expect(onPopupVisibleChange).not.toHaveBeenCalled();
   });
 });

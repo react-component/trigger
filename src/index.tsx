@@ -337,11 +337,14 @@ export function generateTrigger(
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
 
-    useLayoutEffect((firstMount) => {
-      if (!firstMount || mergedOpen) {
-        setInMotion(true);
-      }
-    }, [mergedOpen]);
+    useLayoutEffect(
+      (firstMount) => {
+        if (!firstMount || mergedOpen) {
+          setInMotion(true);
+        }
+      },
+      [mergedOpen],
+    );
 
     const [motionPrepareResolve, setMotionPrepareResolve] =
       React.useState<VoidFunction>(null);
@@ -522,7 +525,10 @@ export function generateTrigger(
         setMousePosByEvent(event);
       });
       onPopupMouseEnter = () => {
-        triggerOpen(true, mouseEnterDelay);
+        // Only trigger re-open when popup is visible
+        if (mergedOpen || inMotion) {
+          triggerOpen(true, mouseEnterDelay);
+        }
       };
 
       // Align Point
@@ -613,9 +619,9 @@ export function generateTrigger(
 
     const innerArrow: ArrowTypeOuter = arrow
       ? {
-        // true and Object likely
-        ...(arrow !== true ? arrow : {}),
-      }
+          // true and Object likely
+          ...(arrow !== true ? arrow : {}),
+        }
       : null;
 
     // Render
