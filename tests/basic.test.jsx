@@ -1065,6 +1065,27 @@ describe('Trigger.Basic', () => {
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
       expect(document.querySelector('.rc-trigger-popup-hidden')).toBeFalsy();
     });
+
+    it('should hide when click outside stopPropagation button', async () => {
+      const Demo = () => {
+        return (
+          <>
+            <button onClick={(e) => e.stopPropagation()} />
+            <Trigger action="click" popup={<strong>trigger</strong>}>
+              <div className="target" />
+            </Trigger>
+          </>
+        );
+      };
+
+      const { container } = render(<Demo />);
+
+      fireEvent.click(container.querySelector('.target'));
+      await awaitFakeTimer();
+      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+      fireEvent.click(container.querySelector('button'));
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
+    });
   });
 
   it('not trigger open when hover hidden popup node', () => {
