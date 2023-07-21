@@ -65,16 +65,16 @@ export default function useWinClick(
 
       const win = getWin(popupEle);
 
-      win.addEventListener('mousedown', onWinMouseDown);
-      win.addEventListener('click', onWinClick);
-      win.addEventListener('contextmenu', onWinClick);
+      win.addEventListener('mousedown', onWinMouseDown, true);
+      win.addEventListener('click', onWinClick, true);
+      win.addEventListener('contextmenu', onWinClick, true);
 
       // shadow root
       const targetShadowRoot = getShadowRoot(targetEle);
       if (targetShadowRoot) {
-        targetShadowRoot.addEventListener('mousedown', onShadowMouseDown);
-        targetShadowRoot.addEventListener('click', onShadowClick);
-        targetShadowRoot.addEventListener('contextmenu', onShadowClick);
+        targetShadowRoot.addEventListener('mousedown', onShadowMouseDown, true);
+        targetShadowRoot.addEventListener('click', onShadowClick, true);
+        targetShadowRoot.addEventListener('contextmenu', onShadowClick, true);
       }
 
       // Warning if target and popup not in same root
@@ -89,14 +89,22 @@ export default function useWinClick(
       }
 
       return () => {
-        win.removeEventListener('mousedown', onWinMouseDown);
-        win.removeEventListener('click', onWinClick);
-        win.removeEventListener('contextmenu', onWinClick);
+        win.removeEventListener('mousedown', onWinMouseDown, true);
+        win.removeEventListener('click', onWinClick, true);
+        win.removeEventListener('contextmenu', onWinClick, true);
 
         if (targetShadowRoot) {
-          targetShadowRoot.removeEventListener('mousedown', onShadowMouseDown);
-          targetShadowRoot.removeEventListener('click', onShadowClick);
-          targetShadowRoot.removeEventListener('contextmenu', onShadowClick);
+          targetShadowRoot.removeEventListener(
+            'mousedown',
+            onShadowMouseDown,
+            true,
+          );
+          targetShadowRoot.removeEventListener('click', onShadowClick, true);
+          targetShadowRoot.removeEventListener(
+            'contextmenu',
+            onShadowClick,
+            true,
+          );
         }
       };
     }
