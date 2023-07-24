@@ -598,7 +598,7 @@ export default function useAlign(
       if (typeof numShiftY === 'number') {
         // Top
         if (nextPopupY < visibleRegionArea.top) {
-          nextOffsetY -= nextPopupY - visibleRegionArea.top;
+          nextOffsetY -= nextPopupY - visibleRegionArea.top + popupOffsetY;
 
           if (targetRect.y + targetHeight < visibleRegionArea.top + numShiftY) {
             nextOffsetY +=
@@ -608,7 +608,7 @@ export default function useAlign(
 
         // Bottom
         if (nextPopupBottom > visibleRegionArea.bottom) {
-          nextOffsetY -= nextPopupBottom - visibleRegionArea.bottom;
+          nextOffsetY -= nextPopupBottom - visibleRegionArea.bottom - popupOffsetY;
 
           if (targetRect.y > visibleRegionArea.bottom - numShiftY) {
             nextOffsetY += targetRect.y - visibleRegionArea.bottom + numShiftY;
