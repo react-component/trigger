@@ -131,22 +131,42 @@ describe('Trigger.Basic', () => {
       expect(isPopupHidden()).toBeTruthy();
     });
 
-    it('hover works', () => {
-      const { container } = render(
-        <Trigger
-          action={['hover']}
-          popupAlign={placementAlignMap.left}
-          popup={<strong>trigger</strong>}
-        >
-          <div className="target">click</div>
-        </Trigger>,
-      );
+    describe('hover works', () => {
+      it('mouse event', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            popupAlign={placementAlignMap.left}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>,
+        );
 
-      trigger(container, '.target', 'mouseEnter');
-      expect(isPopupHidden()).toBeFalsy();
+        trigger(container, '.target', 'mouseEnter');
+        expect(isPopupHidden()).toBeFalsy();
 
-      trigger(container, '.target', 'mouseLeave');
-      expect(isPopupHidden()).toBeTruthy();
+        trigger(container, '.target', 'mouseLeave');
+        expect(isPopupHidden()).toBeTruthy();
+      });
+
+      it('pointer event', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            popupAlign={placementAlignMap.left}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">click</div>
+          </Trigger>,
+        );
+
+        trigger(container, '.target', 'pointerEnter');
+        expect(isPopupHidden()).toBeFalsy();
+
+        trigger(container, '.target', 'pointerLeave');
+        expect(isPopupHidden()).toBeTruthy();
+      });
     });
 
     it('contextMenu works', () => {

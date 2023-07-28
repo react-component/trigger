@@ -80,10 +80,11 @@ export default () => {
           htmlRegion: 'scroll',
         }}
       >
-        <span
+        <button
+          disabled
           style={{
-            background: 'green',
-            color: '#FFF',
+            // background: 'green',
+            // color: '#FFF',
             paddingBlock: 30,
             paddingInline: 70,
             opacity: 0.9,
@@ -91,8 +92,8 @@ export default () => {
             display: 'inline-block',
           }}
         >
-          Target
-        </span>
+          Button Target
+        </button>
       </Trigger>
 
       <Trigger

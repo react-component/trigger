@@ -9,6 +9,7 @@ import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import isMobile from 'rc-util/lib/isMobile';
 import * as React from 'react';
+import { flushSync } from 'react-dom';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
 import useAction from './hooks/useAction';
@@ -307,10 +308,14 @@ export function generateTrigger(
     openRef.current = mergedOpen;
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
-      if (mergedOpen !== nextOpen) {
-        setMergedOpen(nextOpen);
-        onPopupVisibleChange?.(nextOpen);
-      }
+      // Enter or Pointer will both trigger open state change
+      // We only need take one to avoid duplicated change event trigger
+      flushSync(() => {
+        if (mergedOpen !== nextOpen) {
+          setMergedOpen(nextOpen);
+          onPopupVisibleChange?.(nextOpen);
+        }
+      });
     });
 
     // Trigger for delay
@@ -354,7 +359,9 @@ export function generateTrigger(
       0, 0,
     ]);
 
-    const setMousePosByEvent = (event: React.MouseEvent) => {
+    const setMousePosByEvent = (
+      event: Pick<React.MouseEvent, 'clientX' | 'clientY'>,
+    ) => {
       setMousePos([event.clientX, event.clientY]);
     };
 
@@ -463,13 +470,15 @@ export function generateTrigger(
       hideAction,
     );
 
-    // Util wrapper for trigger action
-    const wrapperAction = (
+    /**
+     * Util wrapper for trigger action
+     */
+    function wrapperAction<Event extends React.SyntheticEvent>(
       eventName: string,
       nextOpen: boolean,
       delay?: number,
-      preEvent?: (event: any) => void,
-    ) => {
+      preEvent?: (event: Event) => void,
+    ) {
       cloneProps[eventName] = (event: any, ...args: any[]) => {
         preEvent?.(event);
         triggerOpen(nextOpen, delay);
@@ -477,7 +486,7 @@ export function generateTrigger(
         // Pass to origin
         originChildProps[eventName]?.(event, ...args);
       };
-    };
+    }
 
     // ======================= Action: Click ========================
     const clickToShow = showActions.has('click');
@@ -521,9 +530,23 @@ export function generateTrigger(
     let onPopupMouseLeave: VoidFunction;
 
     if (hoverToShow) {
-      wrapperAction('onMouseEnter', true, mouseEnterDelay, (event) => {
-        setMousePosByEvent(event);
-      });
+      // Compatible with old browser which not support pointer event
+      wrapperAction<React.MouseEvent>(
+        'onMouseEnter',
+        true,
+        mouseEnterDelay,
+        (event) => {
+          setMousePosByEvent(event);
+        },
+      );
+      wrapperAction<React.PointerEvent>(
+        'onPointerEnter',
+        true,
+        mouseEnterDelay,
+        (event) => {
+          setMousePosByEvent(event);
+        },
+      );
       onPopupMouseEnter = () => {
         // Only trigger re-open when popup is visible
         if (mergedOpen || inMotion) {
@@ -542,6 +565,7 @@ export function generateTrigger(
 
     if (hoverToHide) {
       wrapperAction('onMouseLeave', false, mouseLeaveDelay);
+      wrapperAction('onPointerLeave', false, mouseLeaveDelay);
       onPopupMouseLeave = () => {
         triggerOpen(false, mouseLeaveDelay);
       };
