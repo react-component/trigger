@@ -671,6 +671,8 @@ export function generateTrigger(
             target={targetEle}
             onMouseEnter={onPopupMouseEnter}
             onMouseLeave={onPopupMouseLeave}
+            // https://github.com/ant-design/ant-design/issues/43924
+            onPointerEnter={onPopupMouseEnter}
             zIndex={zIndex}
             // Open
             open={mergedOpen}
