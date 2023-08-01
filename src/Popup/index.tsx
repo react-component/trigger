@@ -19,6 +19,7 @@ export interface PopupProps {
   target: HTMLElement;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
+  onPointerEnter?: React.MouseEventHandler<HTMLDivElement>;
   zIndex?: number;
 
   mask?: boolean;
@@ -101,6 +102,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
     onMouseEnter,
     onMouseLeave,
+    onPointerEnter,
 
     ready,
     offsetX,
@@ -248,6 +250,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                     }
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
+                    onPointerEnter={onPointerEnter}
                     onClick={onClick}
                   >
                     {arrow && (

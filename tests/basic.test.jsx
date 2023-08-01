@@ -166,6 +166,14 @@ describe('Trigger.Basic', () => {
 
         trigger(container, '.target', 'pointerLeave');
         expect(isPopupHidden()).toBeTruthy();
+
+        // Enter again but move in popup
+        trigger(container, '.target', 'pointerEnter');
+        expect(isPopupHidden()).toBeFalsy();
+
+        fireEvent.pointerLeave(container.querySelector('.target'));
+        trigger(document, '.rc-trigger-popup', 'pointerEnter');
+        expect(isPopupHidden()).toBeFalsy();
       });
     });
 
