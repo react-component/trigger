@@ -387,13 +387,30 @@ export function generateTrigger(
       onPopupAlign,
     );
 
+    const [showActions, hideActions] = useAction(
+      mobile,
+      action,
+      showAction,
+      hideAction,
+    );
+
+    const clickToShow = showActions.has('click');
+    const clickToHide =
+      hideActions.has('click') || hideActions.has('contextMenu');
+
     const triggerAlign = useEvent(() => {
       if (!inMotion) {
         onAlign();
       }
     });
 
-    useWatch(mergedOpen, targetEle, popupEle, triggerAlign);
+    const onScroll = () => {
+      if (openRef.current && alignPoint && clickToHide) {
+        triggerOpen(false);
+      }
+    };
+
+    useWatch(mergedOpen, targetEle, popupEle, triggerAlign, onScroll);
 
     useLayoutEffect(() => {
       triggerAlign();
@@ -463,13 +480,6 @@ export function generateTrigger(
     };
 
     // =========================== Action ===========================
-    const [showActions, hideActions] = useAction(
-      mobile,
-      action,
-      showAction,
-      hideAction,
-    );
-
     /**
      * Util wrapper for trigger action
      */
@@ -489,10 +499,6 @@ export function generateTrigger(
     }
 
     // ======================= Action: Click ========================
-    const clickToShow = showActions.has('click');
-    const clickToHide =
-      hideActions.has('click') || hideActions.has('contextMenu');
-
     if (clickToShow || clickToHide) {
       cloneProps.onClick = (
         event: React.MouseEvent<HTMLElement>,
