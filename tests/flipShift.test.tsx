@@ -190,4 +190,36 @@ describe('Trigger.Flip+Shift', () => {
       left: '-900px',
     });
   });
+
+  // https://github.com/ant-design/ant-design/issues/44096
+  // Note: Safe to modify `top` style compare if refactor
+  it('flip not shake by offset with shift', async () => {
+    spanRect.y = -1000;
+
+    render(
+      <Trigger
+        popupVisible
+        popupAlign={{
+          points: ['tl', 'bl'],
+          overflow: {
+            adjustY: true,
+            shiftY: true,
+          },
+          offset: [0, 33],
+        }}
+        popup={<strong>trigger</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    // Just need check left < 0
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      top: '-867px',
+    });
+  });
 });
