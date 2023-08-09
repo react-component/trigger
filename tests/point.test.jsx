@@ -22,15 +22,21 @@ describe('Trigger.Point', () => {
 
     render() {
       return (
-        <Trigger
-          ref={this.props.triggerRef}
-          popup={this.popup}
-          popupAlign={{ points: ['tl'] }}
-          alignPoint
-          {...this.props}
+        <div
+          className="scroll"
+          // Jest can not get calculated style in jsdom. So we need to set it manually
+          style={{ overflowX: 'hidden', overflowY: 'hidden' }}
         >
-          <div className="point-region" />
-        </Trigger>
+          <Trigger
+            ref={this.props.triggerRef}
+            popup={this.popup}
+            popupAlign={{ points: ['tl'] }}
+            alignPoint
+            {...this.props}
+          >
+            <div className="point-region" />
+          </Trigger>
+        </div>
       );
     }
   }
@@ -119,6 +125,21 @@ describe('Trigger.Point', () => {
 
         done();
       })();
+    });
+
+    it('should hide popup when set alignPoint after scrolling', async () => {
+      const { container } = render(<Demo action={['contextMenu']} />);
+      await trigger(container, 'contextmenu', { clientX: 10, clientY: 20 });
+
+      const popup = document.querySelector('.rc-trigger-popup');
+      expect(popup.style).toEqual(
+        expect.objectContaining({ left: '10px', top: '20px' }),
+      );
+
+      const scrollDiv = container.querySelector('.scroll');
+      fireEvent.scroll(scrollDiv);
+
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
   });
 
