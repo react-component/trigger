@@ -287,7 +287,7 @@ export default function useAlign(
 
       // Offset
       const { offset, targetOffset } = placementInfo;
-      const [popupOffsetX, popupOffsetY] = getNumberOffset(popupRect, offset);
+      let [popupOffsetX, popupOffsetY] = getNumberOffset(popupRect, offset);
       const [targetOffsetX, targetOffsetY] = getNumberOffset(
         targetRect,
         targetOffset,
@@ -417,6 +417,7 @@ export default function useAlign(
         ) {
           prevFlipRef.current.bt = true;
           nextOffsetY = tmpNextOffsetY;
+          popupOffsetY = -popupOffsetY;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 0),
@@ -462,6 +463,7 @@ export default function useAlign(
         ) {
           prevFlipRef.current.tb = true;
           nextOffsetY = tmpNextOffsetY;
+          popupOffsetY = -popupOffsetY;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 0),
@@ -514,6 +516,7 @@ export default function useAlign(
         ) {
           prevFlipRef.current.rl = true;
           nextOffsetX = tmpNextOffsetX;
+          popupOffsetX = -popupOffsetX;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 1),
@@ -559,6 +562,7 @@ export default function useAlign(
         ) {
           prevFlipRef.current.lr = true;
           nextOffsetX = tmpNextOffsetX;
+          popupOffsetX = -popupOffsetX;
 
           nextAlignInfo.points = [
             reversePoints(popupPoints, 1),
@@ -576,7 +580,7 @@ export default function useAlign(
       if (typeof numShiftX === 'number') {
         // Left
         if (nextPopupX < visibleRegionArea.left) {
-          nextOffsetX -= nextPopupX - visibleRegionArea.left;
+          nextOffsetX -= nextPopupX - visibleRegionArea.left - popupOffsetX;
 
           if (targetRect.x + targetWidth < visibleRegionArea.left + numShiftX) {
             nextOffsetX +=
@@ -586,7 +590,8 @@ export default function useAlign(
 
         // Right
         if (nextPopupRight > visibleRegionArea.right) {
-          nextOffsetX -= nextPopupRight - visibleRegionArea.right;
+          nextOffsetX -=
+            nextPopupRight - visibleRegionArea.right - popupOffsetX;
 
           if (targetRect.x > visibleRegionArea.right - numShiftX) {
             nextOffsetX += targetRect.x - visibleRegionArea.right + numShiftX;
@@ -598,8 +603,10 @@ export default function useAlign(
       if (typeof numShiftY === 'number') {
         // Top
         if (nextPopupY < visibleRegionArea.top) {
-          nextOffsetY -= nextPopupY - visibleRegionArea.top + popupOffsetY;
+          nextOffsetY -= nextPopupY - visibleRegionArea.top - popupOffsetY;
 
+          // When target if far away from visible area
+          // Stop shift
           if (targetRect.y + targetHeight < visibleRegionArea.top + numShiftY) {
             nextOffsetY +=
               targetRect.y - visibleRegionArea.top + targetHeight - numShiftY;
@@ -608,7 +615,8 @@ export default function useAlign(
 
         // Bottom
         if (nextPopupBottom > visibleRegionArea.bottom) {
-          nextOffsetY -= nextPopupBottom - visibleRegionArea.bottom - popupOffsetY;
+          nextOffsetY -=
+            nextPopupBottom - visibleRegionArea.bottom - popupOffsetY;
 
           if (targetRect.y > visibleRegionArea.bottom - numShiftY) {
             nextOffsetY += targetRect.y - visibleRegionArea.bottom + numShiftY;

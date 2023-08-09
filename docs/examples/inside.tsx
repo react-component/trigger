@@ -23,9 +23,10 @@ export const builtinPlacements: BuildInPlacements = {
     points: ['bl', 'tl'],
     overflow: {
       adjustX: true,
-      adjustY: true,
+      adjustY: false,
+      shiftY: true,
     },
-    offset: [0, 0],
+    offset: [0, -20],
     ...experimentalConfig,
   },
   topRight: {
@@ -82,9 +83,19 @@ export const builtinPlacements: BuildInPlacements = {
     offset: [0, 0],
     ...experimentalConfig,
   },
+  bottomLeft: {
+    points: ['tl', 'bl'],
+    overflow: {
+      shiftX: 50,
+      adjustY: true,
+      shiftY: true,
+    },
+    offset: [0, 20],
+    ...experimentalConfig,
+  },
 };
 
-const popupPlacement = 'top';
+const popupPlacement = 'bottomLeft';
 
 export default () => {
   const [popupHeight, setPopupHeight] = React.useState(60);
