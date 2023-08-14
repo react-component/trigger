@@ -164,19 +164,34 @@ export default function useAlign(
     if (popupEle && target && open) {
       const popupElement = popupEle;
 
+      const doc = popupElement.ownerDocument;
+      const win = getWin(popupElement);
+
+      const {
+        width,
+        height,
+        position: popupPosition,
+      } = win.getComputedStyle(popupElement);
+
       const originLeft = popupElement.style.left;
       const originTop = popupElement.style.top;
       const originRight = popupElement.style.right;
       const originBottom = popupElement.style.bottom;
-
-      const doc = popupElement.ownerDocument;
-      const win = getWin(popupElement);
 
       // Placement
       const placementInfo: AlignType = {
         ...builtinPlacements[placement],
         ...popupAlign,
       };
+
+      // placeholder element
+      const placeholderElement = doc.createElement('div');
+      popupElement.parentElement?.appendChild(placeholderElement);
+      placeholderElement.style.left = `${popupElement.offsetLeft}px`;
+      placeholderElement.style.top = `${popupElement.offsetTop}px`;
+      placeholderElement.style.position = popupPosition;
+      placeholderElement.style.height = `${popupElement.offsetHeight}px`;
+      placeholderElement.style.width = `${popupElement.offsetWidth}px`;
 
       // Reset first
       popupElement.style.left = '0';
@@ -203,7 +218,6 @@ export default function useAlign(
         };
       }
       const popupRect = popupElement.getBoundingClientRect();
-      const { width, height } = win.getComputedStyle(popupElement);
       const {
         clientWidth,
         clientHeight,
@@ -267,6 +281,8 @@ export default function useAlign(
       popupElement.style.top = originTop;
       popupElement.style.right = originRight;
       popupElement.style.bottom = originBottom;
+
+      popupElement.parentElement?.removeChild(placeholderElement);
 
       // Calculate scale
       const scaleX = toNum(
