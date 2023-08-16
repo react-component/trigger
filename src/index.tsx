@@ -345,6 +345,13 @@ export function generateTrigger(
     useLayoutEffect(
       (firstMount) => {
         if (!firstMount || mergedOpen) {
+          if (stretch) {
+            // delay setting makes it calculate
+            setTimeout(() => {
+              setInMotion(true);
+            }, 0);
+            return;
+          }
           setInMotion(true);
         }
       },
