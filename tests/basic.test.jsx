@@ -561,9 +561,7 @@ describe('Trigger.Basic', () => {
         it(`${
           mockRect ? 'offset' : 'getBoundingClientRect'
         }: ${prop}`, async () => {
-          const onPopupAlign = jest.fn(() => {
-            expect(rectCalled).toBeTruthy();
-          });
+          const onPopupAlign = jest.fn();
 
           const { container } = createTrigger(prop, {
             onPopupAlign,
@@ -573,15 +571,15 @@ describe('Trigger.Basic', () => {
           expect(rectCalled).toBeFalsy();
           expect(onPopupAlign).not.toHaveBeenCalled();
 
+          // Click will trigger `onPrepare` which need measure target size
           fireEvent.click(container.querySelector('.target'));
-          for (let i = 0; i < 10; i += 1) {
-            await act(async () => {
-              jest.advanceTimersByTime(100);
-              await Promise.resolve();
-            });
-          }
-
           expect(rectCalled).toBeTruthy();
+
+          // Flush for motion
+          await act(async () => {
+            jest.advanceTimersByTime(100);
+            await Promise.resolve();
+          });
           expect(onPopupAlign).toHaveBeenCalled();
 
           expect(
