@@ -444,6 +444,23 @@ export function generateTrigger(
       forceAlign: triggerAlign,
     }));
 
+    // ========================== Stretch ===========================
+    const [targetWidth, setTargetWidth] = React.useState(0);
+    const [targetHeight, setTargetHeight] = React.useState(0);
+
+    const syncTargetSize = () => {
+      if (stretch && targetEle) {
+        const rect = targetEle.getBoundingClientRect();
+        setTargetWidth(rect.width);
+        setTargetHeight(rect.height);
+      }
+    };
+
+    const onTargetResize = () => {
+      triggerAlign();
+      syncTargetSize();
+    };
+
     // ========================== Motion ============================
     const onVisibleChanged = (visible: boolean) => {
       setInMotion(false);
@@ -454,6 +471,7 @@ export function generateTrigger(
     // We will trigger align when motion is in prepare
     const onPrepare = () =>
       new Promise<void>((resolve) => {
+        syncTargetSize();
         setMotionPrepareResolve(() => resolve);
       });
 
@@ -464,20 +482,6 @@ export function generateTrigger(
         setMotionPrepareResolve(null);
       }
     }, [motionPrepareResolve]);
-
-    // ========================== Stretch ===========================
-    const [targetWidth, setTargetWidth] = React.useState(0);
-    const [targetHeight, setTargetHeight] = React.useState(0);
-
-    const onTargetResize = (_: object, ele: HTMLElement) => {
-      triggerAlign();
-
-      if (stretch) {
-        const rect = ele.getBoundingClientRect();
-        setTargetWidth(rect.width);
-        setTargetHeight(rect.height);
-      }
-    };
 
     // =========================== Action ===========================
     /**
