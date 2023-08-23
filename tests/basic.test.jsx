@@ -510,13 +510,14 @@ describe('Trigger.Basic', () => {
   });
 
   describe('stretch', () => {
-    const createTrigger = (stretch) =>
+    const createTrigger = (stretch, restProps) =>
       render(
         <Trigger
           action={['click']}
           popupAlign={placementAlignMap.left}
           popup={<strong className="x-content">tooltip2</strong>}
           stretch={stretch}
+          {...restProps}
         >
           <div className="target">
             click me to show trigger
@@ -530,6 +531,7 @@ describe('Trigger.Basic', () => {
     const height = 903;
     let domSpy;
     let rect = {};
+    let rectCalled = false;
 
     beforeAll(() => {
       domSpy = spyElementPrototypes(HTMLElement, {
@@ -540,9 +542,14 @@ describe('Trigger.Basic', () => {
           get: () => height,
         },
         getBoundingClientRect() {
+          rectCalled = true;
           return rect;
         },
       });
+    });
+
+    beforeEach(() => {
+      rectCalled = false;
     });
 
     afterAll(() => {
@@ -551,12 +558,31 @@ describe('Trigger.Basic', () => {
 
     [null, { width, height }].forEach((mockRect) => {
       ['width', 'height', 'min-width', 'min-height'].forEach((prop) => {
-        it(`${mockRect ? 'offset' : 'getBoundingClientRect'}: ${prop}`, () => {
-          const { container } = createTrigger(prop);
+        it(`${
+          mockRect ? 'offset' : 'getBoundingClientRect'
+        }: ${prop}`, async () => {
+          const onPopupAlign = jest.fn(() => {
+            expect(rectCalled).toBeTruthy();
+          });
+
+          const { container } = createTrigger(prop, {
+            onPopupAlign,
+          });
           rect = mockRect || {};
 
+          expect(rectCalled).toBeFalsy();
+          expect(onPopupAlign).not.toHaveBeenCalled();
+
           fireEvent.click(container.querySelector('.target'));
-          act(() => jest.runAllTimers());
+          for (let i = 0; i < 10; i += 1) {
+            await act(async () => {
+              jest.advanceTimersByTime(100);
+              await Promise.resolve();
+            });
+          }
+
+          expect(rectCalled).toBeTruthy();
+          expect(onPopupAlign).toHaveBeenCalled();
 
           expect(
             document.querySelector('.rc-trigger-popup').style,
