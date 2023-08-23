@@ -457,8 +457,8 @@ export function generateTrigger(
     };
 
     const onTargetResize = () => {
-      triggerAlign();
       syncTargetSize();
+      triggerAlign();
     };
 
     // ========================== Motion ============================
