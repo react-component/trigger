@@ -69,7 +69,7 @@ const RefTarget = React.forwardRef((props, ref) => {
 interface TestState {
   mask: boolean;
   maskClosable: boolean;
-  placement: 'right';
+  placement: string;
   trigger: {
     click?: boolean;
     focus?: boolean;
@@ -90,13 +90,13 @@ class Test extends React.Component<any, TestState> {
   state: TestState = {
     mask: true,
     maskClosable: true,
-    placement: 'right',
+    placement: 'bottom',
     trigger: {
       click: true,
     },
     offsetX: undefined,
     offsetY: undefined,
-    stretch: '',
+    stretch: 'minWidth',
     transitionName: 'rc-trigger-popup-zoom',
   };
 
