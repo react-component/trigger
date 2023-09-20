@@ -30,16 +30,6 @@ export interface AlignType {
   points?: (string | AlignPoint)[];
 
   /**
-   * @private Do not use in your production code
-   */
-  _experimental?: {
-    /**
-     * @private Do not use in your production code. Auto adjust align logic
-     */
-    dynamicInset?: boolean;
-  };
-
-  /**
    * offset source node by offset[0] in x and offset[1] in y.
    * If offset contains percentage string value, it is relative to sourceNode region.
    */
@@ -74,6 +64,11 @@ export interface AlignType {
    *    Similar to `visible`, but if `visible` region not satisfy, fallback to `scroll`.
    */
   htmlRegion?: 'visible' | 'scroll' | 'visibleFirst';
+
+  /**
+   * Auto chose position with `top` or `bottom` by the align result
+   */
+  dynamicInset?: boolean;
   /**
    * Whether use css right instead of left to position
    */
