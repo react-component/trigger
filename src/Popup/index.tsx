@@ -153,8 +153,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   // Set align style
   if (ready || !open) {
-    const { points, _experimental } = align;
-    const dynamicInset = _experimental?.dynamicInset;
+    const { points } = align;
+    const dynamicInset =
+      align.dynamicInset || (align as any)._experimental?.dynamicInset;
     const alignRight = dynamicInset && points[0][1] === 'r';
     const alignBottom = dynamicInset && points[0][0] === 'b';
 
