@@ -30,6 +30,11 @@ export interface AlignType {
   points?: (string | AlignPoint)[];
 
   /**
+   * @private Do not use in your production code
+   */
+  _experimental?: Record<string, any>;
+
+  /**
    * offset source node by offset[0] in x and offset[1] in y.
    * If offset contains percentage string value, it is relative to sourceNode region.
    */
