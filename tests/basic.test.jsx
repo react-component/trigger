@@ -1165,4 +1165,30 @@ describe('Trigger.Basic', () => {
     trigger(container, '.popup', 'mouseEnter');
     expect(onPopupVisibleChange).not.toHaveBeenCalled();
   });
+
+  // https://gith(ub.com/ant-design/ant-design/issues/44830
+  it('fresh should work', () => {
+    const Demo = () => {
+      const [open, setOpen] = React.useState(true);
+
+      return (
+        <Trigger
+          popupVisible={open}
+          onPopupVisibleChange={setOpen}
+          popup={<strong className="x-content">{String(open)}</strong>}
+          action={['click']}
+          popupAlign={placementAlignMap.left}
+          fresh
+        >
+          <div className="target">click</div>
+        </Trigger>
+      );
+    };
+
+    const { container } = render(<Demo />);
+    expect(document.querySelector('.x-content').textContent).toBe('true');
+
+    trigger(container, '.target');
+    expect(document.querySelector('.x-content').textContent).toBe('false');
+  });
 });

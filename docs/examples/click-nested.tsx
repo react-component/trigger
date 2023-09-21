@@ -82,6 +82,7 @@ const Test = () => {
             // Level 2
             <NestPopup open={open2} setOpen={setOpen2} />
           }
+          fresh
         >
           <span>Click Me</span>
         </Trigger>
