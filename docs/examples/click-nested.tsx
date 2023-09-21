@@ -37,6 +37,34 @@ const popupBorderStyle = {
   background: 'rgba(255, 0, 0, 0.1)',
 };
 
+const NestPopup = ({ open, setOpen }) => {
+  return (
+    <Trigger
+      popupPlacement="right"
+      action={['click']}
+      builtinPlacements={builtinPlacements}
+      popup={<div style={popupBorderStyle}>i am a click popup</div>}
+      popupVisible={open}
+      onPopupVisibleChange={setOpen}
+    >
+      <div style={popupBorderStyle}>
+        i am a click popup{' '}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+        >
+          I am preventPop
+        </button>
+      </div>
+    </Trigger>
+  );
+};
+
+NestPopup.displayName = '🐞 NestPopup';
+
 const Test = () => {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
@@ -52,27 +80,7 @@ const Test = () => {
           onPopupVisibleChange={setOpen1}
           popup={
             // Level 2
-            <Trigger
-              popupPlacement="right"
-              action={['click']}
-              builtinPlacements={builtinPlacements}
-              popup={<div style={popupBorderStyle}>i am a click popup</div>}
-              popupVisible={open2}
-              onPopupVisibleChange={setOpen2}
-            >
-              <div style={popupBorderStyle}>
-                i am a click popup{' '}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                >
-                  I am preventPop
-                </button>
-              </div>
-            </Trigger>
+            <NestPopup open={open2} setOpen={setOpen2} />
           }
         >
           <span>Click Me</span>
