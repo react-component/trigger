@@ -37,44 +37,49 @@ const popupBorderStyle = {
   background: 'rgba(255, 0, 0, 0.1)',
 };
 
-class Test extends React.Component {
-  render() {
-    return (
-      <div style={{ margin: 200 }}>
-        <div>
-          <Trigger
-            popupPlacement="right"
-            action={['click']}
-            builtinPlacements={builtinPlacements}
-            popup={
-              // Level 2
-              <Trigger
-                popupPlacement="right"
-                action={['click']}
-                builtinPlacements={builtinPlacements}
-                popup={<div style={popupBorderStyle}>i am a click popup</div>}
-              >
-                <div style={popupBorderStyle}>
-                  i am a click popup{' '}
-                  <button
-                    type="button"
-                    onMouseDown={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                    }}
-                  >
-                    I am preventPop
-                  </button>
-                </div>
-              </Trigger>
-            }
-          >
-            <span>Click Me</span>
-          </Trigger>
-        </div>
+const Test = () => {
+  const [open1, setOpen1] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
+
+  return (
+    <div style={{ margin: 200 }}>
+      <div>
+        <Trigger
+          popupPlacement="right"
+          action={['click']}
+          builtinPlacements={builtinPlacements}
+          popupVisible={open1}
+          onPopupVisibleChange={setOpen1}
+          popup={
+            // Level 2
+            <Trigger
+              popupPlacement="right"
+              action={['click']}
+              builtinPlacements={builtinPlacements}
+              popup={<div style={popupBorderStyle}>i am a click popup</div>}
+              popupVisible={open2}
+              onPopupVisibleChange={setOpen2}
+            >
+              <div style={popupBorderStyle}>
+                i am a click popup{' '}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                >
+                  I am preventPop
+                </button>
+              </div>
+            </Trigger>
+          }
+        >
+          <span>Click Me</span>
+        </Trigger>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Test;
