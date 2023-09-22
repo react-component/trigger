@@ -112,6 +112,13 @@ export interface TriggerProps {
 
   alignPoint?: boolean; // Maybe we can support user pass position in the future
 
+  /**
+   * Trigger will memo content when close.
+   * This may affect the case if want to keep content update.
+   * Set `fresh` to `false` will always keep update.
+   */
+  fresh?: boolean;
+
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
 
@@ -179,6 +186,7 @@ export function generateTrigger(
       zIndex,
       stretch,
       getPopupClassNameFromAlign,
+      fresh,
 
       alignPoint,
 
@@ -687,6 +695,7 @@ export function generateTrigger(
             // Open
             open={mergedOpen}
             keepDom={inMotion}
+            fresh={fresh}
             // Click
             onClick={onPopupClick}
             // Mask
