@@ -45,6 +45,3 @@ export class TriggerShow {
 }
 
 export const triggerShow = new TriggerShow();
-
-// @ts-ignore
-window.show = triggerShow;
