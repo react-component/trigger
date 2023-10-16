@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 import React from 'react';
 import '../../assets/index.less';
-import Trigger, { BuildInPlacements } from '../../src';
+import Trigger, { type BuildInPlacements } from '../../src';
 
 const experimentalConfig = {
   _experimental: {
