@@ -1,4 +1,4 @@
-import { warning } from 'rc-util';
+import { warning } from 'rc-util/lib/warning';
 import { getShadowRoot } from 'rc-util/lib/Dom/shadow';
 import raf from 'rc-util/lib/raf';
 import * as React from 'react';
