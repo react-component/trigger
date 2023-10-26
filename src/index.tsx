@@ -10,6 +10,8 @@ import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import isMobile from 'rc-util/lib/isMobile';
 import * as React from 'react';
 import { flushSync } from 'react-dom';
+import Popup from './Popup';
+import TriggerWrapper from './TriggerWrapper';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
 import useAction from './hooks/useAction';
@@ -25,18 +27,17 @@ import type {
   BuildInPlacements,
   TransitionNameType,
 } from './interface';
-import Popup from './Popup';
-import TriggerWrapper from './TriggerWrapper';
 import { getAlignPopupClassName, getMotion } from './util';
 
 export type {
-  BuildInPlacements,
-  AlignType,
   ActionType,
+  AlignType,
   ArrowTypeOuter as ArrowType,
+  BuildInPlacements,
 };
 
 export interface TriggerRef {
+  nativeElement: HTMLElement;
   forceAlign: VoidFunction;
 }
 
@@ -251,9 +252,13 @@ export function generateTrigger(
     // Use state to control here since `useRef` update not trigger render
     const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
 
+    // Used for forwardRef target. Not use internal
+    const externalForwardRef = React.useRef<HTMLElement>(null);
+
     const setTargetRef = useEvent((node: HTMLElement) => {
       if (isDOM(node) && targetEle !== node) {
         setTargetEle(node);
+        externalForwardRef.current = node;
       }
     });
 
@@ -448,7 +453,9 @@ export function generateTrigger(
       alignPoint,
     ]);
 
+    // ============================ Refs ============================
     React.useImperativeHandle(ref, () => ({
+      nativeElement: externalForwardRef.current,
       forceAlign: triggerAlign,
     }));
 
