@@ -9,7 +9,6 @@ import useId from 'rc-util/lib/hooks/useId';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import isMobile from 'rc-util/lib/isMobile';
 import * as React from 'react';
-import { flushSync } from 'react-dom';
 import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
 import type { TriggerContextProps } from './context';
@@ -320,15 +319,21 @@ export function generateTrigger(
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
 
+    const lastTriggerRef = React.useRef([]);
+    lastTriggerRef.current = [];
+
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
+      setMergedOpen(nextOpen);
+
       // Enter or Pointer will both trigger open state change
       // We only need take one to avoid duplicated change event trigger
-      flushSync(() => {
-        if (mergedOpen !== nextOpen) {
-          setMergedOpen(nextOpen);
-          onPopupVisibleChange?.(nextOpen);
-        }
-      });
+      // Use `lastTriggerRef` to record last open type
+      if (
+        lastTriggerRef.current[lastTriggerRef.current.length - 1] !== nextOpen
+      ) {
+        lastTriggerRef.current.push(nextOpen);
+        onPopupVisibleChange?.(nextOpen);
+      }
     });
 
     // Trigger for delay
