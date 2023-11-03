@@ -319,7 +319,7 @@ export function generateTrigger(
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
 
-    const lastTriggerRef = React.useRef([]);
+    const lastTriggerRef = React.useRef<boolean[]>([]);
     lastTriggerRef.current = [];
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
