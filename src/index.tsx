@@ -329,7 +329,8 @@ export function generateTrigger(
       // We only need take one to avoid duplicated change event trigger
       // Use `lastTriggerRef` to record last open type
       if (
-        lastTriggerRef.current[lastTriggerRef.current.length - 1] !== nextOpen
+        lastTriggerRef.current[lastTriggerRef.current.length - 1] ??
+        mergedOpen !== nextOpen
       ) {
         lastTriggerRef.current.push(nextOpen);
         onPopupVisibleChange?.(nextOpen);
