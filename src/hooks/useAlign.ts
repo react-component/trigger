@@ -177,6 +177,7 @@ export default function useAlign(
       const originTop = popupElement.style.top;
       const originRight = popupElement.style.right;
       const originBottom = popupElement.style.bottom;
+      const originOverflow = popupElement.style.overflow;
 
       // Placement
       const placementInfo: AlignType = {
@@ -198,6 +199,7 @@ export default function useAlign(
       popupElement.style.top = '0';
       popupElement.style.right = 'auto';
       popupElement.style.bottom = 'auto';
+      popupElement.style.overflow = 'hidden';
 
       // Calculate align style, we should consider `transform` case
       let targetRect: Rect;
@@ -281,6 +283,7 @@ export default function useAlign(
       popupElement.style.top = originTop;
       popupElement.style.right = originRight;
       popupElement.style.bottom = originBottom;
+      popupElement.style.overflow = originOverflow;
 
       popupElement.parentElement?.removeChild(placeholderElement);
 
@@ -671,6 +674,8 @@ export default function useAlign(
         popupMirrorRect.right - popupRect.x - (nextOffsetX + popupRect.width);
       const offsetY4Bottom =
         popupMirrorRect.bottom - popupRect.y - (nextOffsetY + popupRect.height);
+
+      debugger;
 
       setOffsetInfo({
         ready: true,
