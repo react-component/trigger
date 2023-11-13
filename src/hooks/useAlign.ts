@@ -675,8 +675,6 @@ export default function useAlign(
       const offsetY4Bottom =
         popupMirrorRect.bottom - popupRect.y - (nextOffsetY + popupRect.height);
 
-      debugger;
-
       setOffsetInfo({
         ready: true,
         offsetX: nextOffsetX / scaleX,
