@@ -102,12 +102,16 @@ const calcOffsetByVisibleArea = (params: {
 }) => {
   let arrowOffset = 0
   const { offset, widthOrHeight, direction, visibleRegionArea } = params
-  /** horizontal offset < 0 = l  otherwise = r */
-
+  
+  /** 
+   * When offset is less than 0, it means that it is blocked by the visible area. 
+   * eg left: -10, it means that the left side of the popup is blocked by the visible area.
+   * or top: -10, it means that the top side of the popup is blocked by the visible area.
+   * */
   if (offset < 0) {
     return {
       offset: 0,
-      arrowOffset: direction === 'horizontal' ?  EDGE_OFFSET : EDGE_OFFSET,
+      arrowOffset: EDGE_OFFSET,
     }
   }
   /** 
