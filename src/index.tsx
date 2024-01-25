@@ -557,7 +557,7 @@ export function generateTrigger(
     const hoverToShow = showActions.has('hover');
     const hoverToHide = hideActions.has('hover');
 
-    let onPopupMouseEnter: VoidFunction;
+    let onPopupMouseEnter: React.MouseEventHandler<HTMLDivElement>;
     let onPopupMouseLeave: VoidFunction;
 
     if (hoverToShow) {
@@ -578,9 +578,12 @@ export function generateTrigger(
           setMousePosByEvent(event);
         },
       );
-      onPopupMouseEnter = () => {
+      onPopupMouseEnter = (event) => {
         // Only trigger re-open when popup is visible
-        if (mergedOpen || inMotion) {
+        if (
+          (mergedOpen || inMotion) &&
+          popupEle?.contains(event.target as HTMLElement)
+        ) {
           triggerOpen(true, mouseEnterDelay);
         }
       };
