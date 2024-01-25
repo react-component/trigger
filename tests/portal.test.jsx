@@ -2,10 +2,10 @@
 
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
-import React, { createRef, StrictMode } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from '../src';
-import { awaitFakeTimer, placementAlignMap } from './util';
+import { placementAlignMap } from './util';
 
 describe('Trigger.Portal', () => {
   beforeAll(() => {
