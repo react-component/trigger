@@ -66,7 +66,7 @@ describe('Trigger.Motion', () => {
       </Trigger>
     );
 
-    const { container, rerender } = render(renderDemo({ popupVisible: true }));
+    const { rerender } = render(renderDemo({ popupVisible: true }));
     await awaitFakeTimer();
 
     rerender(renderDemo({ popupVisible: false }));
