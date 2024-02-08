@@ -23,7 +23,7 @@ const MockPortal: React.FC<MockPortalProps> = ({
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-    } else if (!open && autoDestroy) {
+    } else if (autoDestroy) {
       setVisible(false);
     }
   }, [open, autoDestroy]);

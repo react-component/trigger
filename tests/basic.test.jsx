@@ -743,7 +743,7 @@ describe('Trigger.Basic', () => {
         );
       }
 
-      const { container } = render(<Demo />);
+      render(<Demo />);
 
       expect(getPopupContainer).toHaveBeenCalled();
     });
