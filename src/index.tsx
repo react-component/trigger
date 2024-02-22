@@ -668,6 +668,7 @@ export function generateTrigger(
       'onMouseLeave',
       'onFocus',
       'onBlur',
+      'onPointerDown',
     ];
 
     passedEventList.forEach((eventName) => {
