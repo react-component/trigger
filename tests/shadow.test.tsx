@@ -86,7 +86,7 @@ describe('Trigger.Shadow', () => {
     expect(shadowRoot.querySelector('.bamboo')).toBeTruthy();
 
     // Click outside to hide
-    fireEvent.click(document.body.firstChild);
+    fireEvent.mouseDown(document.body.firstChild);
     await awaitFakeTimer();
     expect(shadowRoot.querySelector('.bamboo')).toBeFalsy();
 
@@ -96,7 +96,7 @@ describe('Trigger.Shadow', () => {
     expect(shadowRoot.querySelector('.bamboo')).toBeTruthy();
 
     // Click in side shadow to hide
-    fireEvent.click(shadowRoot.querySelector('.little'));
+    fireEvent.mouseDown(shadowRoot.querySelector('.little'));
     await awaitFakeTimer();
     expect(shadowRoot.querySelector('.bamboo')).toBeFalsy();
 

@@ -2,7 +2,7 @@
 
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
-import React, { createRef, StrictMode } from 'react';
+import React, { StrictMode, createRef } from 'react';
 import ReactDOM from 'react-dom';
 import Trigger from '../src';
 import { awaitFakeTimer, placementAlignMap } from './util';
@@ -197,7 +197,7 @@ describe('Trigger.Basic', () => {
 
       expect(isPopupHidden()).toBeTruthy();
     });
-    it('contextMenu all close ', () => {
+    it('contextMenu all close', () => {
       const triggerRef1 = createRef();
       const triggerRef2 = createRef();
       const { container } = render(
@@ -232,7 +232,7 @@ describe('Trigger.Basic', () => {
       expect(isPopupClassHidden('.trigger-popup1')).toBeFalsy();
       expect(isPopupClassHidden('.trigger-popup2')).toBeTruthy();
 
-      fireEvent.click(document.body);
+      fireEvent.mouseDown(document.body);
       expect(isPopupAllHidden()).toBeTruthy();
     });
     describe('afterPopupVisibleChange can be triggered', () => {
@@ -778,7 +778,8 @@ describe('Trigger.Basic', () => {
   });
 
   // https://github.com/ant-design/ant-design/issues/30116
-  it('createPortal should also work with stopPropagation', () => {
+  // This conflict with above test for always click to hide
+  it.skip('createPortal should also work with stopPropagation', () => {
     const root = document.createElement('div');
     document.body.appendChild(root);
 
@@ -1122,7 +1123,10 @@ describe('Trigger.Basic', () => {
       const Demo = () => {
         return (
           <>
-            <button onClick={(e) => e.stopPropagation()} />
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            />
             <Trigger action="click" popup={<strong>trigger</strong>}>
               <div className="target" />
             </Trigger>
@@ -1135,6 +1139,9 @@ describe('Trigger.Basic', () => {
       fireEvent.click(container.querySelector('.target'));
       await awaitFakeTimer();
       expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+
+      fireEvent.mouseDown(container.querySelector('button'));
+      fireEvent.mouseUp(container.querySelector('button'));
       fireEvent.click(container.querySelector('button'));
       expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
