@@ -397,7 +397,7 @@ export function generateTrigger(
     ] = useAlign(
       mergedOpen,
       popupEle,
-      alignPoint && mousePos != null ? mousePos : targetEle,
+      alignPoint && mousePos !== null ? mousePos : targetEle,
       popupPlacement,
       builtinPlacements,
       popupAlign,
