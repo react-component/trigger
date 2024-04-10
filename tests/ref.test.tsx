@@ -36,4 +36,18 @@ describe('Trigger.Ref', () => {
       container.querySelector('button'),
     );
   });
+
+  it('support popupElement', () => {
+    const triggerRef = React.createRef<TriggerRef>();
+
+    render(
+      <Trigger ref={triggerRef} popupVisible popup={<div />}>
+        <button />
+      </Trigger>,
+    );
+
+    expect(triggerRef.current.popupElement).toBe(
+      document.querySelector('.rc-trigger-popup'),
+    );
+  });
 });
