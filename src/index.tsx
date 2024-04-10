@@ -37,7 +37,7 @@ export type {
 
 export interface TriggerRef {
   nativeElement: HTMLElement;
-  popupElement: HTMLElement;
+  popupElement: HTMLDivElement;
   forceAlign: VoidFunction;
 }
 
