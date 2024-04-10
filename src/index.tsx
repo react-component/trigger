@@ -37,6 +37,7 @@ export type {
 
 export interface TriggerRef {
   nativeElement: HTMLElement;
+  popupElement: HTMLElement;
   forceAlign: VoidFunction;
 }
 
@@ -239,7 +240,12 @@ export function generateTrigger(
     const id = useId();
     const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
 
+    // Used for forwardRef popup. Not use internal
+    const externalPopupRef = React.useRef<HTMLDivElement>(null);
+
     const setPopupRef = useEvent((node: HTMLDivElement) => {
+      externalPopupRef.current = node;
+
       if (isDOM(node) && popupEle !== node) {
         setPopupEle(node);
       }
@@ -462,6 +468,7 @@ export function generateTrigger(
     // ============================ Refs ============================
     React.useImperativeHandle(ref, () => ({
       nativeElement: externalForwardRef.current,
+      popupElement: externalPopupRef.current,
       forceAlign: triggerAlign,
     }));
 
