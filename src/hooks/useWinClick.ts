@@ -10,7 +10,7 @@ export default function useWinClick(
   popupEle: HTMLElement,
   mask: boolean,
   maskClosable: boolean,
-  inPopupOrChild: (target: EventTarget) => boolean,
+  inPopupOrChild: (target: EventTarget,composedPathTargetList:EventTarget[]) => boolean,
   triggerOpen: (open: boolean) => void,
 ) {
   const openRef = React.useRef(open);
@@ -19,8 +19,8 @@ export default function useWinClick(
   // Click to hide is special action since click popup element should not hide
   React.useEffect(() => {
     if (clickToHide && popupEle && (!mask || maskClosable)) {
-      const onTriggerClose = ({ target }: MouseEvent) => {
-        if (openRef.current && !inPopupOrChild(target)) {
+      const onTriggerClose = ({ target,composedPath }: MouseEvent) => {
+        if (openRef.current && !inPopupOrChild(target,composedPath())) {
           triggerOpen(false);
         }
       };

@@ -272,7 +272,7 @@ export function generateTrigger(
     const originChildProps = child?.props || {};
     const cloneProps: typeof originChildProps = {};
 
-    const inPopupOrChild = useEvent((ele: any) => {
+    const inPopupOrChild = useEvent((ele: any,composedPathTargetList:EventTarget[]) => {
       const childDOM = targetEle;
 
       return (
@@ -284,7 +284,7 @@ export function generateTrigger(
         ele === popupEle ||
         Object.values(subPopupElements.current).some(
           (subPopupEle) => subPopupEle?.contains(ele) || ele === subPopupEle,
-        )
+        )||composedPathTargetList.some(tar=>targetEle===tar)
       );
     });
 
