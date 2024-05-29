@@ -670,12 +670,22 @@ export default function useAlign(
       onPopupAlign?.(popupEle, nextAlignInfo);
 
       // Additional calculate right & bottom position
-      const offsetX4Right =
+      let offsetX4Right =
         popupMirrorRect.right - popupRect.x - (nextOffsetX + popupRect.width);
-      const offsetY4Bottom =
+      let offsetY4Bottom =
         popupMirrorRect.bottom - popupRect.y - (nextOffsetY + popupRect.height);
 
-      setOffsetInfo({
+      if (scaleX === 1) {
+        nextOffsetX = Math.round(nextOffsetX);
+        offsetX4Right = Math.round(offsetX4Right);
+      }
+
+      if (scaleY === 1) {
+        nextOffsetY = Math.round(nextOffsetY);
+        offsetY4Bottom = Math.round(offsetY4Bottom);
+      }
+
+      const nextOffsetInfo = {
         ready: true,
         offsetX: nextOffsetX / scaleX,
         offsetY: nextOffsetY / scaleY,
@@ -686,7 +696,9 @@ export default function useAlign(
         scaleX,
         scaleY,
         align: nextAlignInfo,
-      });
+      };
+
+      setOffsetInfo(nextOffsetInfo);
     }
   });
 
