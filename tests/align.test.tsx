@@ -16,13 +16,18 @@ export const triggerResize = (target: Element) => {
 describe('Trigger.Align', () => {
   let targetVisible = true;
 
+  let rectX = 100;
+  let rectY = 100;
+  let rectWidth = 100;
+  let rectHeight = 100;
+
   beforeAll(() => {
     spyElementPrototypes(HTMLDivElement, {
       getBoundingClientRect: () => ({
-        x: 100,
-        y: 100,
-        width: 100,
-        height: 100,
+        x: rectX,
+        y: rectY,
+        width: rectWidth,
+        height: rectHeight,
         right: 200,
         bottom: 200,
       }),
@@ -42,6 +47,12 @@ describe('Trigger.Align', () => {
 
   beforeEach(() => {
     targetVisible = true;
+
+    rectX = 100;
+    rectY = 100;
+    rectWidth = 100;
+    rectHeight = 100;
+
     jest.useFakeTimers();
   });
 
@@ -256,6 +267,31 @@ describe('Trigger.Align', () => {
 
     expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
       bottom: `100px`,
+    });
+  });
+
+  it('round when decimal precision', async () => {
+    rectX = 22.6;
+    rectY = 33.4;
+    rectWidth = 33.7;
+    rectHeight = 55.9;
+
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        popupAlign={{
+          points: ['tl', 'bl'],
+        }}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      top: `56px`,
     });
   });
 });
