@@ -380,9 +380,7 @@ export function generateTrigger(
       React.useState<VoidFunction>(null);
 
     // =========================== Align ============================
-    const [mousePos, setMousePos] = React.useState<[x: number, y: number]>([
-      0, 0,
-    ]);
+    const [mousePos, setMousePos] = React.useState<[x: number, y: number] | null>(null);
 
     const setMousePosByEvent = (
       event: Pick<React.MouseEvent, 'clientX' | 'clientY'>,
@@ -405,7 +403,7 @@ export function generateTrigger(
     ] = useAlign(
       mergedOpen,
       popupEle,
-      alignPoint ? mousePos : targetEle,
+      alignPoint && mousePos !== null ? mousePos : targetEle,
       popupPlacement,
       builtinPlacements,
       popupAlign,
