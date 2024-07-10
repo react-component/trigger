@@ -19,8 +19,11 @@ export default function useWinClick(
   // Click to hide is special action since click popup element should not hide
   React.useEffect(() => {
     if (clickToHide && popupEle && (!mask || maskClosable)) {
-      const onTriggerClose = ({ target }: MouseEvent) => {
-        if (openRef.current && !inPopupOrChild(target)) {
+      const onTriggerClose = (e: MouseEvent) => {
+        if (
+          openRef.current &&
+          !inPopupOrChild(e.composedPath?.()?.[0] || e.target)
+        ) {
           triggerOpen(false);
         }
       };

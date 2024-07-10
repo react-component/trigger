@@ -58,13 +58,21 @@ const Demo = () => {
 
 export default () => {
   React.useEffect(() => {
+    const wrapperHost = document.createElement('div');
+    const wrapperShadowRoot = wrapperHost.attachShadow({
+      mode: 'open',
+      delegatesFocus: false,
+    });
+    document.body.appendChild(wrapperHost);
+
     const host = document.createElement('div');
-    document.body.appendChild(host);
+    wrapperShadowRoot.appendChild(host);
     host.style.background = 'rgba(255,0,0,0.1)';
     const shadowRoot = host.attachShadow({
       mode: 'open',
       delegatesFocus: false,
     });
+
     const container = document.createElement('div');
     shadowRoot.appendChild(container);
 

@@ -272,18 +272,19 @@ export function generateTrigger(
     const originChildProps = child?.props || {};
     const cloneProps: typeof originChildProps = {};
 
-    const inPopupOrChild = useEvent((ele: any) => {
+    const inPopupOrChild = useEvent((ele: EventTarget) => {
       const childDOM = targetEle;
 
       return (
-        childDOM?.contains(ele) ||
+        childDOM?.contains(ele as HTMLElement) ||
         getShadowRoot(childDOM)?.host === ele ||
         ele === childDOM ||
-        popupEle?.contains(ele) ||
+        popupEle?.contains(ele as HTMLElement) ||
         getShadowRoot(popupEle)?.host === ele ||
         ele === popupEle ||
         Object.values(subPopupElements.current).some(
-          (subPopupEle) => subPopupEle?.contains(ele) || ele === subPopupEle,
+          (subPopupEle) =>
+            subPopupEle?.contains(ele as HTMLElement) || ele === subPopupEle,
         )
       );
     });
