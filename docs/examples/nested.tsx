@@ -67,7 +67,7 @@ const Test = () => {
         getPopupContainer={() => containerRef.current}
         popup={<div style={popupBorderStyle}>I am inner Trigger Popup</div>}
       >
-        <span href="#" style={{ margin: 20 }}>
+        <span style={{ margin: 20 }}>
           clickToShowInnerTrigger
         </span>
       </Trigger>
@@ -94,7 +94,7 @@ const Test = () => {
               builtinPlacements={builtinPlacements}
               popup={<div style={popupBorderStyle}>i am a hover popup</div>}
             >
-              <span href="#" style={{ margin: 20 }}>
+              <span style={{ margin: 20 }}>
                 trigger
               </span>
             </Trigger>
@@ -108,7 +108,7 @@ const Test = () => {
           builtinPlacements={builtinPlacements}
           popup={innerTrigger}
         >
-          <span href="#" style={{ margin: 20 }}>
+          <span style={{ margin: 20 }}>
             trigger
           </span>
         </Trigger>

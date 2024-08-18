@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import Trigger from 'rc-trigger';
+import Trigger, { ActionType } from 'rc-trigger';
 import '../../assets/index.less';
 import './point.less';
 
@@ -17,7 +17,7 @@ const innerTrigger = (
 
 class Test extends React.Component {
   state = {
-    action: 'click',
+    action: 'click' as ActionType,
     mouseEnterDelay: 0,
   };
 
