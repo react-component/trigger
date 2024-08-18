@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 
-import Trigger from 'rc-trigger';
+import Trigger, { ActionType } from 'rc-trigger';
 import React from 'react';
 import '../../assets/index.less';
 
@@ -199,6 +199,9 @@ class Test extends React.Component<any, TestState> {
     if (state.destroyed) {
       return null;
     }
+
+    const actions = Object.keys(state.trigger) as ActionType[]
+
     return (
       <div>
         <div style={{ margin: '10px 20px' }}>
@@ -359,7 +362,7 @@ class Test extends React.Component<any, TestState> {
             maskAnimation="fade"
             // mouseEnterDelay={0.1}
             // mouseLeaveDelay={0.1}
-            action={Object.keys(state.trigger)}
+            action={actions}
             builtinPlacements={builtinPlacements}
             arrow
             popupStyle={{
@@ -370,33 +373,6 @@ class Test extends React.Component<any, TestState> {
             }}
             popup={<div>i am a popup</div>}
             popupTransitionName={state.transitionName}
-            mobile={
-              state.mobile
-                ? {
-                    popupMotion: {
-                      motionName: 'rc-trigger-popup-mobile-fade',
-                    },
-                    popupClassName: 'rc-trigger-popup-mobile',
-                    popupStyle: {
-                      padding: 16,
-                      borderTop: '1px solid red',
-                      background: '#FFF',
-                      textAlign: 'center',
-                    },
-                    popupRender: (node) => (
-                      <>
-                        <div>
-                          <input
-                            style={{ width: '100%' }}
-                            placeholder="additional content"
-                          />
-                        </div>
-                        {node}
-                      </>
-                    ),
-                  }
-                : null
-            }
           >
             <RefTarget />
           </Trigger>
