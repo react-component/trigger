@@ -213,13 +213,15 @@ export default function useAlign(
       } else {
         const rect = target.getBoundingClientRect();
         targetRect = {
-          x: rect.x,
-          y: rect.y,
+          x: rect.x || rect.left,
+          y: rect.y || rect.top,
           width: rect.width,
           height: rect.height,
         };
       }
       const popupRect = popupElement.getBoundingClientRect();
+      popupRect.x = popupRect.x || popupRect.left;
+      popupRect.y = popupRect.y || popupRect.top;
       const {
         clientWidth,
         clientHeight,
