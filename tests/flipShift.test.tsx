@@ -79,12 +79,14 @@ const builtinPlacements = {
 };
 
 describe('Trigger.Flip+Shift', () => {
-  let spanRect = { x: 0, y: 0, width: 0, height: 0 };
+  let spanRect = { x: 0, y: 0, left: 0, top: 0, width: 0, height: 0 };
 
   beforeEach(() => {
     spanRect = {
       x: 0,
       y: 100,
+      left: 0,
+      top: 100,
       width: 100,
       height: 100,
     };
@@ -113,6 +115,8 @@ describe('Trigger.Flip+Shift', () => {
         return {
           x: 0,
           y: 0,
+          left: 0,
+          top: 0,
           width: 100,
           height: 300,
         };

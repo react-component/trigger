@@ -56,6 +56,8 @@ describe('Trigger.VisibleFirst', () => {
   let containerRect = {
     x: 0,
     y: 0,
+    left: 0,
+    top: 0,
     width: 100,
     height: 100,
   };
@@ -63,6 +65,8 @@ describe('Trigger.VisibleFirst', () => {
   let targetRect = {
     x: 0,
     y: 0,
+    left: 0,
+    top: 0,
     width: 1,
     height: 1,
   };
@@ -70,6 +74,8 @@ describe('Trigger.VisibleFirst', () => {
   let popupRect = {
     x: 0,
     y: 0,
+    left: 0,
+    top: 0,
     width: 100,
     height: 100,
   };
@@ -84,18 +90,24 @@ describe('Trigger.VisibleFirst', () => {
     containerRect = {
       x: 0,
       y: 0,
+      left: 0,
+      top: 0,
       width: 100,
       height: 100,
     };
     targetRect = {
       x: 250,
       y: 250,
+      left: 250,
+      top: 250,
       width: 1,
       height: 1,
     };
     popupRect = {
       x: 0,
       y: 0,
+      left: 0,
+      top: 0,
       width: 100,
       height: 100,
     };
