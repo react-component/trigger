@@ -58,6 +58,8 @@ describe('Trigger.Align', () => {
   let spanRect = {
     x: 0,
     y: 0,
+    left: 0,
+    top: 0,
     width: 1,
     height: 1,
   };
@@ -65,6 +67,8 @@ describe('Trigger.Align', () => {
   let popupRect = {
     x: 0,
     y: 0,
+    left: 0,
+    top: 0,
     width: 100,
     height: 100,
   };
@@ -112,12 +116,16 @@ describe('Trigger.Align', () => {
     spanRect = {
       x: 0,
       y: 0,
+      left: 0,
+      top: 0,
       width: 1,
       height: 1,
     };
     popupRect = {
       x: 0,
       y: 0,
+      left: 0,
+      top: 0,
       width: 100,
       height: 100,
     };
@@ -253,6 +261,8 @@ describe('Trigger.Align', () => {
     popupRect = {
       x: 100,
       y: 1,
+      left: 100,
+      top: 1,
       width: 100,
       height: 100,
     };
@@ -339,6 +349,8 @@ describe('Trigger.Align', () => {
       ({
         x: 100,
         y: 100,
+        left: 100,
+        top: 100,
         width: 300,
         height: 300,
       } as any);
@@ -384,6 +396,8 @@ describe('Trigger.Align', () => {
     popupRect = {
       x: 0,
       y: 0,
+      left: 0,
+      top: 0,
       width: 200,
       height: 200,
     };
