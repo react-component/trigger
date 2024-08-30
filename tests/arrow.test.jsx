@@ -53,6 +53,8 @@ describe('Trigger.Arrow', () => {
         () => ({
           x: 200,
           y: 200,
+          left: 200,
+          top: 200,
           width: 100,
           height: 50,
         }),

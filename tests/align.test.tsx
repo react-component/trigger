@@ -26,6 +26,8 @@ describe('Trigger.Align', () => {
       getBoundingClientRect: () => ({
         x: rectX,
         y: rectY,
+        left: rectX,
+        top: rectY,
         width: rectWidth,
         height: rectHeight,
         right: 200,
