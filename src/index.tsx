@@ -272,7 +272,7 @@ export function generateTrigger(
     const originChildProps = child?.props || {};
     const cloneProps: typeof originChildProps = {};
 
-    const inContainer = (container: Element, target: Element) => {
+    const inContainer = (target: Element, container: Element) => {
       return (
         target === container ||
         container.contains(target) ||
@@ -283,13 +283,12 @@ export function generateTrigger(
 
     const inPopupOrChild = useEvent((ele: EventTarget) => {
       const childDOM = targetEle;
+      const eleInContainer = inContainer.bind(null, ele as Element);
 
       return (
-        inContainer(childDOM, ele as Element) ||
-        inContainer(popupEle, ele as Element) ||
-        Object.values(subPopupElements.current).some((subPopupEle) =>
-          inContainer(subPopupEle, ele as Element),
-        )
+        eleInContainer(childDOM) ||
+        eleInContainer(popupEle) ||
+        Object.values(subPopupElements.current).some(eleInContainer)
       );
     });
 
