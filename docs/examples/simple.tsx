@@ -200,7 +200,7 @@ class Test extends React.Component<any, TestState> {
       return null;
     }
 
-    const actions = Object.keys(state.trigger) as ActionType[]
+    const actions = Object.keys(state.trigger) as ActionType[];
 
     return (
       <div>

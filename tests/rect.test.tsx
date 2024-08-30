@@ -74,5 +74,4 @@ describe('Trigger.Rect', () => {
       bottom: `100px`,
     });
   });
-
 });

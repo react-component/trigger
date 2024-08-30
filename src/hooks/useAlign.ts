@@ -213,7 +213,7 @@ export default function useAlign(
       } else {
         const rect = target.getBoundingClientRect();
         rect.x = rect.x ?? rect.left;
-        rect.y = rect.y ?? rect.top
+        rect.y = rect.y ?? rect.top;
         targetRect = {
           x: rect.x,
           y: rect.y,

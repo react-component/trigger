@@ -19,5 +19,5 @@ export default defineConfig({
         min-height: 300px;
       }
     `,
-  ]
+  ],
 });
