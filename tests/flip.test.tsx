@@ -353,7 +353,7 @@ describe('Trigger.Align', () => {
         top: 100,
         width: 300,
         height: 300,
-      } as any);
+      }) as any;
 
     const visibleArea = getVisibleArea(initArea, [affectEle]);
     expect(visibleArea).toEqual({

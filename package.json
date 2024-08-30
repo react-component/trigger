@@ -36,6 +36,7 @@
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
     "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
     "test": "rc-test",
+    "prettier": "prettier --write .",
     "coverage": "rc-test --coverage",
     "now-build": "npm run build"
   },
@@ -55,6 +56,7 @@
     "father": "^4.0.0",
     "less": "^4.2.0",
     "np": "^10.0.5",
+    "prettier": "^3.3.3",
     "rc-test": "^7.0.13",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

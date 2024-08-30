@@ -115,8 +115,10 @@ const Demo = () => {
     click,
     contextMenu,
   };
-  
-  const actionsKeys = Object.keys(actions).filter((action) => actions[action]) as ActionType[];
+
+  const actionsKeys = Object.keys(actions).filter(
+    (action) => actions[action],
+  ) as ActionType[];
 
   return (
     <React.StrictMode>
