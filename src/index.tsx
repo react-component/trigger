@@ -112,6 +112,7 @@ export interface TriggerProps {
   onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
 
   alignPoint?: boolean; // Maybe we can support user pass position in the future
+  point?: [x: number, y: number];
 
   /**
    * Trigger will memo content when close.
@@ -190,6 +191,7 @@ export function generateTrigger(
       fresh,
 
       alignPoint,
+      point,
 
       onPopupClick,
       onPopupAlign,
@@ -365,6 +367,14 @@ export function generateTrigger(
 
     React.useEffect(() => clearDelay, []);
 
+    React.useEffect(()=>{
+      if (point){
+        queueMicrotask(()=>{
+          triggerOpen(true);
+        })
+      }
+    },[point])
+
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
 
@@ -381,14 +391,16 @@ export function generateTrigger(
       React.useState<VoidFunction>(null);
 
     // =========================== Align ============================
-    const [mousePos, setMousePos] = React.useState<[x: number, y: number]>([
+    const [mousePos, setMousePos] = React.useState<[x: number, y: number]>(point ?? [
       0, 0,
     ]);
 
     const setMousePosByEvent = (
       event: Pick<React.MouseEvent, 'clientX' | 'clientY'>,
     ) => {
-      setMousePos([event.clientX, event.clientY]);
+      if (!point){
+        setMousePos([event.clientX, event.clientY]);
+      }
     };
 
     const [
