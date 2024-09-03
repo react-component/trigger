@@ -524,10 +524,10 @@ export function generateTrigger(
     }
 
     // ======================= Action: PointDown ========================
-    const pointDownToShow = showActions.has('pointDown');
-    const pointDownToHide = hideActions.has('pointDown');
+    const pointDownToShow = showActions.has('pointerDown');
+    const pointDownToHide = hideActions.has('pointerDown');
     if (pointDownToShow || pointDownToHide) {
-      cloneProps.onPointDown = (event: React.PointerEvent<HTMLElement>, ...args: any[]) => {
+      cloneProps.onPointerDown = (event: React.PointerEvent<HTMLElement>, ...args: any[]) => {
         if (openRef.current && pointDownToHide) {
           triggerOpen(false); // to hide
         } else if (!openRef.current && pointDownToShow) {
@@ -535,7 +535,7 @@ export function generateTrigger(
           triggerOpen(true);
         }
         // origin methods
-        originChildProps.onPointDown?.(event, ...args);
+        originChildProps.onPointerDown?.(event, ...args);
       }
     }
     // ======================= Action: Click ========================
@@ -556,7 +556,7 @@ export function generateTrigger(
       };
     }
 
-    // Click/PointDown to hide is special action since click popup element should not hide
+    // Click/PointerDown to hide is special action since click popup element should not hide
     useWinClick(
       mergedOpen,
       clickToHide,
