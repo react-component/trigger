@@ -567,7 +567,6 @@ export function generateTrigger(
       inPopupOrChild,
       triggerOpen,
     );
-  
     // ======================= Action: Hover ========================
     const hoverToShow = showActions.has('hover');
     const hoverToHide = hideActions.has('hover');
