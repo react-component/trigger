@@ -198,3 +198,122 @@ describe('Trigger.Shadow', () => {
     errSpy.mockRestore();
   });
 });
+
+describe('Popup.Shadow', () => {
+  beforeEach(() => {
+    resetWarned();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  class CustomElement extends HTMLElement {
+    disconnectedCallback() {}
+    connectedCallback() {
+      const shadowRoot = this.attachShadow({
+        mode: 'open',
+      });
+      const container = document.createElement('div');
+      shadowRoot.appendChild(container);
+      container.classList.add('shadow-container');
+      container.innerHTML = `<div class="shadow-content">Hello World</div>`;
+    }
+  }
+
+  customElements.define('custom-element', CustomElement);
+
+  it('should not close the popup when click the shadow content in the popup element', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+
+    act(() => {
+      createRoot(container).render(
+        <>
+          <div className="outer">outer</div>
+          <Trigger
+            action={['click']}
+            autoDestroy
+            popup={<custom-element class="popup" />}
+          >
+            <p className="target" />
+          </Trigger>
+        </>,
+      );
+    });
+
+    await awaitFakeTimer();
+
+    // Click to show
+    fireEvent.click(document.querySelector('.target'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+
+    // Click outside to hide
+    fireEvent.mouseDown(document.querySelector('.outer'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeFalsy();
+
+    // Click to show again
+    fireEvent.click(document.querySelector('.target'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+
+    // Click on popup element should not hide
+    fireEvent.mouseDown(document.querySelector('.popup'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+
+    // Click on shadow content should not hide
+    const popup = document.querySelector('.popup');
+    fireEvent.mouseDown(popup.shadowRoot.querySelector('.shadow-content'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+  });
+
+  it('should works with custom element trigger', async () => {
+    const container = document.createElement('div');
+    document.body.innerHTML = '';
+    document.body.appendChild(container);
+
+    act(() => {
+      createRoot(container).render(
+        <>
+          <div className="outer">outer</div>
+          <Trigger
+            action={['click']}
+            autoDestroy
+            popup={<custom-element class="popup" />}
+          >
+            <custom-element class="target" />
+          </Trigger>
+        </>,
+      );
+    });
+
+    await awaitFakeTimer();
+
+    // Click to show
+    const target = document.querySelector('.target');
+    fireEvent.click(target);
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+
+    // Click outside to hide
+    fireEvent.mouseDown(document.querySelector('.outer'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeFalsy();
+
+    // Click shadow content to show
+    fireEvent.click(target.shadowRoot.querySelector('.shadow-content'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+
+    // Click on shadow content should not hide
+    const popup = document.querySelector('.popup');
+    fireEvent.mouseDown(popup.shadowRoot.querySelector('.shadow-content'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.popup')).toBeTruthy();
+  });
+});
