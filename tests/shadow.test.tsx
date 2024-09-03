@@ -235,7 +235,7 @@ describe('Popup.Shadow', () => {
           <Trigger
             action={['click']}
             autoDestroy
-            popup={<custom-element className="popup" />}
+            popup={<custom-element class="popup" />}
           >
             <p className="target" />
           </Trigger>
