@@ -272,23 +272,20 @@ export function generateTrigger(
     const originChildProps = child?.props || {};
     const cloneProps: typeof originChildProps = {};
 
-    const inContainer = (target: Element, container: Element) => {
-      return (
-        target === container ||
-        container.contains(target) ||
-        getShadowRoot(container)?.host === target ||
-        container.contains(getShadowRoot(target)?.host)
-      );
-    };
-
     const inPopupOrChild = useEvent((ele: EventTarget) => {
       const childDOM = targetEle;
-      const eleInContainer = inContainer.bind(null, ele as Element);
 
       return (
-        eleInContainer(childDOM) ||
-        eleInContainer(popupEle) ||
-        Object.values(subPopupElements.current).some(eleInContainer)
+        childDOM?.contains(ele as HTMLElement) ||
+        getShadowRoot(childDOM)?.host === ele ||
+        ele === childDOM ||
+        popupEle?.contains(ele as HTMLElement) ||
+        getShadowRoot(popupEle)?.host === ele ||
+        ele === popupEle ||
+        Object.values(subPopupElements.current).some(
+          (subPopupEle) =>
+            subPopupEle?.contains(ele as HTMLElement) || ele === subPopupEle,
+        )
       );
     });
 
