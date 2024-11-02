@@ -323,6 +323,8 @@ export default function useAlign(
       const [popupPoint, targetPoint] = placementInfo.points || [];
       const targetPoints = splitPoints(targetPoint);
       const popupPoints = splitPoints(popupPoint);
+      let tmpTargetPoints = targetPoints;
+      let tmpPopupPoints = popupPoints;
 
       const targetAlignPoint = getAlignPoint(targetRect, targetPoints);
       const popupAlignPoint = getAlignPoint(popupRect, popupPoints);
@@ -399,6 +401,11 @@ export default function useAlign(
       }
       syncNextPopupPosition();
 
+      function updateTmpPopupPointsAndTmpTargetPoints() {
+        tmpPopupPoints = splitPoints(nextAlignInfo.points[0]);
+        tmpTargetPoints = splitPoints(nextAlignInfo.points[1]);
+      }
+
       // >>>>>>>>>> Top & Bottom
       const needAdjustY = supportAdjust(adjustY);
 
@@ -443,9 +450,10 @@ export default function useAlign(
           popupOffsetY = -popupOffsetY;
 
           nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
+            reversePoints(tmpPopupPoints, 0),
+            reversePoints(tmpTargetPoints, 0),
           ];
+          updateTmpPopupPointsAndTmpTargetPoints();
         } else {
           prevFlipRef.current.bt = false;
         }
@@ -489,9 +497,10 @@ export default function useAlign(
           popupOffsetY = -popupOffsetY;
 
           nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
+            reversePoints(tmpPopupPoints, 0),
+            reversePoints(tmpTargetPoints, 0),
           ];
+          updateTmpPopupPointsAndTmpTargetPoints();
         } else {
           prevFlipRef.current.tb = false;
         }
@@ -542,9 +551,10 @@ export default function useAlign(
           popupOffsetX = -popupOffsetX;
 
           nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
+            reversePoints(tmpPopupPoints, 1),
+            reversePoints(tmpTargetPoints, 1),
           ];
+          updateTmpPopupPointsAndTmpTargetPoints();
         } else {
           prevFlipRef.current.rl = false;
         }
@@ -588,9 +598,10 @@ export default function useAlign(
           popupOffsetX = -popupOffsetX;
 
           nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
+            reversePoints(tmpPopupPoints, 1),
+            reversePoints(tmpTargetPoints, 1),
           ];
+          updateTmpPopupPointsAndTmpTargetPoints();
         } else {
           prevFlipRef.current.lr = false;
         }
