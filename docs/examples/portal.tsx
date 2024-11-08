@@ -44,6 +44,8 @@ const PortalPopup = () =>
       style={popupBorderStyle}
       onMouseDown={(e) => {
         console.log('Portal Down', e);
+        e.stopPropagation();
+        e.preventDefault();
       }}
     >
       i am a portal element
@@ -84,6 +86,9 @@ const Test = () => {
             <PortalPopup />
           </div>
         }
+        onPopupVisibleChange={(visible) => {
+          console.log('visible change:', visible);
+        }}
       >
         <button>Click Me</button>
       </Trigger>
