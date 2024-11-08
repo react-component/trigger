@@ -381,7 +381,9 @@ export function generateTrigger(
       React.useState<VoidFunction>(null);
 
     // =========================== Align ============================
-    const [mousePos, setMousePos] = React.useState<[x: number, y: number] | null>(null);
+    const [mousePos, setMousePos] = React.useState<
+      [x: number, y: number] | null
+    >(null);
 
     const setMousePosByEvent = (
       event: Pick<React.MouseEvent, 'clientX' | 'clientY'>,
@@ -720,6 +722,14 @@ export function generateTrigger(
             fresh={fresh}
             // Click
             onClick={onPopupClick}
+            onMouseDownCapture={() => {
+              // Additional check for click to hide
+              // Since `createPortal` will not included in the popup element
+              // So we use capture to handle this
+              if (clickToHide) {
+                triggerOpen(true);
+              }
+            }}
             // Mask
             mask={mask}
             // Motion

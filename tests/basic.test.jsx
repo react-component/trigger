@@ -3,7 +3,7 @@
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
 import React, { StrictMode, createRef } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, { createPortal } from 'react-dom';
 import Trigger from '../src';
 import { awaitFakeTimer, placementAlignMap } from './util';
 
@@ -107,7 +107,7 @@ describe('Trigger.Basic', () => {
       expect(document.querySelector('.x-content').textContent).toBe('tooltip2');
 
       trigger(container, '.target');
-      expect(isPopupHidden).toBeTruthy();
+      expect(isPopupHidden()).toBeTruthy();
     });
 
     it('click works with function', () => {
@@ -1197,5 +1197,36 @@ describe('Trigger.Basic', () => {
 
     trigger(container, '.target');
     expect(document.querySelector('.x-content').textContent).toBe('false');
+  });
+
+  it('createPortal should not close', async () => {
+    const Portal = () =>
+      createPortal(<div className="portal" />, document.body);
+
+    const Demo = () => {
+      return (
+        <>
+          <Trigger action="click" popup={<Portal />}>
+            <div className="target" />
+          </Trigger>
+          <div className="outer" />
+        </>
+      );
+    };
+
+    const { container } = render(<Demo />);
+    fireEvent.click(container.querySelector('.target'));
+    await awaitFakeTimer();
+    expect(isPopupHidden()).toBeFalsy();
+
+    // Click portal should not close
+    fireEvent.click(document.querySelector('.portal'));
+    await awaitFakeTimer();
+    expect(isPopupHidden()).toBeFalsy();
+
+    // Click outside to close
+    fireEvent.mouseDown(container.querySelector('.outer'));
+    await awaitFakeTimer();
+    expect(isPopupHidden()).toBeTruthy();
   });
 });
