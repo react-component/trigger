@@ -1220,11 +1220,13 @@ describe('Trigger.Basic', () => {
     expect(isPopupHidden()).toBeFalsy();
 
     // Click portal should not close
-    fireEvent.click(document.querySelector('.portal'));
+    fireEvent.pointerDown(document.querySelector('.portal'));
+    fireEvent.mouseDown(document.querySelector('.portal'));
     await awaitFakeTimer();
     expect(isPopupHidden()).toBeFalsy();
 
     // Click outside to close
+    fireEvent.pointerDown(document.querySelector('.outer'));
     fireEvent.mouseDown(container.querySelector('.outer'));
     await awaitFakeTimer();
     expect(isPopupHidden()).toBeTruthy();
