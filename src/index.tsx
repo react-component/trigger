@@ -550,7 +550,7 @@ export function generateTrigger(
     }
 
     // Click to hide is special action since click popup element should not hide
-    useWinClick(
+    const onPopupPointerDown = useWinClick(
       mergedOpen,
       clickToHide,
       targetEle,
@@ -722,14 +722,7 @@ export function generateTrigger(
             fresh={fresh}
             // Click
             onClick={onPopupClick}
-            onMouseDownCapture={() => {
-              // Additional check for click to hide
-              // Since `createPortal` will not included in the popup element
-              // So we use capture to handle this
-              if (clickToHide) {
-                triggerOpen(true);
-              }
-            }}
+            onPointerDownCapture={onPopupPointerDown}
             // Mask
             mask={mask}
             // Motion
