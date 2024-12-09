@@ -1,4 +1,9 @@
-import { fillRef, supportRef, useComposeRef } from 'rc-util/lib/ref';
+import {
+  fillRef,
+  getNodeRef,
+  supportRef,
+  useComposeRef,
+} from 'rc-util/lib/ref';
 import * as React from 'react';
 import type { TriggerProps } from '.';
 
@@ -21,7 +26,7 @@ const TriggerWrapper = React.forwardRef<HTMLElement, TriggerWrapperProps>(
       [getTriggerDOMNode],
     );
 
-    const mergedRef = useComposeRef(setRef, (children as any).ref);
+    const mergedRef = useComposeRef(setRef, getNodeRef(children));
 
     return canUseRef
       ? React.cloneElement(children, {
