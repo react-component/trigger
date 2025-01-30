@@ -1,5 +1,5 @@
 import { act, fireEvent } from '@testing-library/react';
-import { resetWarned } from 'rc-util/lib/warning';
+import { resetWarned } from '@rc-component/util/lib/warning';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Trigger from '../src';

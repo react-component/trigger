@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import type { CSSMotionProps } from 'rc-motion';
-import CSSMotion from 'rc-motion';
-import ResizeObserver from 'rc-resize-observer';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import { composeRef } from 'rc-util/lib/ref';
+import type { CSSMotionProps } from '@rc-component/motion';
+import CSSMotion from '@rc-component/motion';
+import ResizeObserver from '@rc-component/resize-observer';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import { composeRef } from '@rc-component/util/lib/ref';
 import * as React from 'react';
 import type { TriggerProps } from '../';
 import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';

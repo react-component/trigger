@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import Trigger from '../src';
-import CSSMotion from 'rc-motion';
+import CSSMotion from '@rc-component/motion';
 import { placementAlignMap } from './util';
 
 describe('Trigger.Mask', () => {

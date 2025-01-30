@@ -1,13 +1,13 @@
 import Portal from '@rc-component/portal';
 import classNames from 'classnames';
-import type { CSSMotionProps } from 'rc-motion';
-import ResizeObserver from 'rc-resize-observer';
-import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
-import { getShadowRoot } from 'rc-util/lib/Dom/shadow';
-import useEvent from 'rc-util/lib/hooks/useEvent';
-import useId from 'rc-util/lib/hooks/useId';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
-import isMobile from 'rc-util/lib/isMobile';
+import type { CSSMotionProps } from '@rc-component/motion';
+import ResizeObserver from '@rc-component/resize-observer';
+import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
+import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
+import useEvent from '@rc-component/util/lib/hooks/useEvent';
+import useId from '@rc-component/util/lib/hooks/useId';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import isMobile from '@rc-component/util/lib/isMobile';
 import * as React from 'react';
 import Popup from './Popup';
 import TriggerWrapper from './TriggerWrapper';
@@ -80,9 +80,9 @@ export interface TriggerProps {
   maskClosable?: boolean;
 
   // =================== Motion ====================
-  /** Set popup motion. You can ref `rc-motion` for more info. */
+  /** Set popup motion. You can ref `@rc-component/motion` for more info. */
   popupMotion?: CSSMotionProps;
-  /** Set mask motion. You can ref `rc-motion` for more info. */
+  /** Set mask motion. You can ref `@rc-component/motion` for more info. */
   maskMotion?: CSSMotionProps;
 
   /** @deprecated Please us `popupMotion` instead. */
