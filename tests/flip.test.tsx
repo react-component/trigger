@@ -1,6 +1,6 @@
 import { act, cleanup, render } from '@testing-library/react';
-import { _rs } from 'rc-resize-observer';
-import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import { _rs } from '@rc-component/resize-observer';
+import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import * as React from 'react';
 import type { AlignType, TriggerProps } from '../src';
 import Trigger from '../src';

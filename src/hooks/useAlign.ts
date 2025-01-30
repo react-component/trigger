@@ -1,7 +1,7 @@
-import { isDOM } from 'rc-util/lib/Dom/findDOMNode';
-import isVisible from 'rc-util/lib/Dom/isVisible';
-import useEvent from 'rc-util/lib/hooks/useEvent';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
+import isVisible from '@rc-component/util/lib/Dom/isVisible';
+import useEvent from '@rc-component/util/lib/hooks/useEvent';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import type { TriggerProps } from '..';
 import type {

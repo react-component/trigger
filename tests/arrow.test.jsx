@@ -4,7 +4,7 @@ import { act, cleanup, render } from '@testing-library/react';
 import {
   spyElementPrototype,
   spyElementPrototypes,
-} from 'rc-util/lib/test/domHook';
+} from '@rc-component/util/lib/test/domHook';
 import Trigger from '../src';
 
 describe('Trigger.Arrow', () => {

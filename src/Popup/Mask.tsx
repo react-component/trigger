@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import type { CSSMotionProps } from 'rc-motion';
-import CSSMotion from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
+import CSSMotion from '@rc-component/motion';
 import * as React from 'react';
 
 export interface MaskProps {

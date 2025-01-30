@@ -1,10 +1,10 @@
 import { act, fireEvent, render } from '@testing-library/react';
-import isMobile from 'rc-util/lib/isMobile';
+import isMobile from '@rc-component/util/lib/isMobile';
 import React from 'react';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
 
-jest.mock('rc-util/lib/isMobile');
+jest.mock('@rc-component/util/lib/isMobile');
 
 describe('Trigger.Mobile', () => {
   beforeAll(() => {

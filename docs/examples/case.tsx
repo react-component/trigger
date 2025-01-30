@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 import type { ActionType, BuildInPlacements } from 'rc-trigger';
 import Trigger from 'rc-trigger';
 import './case.less';

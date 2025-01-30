@@ -1,4 +1,4 @@
-import type { CSSMotionProps } from 'rc-motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 
 export type Placement =
   | 'top'
@@ -120,7 +120,7 @@ export interface CommonEventHandler {
 }
 
 export interface MobileConfig {
-  /** Set popup motion. You can ref `rc-motion` for more info. */
+  /** Set popup motion. You can ref `@rc-component/motion` for more info. */
   popupMotion?: CSSMotionProps;
   popupClassName?: string;
   popupStyle?: React.CSSProperties;

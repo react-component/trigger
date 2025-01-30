@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 import { act, cleanup, render } from '@testing-library/react';
-import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import * as React from 'react';
 import type { AlignType, TriggerProps, TriggerRef } from '../src';
 import Trigger from '../src';

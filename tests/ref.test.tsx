@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { cleanup, render } from '@testing-library/react';
-import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import React from 'react';
 import Trigger, { type TriggerRef } from '../src';
 
