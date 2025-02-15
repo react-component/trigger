@@ -72,9 +72,6 @@ export interface TriggerProps {
   forceRender?: boolean;
   autoDestroy?: boolean;
 
-  /** @deprecated Please use `autoDestroy` instead */
-  destroyPopupOnHide?: boolean;
-
   // ==================== Mask =====================
   mask?: boolean;
   maskClosable?: boolean;
@@ -123,10 +120,6 @@ export interface TriggerProps {
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
 
-  // ================= Deprecated ==================
-  /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
-  className?: string;
-
   // =================== Private ===================
   /**
    * @private Get trigger DOM node.
@@ -174,7 +167,6 @@ export function generateTrigger(
       getPopupContainer,
       forceRender,
       autoDestroy,
-      destroyPopupOnHide,
 
       // Popup
       popup,
@@ -205,16 +197,13 @@ export function generateTrigger(
       maskTransitionName,
       maskAnimation,
 
-      // Deprecated
-      className,
-
       // Private
       getTriggerDOMNode,
 
       ...restProps
     } = props;
 
-    const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
+    const mergedAutoDestroy = autoDestroy || false;
 
     // =========================== Mobile ===========================
     const [mobile, setMobile] = React.useState(false);
@@ -637,11 +626,6 @@ export function generateTrigger(
         // Pass to origin
         originChildProps.onContextMenu?.(event, ...args);
       };
-    }
-
-    // ========================= ClassName ==========================
-    if (className) {
-      cloneProps.className = classNames(originChildProps.className, className);
     }
 
     // =========================== Render ===========================
