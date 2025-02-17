@@ -1,9 +1,6 @@
-import type { CSSMotionProps } from 'rc-motion';
 import type {
   AlignType,
-  AnimationType,
   BuildInPlacements,
-  TransitionNameType,
 } from './interface';
 
 function isPointsEq(
