@@ -21,7 +21,9 @@ describe('Trigger.Mask', () => {
         popupAlign={placementAlignMap.left}
         popup={<strong className="x-content" />}
         mask
-        maskTransitionName="bamboo"
+        maskMotion={{
+          motionName: 'bamboo',
+        }}
       >
         <div className="target">click</div>
       </Trigger>,

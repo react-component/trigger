@@ -20,13 +20,11 @@ import useWinClick from './hooks/useWinClick';
 import type {
   ActionType,
   AlignType,
-  AnimationType,
   ArrowPos,
   ArrowTypeOuter,
   BuildInPlacements,
-  TransitionNameType,
 } from './interface';
-import { getAlignPopupClassName, getMotion } from './util';
+import { getAlignPopupClassName } from './util';
 
 export type {
   ActionType,
@@ -72,9 +70,6 @@ export interface TriggerProps {
   forceRender?: boolean;
   autoDestroy?: boolean;
 
-  /** @deprecated Please use `autoDestroy` instead */
-  destroyPopupOnHide?: boolean;
-
   // ==================== Mask =====================
   mask?: boolean;
   maskClosable?: boolean;
@@ -84,15 +79,6 @@ export interface TriggerProps {
   popupMotion?: CSSMotionProps;
   /** Set mask motion. You can ref `rc-motion` for more info. */
   maskMotion?: CSSMotionProps;
-
-  /** @deprecated Please us `popupMotion` instead. */
-  popupTransitionName?: TransitionNameType;
-  /** @deprecated Please us `popupMotion` instead. */
-  popupAnimation?: AnimationType;
-  /** @deprecated Please us `maskMotion` instead. */
-  maskTransitionName?: TransitionNameType;
-  /** @deprecated Please us `maskMotion` instead. */
-  maskAnimation?: AnimationType;
 
   // ==================== Delay ====================
   mouseEnterDelay?: number;
@@ -122,10 +108,6 @@ export interface TriggerProps {
 
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
-
-  // ================= Deprecated ==================
-  /** @deprecated Add `className` on `children`. Please add `className` directly instead. */
-  className?: string;
 
   // =================== Private ===================
   /**
@@ -174,7 +156,6 @@ export function generateTrigger(
       getPopupContainer,
       forceRender,
       autoDestroy,
-      destroyPopupOnHide,
 
       // Popup
       popup,
@@ -200,13 +181,6 @@ export function generateTrigger(
       // Motion
       popupMotion,
       maskMotion,
-      popupTransitionName,
-      popupAnimation,
-      maskTransitionName,
-      maskAnimation,
-
-      // Deprecated
-      className,
 
       // Private
       getTriggerDOMNode,
@@ -214,7 +188,7 @@ export function generateTrigger(
       ...restProps
     } = props;
 
-    const mergedAutoDestroy = autoDestroy || destroyPopupOnHide || false;
+    const mergedAutoDestroy = autoDestroy || false;
 
     // =========================== Mobile ===========================
     const [mobile, setMobile] = React.useState(false);
@@ -288,21 +262,6 @@ export function generateTrigger(
         )
       );
     });
-
-    // =========================== Motion ===========================
-    const mergePopupMotion = getMotion(
-      prefixCls,
-      popupMotion,
-      popupAnimation,
-      popupTransitionName,
-    );
-
-    const mergeMaskMotion = getMotion(
-      prefixCls,
-      maskMotion,
-      maskAnimation,
-      maskTransitionName,
-    );
 
     // ============================ Open ============================
     const [internalOpen, setInternalOpen] = React.useState(
@@ -639,11 +598,6 @@ export function generateTrigger(
       };
     }
 
-    // ========================= ClassName ==========================
-    if (className) {
-      cloneProps.className = classNames(originChildProps.className, className);
-    }
-
     // =========================== Render ===========================
     const mergedChildrenProps = {
       ...originChildProps,
@@ -726,8 +680,8 @@ export function generateTrigger(
             // Mask
             mask={mask}
             // Motion
-            motion={mergePopupMotion}
-            maskMotion={mergeMaskMotion}
+            motion={popupMotion}
+            maskMotion={maskMotion}
             onVisibleChanged={onVisibleChanged}
             onPrepare={onPrepare}
             // Portal
