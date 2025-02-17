@@ -160,7 +160,9 @@ export default () => {
                   Popup
                 </div>
               }
-              popupTransitionName="rc-trigger-popup-zoom"
+              popupMotion={{
+                motionName: 'rc-trigger-popup-zoom',
+              }}
               popupStyle={{ boxShadow: '0 0 5px red' }}
               popupVisible={visible}
               onPopupVisibleChange={(nextVisible) => {
