@@ -3,7 +3,7 @@ import {
   getNodeRef,
   supportRef,
   useComposeRef,
-} from 'rc-util/lib/ref';
+} from '@rc-component/util/lib/ref';
 import * as React from 'react';
 import type { TriggerProps } from '.';
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Trigger from 'rc-trigger';
+import Trigger from '@rc-component/trigger';
 import '../../assets/index.less';
 
 const builtinPlacements = {

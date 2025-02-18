@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
-import type { AlignType, TriggerRef } from 'rc-trigger';
-import Trigger from 'rc-trigger';
+import type { AlignType, TriggerRef } from '@rc-component/trigger';
+import Trigger from '@rc-component/trigger';
 import React from 'react';
 import '../../assets/index.less';
 
