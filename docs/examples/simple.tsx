@@ -353,13 +353,14 @@ class Test extends React.Component<any, TestState> {
             getPopupContainer={getPopupContainer}
             popupAlign={this.getPopupAlign()}
             popupPlacement={state.placement}
-            destroyPopupOnHide={this.state.destroyPopupOnHide}
             autoDestroy={this.state.autoDestroy}
             // zIndex={40}
             mask={this.state.mask}
             maskClosable={this.state.maskClosable}
             stretch={this.state.stretch}
-            maskAnimation="fade"
+            maskMotion={{
+              motionName: 'rc-trigger-mask-fade',
+            }}
             // mouseEnterDelay={0.1}
             // mouseLeaveDelay={0.1}
             action={actions}
@@ -372,7 +373,9 @@ class Test extends React.Component<any, TestState> {
               boxSizing: 'border-box',
             }}
             popup={<div>i am a popup</div>}
-            popupTransitionName={state.transitionName}
+            popupMotion={{
+              motionName: state.transitionName,
+            }}
           >
             <RefTarget />
           </Trigger>

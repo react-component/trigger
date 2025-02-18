@@ -40,14 +40,14 @@ export default () => {
 
       <Trigger
         arrow
-        // forceRender
-        // action="click"
         popupVisible={open}
         onPopupVisibleChange={(next) => {
           console.log('Visible Change:', next);
           setOpen(next);
         }}
-        popupTransitionName="rc-trigger-popup-zoom"
+        popupMotion={{
+          motionName: 'rc-trigger-popup-zoom',
+        }}
         popup={
           <div
             style={{
@@ -104,7 +104,9 @@ export default () => {
           console.log('Visible Change:', next);
           setOpen1(next);
         }}
-        popupTransitionName="rc-trigger-popup-zoom"
+        popupMotion={{
+          motionName: 'rc-trigger-popup-zoom',
+        }}
         popup={
           <div
             style={{
@@ -158,7 +160,9 @@ export default () => {
           console.log('Visible Change:', next);
           setOpen2(next);
         }}
-        popupTransitionName="rc-trigger-popup-zoom"
+        popupMotion={{
+          motionName: 'rc-trigger-popup-zoom',
+        }}
         popup={
           <div
             style={{
@@ -205,7 +209,9 @@ export default () => {
           console.log('Visible Change:', next);
           setOpen3(next);
         }}
-        popupTransitionName="rc-trigger-popup-zoom"
+        popupMotion={{
+          motionName: 'rc-trigger-popup-zoom',
+        }}
         popup={
           <div
             style={{

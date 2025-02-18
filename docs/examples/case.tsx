@@ -202,7 +202,7 @@ const Demo = () => {
               },
             }}
             popupPlacement={placement}
-            destroyPopupOnHide={destroyPopupOnHide}
+            autoDestroy={destroyPopupOnHide}
             mask={mask}
             maskMotion={motion ? MaskMotion : null}
             maskClosable={maskClosable}

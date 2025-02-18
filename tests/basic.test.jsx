@@ -384,25 +384,6 @@ describe('Trigger.Basic', () => {
       trigger(container, '.target');
       expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
-
-    it('set true will destroy tooltip on hide', () => {
-      const { container } = render(
-        <Trigger
-          action={['click']}
-          destroyPopupOnHide
-          popupAlign={placementAlignMap.topRight}
-          popup={<strong>trigger</strong>}
-        >
-          <div className="target">click</div>
-        </Trigger>,
-      );
-
-      trigger(container, '.target');
-      expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
-
-      trigger(container, '.target');
-      expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
-    });
   });
 
   describe('support autoDestroy', () => {
@@ -601,47 +582,6 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
     expect(container.querySelector('div')).not.toHaveAttribute('class');
-  });
-
-  it('support className', () => {
-    const { container } = render(
-      <Trigger
-        action={['click']}
-        popupAlign={placementAlignMap.left}
-        popup={<strong className="x-content">tooltip2</strong>}
-        className="className-in-trigger"
-      >
-        <div className="target">click</div>
-      </Trigger>,
-    );
-
-    expect(container.querySelector('div')).toHaveClass(
-      'target className-in-trigger',
-    );
-  });
-
-  it('support className in nested Trigger', () => {
-    const { container } = render(
-      <Trigger
-        action={['click']}
-        popupAlign={placementAlignMap.left}
-        popup={<strong className="x-content">tooltip2</strong>}
-        className="className-in-trigger-2"
-      >
-        <Trigger
-          action={['click']}
-          popupAlign={placementAlignMap.left}
-          popup={<strong className="x-content">tooltip2</strong>}
-          className="className-in-trigger-1"
-        >
-          <div className="target">click</div>
-        </Trigger>
-      </Trigger>,
-    );
-
-    expect(container.querySelector('div').className).toBe(
-      'target className-in-trigger-1 className-in-trigger-2',
-    );
   });
 
   it('support function component', () => {
