@@ -11,7 +11,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
-      "rc-trigger": ["src/index.tsx"]
+      "@rc-component/trigger": ["src/index.tsx"]
     }
   }
 }

@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 
-import Trigger, { ActionType } from 'rc-trigger';
+import Trigger, { ActionType } from '@rc-component/trigger';
 import React from 'react';
 import '../../assets/index.less';
 

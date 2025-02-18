@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
 import React from 'react';
-import Trigger, { ActionType } from 'rc-trigger';
+import Trigger, { ActionType } from '@rc-component/trigger';
 import '../../assets/index.less';
 import './point.less';
 

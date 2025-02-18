@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 
-import Trigger from 'rc-trigger';
+import Trigger from '@rc-component/trigger';
 import React from 'react';
 import { createPortal } from 'react-dom';
 import '../../assets/index.less';

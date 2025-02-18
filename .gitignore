@@ -28,6 +28,7 @@ coverage
 yarn.lock
 package-lock.json
 bun.lockb
+.vscode
 
 # dumi
 .umi
