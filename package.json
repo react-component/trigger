@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@rc-component/motion": "^1.1.4",
-    "@rc-component/portal": "^1.1.0",
+    "@rc-component/portal": "^2.0.0",
     "@rc-component/resize-observer": "^1.0.0",
     "@rc-component/util": "^1.2.1",
     "classnames": "^2.3.2"
