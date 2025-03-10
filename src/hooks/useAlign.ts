@@ -87,6 +87,56 @@ function reversePoints(points: Points, index: number): string {
     .join('');
 }
 
+const EDGE_OFFSET = 6
+
+const calcOffsetByVisibleArea = (params: {
+  offset: number;
+  direction: 'horizontal' | 'vertical',
+  widthOrHeight: number;
+  visibleRegionArea: {
+    left: number;
+    right: number;
+    bottom: number;
+    top: number;
+  }
+}) => {
+  let arrowOffset = 0
+  const { offset, widthOrHeight, direction, visibleRegionArea } = params
+  
+  /** 
+   * When offset is less than 0, it means that it is blocked by the visible area. 
+   * eg left: -10, it means that the left side of the popup is blocked by the visible area.
+   * or top: -10, it means that the top side of the popup is blocked by the visible area.
+   * */
+  if (offset < 0) {
+    return {
+      offset: 0,
+      arrowOffset: EDGE_OFFSET,
+    }
+  }
+  /** 
+   * when nextOffsetX add popupElementWidth is large than visibleRegionArea
+   * we should calculate arrowOffset, and set nextOffsetX to visibleRegionArea.right - width
+   */
+  if (direction === 'horizontal' && (offset + widthOrHeight) > visibleRegionArea.right) {
+    return {
+      offset: visibleRegionArea.right - widthOrHeight,
+      arrowOffset: -EDGE_OFFSET
+    }
+  }
+  if (direction === 'vertical' && (offset + widthOrHeight) > visibleRegionArea.bottom) {
+    return {
+      offset: visibleRegionArea.bottom - widthOrHeight,
+      arrowOffset: -EDGE_OFFSET
+    }
+  }
+
+  return {
+    offset,
+    arrowOffset,
+  }
+}
+
 export default function useAlign(
   open: boolean,
   popupEle: HTMLElement,
@@ -649,6 +699,21 @@ export default function useAlign(
 
       // ============================ Arrow ============================
       // Arrow center align
+      const { offset: offsetX, arrowOffset: arrowXOffset } = calcOffsetByVisibleArea({
+        offset: nextOffsetX,
+        direction: 'horizontal',
+        widthOrHeight: popupWidth,
+        visibleRegionArea,
+      })
+      const { offset: offsetY, arrowOffset: arrowYOffset } = calcOffsetByVisibleArea({
+        offset: nextOffsetY,
+        direction: 'vertical',
+        widthOrHeight: popupHeight,
+        visibleRegionArea,
+      });
+      nextOffsetX = offsetX
+      nextOffsetY = offsetY
+      
       const popupLeft = popupRect.x + nextOffsetX;
       const popupRight = popupLeft + popupWidth;
       const popupTop = popupRect.y + nextOffsetY;
@@ -663,13 +728,13 @@ export default function useAlign(
       const minRight = Math.min(popupRight, targetRight);
 
       const xCenter = (maxLeft + minRight) / 2;
-      const nextArrowX = xCenter - popupLeft;
+      const nextArrowX = xCenter - popupLeft + arrowXOffset;
 
       const maxTop = Math.max(popupTop, targetTop);
       const minBottom = Math.min(popupBottom, targetBottom);
 
       const yCenter = (maxTop + minBottom) / 2;
-      const nextArrowY = yCenter - popupTop;
+      const nextArrowY = yCenter - popupTop + arrowYOffset;
 
       onPopupAlign?.(popupEle, nextAlignInfo);
 
