@@ -235,16 +235,18 @@ describe('Trigger.Basic', () => {
       fireEvent.mouseDown(document.body);
       expect(isPopupAllHidden()).toBeTruthy();
     });
-    describe('afterPopupVisibleChange can be triggered', () => {
+    describe('afterOpenChange can be triggered', () => {
       it('uncontrolled', async () => {
         let triggered = 0;
+        const afterPopupVisibleChange = jest.fn();
         const { container } = render(
           <Trigger
             action={['click']}
             popupAlign={placementAlignMap.left}
-            afterPopupVisibleChange={() => {
+            afterOpenChange={() => {
               triggered = 1;
             }}
+            afterPopupVisibleChange={afterPopupVisibleChange}
             popup={<strong>trigger</strong>}
           >
             <div className="target">click</div>
@@ -256,6 +258,7 @@ describe('Trigger.Basic', () => {
         await awaitFakeTimer();
 
         expect(triggered).toBe(1);
+        expect(afterPopupVisibleChange).toHaveBeenCalledWith(true);
       });
 
       it('controlled', async () => {
@@ -979,10 +982,12 @@ describe('Trigger.Basic', () => {
   describe('click window to hide', () => {
     it('should hide', async () => {
       const onOpenChange = jest.fn();
+      const onPopupVisibleChange = jest.fn();
 
       const { container } = render(
         <Trigger
           onOpenChange={onOpenChange}
+          onPopupVisibleChange={onPopupVisibleChange}
           action="click"
           popup={<strong>trigger</strong>}
         >
@@ -993,6 +998,7 @@ describe('Trigger.Basic', () => {
       fireEvent.click(container.querySelector('.target'));
       await awaitFakeTimer();
       expect(onOpenChange).toHaveBeenCalledWith(true);
+      expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
       onOpenChange.mockReset();
 
       // Click outside to close
@@ -1000,6 +1006,7 @@ describe('Trigger.Basic', () => {
       fireEvent.click(document.body);
       await awaitFakeTimer();
       expect(onOpenChange).toHaveBeenCalledWith(false);
+      expect(onPopupVisibleChange).toHaveBeenCalledWith(false);
     });
 
     it('should not hide when mouseDown inside but mouseUp outside', async () => {

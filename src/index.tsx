@@ -63,6 +63,10 @@ export interface TriggerProps {
   popupVisible?: boolean;
   defaultPopupVisible?: boolean;
   onOpenChange?: (visible: boolean) => void;
+  afterOpenChange?: (visible: boolean) => void;
+  /** @deprecated Use `onOpenChange` instead */
+  onPopupVisibleChange?: (visible: boolean) => void;
+  /** @deprecated Use `afterOpenChange` instead */
   afterPopupVisibleChange?: (visible: boolean) => void;
 
   // =================== Portal ====================
@@ -139,6 +143,8 @@ export function generateTrigger(
       popupVisible,
       defaultPopupVisible,
       onOpenChange,
+      afterOpenChange,
+      onPopupVisibleChange,
       afterPopupVisibleChange,
 
       // Delay
@@ -300,6 +306,7 @@ export function generateTrigger(
       ) {
         lastTriggerRef.current.push(nextOpen);
         onOpenChange?.(nextOpen);
+        onPopupVisibleChange?.(nextOpen);
       }
     });
 
@@ -453,6 +460,7 @@ export function generateTrigger(
     const onVisibleChanged = (visible: boolean) => {
       setInMotion(false);
       onAlign();
+      afterOpenChange?.(visible);
       afterPopupVisibleChange?.(visible);
     };
 
