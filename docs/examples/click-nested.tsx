@@ -45,7 +45,7 @@ const NestPopup = ({ open, setOpen }) => {
       builtinPlacements={builtinPlacements}
       popup={<div style={popupBorderStyle}>i am a click popup</div>}
       popupVisible={open}
-      onPopupVisibleChange={setOpen}
+      onOpenChange={setOpen}
     >
       <div style={popupBorderStyle}>
         i am a click popup{' '}
@@ -77,7 +77,7 @@ const Test = () => {
           action={['click']}
           builtinPlacements={builtinPlacements}
           popupVisible={open1}
-          onPopupVisibleChange={setOpen1}
+          onOpenChange={setOpen1}
           popup={
             // Level 2
             <NestPopup open={open2} setOpen={setOpen2} />

@@ -86,7 +86,7 @@ const Test = () => {
             <PortalPopup />
           </div>
         }
-        onPopupVisibleChange={(visible) => {
+        onOpenChange={(visible) => {
           console.log('visible change:', visible);
         }}
       >

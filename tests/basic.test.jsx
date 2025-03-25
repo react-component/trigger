@@ -433,13 +433,13 @@ describe('Trigger.Basic', () => {
         },
       };
       let innerVisible = null;
-      function onInnerPopupVisibleChange(value) {
+      function onInnerOpenChange(value) {
         innerVisible = value;
       }
       const innerTrigger = (
         <div style={{ background: 'rgba(255, 0, 0, 0.3)' }}>
           <Trigger
-            onPopupVisibleChange={onInnerPopupVisibleChange}
+            onOpenChange={onInnerOpenChange}
             popupPlacement="right"
             action={['click']}
             builtinPlacements={builtinPlacements}
@@ -458,12 +458,12 @@ describe('Trigger.Basic', () => {
       );
 
       let visible = null;
-      function onPopupVisibleChange(value) {
+      function onOpenChange(value) {
         visible = value;
       }
       const { container } = render(
         <Trigger
-          onPopupVisibleChange={onPopupVisibleChange}
+          onOpenChange={onOpenChange}
           popupPlacement="right"
           action={['click']}
           builtinPlacements={builtinPlacements}
@@ -978,11 +978,11 @@ describe('Trigger.Basic', () => {
 
   describe('click window to hide', () => {
     it('should hide', async () => {
-      const onPopupVisibleChange = jest.fn();
+      const onOpenChange = jest.fn();
 
       const { container } = render(
         <Trigger
-          onPopupVisibleChange={onPopupVisibleChange}
+          onOpenChange={onOpenChange}
           action="click"
           popup={<strong>trigger</strong>}
         >
@@ -992,22 +992,22 @@ describe('Trigger.Basic', () => {
 
       fireEvent.click(container.querySelector('.target'));
       await awaitFakeTimer();
-      expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
-      onPopupVisibleChange.mockReset();
+      expect(onOpenChange).toHaveBeenCalledWith(true);
+      onOpenChange.mockReset();
 
       // Click outside to close
       fireEvent.mouseDown(document.body);
       fireEvent.click(document.body);
       await awaitFakeTimer();
-      expect(onPopupVisibleChange).toHaveBeenCalledWith(false);
+      expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 
     it('should not hide when mouseDown inside but mouseUp outside', async () => {
-      const onPopupVisibleChange = jest.fn();
+      const onOpenChange = jest.fn();
 
       const { container } = render(
         <Trigger
-          onPopupVisibleChange={onPopupVisibleChange}
+          onOpenChange={onOpenChange}
           action="click"
           popup={<strong>trigger</strong>}
         >
@@ -1017,14 +1017,14 @@ describe('Trigger.Basic', () => {
 
       fireEvent.click(container.querySelector('.target'));
       await awaitFakeTimer();
-      expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
-      onPopupVisibleChange.mockReset();
+      expect(onOpenChange).toHaveBeenCalledWith(true);
+      onOpenChange.mockReset();
 
       // Click outside to close
       fireEvent.mouseDown(document.querySelector('strong'));
       fireEvent.click(document.body);
       await awaitFakeTimer();
-      expect(onPopupVisibleChange).not.toHaveBeenCalled();
+      expect(onOpenChange).not.toHaveBeenCalled();
     });
 
     // https://github.com/ant-design/ant-design/issues/42526
@@ -1039,7 +1039,7 @@ describe('Trigger.Basic', () => {
               }}
             />
             <Trigger
-              onPopupVisibleChange={setOpen}
+              onOpenChange={setOpen}
               action="click"
               popupVisible={open}
               popup={<strong>trigger</strong>}
@@ -1088,11 +1088,11 @@ describe('Trigger.Basic', () => {
   });
 
   it('not trigger open when hover hidden popup node', () => {
-    const onPopupVisibleChange = jest.fn();
+    const onOpenChange = jest.fn();
 
     const { container } = render(
       <Trigger
-        onPopupVisibleChange={onPopupVisibleChange}
+        onOpenChange={onOpenChange}
         action="hover"
         popup={<strong className="popup">trigger</strong>}
         getPopupContainer={() => container}
@@ -1102,15 +1102,15 @@ describe('Trigger.Basic', () => {
     );
 
     trigger(container, '.target', 'mouseEnter');
-    expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
-    onPopupVisibleChange.mockReset();
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    onOpenChange.mockReset();
 
     trigger(container, '.target', 'mouseLeave');
-    expect(onPopupVisibleChange).toHaveBeenCalledWith(false);
-    onPopupVisibleChange.mockReset();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    onOpenChange.mockReset();
 
     trigger(container, '.popup', 'mouseEnter');
-    expect(onPopupVisibleChange).not.toHaveBeenCalled();
+    expect(onOpenChange).not.toHaveBeenCalled();
   });
 
   // https://gith(ub.com/ant-design/ant-design/issues/44830
@@ -1121,7 +1121,7 @@ describe('Trigger.Basic', () => {
       return (
         <Trigger
           popupVisible={open}
-          onPopupVisibleChange={setOpen}
+          onOpenChange={setOpen}
           popup={<strong className="x-content">{String(open)}</strong>}
           action={['click']}
           popupAlign={placementAlignMap.left}
