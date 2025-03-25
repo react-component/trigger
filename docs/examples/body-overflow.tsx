@@ -41,7 +41,7 @@ export default () => {
       <Trigger
         arrow
         popupVisible={open}
-        onPopupVisibleChange={(next) => {
+        onOpenChange={(next) => {
           console.log('Visible Change:', next);
           setOpen(next);
         }}
@@ -100,7 +100,7 @@ export default () => {
         arrow
         action="click"
         popupVisible={open1}
-        onPopupVisibleChange={(next) => {
+        onOpenChange={(next) => {
           console.log('Visible Change:', next);
           setOpen1(next);
         }}
@@ -156,7 +156,7 @@ export default () => {
         arrow
         action="contextMenu"
         popupVisible={open2}
-        onPopupVisibleChange={(next) => {
+        onOpenChange={(next) => {
           console.log('Visible Change:', next);
           setOpen2(next);
         }}
@@ -205,7 +205,7 @@ export default () => {
         arrow
         action="contextMenu"
         popupVisible={open3}
-        onPopupVisibleChange={(next) => {
+        onOpenChange={(next) => {
           console.log('Visible Change:', next);
           setOpen3(next);
         }}

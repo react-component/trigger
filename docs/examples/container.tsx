@@ -165,7 +165,7 @@ export default () => {
               }}
               popupStyle={{ boxShadow: '0 0 5px red' }}
               popupVisible={visible}
-              onPopupVisibleChange={(nextVisible) => {
+              onOpenChange={(nextVisible) => {
                 setVisible(nextVisible);
               }}
               // getPopupContainer={() => popHolderRef.current}

@@ -62,7 +62,7 @@ export interface TriggerProps {
   // ==================== Open =====================
   popupVisible?: boolean;
   defaultPopupVisible?: boolean;
-  onPopupVisibleChange?: (visible: boolean) => void;
+  onOpenChange?: (visible: boolean) => void;
   afterPopupVisibleChange?: (visible: boolean) => void;
 
   // =================== Portal ====================
@@ -138,7 +138,7 @@ export function generateTrigger(
       // Open
       popupVisible,
       defaultPopupVisible,
-      onPopupVisibleChange,
+      onOpenChange,
       afterPopupVisibleChange,
 
       // Delay
@@ -299,7 +299,7 @@ export function generateTrigger(
           mergedOpen) !== nextOpen
       ) {
         lastTriggerRef.current.push(nextOpen);
-        onPopupVisibleChange?.(nextOpen);
+        onOpenChange?.(nextOpen);
       }
     });
 

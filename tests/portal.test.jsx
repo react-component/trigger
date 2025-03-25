@@ -33,14 +33,14 @@ describe('Trigger.Portal', () => {
       );
     };
 
-    const onPopupVisibleChange = jest.fn();
+    const onOpenChange = jest.fn();
 
     const { container } = render(
       <div className="holder">
         <Trigger
           action={['hover']}
           popupAlign={placementAlignMap.left}
-          onPopupVisibleChange={onPopupVisibleChange}
+          onOpenChange={onOpenChange}
           popup={
             <strong className="x-content">
               tooltip2
@@ -55,7 +55,7 @@ describe('Trigger.Portal', () => {
 
     // Show the popup
     fireEvent.mouseEnter(container.querySelector('.target'));
-    expect(onPopupVisibleChange).toHaveBeenCalledWith(true);
+    expect(onOpenChange).toHaveBeenCalledWith(true);
     fireEvent.mouseLeave(container.querySelector('.target'));
 
     // Mouse enter popup
@@ -68,6 +68,6 @@ describe('Trigger.Portal', () => {
       jest.runAllTimers();
     });
 
-    expect(onPopupVisibleChange).toHaveBeenCalledWith(false);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });
