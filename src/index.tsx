@@ -123,6 +123,7 @@ export interface TriggerProps {
   /**
    * @private Bump fixed position at bottom in mobile.
    * Will replace the config of root props.
+   * This will directly trade as mobile view which will not check what real is.
    * This is internal usage currently, do not use in your prod.
    */
   mobile?: MobileConfig;
@@ -250,7 +251,19 @@ export function generateTrigger(
     // ========================== Children ==========================
     const child = React.Children.only(children) as React.ReactElement;
     const originChildProps = child?.props || {};
-    const cloneProps: typeof originChildProps = {};
+    const cloneProps: Pick<
+      React.HTMLAttributes<HTMLElement>,
+      | 'onClick'
+      | 'onTouchStart'
+      | 'onMouseEnter'
+      | 'onMouseLeave'
+      | 'onMouseMove'
+      | 'onPointerEnter'
+      | 'onPointerLeave'
+      | 'onFocus'
+      | 'onBlur'
+      | 'onContextMenu'
+    > = {};
 
     const inPopupOrChild = useEvent((ele: EventTarget) => {
       const childDOM = targetEle;
@@ -381,7 +394,6 @@ export function generateTrigger(
     );
 
     const [showActions, hideActions] = useAction(
-      isMobile,
       action,
       showAction,
       hideAction,
@@ -483,19 +495,49 @@ export function generateTrigger(
     // =========================== Action ===========================
     /**
      * Util wrapper for trigger action
+     * @param eventName  Listen event name
+     * @param nextOpen  Next open state after trigger
+     * @param delay Delay to trigger open change
+     * @param callback Callback if current event need additional action
+     * @param ignoreCheck  Ignore current event if check return true
      */
     function wrapperAction<Event extends React.SyntheticEvent>(
       eventName: string,
       nextOpen: boolean,
       delay?: number,
-      preEvent?: (event: Event) => void,
+      callback?: (event: Event) => void,
+      ignoreCheck?: () => boolean,
     ) {
       cloneProps[eventName] = (event: any, ...args: any[]) => {
-        preEvent?.(event);
-        triggerOpen(nextOpen, delay);
+        if (!ignoreCheck || !ignoreCheck()) {
+          callback?.(event);
+          triggerOpen(nextOpen, delay);
+        }
 
         // Pass to origin
         originChildProps[eventName]?.(event, ...args);
+      };
+    }
+
+    // ======================= Action: Touch ========================
+    const touchToShow = showActions.has('touch');
+    const touchToHide = hideActions.has('touch');
+
+    /** Used for prevent `hover` event conflict with mobile env */
+    const touchedRef = React.useRef(false);
+
+    if (touchToShow || touchToHide) {
+      cloneProps.onTouchStart = (...args: any[]) => {
+        touchedRef.current = true;
+
+        if (openRef.current && touchToHide) {
+          triggerOpen(false);
+        } else if (!openRef.current && touchToShow) {
+          triggerOpen(true);
+        }
+
+        // Pass to origin
+        originChildProps.onTouchStart?.(...args);
       };
     }
 
@@ -514,13 +556,14 @@ export function generateTrigger(
 
         // Pass to origin
         originChildProps.onClick?.(event, ...args);
+        touchedRef.current = false;
       };
     }
 
     // Click to hide is special action since click popup element should not hide
     const onPopupPointerDown = useWinClick(
       mergedOpen,
-      clickToHide,
+      clickToHide || touchToHide,
       targetEle,
       popupEle,
       mask,
@@ -536,24 +579,31 @@ export function generateTrigger(
     let onPopupMouseEnter: React.MouseEventHandler<HTMLDivElement>;
     let onPopupMouseLeave: VoidFunction;
 
+    const ignoreMouseTrigger = () => {
+      return touchedRef.current;
+    };
+
     if (hoverToShow) {
+      const onMouseEnterCallback = (event: React.MouseEvent) => {
+        setMousePosByEvent(event);
+      };
+
       // Compatible with old browser which not support pointer event
       wrapperAction<React.MouseEvent>(
         'onMouseEnter',
         true,
         mouseEnterDelay,
-        (event) => {
-          setMousePosByEvent(event);
-        },
+        onMouseEnterCallback,
+        ignoreMouseTrigger,
       );
       wrapperAction<React.PointerEvent>(
         'onPointerEnter',
         true,
         mouseEnterDelay,
-        (event) => {
-          setMousePosByEvent(event);
-        },
+        onMouseEnterCallback,
+        ignoreMouseTrigger,
       );
+
       onPopupMouseEnter = (event) => {
         // Only trigger re-open when popup is visible
         if (
@@ -567,15 +617,27 @@ export function generateTrigger(
       // Align Point
       if (alignPoint) {
         cloneProps.onMouseMove = (event: React.MouseEvent) => {
-          // setMousePosByEvent(event);
           originChildProps.onMouseMove?.(event);
         };
       }
     }
 
     if (hoverToHide) {
-      wrapperAction('onMouseLeave', false, mouseLeaveDelay);
-      wrapperAction('onPointerLeave', false, mouseLeaveDelay);
+      wrapperAction(
+        'onMouseLeave',
+        false,
+        mouseLeaveDelay,
+        undefined,
+        ignoreMouseTrigger,
+      );
+      wrapperAction(
+        'onPointerLeave',
+        false,
+        mouseLeaveDelay,
+        undefined,
+        ignoreMouseTrigger,
+      );
+
       onPopupMouseLeave = () => {
         triggerOpen(false, mouseLeaveDelay);
       };

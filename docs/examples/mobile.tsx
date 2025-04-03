@@ -36,21 +36,27 @@ const Test = () => {
     <div style={{ margin: 200 }}>
       <div>
         <Trigger
-          popupPlacement="right"
-          action={['click']}
+          popupPlacement="top"
+          action={['hover']}
           builtinPlacements={builtinPlacements}
           popupVisible={open1}
           onOpenChange={setOpen1}
           popup={
-            <div style={{ background: '#FFF', padding: 12 }}>
+            <div
+              style={{
+                background: '#FFF',
+                boxShadow: '0 0 3px red',
+                padding: 12,
+              }}
+            >
               <h2>Hello World</h2>
             </div>
           }
-          mobile={{
-            mask: true,
-            motion: { motionName: 'raise' },
-            maskMotion: { motionName: 'fade' },
-          }}
+          // mobile={{
+          //   mask: true,
+          //   motion: { motionName: 'raise' },
+          //   maskMotion: { motionName: 'fade' },
+          // }}
         >
           <span>Click Me</span>
         </Trigger>

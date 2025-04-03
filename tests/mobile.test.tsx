@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import isMobile from '@rc-component/util/lib/isMobile';
 import React from 'react';
-import Trigger from '../src';
+import Trigger, { type TriggerProps } from '../src';
 import { placementAlignMap } from './util';
 
 jest.mock('@rc-component/util/lib/isMobile');
@@ -36,24 +36,26 @@ describe('Trigger.Mobile', () => {
       </Trigger>,
     );
 
+    const target = document.querySelector('.target');
+
     flush();
     expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
 
-    // Hover not work
-    fireEvent.mouseEnter(document.querySelector('.target'));
-    flush();
-    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
-
-    // Click work
-    fireEvent.click(document.querySelector('.target'));
+    // Touch work
+    fireEvent.touchStart(target);
+    fireEvent.mouseEnter(target);
+    fireEvent.mouseLeave(target);
     flush();
     expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+
+    // Touch again
+    fireEvent.touchStart(target);
+    flush();
+    expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
   });
 
   // ====================================================================================
-  // ZombieJ: back when we plan to support mobile
-
-  function getTrigger(props?: any) {
+  function getTrigger(props?: Partial<TriggerProps>) {
     return (
       <Trigger
         action={['click']}
@@ -69,69 +71,46 @@ describe('Trigger.Mobile', () => {
     );
   }
 
-  it.skip('mobile config', () => {
-    const { container } = render(
-      getTrigger({
-        mobile: {
-          popupClassName: 'mobile-popup',
-          popupStyle: { background: 'red' },
-        },
-      }),
-    );
+  describe('mobile config', () => {
+    it('enabled', () => {
+      const { container } = render(
+        getTrigger({
+          mobile: {},
+        }),
+      );
 
-    fireEvent.click(container.querySelector('.target'));
+      fireEvent.click(container.querySelector('.target'));
 
-    expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
-      'mobile-popup',
-    );
-
-    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
-      background: 'red',
+      expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
+        'rc-trigger-popup-mobile',
+      );
     });
-  });
 
-  it.skip('popupRender', () => {
-    const { container } = render(
-      getTrigger({
-        mobile: {
-          popupRender: (node) => (
-            <>
-              <div>Light</div>
-              {node}
-            </>
-          ),
-        },
-      }),
-    );
+    it('replace motion', () => {
+      render(
+        getTrigger({
+          mobile: {
+            motion: {
+              motionName: 'bamboo',
+            },
+            mask: true,
+            maskMotion: {
+              motionName: 'little',
+            },
+          },
+          popupVisible: true,
+        }),
+      );
 
-    fireEvent.click(container.querySelector('.target'));
-    expect(document.querySelector('.rc-trigger-popup')).toMatchSnapshot();
-  });
+      expect(document.querySelector('.rc-trigger-popup-mobile')).toBeTruthy();
+      expect(
+        document.querySelector('.rc-trigger-popup-mobile-mask'),
+      ).toBeTruthy();
 
-  it.skip('click inside not close', () => {
-    const triggerRef = React.createRef<any>();
-    const { container } = render(getTrigger({ ref: triggerRef }));
-    fireEvent.click(container.querySelector('.target'));
-    expect(triggerRef.current.state.popupVisible).toBeTruthy();
-    fireEvent.click(document.querySelector('.x-content'));
-    expect(triggerRef.current.state.popupVisible).toBeTruthy();
-
-    // Document click
-    act(() => {
-      fireEvent.mouseDown(document);
+      expect(document.querySelector('.rc-trigger-popup')).toHaveClass('bamboo');
+      expect(document.querySelector('.rc-trigger-popup-mask')).toHaveClass(
+        'little',
+      );
     });
-    expect(triggerRef.current.state.popupVisible).toBeFalsy();
-  });
-
-  it.skip('legacy array children', () => {
-    const { container } = render(
-      getTrigger({
-        popup: [<div key={0}>Light</div>, <div key={1}>Bamboo</div>],
-      }),
-    );
-    fireEvent.click(container.querySelector('.target'));
-    expect(document.querySelectorAll('.rc-trigger-popup-content')).toHaveLength(
-      1,
-    );
   });
 });
