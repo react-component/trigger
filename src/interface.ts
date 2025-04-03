@@ -118,11 +118,3 @@ export interface Point {
 export interface CommonEventHandler {
   remove: () => void;
 }
-
-export interface MobileConfig {
-  /** Set popup motion. You can ref `rc-motion` for more info. */
-  popupMotion?: CSSMotionProps;
-  popupClassName?: string;
-  popupStyle?: React.CSSProperties;
-  popupRender?: (originNode: React.ReactNode) => React.ReactNode;
-}

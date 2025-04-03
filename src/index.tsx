@@ -7,9 +7,8 @@ import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
 import useEvent from '@rc-component/util/lib/hooks/useEvent';
 import useId from '@rc-component/util/lib/hooks/useId';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
-import isMobile from '@rc-component/util/lib/isMobile';
 import * as React from 'react';
-import Popup from './Popup';
+import Popup, { MobileConfig } from './Popup';
 import TriggerWrapper from './TriggerWrapper';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
@@ -121,9 +120,12 @@ export interface TriggerProps {
   getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
 
   // // ========================== Mobile ==========================
-  // /** @private Bump fixed position at bottom in mobile.
-  //  * This is internal usage currently, do not use in your prod */
-  // mobile?: MobileConfig;
+  /**
+   * @private Bump fixed position at bottom in mobile.
+   * Will replace the config of root props.
+   * This is internal usage currently, do not use in your prod.
+   */
+  mobile?: MobileConfig;
 }
 
 export function generateTrigger(
@@ -190,6 +192,7 @@ export function generateTrigger(
 
       // Private
       getTriggerDOMNode,
+      mobile,
 
       ...restProps
     } = props;
@@ -197,10 +200,7 @@ export function generateTrigger(
     const mergedAutoDestroy = autoDestroy || false;
 
     // =========================== Mobile ===========================
-    const [mobile, setMobile] = React.useState(false);
-    useLayoutEffect(() => {
-      setMobile(isMobile());
-    }, []);
+    const isMobile = !!mobile;
 
     // ========================== Context ===========================
     const subPopupElements = React.useRef<Record<string, HTMLElement>>({});
@@ -377,10 +377,11 @@ export function generateTrigger(
       builtinPlacements,
       popupAlign,
       onPopupAlign,
+      isMobile,
     );
 
     const [showActions, hideActions] = useAction(
-      mobile,
+      isMobile,
       action,
       showAction,
       hideAction,
@@ -670,7 +671,10 @@ export function generateTrigger(
             ref={setPopupRef}
             prefixCls={prefixCls}
             popup={popup}
-            className={classNames(popupClassName, alignedClassName)}
+            className={classNames(
+              popupClassName,
+              !isMobile && alignedClassName,
+            )}
             style={popupStyle}
             target={targetEle}
             onMouseEnter={onPopupMouseEnter}
@@ -711,6 +715,8 @@ export function generateTrigger(
             stretch={stretch}
             targetWidth={targetWidth / scaleX}
             targetHeight={targetHeight / scaleY}
+            // Mobile
+            mobile={mobile}
           />
         </TriggerContext.Provider>
       </>

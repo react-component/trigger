@@ -95,6 +95,7 @@ export default function useAlign(
   builtinPlacements: any,
   popupAlign?: AlignType,
   onPopupAlign?: TriggerProps['onPopupAlign'],
+  mobile?: boolean,
 ): [
   ready: boolean,
   offsetX: number,
@@ -109,15 +110,25 @@ export default function useAlign(
   onAlign: VoidFunction,
 ] {
   const [offsetInfo, setOffsetInfo] = React.useState<{
+    /** Align finished */
     ready: boolean;
+    /** Offset Left of current Left */
     offsetX: number;
+    /** Offset Top of current Top */
     offsetY: number;
+    /** Offset Right of current Left */
     offsetR: number;
+    /** Offset Bottom of current Top */
     offsetB: number;
+    /** Arrow X offset related with popup */
     arrowX: number;
+    /** Arrow Y offset related with popup */
     arrowY: number;
+    /** Scale X of popup */
     scaleX: number;
+    /** Scale Y of popup */
     scaleY: number;
+    /** Calculated align info */
     align: AlignType;
   }>({
     ready: false,
@@ -134,7 +145,7 @@ export default function useAlign(
   const alignCountRef = React.useRef(0);
 
   const scrollerList = React.useMemo(() => {
-    if (!popupEle) {
+    if (!popupEle || mobile) {
       return [];
     }
 
@@ -161,7 +172,7 @@ export default function useAlign(
 
   // ========================= Align =========================
   const onAlign = useEvent(() => {
-    if (popupEle && target && open) {
+    if (popupEle && target && open && !mobile) {
       const popupElement = popupEle;
 
       const doc = popupElement.ownerDocument;
@@ -659,10 +670,14 @@ export default function useAlign(
       const targetTop = targetRect.y;
       const targetBottom = targetTop + targetHeight;
 
+      /** Max left of the popup and target element */
       const maxLeft = Math.max(popupLeft, targetLeft);
+      /** Min right of the popup and target element */
       const minRight = Math.min(popupRight, targetRight);
 
+      /** The center X of popup & target cross area */
       const xCenter = (maxLeft + minRight) / 2;
+      /** Arrow X of popup offset */
       const nextArrowX = xCenter - popupLeft;
 
       const maxTop = Math.max(popupTop, targetTop);

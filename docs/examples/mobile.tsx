@@ -42,11 +42,15 @@ const Test = () => {
           popupVisible={open1}
           onOpenChange={setOpen1}
           popup={
-            <div>
+            <div style={{ background: '#FFF', padding: 12 }}>
               <h2>Hello World</h2>
             </div>
           }
-          mobile
+          mobile={{
+            mask: true,
+            motion: { motionName: 'raise' },
+            maskMotion: { motionName: 'fade' },
+          }}
         >
           <span>Click Me</span>
         </Trigger>

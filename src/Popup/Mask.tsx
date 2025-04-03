@@ -11,6 +11,8 @@ export interface MaskProps {
 
   // Motion
   motion?: CSSMotionProps;
+
+  mobile?: boolean;
 }
 
 export default function Mask(props: MaskProps) {
@@ -21,6 +23,8 @@ export default function Mask(props: MaskProps) {
 
     mask,
     motion,
+
+    mobile,
   } = props;
 
   if (!mask) {
@@ -32,7 +36,11 @@ export default function Mask(props: MaskProps) {
       {({ className }) => (
         <div
           style={{ zIndex }}
-          className={classNames(`${prefixCls}-mask`, className)}
+          className={classNames(
+            `${prefixCls}-mask`,
+            mobile && `${prefixCls}-mobile-mask`,
+            className,
+          )}
         />
       )}
     </CSSMotion>
