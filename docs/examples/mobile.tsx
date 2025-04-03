@@ -52,11 +52,11 @@ const Test = () => {
               <h2>Hello World</h2>
             </div>
           }
-          // mobile={{
-          //   mask: true,
-          //   motion: { motionName: 'raise' },
-          //   maskMotion: { motionName: 'fade' },
-          // }}
+          mobile={{
+            mask: true,
+            motion: { motionName: 'raise' },
+            maskMotion: { motionName: 'fade' },
+          }}
         >
           <span>Click Me</span>
         </Trigger>
