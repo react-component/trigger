@@ -1,5 +1,3 @@
-import type { CSSMotionProps } from '@rc-component/motion';
-
 export type Placement =
   | 'top'
   | 'left'
