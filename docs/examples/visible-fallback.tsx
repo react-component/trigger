@@ -28,7 +28,7 @@ const builtinPlacements: Record<string, AlignType> = {
 export default () => {
   const [enoughTop, setEnoughTop] = React.useState(true);
 
-  const triggerRef = React.useRef<TriggerRef>();
+  const triggerRef = React.useRef<TriggerRef>(null);
 
   React.useEffect(() => {
     triggerRef.current?.forceAlign();

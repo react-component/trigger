@@ -131,7 +131,7 @@ export default function useAlign(
     scaleY: 1,
     align: builtinPlacements[placement] || {},
   });
-  const alignCountRef = React.useRef(0);
+  const alignCountRef = React.useRef<number>(0);
 
   const scrollerList = React.useMemo(() => {
     if (!popupEle) {

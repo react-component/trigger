@@ -100,7 +100,7 @@ const popupPlacement = 'bottomLeft';
 export default () => {
   const [popupHeight, setPopupHeight] = React.useState(60);
 
-  const containerRef = React.useRef<HTMLDivElement>();
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     containerRef.current.scrollLeft = document.defaultView.innerWidth;

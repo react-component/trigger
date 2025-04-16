@@ -24,7 +24,7 @@ const builtinPlacements = {
 };
 
 export default () => {
-  const containerRef = React.useRef<HTMLDivElement>();
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     console.clear();

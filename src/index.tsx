@@ -248,7 +248,7 @@ export function generateTrigger(
     });
 
     // ========================== Children ==========================
-    const child = React.Children.only(children) as React.ReactElement;
+    const child = React.Children.only(children) as React.ReactElement<any>;
     const originChildProps = child?.props || {};
     const cloneProps: typeof originChildProps = {};
 
@@ -311,7 +311,7 @@ export function generateTrigger(
     });
 
     // Trigger for delay
-    const delayRef = React.useRef<any>();
+    const delayRef = React.useRef<ReturnType<typeof setTimeout>>(null);
 
     const clearDelay = () => {
       clearTimeout(delayRef.current);

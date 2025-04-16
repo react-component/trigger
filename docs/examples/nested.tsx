@@ -54,8 +54,8 @@ const OuterContent = ({ getContainer }) => {
 };
 
 const Test = () => {
-  const containerRef = React.useRef();
-  const outerDivRef = React.useRef();
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const outerDivRef = React.useRef<HTMLDivElement>(null);
 
   const innerTrigger = (
     <div style={popupBorderStyle}>

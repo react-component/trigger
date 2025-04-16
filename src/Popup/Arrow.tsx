@@ -15,7 +15,7 @@ export default function Arrow(props: ArrowProps) {
   const { className, content } = arrow || {};
   const { x = 0, y = 0 } = arrowPos;
 
-  const arrowRef = React.useRef<HTMLDivElement>();
+  const arrowRef = React.useRef<HTMLDivElement>(null);
 
   // Skip if no align
   if (!align || !align.points) {

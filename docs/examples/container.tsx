@@ -64,9 +64,9 @@ export default () => {
   const [scale, setScale] = React.useState('1');
   const [targetVisible, setTargetVisible] = React.useState(true);
 
-  const rootRef = React.useRef<HTMLDivElement>();
-  const popHolderRef = React.useRef<HTMLDivElement>();
-  const scrollRef = React.useRef<HTMLDivElement>();
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const popHolderRef = React.useRef<HTMLDivElement>(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     scrollRef.current.scrollLeft = window.innerWidth;
