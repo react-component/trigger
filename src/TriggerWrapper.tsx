@@ -9,7 +9,7 @@ import type { TriggerProps } from '.';
 
 export interface TriggerWrapperProps {
   getTriggerDOMNode?: TriggerProps['getTriggerDOMNode'];
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
 }
 
 const TriggerWrapper = React.forwardRef<HTMLElement, TriggerWrapperProps>(
@@ -20,18 +20,19 @@ const TriggerWrapper = React.forwardRef<HTMLElement, TriggerWrapperProps>(
 
     // When use `getTriggerDOMNode`, we should do additional work to get the real dom
     const setRef = React.useCallback(
-      (node) => {
+      (node: React.ReactInstance) => {
         fillRef(ref, getTriggerDOMNode ? getTriggerDOMNode(node) : node);
       },
       [getTriggerDOMNode],
     );
 
-    const mergedRef = useComposeRef(setRef, getNodeRef(children));
+    const mergedRef = useComposeRef<React.ReactInstance>(
+      setRef,
+      getNodeRef(children),
+    );
 
     return canUseRef
-      ? React.cloneElement(children, {
-          ref: mergedRef,
-        })
+      ? React.cloneElement<any>(children, { ref: mergedRef })
       : children;
   },
 );

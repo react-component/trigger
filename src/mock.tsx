@@ -4,7 +4,7 @@ import { generateTrigger } from './index';
 interface MockPortalProps {
   open?: boolean;
   autoDestroy?: boolean;
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
   getContainer?: () => HTMLElement;
 }
 

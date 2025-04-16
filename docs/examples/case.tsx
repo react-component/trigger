@@ -58,7 +58,7 @@ function useControl<T>(valuePropName: string, defaultValue: T): [T, any] {
 
 const LabelItem: React.FC<{
   title: React.ReactNode;
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
   [prop: string]: any;
 }> = ({ title, children, ...rest }) => {
   const { type } = children;

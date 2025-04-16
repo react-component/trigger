@@ -46,7 +46,7 @@ export interface TriggerRef {
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
 
 export interface TriggerProps {
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
@@ -248,7 +248,7 @@ export function generateTrigger(
     });
 
     // ========================== Children ==========================
-    const child = React.Children.only(children) as React.ReactElement;
+    const child = React.Children.only(children);
     const originChildProps = child?.props || {};
     const cloneProps: typeof originChildProps = {};
 
@@ -311,7 +311,7 @@ export function generateTrigger(
     });
 
     // Trigger for delay
-    const delayRef = React.useRef<any>();
+    const delayRef = React.useRef<ReturnType<typeof setTimeout>>(null);
 
     const clearDelay = () => {
       clearTimeout(delayRef.current);
