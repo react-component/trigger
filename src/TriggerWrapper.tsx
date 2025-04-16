@@ -9,7 +9,7 @@ import type { TriggerProps } from '.';
 
 export interface TriggerWrapperProps {
   getTriggerDOMNode?: TriggerProps['getTriggerDOMNode'];
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
 }
 
 const TriggerWrapper = React.forwardRef<HTMLElement, TriggerWrapperProps>(
