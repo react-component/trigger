@@ -11,6 +11,14 @@ import Arrow from './Arrow';
 import Mask from './Mask';
 import PopupContent from './PopupContent';
 
+export interface MobileConfig {
+  mask?: boolean;
+  /** Set popup motion. You can ref `rc-motion` for more info. */
+  motion?: CSSMotionProps;
+  /** Set mask motion. You can ref `rc-motion` for more info. */
+  maskMotion?: CSSMotionProps;
+}
+
 export interface PopupProps {
   prefixCls: string;
   className?: string;
@@ -63,6 +71,9 @@ export interface PopupProps {
   stretch?: string;
   targetWidth?: number;
   targetHeight?: number;
+
+  // Mobile
+  mobile?: MobileConfig;
 }
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
@@ -95,6 +106,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     motion,
     maskMotion,
 
+    // Mobile
+    mobile,
+
     // Portal
     forceRender,
     getPopupContainer,
@@ -126,6 +140,24 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   // We can not remove holder only when motion finished.
   const isNodeVisible = open || keepDom;
 
+  // ========================= Mobile =========================
+  const isMobile = !!mobile;
+
+  // ========================== Mask ==========================
+  const [mergedMask, mergedMaskMotion, mergedPopupMotion] = React.useMemo<
+    [
+      mask: boolean,
+      maskMotion: CSSMotionProps | undefined,
+      popupMotion: CSSMotionProps | undefined,
+    ]
+  >(() => {
+    if (mobile) {
+      return [mobile.mask, mobile.maskMotion, mobile.motion];
+    }
+
+    return [mask, maskMotion, motion];
+  }, [mobile]);
+
   // ======================= Container ========================
   const getPopupContainerNeedParams = getPopupContainer?.length > 0;
 
@@ -148,15 +180,17 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   // >>>>> Offset
   const AUTO = 'auto' as const;
 
-  const offsetStyle: React.CSSProperties = {
-    left: '-1000vw',
-    top: '-1000vh',
-    right: AUTO,
-    bottom: AUTO,
-  };
+  const offsetStyle: React.CSSProperties = isMobile
+    ? {}
+    : {
+        left: '-1000vw',
+        top: '-1000vh',
+        right: AUTO,
+        bottom: AUTO,
+      };
 
   // Set align style
-  if (ready || !open) {
+  if (!isMobile && (ready || !open)) {
     const { points } = align;
     const dynamicInset =
       align.dynamicInset || (align as any)._experimental?.dynamicInset;
@@ -209,8 +243,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
         prefixCls={prefixCls}
         open={open}
         zIndex={zIndex}
-        mask={mask}
-        motion={maskMotion}
+        mask={mergedMask}
+        motion={mergedMaskMotion}
+        mobile={isMobile}
       />
       <ResizeObserver onResize={onAlign} disabled={!open}>
         {(resizeObserverRef) => {
@@ -222,7 +257,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
               removeOnLeave={false}
               forceRender={forceRender}
               leavedClassName={`${prefixCls}-hidden`}
-              {...motion}
+              {...mergedPopupMotion}
               onAppearPrepare={onPrepare}
               onEnterPrepare={onPrepare}
               visible={open}
@@ -235,7 +270,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                 { className: motionClassName, style: motionStyle },
                 motionRef,
               ) => {
-                const cls = classNames(prefixCls, motionClassName, className);
+                const cls = classNames(prefixCls, motionClassName, className, {
+                  [`${prefixCls}-mobile`]: isMobile,
+                });
 
                 return (
                   <div

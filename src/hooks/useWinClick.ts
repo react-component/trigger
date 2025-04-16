@@ -3,6 +3,10 @@ import { warning } from '@rc-component/util/lib/warning';
 import * as React from 'react';
 import { getWin } from '../util';
 
+/**
+ * Close if click on the window.
+ * Return the function that click on the Popup element.
+ */
 export default function useWinClick(
   open: boolean,
   clickToHide: boolean,
