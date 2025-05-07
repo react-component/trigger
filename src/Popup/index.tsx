@@ -121,7 +121,8 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     targetHeight,
   } = props;
 
-  const childNode = typeof popup === 'function' ? popup() : popup;
+  const childNode =
+    (open && (typeof popup === 'function' ? popup() : popup)) || null;
 
   // We can not remove holder only when motion finished.
   const isNodeVisible = open || keepDom;
@@ -197,6 +198,10 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   if (!open) {
     miscStyle.pointerEvents = 'none';
+  }
+
+  if (!forceRender && !open) {
+    return null;
   }
 
   return (
