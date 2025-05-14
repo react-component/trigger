@@ -10,7 +10,6 @@ import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import isMobile from '@rc-component/util/lib/isMobile';
 import * as React from 'react';
 import Popup from './Popup';
-import TriggerWrapper from './TriggerWrapper';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
 import useAction from './hooks/useAction';
@@ -113,13 +112,6 @@ export interface TriggerProps {
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
 
-  // =================== Private ===================
-  /**
-   * @private Get trigger DOM node.
-   * Used for some component is function component which can not access by `findDOMNode`
-   */
-  getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
-
   // // ========================== Mobile ==========================
   // /** @private Bump fixed position at bottom in mobile.
   //  * This is internal usage currently, do not use in your prod */
@@ -187,9 +179,6 @@ export function generateTrigger(
       // Motion
       popupMotion,
       maskMotion,
-
-      // Private
-      getTriggerDOMNode,
 
       ...restProps
     } = props;
@@ -634,12 +623,6 @@ export function generateTrigger(
       }
     });
 
-    // Child Node
-    const triggerNode = React.cloneElement(child, {
-      ...mergedChildrenProps,
-      ...passedProps,
-    });
-
     const arrowPos: ArrowPos = {
       x: arrowX,
       y: arrowY,
@@ -652,6 +635,12 @@ export function generateTrigger(
         }
       : null;
 
+    // Child Node
+    const triggerNode = React.cloneElement(child, {
+      ...mergedChildrenProps,
+      ...passedProps,
+    });
+
     // Render
     return (
       <>
@@ -660,9 +649,7 @@ export function generateTrigger(
           ref={setTargetRef}
           onResize={onTargetResize}
         >
-          <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
-            {triggerNode}
-          </TriggerWrapper>
+          {triggerNode}
         </ResizeObserver>
         <TriggerContext.Provider value={context}>
           <Popup
