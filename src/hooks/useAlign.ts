@@ -167,11 +167,7 @@ export default function useAlign(
       const doc = popupElement.ownerDocument;
       const win = getWin(popupElement);
 
-      const {
-        width,
-        height,
-        position: popupPosition,
-      } = win.getComputedStyle(popupElement);
+      const { position: popupPosition } = win.getComputedStyle(popupElement);
 
       const originLeft = popupElement.style.left;
       const originTop = popupElement.style.top;
@@ -222,6 +218,7 @@ export default function useAlign(
         };
       }
       const popupRect = popupElement.getBoundingClientRect();
+      const { height, width } = win.getComputedStyle(popupElement);
       popupRect.x = popupRect.x ?? popupRect.left;
       popupRect.y = popupRect.y ?? popupRect.top;
       const {
