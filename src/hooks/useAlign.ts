@@ -439,10 +439,9 @@ export default function useAlign(
           nextOffsetY = tmpNextOffsetY;
           popupOffsetY = -popupOffsetY;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
-          ];
+          nextAlignInfo.points = nextAlignInfo.points.map((point) =>
+            reversePoints(splitPoints(point), 0),
+          );
         } else {
           prevFlipRef.current.bt = false;
         }
@@ -485,10 +484,9 @@ export default function useAlign(
           nextOffsetY = tmpNextOffsetY;
           popupOffsetY = -popupOffsetY;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
-          ];
+          nextAlignInfo.points = nextAlignInfo.points.map((point) =>
+            reversePoints(splitPoints(point), 0),
+          );
         } else {
           prevFlipRef.current.tb = false;
         }
@@ -538,10 +536,9 @@ export default function useAlign(
           nextOffsetX = tmpNextOffsetX;
           popupOffsetX = -popupOffsetX;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
-          ];
+          nextAlignInfo.points = nextAlignInfo.points.map((point) =>
+            reversePoints(splitPoints(point), 1),
+          );
         } else {
           prevFlipRef.current.rl = false;
         }
@@ -584,10 +581,9 @@ export default function useAlign(
           nextOffsetX = tmpNextOffsetX;
           popupOffsetX = -popupOffsetX;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
-          ];
+          nextAlignInfo.points = nextAlignInfo.points.map((point) =>
+            reversePoints(splitPoints(point), 1),
+          );
         } else {
           prevFlipRef.current.lr = false;
         }
