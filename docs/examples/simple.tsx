@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 
-import Trigger, { ActionType } from '@rc-component/trigger';
+import Trigger, { type ActionType } from '@rc-component/trigger';
 import React from 'react';
 import '../../assets/index.less';
 
@@ -43,28 +43,25 @@ function getPopupContainer(trigger) {
   return trigger.parentNode;
 }
 
-const InnerTarget = (props) => (
-  <div
-    style={{
-      margin: 20,
-      display: 'inline-block',
-      background: 'rgba(255, 0, 0, 0.05)',
-    }}
-    tabIndex={0}
-    role="button"
-    {...props}
-  >
-    <p>This is a example of trigger usage.</p>
-    <p>You can adjust the value above</p>
-    <p>which will also change the behaviour of popup.</p>
-  </div>
+const InnerTarget = React.forwardRef(
+  (props: any, ref: React.Ref<HTMLElement>) => (
+    <div
+      style={{
+        margin: 20,
+        display: 'inline-block',
+        background: 'rgba(255, 0, 0, 0.05)',
+      }}
+      tabIndex={0}
+      role="button"
+      {...props}
+      ref={ref}
+    >
+      <p>This is a example of trigger usage.</p>
+      <p>You can adjust the value above</p>
+      <p>which will also change the behavior of popup.</p>
+    </div>
+  ),
 );
-
-const RefTarget = React.forwardRef((props, ref) => {
-  React.useImperativeHandle(ref, () => ({}));
-
-  return <InnerTarget {...props} />;
-});
 
 interface TestState {
   mask: boolean;
@@ -88,7 +85,7 @@ interface TestState {
 
 class Test extends React.Component<any, TestState> {
   state: TestState = {
-    mask: true,
+    mask: false,
     maskClosable: true,
     placement: 'bottom',
     trigger: {
@@ -377,7 +374,7 @@ class Test extends React.Component<any, TestState> {
               motionName: state.transitionName,
             }}
           >
-            <RefTarget />
+            <InnerTarget />
           </Trigger>
         </div>
       </div>

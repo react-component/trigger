@@ -45,7 +45,7 @@ export interface TriggerRef {
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
 
 export interface TriggerProps {
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
@@ -111,13 +111,6 @@ export interface TriggerProps {
 
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
-
-  // =================== Private ===================
-  /**
-   * @private Get trigger DOM node.
-   * Used for some component is function component which can not access by `findDOMNode`
-   */
-  getTriggerDOMNode?: (node: React.ReactInstance) => HTMLElement;
 
   // // ========================== Mobile ==========================
   /**
@@ -192,7 +185,6 @@ export function generateTrigger(
       maskMotion,
 
       // Private
-      getTriggerDOMNode,
       mobile,
 
       ...restProps
@@ -249,7 +241,7 @@ export function generateTrigger(
     });
 
     // ========================== Children ==========================
-    const child = React.Children.only(children) as React.ReactElement;
+    const child = React.Children.only(children);
     const originChildProps = child?.props || {};
     const cloneProps: Pick<
       React.HTMLAttributes<HTMLElement>,
@@ -324,7 +316,7 @@ export function generateTrigger(
     });
 
     // Trigger for delay
-    const delayRef = React.useRef<any>();
+    const delayRef = React.useRef<ReturnType<typeof setTimeout>>(null);
 
     const clearDelay = () => {
       clearTimeout(delayRef.current);
@@ -669,6 +661,10 @@ export function generateTrigger(
       };
     }
 
+    // ============================ Perf ============================
+    const rendedRef = React.useRef(false);
+    rendedRef.current ||= forceRender || mergedOpen || inMotion;
+
     // =========================== Render ===========================
     const mergedChildrenProps = {
       ...originChildProps,
@@ -697,12 +693,6 @@ export function generateTrigger(
       }
     });
 
-    // Child Node
-    const triggerNode = React.cloneElement(child, {
-      ...mergedChildrenProps,
-      ...passedProps,
-    });
-
     const arrowPos: ArrowPos = {
       x: arrowX,
       y: arrowY,
@@ -715,6 +705,12 @@ export function generateTrigger(
         }
       : null;
 
+    // Child Node
+    const triggerNode = React.cloneElement(child, {
+      ...mergedChildrenProps,
+      ...passedProps,
+    });
+
     // Render
     return (
       <>
@@ -723,64 +719,64 @@ export function generateTrigger(
           ref={setTargetRef}
           onResize={onTargetResize}
         >
-          <TriggerWrapper getTriggerDOMNode={getTriggerDOMNode}>
-            {triggerNode}
-          </TriggerWrapper>
+          {triggerNode}
         </ResizeObserver>
-        <TriggerContext.Provider value={context}>
-          <Popup
-            portal={PortalComponent}
-            ref={setPopupRef}
-            prefixCls={prefixCls}
-            popup={popup}
-            className={classNames(
-              popupClassName,
-              !isMobile && alignedClassName,
-            )}
-            style={popupStyle}
-            target={targetEle}
-            onMouseEnter={onPopupMouseEnter}
-            onMouseLeave={onPopupMouseLeave}
-            // https://github.com/ant-design/ant-design/issues/43924
-            onPointerEnter={onPopupMouseEnter}
-            zIndex={zIndex}
-            // Open
-            open={mergedOpen}
-            keepDom={inMotion}
-            fresh={fresh}
-            // Click
-            onClick={onPopupClick}
-            onPointerDownCapture={onPopupPointerDown}
-            // Mask
-            mask={mask}
-            // Motion
-            motion={popupMotion}
-            maskMotion={maskMotion}
-            onVisibleChanged={onVisibleChanged}
-            onPrepare={onPrepare}
-            // Portal
-            forceRender={forceRender}
-            autoDestroy={mergedAutoDestroy}
-            getPopupContainer={getPopupContainer}
-            // Arrow
-            align={alignInfo}
-            arrow={innerArrow}
-            arrowPos={arrowPos}
-            // Align
-            ready={ready}
-            offsetX={offsetX}
-            offsetY={offsetY}
-            offsetR={offsetR}
-            offsetB={offsetB}
-            onAlign={triggerAlign}
-            // Stretch
-            stretch={stretch}
-            targetWidth={targetWidth / scaleX}
-            targetHeight={targetHeight / scaleY}
-            // Mobile
-            mobile={mobile}
-          />
-        </TriggerContext.Provider>
+        {rendedRef.current && (
+          <TriggerContext.Provider value={context}>
+            <Popup
+              portal={PortalComponent}
+              ref={setPopupRef}
+              prefixCls={prefixCls}
+              popup={popup}
+              className={classNames(
+                popupClassName,
+                !isMobile && alignedClassName,
+              )}
+              style={popupStyle}
+              target={targetEle}
+              onMouseEnter={onPopupMouseEnter}
+              onMouseLeave={onPopupMouseLeave}
+              // https://github.com/ant-design/ant-design/issues/43924
+              onPointerEnter={onPopupMouseEnter}
+              zIndex={zIndex}
+              // Open
+              open={mergedOpen}
+              keepDom={inMotion}
+              fresh={fresh}
+              // Click
+              onClick={onPopupClick}
+              onPointerDownCapture={onPopupPointerDown}
+              // Mask
+              mask={mask}
+              // Motion
+              motion={popupMotion}
+              maskMotion={maskMotion}
+              onVisibleChanged={onVisibleChanged}
+              onPrepare={onPrepare}
+              // Portal
+              forceRender={forceRender}
+              autoDestroy={mergedAutoDestroy}
+              getPopupContainer={getPopupContainer}
+              // Arrow
+              align={alignInfo}
+              arrow={innerArrow}
+              arrowPos={arrowPos}
+              // Align
+              ready={ready}
+              offsetX={offsetX}
+              offsetY={offsetY}
+              offsetR={offsetR}
+              offsetB={offsetB}
+              onAlign={triggerAlign}
+              // Stretch
+              stretch={stretch}
+              targetWidth={targetWidth / scaleX}
+              targetHeight={targetHeight / scaleY}
+              // Mobile
+              mobile={mobile}
+            />
+          </TriggerContext.Provider>
+        )}
       </>
     );
   });

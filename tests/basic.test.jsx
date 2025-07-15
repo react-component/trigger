@@ -1,5 +1,4 @@
 /* eslint-disable max-classes-per-file */
-
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import React, { StrictMode, createRef } from 'react';
@@ -697,7 +696,7 @@ describe('Trigger.Basic', () => {
       let effectCalled = false;
 
       function Demo() {
-        const popupRef = React.useRef();
+        const popupRef = React.useRef(null);
 
         React.useLayoutEffect(() => {
           effectCalled = true;

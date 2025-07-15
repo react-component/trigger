@@ -17,10 +17,10 @@ export default function useWinClick(
   inPopupOrChild: (target: EventTarget) => boolean,
   triggerOpen: (open: boolean) => void,
 ) {
-  const openRef = React.useRef(open);
+  const openRef = React.useRef<boolean>(open);
   openRef.current = open;
 
-  const popupPointerDownRef = React.useRef(false);
+  const popupPointerDownRef = React.useRef<boolean>(false);
 
   // Click to hide is special action since click popup element should not hide
   React.useEffect(() => {

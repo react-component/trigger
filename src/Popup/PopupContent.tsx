@@ -6,7 +6,7 @@ export interface PopupContentProps {
 }
 
 const PopupContent = React.memo(
-  ({ children }: PopupContentProps) => children as React.ReactElement,
+  ({ children }: PopupContentProps) => children as React.ReactElement<any>,
   (_, next) => next.cache,
 );
 
