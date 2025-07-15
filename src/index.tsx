@@ -9,7 +9,6 @@ import useId from '@rc-component/util/lib/hooks/useId';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
-import TriggerWrapper from './TriggerWrapper';
 import type { TriggerContextProps } from './context';
 import TriggerContext from './context';
 import useAction from './hooks/useAction';
