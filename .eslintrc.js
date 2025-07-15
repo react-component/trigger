@@ -10,5 +10,10 @@ module.exports = {
     'react/sort-comp': 0,
     'jsx-a11y/label-has-for': 0,
     'jsx-a11y/label-has-associated-control': 0,
+    '@typescript-eslint/consistent-indexed-object-style': 0,
+    '@typescript-eslint/no-parameter-properties': 0,
+    '@typescript-eslint/ban-types': 0,
+    '@typescript-eslint/type-annotation-spacing': 0,
+    '@typescript-eslint/no-throw-literal': 0,
   },
 };
