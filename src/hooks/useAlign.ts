@@ -69,23 +69,25 @@ function getAlignPoint(rect: Rect, points: Points) {
   return { x, y };
 }
 
-function reversePoints(points: Points, index: number): string {
-  const reverseMap = {
-    t: 'b',
-    b: 't',
-    l: 'r',
-    r: 'l',
-  };
+const flipPriority = {
+  vertical: ['tb', 'bt'],   // top to bottom, bottom to top
+  horizontal: ['lr', 'rl'], // left to right, right to left
+};
 
-  return points
-    .map((point, i) => {
-      if (i === index) {
-        return reverseMap[point] || 'c';
-      }
-      return point;
-    })
-    .join('');
+const getPriorityOrder = (isVerticalPriorityScene: boolean) => {
+  const { vertical, horizontal } = flipPriority;
+  return isVerticalPriorityScene
+    ? [...vertical, ...horizontal]
+    : [...horizontal, ...vertical];
 }
+
+// Add reverseMap function (if not already defined)
+const reverseMap = {
+  t: 'b',
+  b: 't',
+  l: 'r',
+  r: 'l',
+};
 
 export default function useAlign(
   open: boolean,
@@ -97,18 +99,18 @@ export default function useAlign(
   onPopupAlign?: TriggerProps['onPopupAlign'],
   mobile?: boolean,
 ): [
-  ready: boolean,
-  offsetX: number,
-  offsetY: number,
-  offsetR: number,
-  offsetB: number,
-  arrowX: number,
-  arrowY: number,
-  scaleX: number,
-  scaleY: number,
-  align: AlignType,
-  onAlign: VoidFunction,
-] {
+    ready: boolean,
+    offsetX: number,
+    offsetY: number,
+    offsetR: number,
+    offsetB: number,
+    arrowX: number,
+    arrowY: number,
+    scaleX: number,
+    scaleY: number,
+    align: AlignType,
+    onAlign: VoidFunction,
+  ] {
   const [offsetInfo, setOffsetInfo] = React.useState<{
     /** Align finished */
     ready: boolean;
@@ -412,14 +414,48 @@ export default function useAlign(
 
       const sameTB = popupPoints[0] === targetPoints[0];
 
-      // Bottom to Top
+      // Add flip requirements collection object
+      const flipRequirements = {
+        tb: false, // Need to flip from top to bottom
+        bt: false, // Need to flip from bottom to top
+        lr: false, // Need to flip from left to right
+        rl: false, // Need to flip from right to left
+      };
+
+      // Store potential post-flip offsets
+      const potentialOffsets = {
+        tb: { offsetX: nextOffsetX, offsetY: nextOffsetY, popupOffsetX, popupOffsetY },
+        bt: { offsetX: nextOffsetX, offsetY: nextOffsetY, popupOffsetX, popupOffsetY },
+        lr: { offsetX: nextOffsetX, offsetY: nextOffsetY, popupOffsetX, popupOffsetY },
+        rl: { offsetX: nextOffsetX, offsetY: nextOffsetY, popupOffsetX, popupOffsetY },
+      };
+
+      // Store visible area size for each flip direction
+      const visibleAreas = {
+        tb: 0,
+        bt: 0,
+        lr: 0,
+        rl: 0,
+        original: originIntersectionVisibleArea,
+      };
+
+      // Store recommended area size for each flip direction (for visibleFirst scenario)
+      const recommendAreas = {
+        tb: 0,
+        bt: 0,
+        lr: 0,
+        rl: 0,
+        original: originIntersectionRecommendArea,
+      };
+
+      // Check Bottom to Top flip
       if (
         needAdjustY &&
         popupPoints[0] === 't' &&
         (nextPopupBottom > adjustCheckVisibleArea.bottom ||
           prevFlipRef.current.bt)
       ) {
-        let tmpNextOffsetY: number = nextOffsetY;
+        let tmpNextOffsetY = nextOffsetY;
 
         if (sameTB) {
           tmpNextOffsetY -= popupHeight - targetHeight;
@@ -428,44 +464,36 @@ export default function useAlign(
             targetAlignPointTL.y - popupAlignPointBR.y - popupOffsetY;
         }
 
-        const newVisibleArea = getIntersectionVisibleArea(
+        // Calculate potential visible area
+        visibleAreas.bt = getIntersectionVisibleArea(
+          nextOffsetX,
+          tmpNextOffsetY
+        );
+        recommendAreas.bt = getIntersectionVisibleArea(
           nextOffsetX,
           tmpNextOffsetY,
-        );
-        const newVisibleRecommendArea = getIntersectionVisibleArea(
-          nextOffsetX,
-          tmpNextOffsetY,
-          visibleRegionArea,
+          visibleRegionArea
         );
 
-        if (
-          // Of course use larger one
-          newVisibleArea > originIntersectionVisibleArea ||
-          (newVisibleArea === originIntersectionVisibleArea &&
-            (!isVisibleFirst ||
-              // Choose recommend one
-              newVisibleRecommendArea >= originIntersectionRecommendArea))
-        ) {
-          prevFlipRef.current.bt = true;
-          nextOffsetY = tmpNextOffsetY;
-          popupOffsetY = -popupOffsetY;
+        // Store potential offsets
+        potentialOffsets.bt = {
+          offsetX: nextOffsetX,
+          offsetY: tmpNextOffsetY,
+          popupOffsetX,
+          popupOffsetY: -popupOffsetY
+        };
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
-          ];
-        } else {
-          prevFlipRef.current.bt = false;
-        }
+        // Mark that bt flip needs to be checked
+        flipRequirements.bt = true;
       }
 
-      // Top to Bottom
+      // Check Top to Bottom flip
       if (
         needAdjustY &&
         popupPoints[0] === 'b' &&
         (nextPopupY < adjustCheckVisibleArea.top || prevFlipRef.current.tb)
       ) {
-        let tmpNextOffsetY: number = nextOffsetY;
+        let tmpNextOffsetY = nextOffsetY;
 
         if (sameTB) {
           tmpNextOffsetY += popupHeight - targetHeight;
@@ -474,35 +502,27 @@ export default function useAlign(
             targetAlignPointBR.y - popupAlignPointTL.y - popupOffsetY;
         }
 
-        const newVisibleArea = getIntersectionVisibleArea(
+        // Calculate potential visible area
+        visibleAreas.tb = getIntersectionVisibleArea(
+          nextOffsetX,
+          tmpNextOffsetY
+        );
+        recommendAreas.tb = getIntersectionVisibleArea(
           nextOffsetX,
           tmpNextOffsetY,
-        );
-        const newVisibleRecommendArea = getIntersectionVisibleArea(
-          nextOffsetX,
-          tmpNextOffsetY,
-          visibleRegionArea,
+          visibleRegionArea
         );
 
-        if (
-          // Of course use larger one
-          newVisibleArea > originIntersectionVisibleArea ||
-          (newVisibleArea === originIntersectionVisibleArea &&
-            (!isVisibleFirst ||
-              // Choose recommend one
-              newVisibleRecommendArea >= originIntersectionRecommendArea))
-        ) {
-          prevFlipRef.current.tb = true;
-          nextOffsetY = tmpNextOffsetY;
-          popupOffsetY = -popupOffsetY;
+        // Store potential offsets
+        potentialOffsets.tb = {
+          offsetX: nextOffsetX,
+          offsetY: tmpNextOffsetY,
+          popupOffsetX,
+          popupOffsetY: -popupOffsetY
+        };
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
-          ];
-        } else {
-          prevFlipRef.current.tb = false;
-        }
+        // Mark that tb flip needs to be checked
+        flipRequirements.tb = true;
       }
 
       // >>>>>>>>>> Left & Right
@@ -511,14 +531,14 @@ export default function useAlign(
       // >>>>> Flip
       const sameLR = popupPoints[1] === targetPoints[1];
 
-      // Right to Left
+      // Check Right to Left flip
       if (
         needAdjustX &&
         popupPoints[1] === 'l' &&
         (nextPopupRight > adjustCheckVisibleArea.right ||
           prevFlipRef.current.rl)
       ) {
-        let tmpNextOffsetX: number = nextOffsetX;
+        let tmpNextOffsetX = nextOffsetX;
 
         if (sameLR) {
           tmpNextOffsetX -= popupWidth - targetWidth;
@@ -527,44 +547,37 @@ export default function useAlign(
             targetAlignPointTL.x - popupAlignPointBR.x - popupOffsetX;
         }
 
-        const newVisibleArea = getIntersectionVisibleArea(
+        // Calculate potential visible area
+        visibleAreas.rl = getIntersectionVisibleArea(
+          tmpNextOffsetX,
+          nextOffsetY
+        );
+        recommendAreas.rl = getIntersectionVisibleArea(
           tmpNextOffsetX,
           nextOffsetY,
-        );
-        const newVisibleRecommendArea = getIntersectionVisibleArea(
-          tmpNextOffsetX,
-          nextOffsetY,
-          visibleRegionArea,
+          visibleRegionArea
         );
 
-        if (
-          // Of course use larger one
-          newVisibleArea > originIntersectionVisibleArea ||
-          (newVisibleArea === originIntersectionVisibleArea &&
-            (!isVisibleFirst ||
-              // Choose recommend one
-              newVisibleRecommendArea >= originIntersectionRecommendArea))
-        ) {
-          prevFlipRef.current.rl = true;
-          nextOffsetX = tmpNextOffsetX;
-          popupOffsetX = -popupOffsetX;
+        // Store potential offsets
+        potentialOffsets.rl = {
+          offsetX: tmpNextOffsetX,
+          offsetY: nextOffsetY,
+          popupOffsetX: -popupOffsetX,
+          popupOffsetY
+        };
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
-          ];
-        } else {
-          prevFlipRef.current.rl = false;
-        }
+        // Mark that rl flip needs to be checked
+        flipRequirements.rl = true;
       }
 
-      // Left to Right
+      // Check Left to Right flip
       if (
         needAdjustX &&
         popupPoints[1] === 'r' &&
-        (nextPopupX < adjustCheckVisibleArea.left || prevFlipRef.current.lr)
+        (nextPopupX < adjustCheckVisibleArea.left ||
+          prevFlipRef.current.lr)
       ) {
-        let tmpNextOffsetX: number = nextOffsetX;
+        let tmpNextOffsetX = nextOffsetX;
 
         if (sameLR) {
           tmpNextOffsetX += popupWidth - targetWidth;
@@ -573,40 +586,155 @@ export default function useAlign(
             targetAlignPointBR.x - popupAlignPointTL.x - popupOffsetX;
         }
 
-        const newVisibleArea = getIntersectionVisibleArea(
+        // Calculate potential visible area
+        visibleAreas.lr = getIntersectionVisibleArea(
+          tmpNextOffsetX,
+          nextOffsetY
+        );
+        recommendAreas.lr = getIntersectionVisibleArea(
           tmpNextOffsetX,
           nextOffsetY,
-        );
-        const newVisibleRecommendArea = getIntersectionVisibleArea(
-          tmpNextOffsetX,
-          nextOffsetY,
-          visibleRegionArea,
+          visibleRegionArea
         );
 
-        if (
-          // Of course use larger one
-          newVisibleArea > originIntersectionVisibleArea ||
-          (newVisibleArea === originIntersectionVisibleArea &&
-            (!isVisibleFirst ||
-              // Choose recommend one
-              newVisibleRecommendArea >= originIntersectionRecommendArea))
-        ) {
-          prevFlipRef.current.lr = true;
-          nextOffsetX = tmpNextOffsetX;
-          popupOffsetX = -popupOffsetX;
+        // Store potential offsets
+        potentialOffsets.lr = {
+          offsetX: tmpNextOffsetX,
+          offsetY: nextOffsetY,
+          popupOffsetX: -popupOffsetX,
+          popupOffsetY
+        };
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
-          ];
-        } else {
-          prevFlipRef.current.lr = false;
+        // Mark that lr flip needs to be checked
+        flipRequirements.lr = true;
+      }
+
+      // Choose priority order based on the scene
+      // Simple logic to determine if it's a vertical priority scene
+      // This can be adjusted based on actual requirements
+      const isVerticalPriorityScene = Math.abs(popupHeight - targetHeight) >
+        Math.abs(popupWidth - targetWidth);
+
+      const priorityOrder = getPriorityOrder(isVerticalPriorityScene);
+
+      // Create copies of final point information
+      const finalPopupPoints = [...popupPoints];
+      const finalTargetPoints = [...targetPoints];
+
+      // Flag for whether flip has been applied
+      let hasFlipped = false;
+
+      // Reset popupOffsetX and popupOffsetY to initial values
+      let finalOffsetX = nextOffsetX;
+      let finalOffsetY = nextOffsetY;
+      let finalPopupOffsetX = popupOffsetX;
+      let finalPopupOffsetY = popupOffsetY;
+
+      // Process flips according to priority order
+      let verticalFlipped = false;  // Whether vertical direction flip has been applied
+      let horizontalFlipped = false;  // Whether horizontal direction flip has been applied
+
+      // We need to find the best flip solution for vertical and horizontal directions separately
+      let bestVerticalDirection = '';
+      let bestHorizontalDirection = '';
+      let bestVerticalVisibleArea = 0;
+      let bestHorizontalVisibleArea = 0;
+
+      // Find the best vertical and horizontal flips
+      for (const direction of priorityOrder) {
+        // Skip direction types that have already been processed
+        if ((direction === 'tb' || direction === 'bt') && verticalFlipped) {
+          continue;
+        }
+        if ((direction === 'lr' || direction === 'rl') && horizontalFlipped) {
+          continue;
+        }
+
+        // If this direction needs to be flipped
+        if (flipRequirements[direction]) {
+          // Check if the flip provides better visibility
+          const newVisibleArea = visibleAreas[direction];
+          const newRecommendArea = recommendAreas[direction];
+
+          const betterVisibility =
+            // Larger visible area
+            newVisibleArea > originIntersectionVisibleArea ||
+            // Same visible area, but in non-visibleFirst mode, or has larger recommended area
+            (newVisibleArea === originIntersectionVisibleArea &&
+              (!isVisibleFirst || newRecommendArea >= originIntersectionRecommendArea));
+
+          // If this direction's flip can provide better visibility, record it
+          if (betterVisibility) {
+            prevFlipRef.current[direction] = true;
+
+            // Record by direction type
+            if (direction === 'tb' || direction === 'bt') {
+              if (newVisibleArea > bestVerticalVisibleArea) {
+                bestVerticalDirection = direction;
+                bestVerticalVisibleArea = newVisibleArea;
+                verticalFlipped = true;
+              }
+            } else if (direction === 'lr' || direction === 'rl') {
+              if (newVisibleArea > bestHorizontalVisibleArea) {
+                bestHorizontalDirection = direction;
+                bestHorizontalVisibleArea = newVisibleArea;
+                horizontalFlipped = true;
+              }
+            }
+          } else {
+            prevFlipRef.current[direction] = false;
+          }
         }
       }
 
-      // ============================ Shift ============================
+      // Apply the best vertical direction flip
+      if (verticalFlipped && bestVerticalDirection) {
+        const direction = bestVerticalDirection;
+
+        // Update vertical direction offsets
+        finalOffsetY = potentialOffsets[direction].offsetY;
+        finalPopupOffsetY = potentialOffsets[direction].popupOffsetY;
+
+        // Update vertical direction point information
+        finalPopupPoints[0] = reverseMap[popupPoints[0]] || 'c';
+        finalTargetPoints[0] = reverseMap[targetPoints[0]] || 'c';
+      }
+
+      // Apply the best horizontal direction flip
+      if (horizontalFlipped && bestHorizontalDirection) {
+        const direction = bestHorizontalDirection;
+
+        // Update horizontal direction offsets
+        finalOffsetX = potentialOffsets[direction].offsetX;
+        finalPopupOffsetX = potentialOffsets[direction].popupOffsetX;
+
+        // Update horizontal direction point information
+        finalPopupPoints[1] = reverseMap[popupPoints[1]] || 'c';
+        finalTargetPoints[1] = reverseMap[targetPoints[1]] || 'c';
+      }
+
+      // Set whether any direction has been flipped
+      hasFlipped = verticalFlipped || horizontalFlipped;
+
+      // If flips have been applied, update alignment information
+      if (hasFlipped) {
+        // Update offsets
+        nextOffsetX = finalOffsetX;
+        nextOffsetY = finalOffsetY;
+        popupOffsetX = finalPopupOffsetX;
+        popupOffsetY = finalPopupOffsetY;
+
+        // Update point information
+        nextAlignInfo.points = [
+          finalPopupPoints.join(''),
+          finalTargetPoints.join('')
+        ];
+      }
+
+      // Update popup position
       syncNextPopupPosition();
 
+      // ============================ Shift ============================
       const numShiftX = shiftX === true ? 0 : shiftX;
       if (typeof numShiftX === 'number') {
         // Left
