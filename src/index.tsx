@@ -644,6 +644,10 @@ export function generateTrigger(
       cloneProps.className = classNames(originChildProps.className, className);
     }
 
+    // ============================ Perf ============================
+    const renderedRef = React.useRef(false);
+    renderedRef.current ||= forceRender || mergedOpen || inMotion;
+
     // =========================== Render ===========================
     const mergedChildrenProps = {
       ...originChildProps,
@@ -702,55 +706,57 @@ export function generateTrigger(
             {triggerNode}
           </TriggerWrapper>
         </ResizeObserver>
-        <TriggerContext.Provider value={context}>
-          <Popup
-            portal={PortalComponent}
-            ref={setPopupRef}
-            prefixCls={prefixCls}
-            popup={popup}
-            className={classNames(popupClassName, alignedClassName)}
-            style={popupStyle}
-            target={targetEle}
-            onMouseEnter={onPopupMouseEnter}
-            onMouseLeave={onPopupMouseLeave}
-            // https://github.com/ant-design/ant-design/issues/43924
-            onPointerEnter={onPopupMouseEnter}
-            zIndex={zIndex}
-            // Open
-            open={mergedOpen}
-            keepDom={inMotion}
-            fresh={fresh}
-            // Click
-            onClick={onPopupClick}
-            onPointerDownCapture={onPopupPointerDown}
-            // Mask
-            mask={mask}
-            // Motion
-            motion={mergePopupMotion}
-            maskMotion={mergeMaskMotion}
-            onVisibleChanged={onVisibleChanged}
-            onPrepare={onPrepare}
-            // Portal
-            forceRender={forceRender}
-            autoDestroy={mergedAutoDestroy}
-            getPopupContainer={getPopupContainer}
-            // Arrow
-            align={alignInfo}
-            arrow={innerArrow}
-            arrowPos={arrowPos}
-            // Align
-            ready={ready}
-            offsetX={offsetX}
-            offsetY={offsetY}
-            offsetR={offsetR}
-            offsetB={offsetB}
-            onAlign={triggerAlign}
-            // Stretch
-            stretch={stretch}
-            targetWidth={targetWidth / scaleX}
-            targetHeight={targetHeight / scaleY}
-          />
-        </TriggerContext.Provider>
+        {renderedRef.current && (
+          <TriggerContext.Provider value={context}>
+            <Popup
+              portal={PortalComponent}
+              ref={setPopupRef}
+              prefixCls={prefixCls}
+              popup={popup}
+              className={classNames(popupClassName, alignedClassName)}
+              style={popupStyle}
+              target={targetEle}
+              onMouseEnter={onPopupMouseEnter}
+              onMouseLeave={onPopupMouseLeave}
+              // https://github.com/ant-design/ant-design/issues/43924
+              onPointerEnter={onPopupMouseEnter}
+              zIndex={zIndex}
+              // Open
+              open={mergedOpen}
+              keepDom={inMotion}
+              fresh={fresh}
+              // Click
+              onClick={onPopupClick}
+              onPointerDownCapture={onPopupPointerDown}
+              // Mask
+              mask={mask}
+              // Motion
+              motion={mergePopupMotion}
+              maskMotion={mergeMaskMotion}
+              onVisibleChanged={onVisibleChanged}
+              onPrepare={onPrepare}
+              // Portal
+              forceRender={forceRender}
+              autoDestroy={mergedAutoDestroy}
+              getPopupContainer={getPopupContainer}
+              // Arrow
+              align={alignInfo}
+              arrow={innerArrow}
+              arrowPos={arrowPos}
+              // Align
+              ready={ready}
+              offsetX={offsetX}
+              offsetY={offsetY}
+              offsetR={offsetR}
+              offsetB={offsetB}
+              onAlign={triggerAlign}
+              // Stretch
+              stretch={stretch}
+              targetWidth={targetWidth / scaleX}
+              targetHeight={targetHeight / scaleY}
+            />
+          </TriggerContext.Provider>
+        )}
       </>
     );
   });
