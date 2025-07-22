@@ -76,18 +76,23 @@ export function getWin(ele: HTMLElement) {
  */
 export function collectScroller(ele: HTMLElement) {
   const scrollerList: HTMLElement[] = [];
-  let current = ele?.parentElement;
+  let current = ele?.parentNode;
 
   const scrollStyle = ['hidden', 'scroll', 'clip', 'auto'];
 
   while (current) {
-    const { overflowX, overflowY, overflow } =
-      getWin(current).getComputedStyle(current);
-    if ([overflowX, overflowY, overflow].some((o) => scrollStyle.includes(o))) {
-      scrollerList.push(current);
+    if (current instanceof HTMLElement) {
+      const { overflowX, overflowY, overflow } =
+        getWin(current).getComputedStyle(current);
+      if ([overflowX, overflowY, overflow].some((o) => scrollStyle.includes(o))) {
+        scrollerList.push(current);
+      }
+    } else if (current instanceof ShadowRoot) {
+      current = current.host;
+      continue;
     }
 
-    current = current.parentElement;
+    current = current.parentNode;
   }
 
   return scrollerList;
