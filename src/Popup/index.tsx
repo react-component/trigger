@@ -156,7 +156,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     }
 
     return [mask, maskMotion, motion];
-  }, [mobile]);
+  }, [mobile, mask, maskMotion, motion]);
 
   // ======================= Container ========================
   const getPopupContainerNeedParams = getPopupContainer?.length > 0;
