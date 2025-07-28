@@ -140,4 +140,22 @@ describe('Trigger.Motion', () => {
     );
     expect(document.querySelector('.little')).toBeTruthy();
   });
+
+  it('keep motion config update when motion ready', () => {
+    const genTrigger = (props) => (
+      <Trigger popup={<div />} popupMotion={{}} popupVisible {...props}>
+        <span />
+      </Trigger>
+    );
+
+    const { rerender } = render(genTrigger());
+    expect(document.querySelector('.bamboo')).toBeFalsy();
+
+    rerender(
+      genTrigger({
+        popupMotion: { motionName: 'bamboo' },
+      }),
+    );
+    expect(document.querySelector('.bamboo')).toBeTruthy();
+  });
 });
