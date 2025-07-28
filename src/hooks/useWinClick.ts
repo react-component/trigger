@@ -53,8 +53,8 @@ export default function useWinClick(
       }
 
       // Warning if target and popup not in same root
-      if (process.env.NODE_ENV !== 'production') {
-        const targetRoot = targetEle?.getRootNode?.();
+      if (process.env.NODE_ENV !== 'production' && targetEle) {
+        const targetRoot = targetEle.getRootNode?.();
         const popupRoot = popupEle.getRootNode?.();
 
         warning(
