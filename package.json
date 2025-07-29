@@ -58,7 +58,7 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@umijs/fabric": "^4.0.1",
-    "cross-env": "^7.0.1",
+    "cross-env": "^10.0.0",
     "dumi": "^2.1.0",
     "eslint": "^8.51.0",
     "father": "^4.0.0",
