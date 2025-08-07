@@ -568,7 +568,7 @@ export function generateTrigger(
     const hoverToHide = hideActions.has('hover');
 
     let onPopupMouseEnter: React.MouseEventHandler<HTMLDivElement>;
-    let onPopupMouseLeave: VoidFunction;
+    let onPopupMouseLeave: React.MouseEventHandler<HTMLDivElement>;
 
     const ignoreMouseTrigger = () => {
       return touchedRef.current;
@@ -629,8 +629,11 @@ export function generateTrigger(
         ignoreMouseTrigger,
       );
 
-      onPopupMouseLeave = () => {
-        triggerOpen(false, mouseLeaveDelay);
+      onPopupMouseLeave = (event: React.MouseEvent) => {
+        // only trigger close when mouse leave popup
+        if (popupEle?.contains(event.target as HTMLElement)) {
+          triggerOpen(false, mouseLeaveDelay);
+        }
       };
     }
 
