@@ -596,7 +596,8 @@ export function generateTrigger(
       );
 
       onPopupMouseEnter = (event) => {
-        // Only trigger re-open when popup is visible
+        // Only trigger re-open when popup is visible or in motion
+        // and ensure the mouse is entering the popup area
         if (
           (mergedOpen || inMotion) &&
           popupEle?.contains(event.target as HTMLElement)
