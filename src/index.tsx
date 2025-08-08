@@ -630,7 +630,7 @@ export function generateTrigger(
       );
 
       onPopupMouseLeave = (event: React.MouseEvent) => {
-        // only trigger close when mouse leave popup
+        // fix issue: https://github.com/ant-design/ant-design/issues/54496
         if (popupEle?.contains(event.target as HTMLElement)) {
           triggerOpen(false, mouseLeaveDelay);
         }
