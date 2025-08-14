@@ -576,6 +576,8 @@ export function generateTrigger(
 
     if (hoverToShow) {
       const onMouseEnterCallback = (event: React.MouseEvent) => {
+         // Clear any delayed close operations
+        clearDelay();
         setMousePosByEvent(event);
       };
 
@@ -596,6 +598,9 @@ export function generateTrigger(
       );
 
       onPopupMouseEnter = (event) => {
+        // Always clear the delay to ensure the mouse returns to the menu to cancel the close
+        clearDelay();
+
         // Only trigger re-open when popup is visible or in motion
         // and ensure the mouse is entering the popup area
         if (
@@ -630,11 +635,8 @@ export function generateTrigger(
         ignoreMouseTrigger,
       );
 
-      onPopupMouseLeave = (event: React.MouseEvent) => {
-        // fix issue: https://github.com/ant-design/ant-design/issues/54496
-        if (popupEle?.contains(event.target as HTMLElement)) {
-          triggerOpen(false, mouseLeaveDelay);
-        }
+      onPopupMouseLeave = () => {
+        triggerOpen(false, mouseLeaveDelay);
       };
     }
 
