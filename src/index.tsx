@@ -9,8 +9,8 @@ import useId from '@rc-component/util/lib/hooks/useId';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
-import type { TriggerContextProps } from './context';
-import TriggerContext from './context';
+import type { TriggerContextProps, UniqueContextProps } from './context';
+import TriggerContext, { UniqueContext } from './context';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
 import useWatch from './hooks/useWatch';
@@ -208,6 +208,9 @@ export function generateTrigger(
       };
     }, [parentContext]);
 
+    // ======================== UniqueContext =========================
+    const uniqueContext = React.useContext(UniqueContext);
+
     // =========================== Popup ============================
     const id = useId();
     const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
@@ -299,6 +302,16 @@ export function generateTrigger(
     lastTriggerRef.current = [];
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
+      // If UniqueContext exists, delegate show/hide to Provider
+      if (uniqueContext) {
+        if (nextOpen && targetEle) {
+          uniqueContext.show(targetEle);
+        } else {
+          uniqueContext.hide(targetEle);
+        }
+        return;
+      }
+
       setMergedOpen(nextOpen);
 
       // Enter or Pointer will both trigger open state change
