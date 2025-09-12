@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { UniqueContext, type UniqueContextProps } from '../context';
+import useDelay from '../hooks/useDelay';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -7,37 +8,18 @@ export interface UniqueProviderProps {
 
 const UniqueProvider = ({ children }: UniqueProviderProps) => {
   const [target, setTarget] = React.useState<HTMLElement | null>(null);
-  const delayRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearDelay = () => {
-    if (delayRef.current) {
-      clearTimeout(delayRef.current);
-      delayRef.current = null;
-    }
-  };
+  const delayInvoke = useDelay();
 
   const show = (targetElement: HTMLElement, delay: number) => {
-    clearDelay();
-    
-    if (delay === 0) {
+    delayInvoke(() => {
       setTarget(targetElement);
-    } else {
-      delayRef.current = setTimeout(() => {
-        setTarget(targetElement);
-      }, delay * 1000);
-    }
+    }, delay);
   };
 
   const hide = (targetElement: HTMLElement, delay: number) => {
-    clearDelay();
-    
-    if (delay === 0) {
+    delayInvoke(() => {
       setTarget(null);
-    } else {
-      delayRef.current = setTimeout(() => {
-        setTarget(null);
-      }, delay * 1000);
-    }
+    }, delay);
   };
 
   const contextValue = React.useMemo<UniqueContextProps>(() => ({

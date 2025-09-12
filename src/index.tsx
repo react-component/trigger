@@ -13,6 +13,7 @@ import type { TriggerContextProps } from './context';
 import TriggerContext, { UniqueContext } from './context';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
+import useDelay from './hooks/useDelay';
 import useWatch from './hooks/useWatch';
 import useWinClick from './hooks/useWinClick';
 import type {
@@ -303,17 +304,7 @@ export function generateTrigger(
     const lastTriggerRef = React.useRef<boolean[]>([]);
     lastTriggerRef.current = [];
 
-    const internalTriggerOpen = useEvent((nextOpen: boolean, delay: number = 0) => {
-      // If UniqueContext exists, delegate show/hide to Provider
-      if (uniqueContext) {
-        if (nextOpen && targetEle) {
-          uniqueContext.show(targetEle, delay);
-        } else {
-          uniqueContext.hide(targetEle, delay);
-        }
-        return;
-      }
-
+    const internalTriggerOpen = useEvent((nextOpen: boolean) => {
       setMergedOpen(nextOpen);
 
       // Enter or Pointer will both trigger open state change
@@ -330,31 +321,23 @@ export function generateTrigger(
     });
 
     // Trigger for delay
-    const delayRef = React.useRef<ReturnType<typeof setTimeout>>(null);
-
-    const clearDelay = () => {
-      clearTimeout(delayRef.current);
-    };
+    const delayInvoke = useDelay();
 
     const triggerOpen = (nextOpen: boolean, delay = 0) => {
       // If UniqueContext exists, pass delay to Provider instead of handling it internally
       if (uniqueContext) {
-        internalTriggerOpen(nextOpen, delay);
+        if (nextOpen && targetEle) {
+          uniqueContext.show(targetEle, delay);
+        } else {
+          uniqueContext.hide(targetEle, delay);
+        }
         return;
       }
 
-      clearDelay();
-
-      if (delay === 0) {
+      delayInvoke(() => {
         internalTriggerOpen(nextOpen);
-      } else {
-        delayRef.current = setTimeout(() => {
-          internalTriggerOpen(nextOpen);
-        }, delay * 1000);
-      }
+      }, delay);
     };
-
-    React.useEffect(() => clearDelay, []);
 
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
