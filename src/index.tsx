@@ -327,7 +327,24 @@ export function generateTrigger(
       // If UniqueContext exists, pass delay to Provider instead of handling it internally
       if (uniqueContext) {
         if (nextOpen && targetEle) {
-          uniqueContext.show(popup, targetEle, delay);
+          uniqueContext.show({
+            popup,
+            target: targetEle,
+            delay,
+            prefixCls,
+            popupClassName,
+            popupStyle,
+            popupPlacement,
+            builtinPlacements,
+            popupAlign,
+            zIndex,
+            mask,
+            maskClosable,
+            popupMotion,
+            maskMotion,
+            arrow,
+            getPopupContainer,
+          });
         } else {
           uniqueContext.hide(delay);
         }
