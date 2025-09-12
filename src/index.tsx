@@ -327,9 +327,9 @@ export function generateTrigger(
       // If UniqueContext exists, pass delay to Provider instead of handling it internally
       if (uniqueContext) {
         if (nextOpen && targetEle) {
-          uniqueContext.show(targetEle, delay);
+          uniqueContext.show(popup, targetEle, delay);
         } else {
-          uniqueContext.hide(targetEle, delay);
+          uniqueContext.hide(delay);
         }
         return;
       }
@@ -724,7 +724,7 @@ export function generateTrigger(
         >
           {triggerNode}
         </ResizeObserver>
-        {rendedRef.current && (
+        {rendedRef.current && !uniqueContext && (
           <TriggerContext.Provider value={context}>
             <Popup
               portal={PortalComponent}

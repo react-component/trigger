@@ -10,9 +10,9 @@ export default function useDelay() {
     }
   };
 
-  const delayInvoke = (callback: () => void, delay: number) => {
+  const delayInvoke = (callback: VoidFunction, delay: number) => {
     clearDelay();
-    
+
     if (delay === 0) {
       callback();
     } else {

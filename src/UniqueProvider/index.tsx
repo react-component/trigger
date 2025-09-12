@@ -8,25 +8,34 @@ export interface UniqueProviderProps {
 
 const UniqueProvider = ({ children }: UniqueProviderProps) => {
   const [target, setTarget] = React.useState<HTMLElement | null>(null);
+  const [currentNode, setCurrentNode] = React.useState<React.ReactNode>(null);
+
+  // ========================== Register ==========================
   const delayInvoke = useDelay();
 
-  const show = (targetElement: HTMLElement, delay: number) => {
+  const show = (node: React.ReactNode, targetElement: HTMLElement, delay: number) => {
     delayInvoke(() => {
+      setCurrentNode(node);
       setTarget(targetElement);
     }, delay);
   };
 
-  const hide = (targetElement: HTMLElement, delay: number) => {
+  const hide = (delay: number) => {
     delayInvoke(() => {
       setTarget(null);
+      setCurrentNode(null);
     }, delay);
   };
 
-  const contextValue = React.useMemo<UniqueContextProps>(() => ({
-    show,
-    hide,
-  }), []);
+  const contextValue = React.useMemo<UniqueContextProps>(
+    () => ({
+      show,
+      hide,
+    }),
+    [],
+  );
 
+  // =========================== Render ===========================
   return (
     <UniqueContext.Provider value={contextValue}>
       {children}
