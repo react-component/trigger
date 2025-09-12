@@ -9,6 +9,7 @@ import TriggerContext, {
 import useDelay from '../hooks/useDelay';
 import useAlign from '../hooks/useAlign';
 import Popup from '../Popup';
+import { useEvent } from '@rc-component/util';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -36,8 +37,18 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   const hide = (delay: number) => {
     delayInvoke(() => {
       setOpen(false);
+      // 不要立即清空 target, currentNode, options，等动画结束后再清空
     }, delay);
   };
+
+  // 动画完成后的回调
+  const onVisibleChanged = useEvent((visible: boolean) => {
+    if (!visible) {
+      setTarget(null);
+      setCurrentNode(null);
+      setOptions(null);
+    }
+  });
 
   // =========================== Align ============================
   const [
@@ -48,9 +59,9 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
     offsetB,
     arrowX,
     arrowY, // scaleX - not used in UniqueProvider
+    ,
+    ,
     // scaleY - not used in UniqueProvider
-    ,
-    ,
     alignInfo,
     onAlign,
   ] = useAlign(
@@ -95,15 +106,16 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
           <Popup
             ref={setPopupEle}
             portal={Portal}
-            prefixCls={options.prefixCls || 'rc-trigger-popup'}
+            prefixCls={options.prefixCls}
             popup={currentNode}
             className={options.popupClassName}
             style={options.popupStyle}
             target={target}
             open={open}
-            keepDom={false}
+            keepDom={true}
             fresh={true}
-            onVisibleChanged={() => {}}
+            autoDestroy={false}
+            onVisibleChanged={onVisibleChanged}
             ready={ready}
             offsetX={offsetX}
             offsetY={offsetY}

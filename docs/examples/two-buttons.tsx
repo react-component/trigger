@@ -21,13 +21,9 @@ const builtinPlacements = {
   },
 };
 
-function getPopupContainer(trigger) {
-  return trigger.parentNode;
-}
-
 const MovingPopupDemo = () => {
   const [useUniqueProvider, setUseUniqueProvider] = useState(true);
-  
+
   const content = (
     <div style={{ margin: 100 }}>
       <div style={{ marginBottom: 20 }}>
@@ -42,10 +38,10 @@ const MovingPopupDemo = () => {
       </div>
       <div style={{ display: 'flex', gap: 20 }}>
         <Trigger
+          mouseLeaveDelay={0.3}
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
-          getPopupContainer={getPopupContainer}
           popupMotion={{
             motionName: 'rc-trigger-popup-zoom',
           }}
@@ -59,12 +55,12 @@ const MovingPopupDemo = () => {
         >
           <button type="button">左侧按钮</button>
         </Trigger>
-        
+
         <Trigger
+          mouseLeaveDelay={0.3}
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
-          getPopupContainer={getPopupContainer}
           popupMotion={{
             motionName: 'rc-trigger-popup-zoom',
           }}
@@ -81,8 +77,12 @@ const MovingPopupDemo = () => {
       </div>
     </div>
   );
-  
-  return useUniqueProvider ? <UniqueProvider>{content}</UniqueProvider> : content;
+
+  return useUniqueProvider ? (
+    <UniqueProvider>{content}</UniqueProvider>
+  ) : (
+    content
+  );
 };
 
 export default MovingPopupDemo;
