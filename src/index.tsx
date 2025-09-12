@@ -9,7 +9,7 @@ import useId from '@rc-component/util/lib/hooks/useId';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
-import type { TriggerContextProps, UniqueContextProps } from './context';
+import type { TriggerContextProps } from './context';
 import TriggerContext, { UniqueContext } from './context';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
@@ -30,6 +30,8 @@ export type {
   ArrowTypeOuter as ArrowType,
   BuildInPlacements,
 };
+
+export { default as UniqueProvider } from './UniqueProvider';
 
 export interface TriggerRef {
   nativeElement: HTMLElement;
@@ -301,13 +303,13 @@ export function generateTrigger(
     const lastTriggerRef = React.useRef<boolean[]>([]);
     lastTriggerRef.current = [];
 
-    const internalTriggerOpen = useEvent((nextOpen: boolean) => {
+    const internalTriggerOpen = useEvent((nextOpen: boolean, delay: number = 0) => {
       // If UniqueContext exists, delegate show/hide to Provider
       if (uniqueContext) {
         if (nextOpen && targetEle) {
-          uniqueContext.show(targetEle);
+          uniqueContext.show(targetEle, delay);
         } else {
-          uniqueContext.hide(targetEle);
+          uniqueContext.hide(targetEle, delay);
         }
         return;
       }
@@ -335,6 +337,12 @@ export function generateTrigger(
     };
 
     const triggerOpen = (nextOpen: boolean, delay = 0) => {
+      // If UniqueContext exists, pass delay to Provider instead of handling it internally
+      if (uniqueContext) {
+        internalTriggerOpen(nextOpen, delay);
+        return;
+      }
+
       clearDelay();
 
       if (delay === 0) {

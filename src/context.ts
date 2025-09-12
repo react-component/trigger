@@ -11,8 +11,8 @@ export default TriggerContext;
 
 // ==================== Unique ====================
 export interface UniqueContextProps {
-  show: (target: HTMLElement) => void;
-  hide: (target: HTMLElement) => void;
+  show: (target: HTMLElement, delay: number) => void;
+  hide: (target: HTMLElement, delay: number) => void;
 }
 
 export const UniqueContext = React.createContext<UniqueContextProps | null>(
