@@ -18,7 +18,7 @@ export interface UniqueProviderProps {
 }
 
 const UniqueProvider = ({ children }: UniqueProviderProps) => {
-  const [trigger, open, options] = useTargetState();
+  const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
 
   // =========================== Popup ============================
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
@@ -53,6 +53,8 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
 
   // 动画完成后的回调
   const onVisibleChanged = useEvent((visible: boolean) => {
+    // 调用 useTargetState 的回调来处理动画状态
+    onTargetVisibleChanged(visible);
     // if (!visible) {
     //   setTarget(null);
     //   setCurrentNode(null);
