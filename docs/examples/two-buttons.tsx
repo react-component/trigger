@@ -27,6 +27,16 @@ const MovingPopupDemo = () => {
   const [useUniqueProvider, setUseUniqueProvider] = useState(true);
   const [triggerControl, setTriggerControl] = useState('none'); // 'button1', 'button2', 'none'
 
+  const getVisible = (name: string) => {
+    if (triggerControl === 'none') {
+      return undefined;
+    }
+    if (triggerControl === name) {
+      return true;
+    }
+    return false;
+  };
+
   const content = (
     <div style={{ margin: 100 }}>
       <div style={{ display: 'flex', gap: 20 }}>
@@ -35,7 +45,7 @@ const MovingPopupDemo = () => {
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
-          popupVisible={triggerControl === 'button1' || undefined}
+          popupVisible={getVisible('button1')}
           popupMotion={{
             motionName: 'rc-trigger-popup-zoom',
           }}
@@ -55,7 +65,7 @@ const MovingPopupDemo = () => {
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
-          popupVisible={triggerControl === 'button2' || undefined}
+          popupVisible={getVisible('button2')}
           popupMotion={{
             motionName: 'rc-trigger-popup-zoom',
           }}

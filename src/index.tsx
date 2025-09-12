@@ -193,6 +193,7 @@ export function generateTrigger(
     } = props;
 
     const mergedAutoDestroy = autoDestroy || false;
+    const openUncontrolled = popupVisible === undefined;
 
     // =========================== Mobile ===========================
     const isMobile = !!mobile;
@@ -289,7 +290,7 @@ export function generateTrigger(
 
     // We use effect sync here in case `popupVisible` back to `undefined`
     const setMergedOpen = useEvent((nextOpen: boolean) => {
-      if (popupVisible === undefined) {
+      if (openUncontrolled) {
         setInternalOpen(nextOpen);
       }
     });
@@ -297,6 +298,38 @@ export function generateTrigger(
     useLayoutEffect(() => {
       setInternalOpen(popupVisible || false);
     }, [popupVisible]);
+
+    // Extract common options for UniqueProvider
+    const getUniqueOptions = useEvent((delay: number = 0) => ({
+      popup,
+      target: targetEle,
+      delay,
+      prefixCls,
+      popupClassName,
+      popupStyle,
+      popupPlacement,
+      builtinPlacements,
+      popupAlign,
+      zIndex,
+      mask,
+      maskClosable,
+      popupMotion,
+      maskMotion,
+      arrow,
+      getPopupContainer,
+    }));
+
+    // Handle controlled state changes for UniqueProvider
+    // Only sync to UniqueProvider when it's controlled mode
+    useLayoutEffect(() => {
+      if (uniqueContext && targetEle && !openUncontrolled) {
+        if (mergedOpen) {
+          uniqueContext.show(getUniqueOptions(0));
+        } else {
+          uniqueContext.hide(0);
+        }
+      }
+    }, [mergedOpen]);
 
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
@@ -324,27 +357,19 @@ export function generateTrigger(
     const delayInvoke = useDelay();
 
     const triggerOpen = (nextOpen: boolean, delay = 0) => {
-      // If UniqueContext exists, pass delay to Provider instead of handling it internally
-      if (uniqueContext) {
-        if (nextOpen && targetEle) {
-          uniqueContext.show({
-            popup,
-            target: targetEle,
-            delay,
-            prefixCls,
-            popupClassName,
-            popupStyle,
-            popupPlacement,
-            builtinPlacements,
-            popupAlign,
-            zIndex,
-            mask,
-            maskClosable,
-            popupMotion,
-            maskMotion,
-            arrow,
-            getPopupContainer,
-          });
+      // If it's controlled mode, always use internal trigger logic
+      // UniqueProvider will be synced through useLayoutEffect
+      if (popupVisible !== undefined) {
+        delayInvoke(() => {
+          internalTriggerOpen(nextOpen);
+        }, delay);
+        return;
+      }
+
+      // If UniqueContext exists and not controlled, pass delay to Provider instead of handling it internally
+      if (uniqueContext && openUncontrolled) {
+        if (nextOpen) {
+          uniqueContext.show(getUniqueOptions(delay));
         } else {
           uniqueContext.hide(delay);
         }
