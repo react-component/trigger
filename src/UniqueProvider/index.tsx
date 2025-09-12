@@ -35,6 +35,14 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
     [],
   );
 
+  /**
+   * TODO: 参考 index.tsx 的逻辑，增加 Popup 支持：
+   * <TriggerContext.Provider value={context}>
+            <Popup ...
+
+    如果渲染需要的 props 不够，可以给 UniqueContextProps 里修改定义以实现需求。
+   */
+
   // =========================== Render ===========================
   return (
     <UniqueContext.Provider value={contextValue}>
