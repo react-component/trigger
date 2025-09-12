@@ -25,45 +25,42 @@ export default function useTargetState(): [
 
   const trigger = useEvent((nextOptions: UniqueShowOptions | false) => {
     if (nextOptions === false) {
-      // 隐藏时清除待处理的选项
+      // Clear pending options when hiding
       pendingOptionsRef.current = null;
       setOpen(false);
     } else {
       if (isAnimating && open) {
-        // 如果正在动画中（appear 或 enter），缓存新的 options
+        // If animating (appear or enter), cache new options
         pendingOptionsRef.current = nextOptions;
       } else {
-        // 没有动画或者是首次显示，直接应用
         setOpen(true);
+        // Use functional update to ensure re-render is always triggered
         setOptions(nextOptions);
         pendingOptionsRef.current = null;
+
+        // Only mark as animating when transitioning from closed to open
+        if (!open) {
+          setIsAnimating(true);
+        }
       }
     }
   });
 
   const onVisibleChanged = useEvent((visible: boolean) => {
     if (visible) {
-      // 动画进入完成，检查是否有待处理的选项
+      // Animation enter completed, check if there are pending options
       setIsAnimating(false);
       if (pendingOptionsRef.current) {
-        const pendingOptions = pendingOptionsRef.current;
+        // Apply pending options - Use functional update to ensure re-render is triggered
+        setOptions(pendingOptionsRef.current);
         pendingOptionsRef.current = null;
-        // 应用待处理的选项
-        setOptions(pendingOptions);
       }
     } else {
-      // 动画离开完成
+      // Animation leave completed
       setIsAnimating(false);
       pendingOptionsRef.current = null;
     }
   });
-
-  // 当开始显示时标记为动画中
-  React.useEffect(() => {
-    if (open && options) {
-      setIsAnimating(true);
-    }
-  }, [open, options]);
 
   return [trigger, open, options, onVisibleChanged];
 }

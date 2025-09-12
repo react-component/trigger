@@ -25,25 +25,17 @@ const builtinPlacements = {
 
 const MovingPopupDemo = () => {
   const [useUniqueProvider, setUseUniqueProvider] = useState(true);
+  const [triggerControl, setTriggerControl] = useState('none'); // 'button1', 'button2', 'none'
 
   const content = (
     <div style={{ margin: 100 }}>
-      <div style={{ marginBottom: 20 }}>
-        <label>
-          <input
-            type="checkbox"
-            checked={useUniqueProvider}
-            onChange={(e) => setUseUniqueProvider(e.target.checked)}
-          />
-          使用 UniqueProvider
-        </label>
-      </div>
       <div style={{ display: 'flex', gap: 20 }}>
         <Trigger
           mouseLeaveDelay={LEAVE_DELAY}
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
+          popupVisible={triggerControl === 'button1' || undefined}
           popupMotion={{
             motionName: 'rc-trigger-popup-zoom',
           }}
@@ -63,6 +55,7 @@ const MovingPopupDemo = () => {
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
+          popupVisible={triggerControl === 'button2' || undefined}
           popupMotion={{
             motionName: 'rc-trigger-popup-zoom',
           }}
@@ -76,6 +69,51 @@ const MovingPopupDemo = () => {
         >
           <button type="button">Right Button</button>
         </Trigger>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={useUniqueProvider}
+            onChange={(e) => setUseUniqueProvider(e.target.checked)}
+          />
+          使用 UniqueProvider
+        </label>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <div>Trigger 控制:</div>
+        <label>
+          <input
+            type="radio"
+            name="triggerControl"
+            value="button1"
+            checked={triggerControl === 'button1'}
+            onChange={(e) => setTriggerControl(e.target.value)}
+          />
+          Button 1 显示 Trigger
+        </label>
+        <label style={{ marginLeft: 20 }}>
+          <input
+            type="radio"
+            name="triggerControl"
+            value="button2"
+            checked={triggerControl === 'button2'}
+            onChange={(e) => setTriggerControl(e.target.value)}
+          />
+          Button 2 显示 Trigger
+        </label>
+        <label style={{ marginLeft: 20 }}>
+          <input
+            type="radio"
+            name="triggerControl"
+            value="none"
+            checked={triggerControl === 'none'}
+            onChange={(e) => setTriggerControl(e.target.value)}
+          />
+          都不受控 (Hover 控制)
+        </label>
       </div>
     </div>
   );

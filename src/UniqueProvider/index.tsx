@@ -47,13 +47,13 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   const hide = (delay: number) => {
     delayInvoke(() => {
       trigger(false);
-      // 不要立即清空 target, currentNode, options，等动画结束后再清空
+      // Don't clear target, currentNode, options immediately, wait until animation completes
     }, delay);
   };
 
-  // 动画完成后的回调
+  // Callback after animation completes
   const onVisibleChanged = useEvent((visible: boolean) => {
-    // 调用 useTargetState 的回调来处理动画状态
+    // Call useTargetState callback to handle animation state
     onTargetVisibleChanged(visible);
     // if (!visible) {
     //   setTarget(null);
