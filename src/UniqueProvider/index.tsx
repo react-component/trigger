@@ -7,6 +7,7 @@ import TriggerContext, {
   type UniqueShowOptions,
 } from '../context';
 import useDelay from '../hooks/useDelay';
+import useAlign from '../hooks/useAlign';
 import Popup from '../Popup';
 
 export interface UniqueProviderProps {
@@ -18,6 +19,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   const [target, setTarget] = React.useState<HTMLElement | null>(null);
   const [currentNode, setCurrentNode] = React.useState<React.ReactNode>(null);
   const [options, setOptions] = React.useState<UniqueShowOptions | null>(null);
+  const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
 
   // ========================== Register ==========================
   const delayInvoke = useDelay();
@@ -36,6 +38,31 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
       setOpen(false);
     }, delay);
   };
+
+  // =========================== Align ============================
+  const [
+    ready,
+    offsetX,
+    offsetY,
+    offsetR,
+    offsetB,
+    arrowX,
+    arrowY, // scaleX - not used in UniqueProvider
+    // scaleY - not used in UniqueProvider
+    ,
+    ,
+    alignInfo,
+    onAlign,
+  ] = useAlign(
+    open,
+    popupEle,
+    target,
+    options?.popupPlacement,
+    options?.builtinPlacements || {},
+    options?.popupAlign,
+    undefined, // onPopupAlign
+    false, // isMobile
+  );
 
   const contextValue = React.useMemo<UniqueContextProps>(
     () => ({
@@ -66,6 +93,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
       {options && (
         <TriggerContext.Provider value={triggerContextValue}>
           <Popup
+            ref={setPopupEle}
             portal={Portal}
             prefixCls={options.prefixCls || 'rc-trigger-popup'}
             popup={currentNode}
@@ -76,20 +104,18 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             keepDom={false}
             fresh={true}
             onVisibleChanged={() => {}}
-            ready={true}
-            offsetX={0}
-            offsetY={0}
-            offsetR={0}
-            offsetB={0}
-            onAlign={() => {}}
+            ready={ready}
+            offsetX={offsetX}
+            offsetY={offsetY}
+            offsetR={offsetR}
+            offsetB={offsetB}
+            onAlign={onAlign}
             onPrepare={() => Promise.resolve()}
-            arrowPos={{}}
-            align={
-              options.popupAlign || {
-                points: ['tl', 'bl'],
-                offset: [0, 4],
-              }
-            }
+            arrowPos={{
+              x: arrowX,
+              y: arrowY,
+            }}
+            align={alignInfo}
             zIndex={options.zIndex}
             mask={options.mask}
             arrow={options.arrow}
