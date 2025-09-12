@@ -41,6 +41,8 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             <Popup ...
 
     如果渲染需要的 props 不够，可以给 UniqueContextProps 里修改定义以实现需求。
+
+    用法 demo 在 docs/examples/two-buttons.tsx 中。
    */
 
   // =========================== Render ===========================
