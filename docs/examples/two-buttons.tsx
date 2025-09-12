@@ -2,6 +2,8 @@ import Trigger, { UniqueProvider } from '@rc-component/trigger';
 import React, { useState } from 'react';
 import '../../assets/index.less';
 
+const LEAVE_DELAY = 0.1;
+
 const builtinPlacements = {
   left: {
     points: ['cr', 'cl'],
@@ -38,7 +40,7 @@ const MovingPopupDemo = () => {
       </div>
       <div style={{ display: 'flex', gap: 20 }}>
         <Trigger
-          mouseLeaveDelay={0.3}
+          mouseLeaveDelay={LEAVE_DELAY}
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}
@@ -57,7 +59,7 @@ const MovingPopupDemo = () => {
         </Trigger>
 
         <Trigger
-          mouseLeaveDelay={0.3}
+          mouseLeaveDelay={LEAVE_DELAY}
           action={['hover']}
           popupPlacement="top"
           builtinPlacements={builtinPlacements}

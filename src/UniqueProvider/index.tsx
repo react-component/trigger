@@ -10,44 +10,54 @@ import useDelay from '../hooks/useDelay';
 import useAlign from '../hooks/useAlign';
 import Popup from '../Popup';
 import { useEvent } from '@rc-component/util';
+import useTargetState from './useTargetState';
+import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
 }
 
 const UniqueProvider = ({ children }: UniqueProviderProps) => {
-  const [open, setOpen] = React.useState(false);
-  const [target, setTarget] = React.useState<HTMLElement | null>(null);
-  const [currentNode, setCurrentNode] = React.useState<React.ReactNode>(null);
-  const [options, setOptions] = React.useState<UniqueShowOptions | null>(null);
+  const [trigger, open, options] = useTargetState();
+
+  // =========================== Popup ============================
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
+
+  // Used for forwardRef popup. Not use internal
+  const externalPopupRef = React.useRef<HTMLDivElement>(null);
+
+  const setPopupRef = useEvent((node: HTMLDivElement) => {
+    externalPopupRef.current = node;
+
+    if (isDOM(node) && popupEle !== node) {
+      setPopupEle(node);
+    }
+
+  });
 
   // ========================== Register ==========================
   const delayInvoke = useDelay();
 
   const show = (showOptions: UniqueShowOptions) => {
     delayInvoke(() => {
-      setOpen(true);
-      setCurrentNode(showOptions.popup);
-      setTarget(showOptions.target);
-      setOptions(showOptions);
+      trigger(showOptions);
     }, showOptions.delay);
   };
 
   const hide = (delay: number) => {
     delayInvoke(() => {
-      setOpen(false);
+      trigger(false);
       // 不要立即清空 target, currentNode, options，等动画结束后再清空
     }, delay);
   };
 
   // 动画完成后的回调
   const onVisibleChanged = useEvent((visible: boolean) => {
-    if (!visible) {
-      setTarget(null);
-      setCurrentNode(null);
-      setOptions(null);
-    }
+    // if (!visible) {
+    //   setTarget(null);
+    //   setCurrentNode(null);
+    //   setOptions(null);
+    // }
   });
 
   // =========================== Align ============================
@@ -67,7 +77,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   ] = useAlign(
     open,
     popupEle,
-    target,
+    options?.target,
     options?.popupPlacement,
     options?.builtinPlacements || {},
     options?.popupAlign,
@@ -82,6 +92,13 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
     }),
     [],
   );
+
+  // =========================== Motion ===========================
+  const onPrepare = useEvent(() => {
+    onAlign();
+
+    return Promise.resolve();
+  });
 
   // ======================== Trigger Context =====================
   const subPopupElements = React.useRef<Record<string, HTMLElement>>({});
@@ -104,13 +121,13 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
       {options && (
         <TriggerContext.Provider value={triggerContextValue}>
           <Popup
-            ref={setPopupEle}
+            ref={setPopupRef}
             portal={Portal}
             prefixCls={options.prefixCls}
-            popup={currentNode}
+            popup={options.popup}
             className={options.popupClassName}
             style={options.popupStyle}
-            target={target}
+            target={options.target}
             open={open}
             keepDom={true}
             fresh={true}
@@ -122,7 +139,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             offsetR={offsetR}
             offsetB={offsetB}
             onAlign={onAlign}
-            onPrepare={() => Promise.resolve()}
+            onPrepare={onPrepare}
             arrowPos={{
               x: arrowX,
               y: arrowY,
