@@ -6,7 +6,6 @@ import type { CSSMotionProps } from '@rc-component/motion';
 
 export interface FloatBgProps {
   prefixCls: string; // ${prefixCls}-float-bg
-  popupEle: HTMLElement;
   isMobile: boolean;
   ready: boolean;
   open: boolean;
@@ -22,7 +21,6 @@ export interface FloatBgProps {
 const FloatBg = (props: FloatBgProps) => {
   const {
     prefixCls,
-    popupEle,
     isMobile,
     ready,
     open,

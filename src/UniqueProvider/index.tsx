@@ -177,7 +177,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
           >
             <FloatBg
               prefixCls={prefixCls}
-              popupEle={popupEle}
               isMobile={false}
               ready={ready}
               open={open}
