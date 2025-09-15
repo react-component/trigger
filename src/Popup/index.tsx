@@ -58,6 +58,8 @@ export interface PopupProps {
   autoDestroy?: boolean;
   portal: React.ComponentType<any>;
 
+  children?: React.ReactElement;
+
   // Align
   ready: boolean;
   offsetX: number;
@@ -114,6 +116,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     getPopupContainer,
     autoDestroy,
     portal: Portal,
+    children,
 
     zIndex,
 
@@ -135,7 +138,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     targetHeight,
   } = props;
 
-  const childNode = typeof popup === 'function' ? popup() : popup;
+  const popupContent = typeof popup === 'function' ? popup() : popup;
 
   // We can not remove holder only when motion finished.
   const isNodeVisible = open || keepDom;
@@ -177,6 +180,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     return null;
   }
 
+  // TODO: Move offsetStyle logic to useOffsetStyle.ts hooks
   // >>>>> Offset
   const AUTO = 'auto' as const;
 
@@ -305,7 +309,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                       />
                     )}
                     <PopupContent cache={!open && !fresh}>
-                      {childNode}
+                      {popupContent}
                     </PopupContent>
                   </div>
                 );
@@ -314,6 +318,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           );
         }}
       </ResizeObserver>
+      {children}
     </Portal>
   );
 });

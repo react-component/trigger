@@ -12,6 +12,7 @@ import Popup from '../Popup';
 import { useEvent } from '@rc-component/util';
 import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
+import FloatBg from './FloatBg';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -32,7 +33,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
     if (isDOM(node) && popupEle !== node) {
       setPopupEle(node);
     }
-
   });
 
   // ========================== Register ==========================
@@ -153,7 +153,9 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             motion={options.popupMotion}
             maskMotion={options.maskMotion}
             getPopupContainer={options.getPopupContainer}
-          />
+          >
+            <FloatBg prefixCls={options.prefixCls} popupEle={popupEle} />
+          </Popup>
         </TriggerContext.Provider>
       )}
     </UniqueContext.Provider>
