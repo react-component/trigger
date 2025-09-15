@@ -13,6 +13,7 @@ import { useEvent } from '@rc-component/util';
 import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import FloatBg from './FloatBg';
+import classNames from 'classnames';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -23,6 +24,10 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
 
   // =========================== Popup ============================
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
+  const [popupSize, setPopupSize] = React.useState<{
+    width: number;
+    height: number;
+  }>(null);
 
   // Used for forwardRef popup. Not use internal
   const externalPopupRef = React.useRef<HTMLDivElement>(null);
@@ -117,6 +122,8 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   );
 
   // =========================== Render ===========================
+  const prefixCls = options?.prefixCls;
+
   return (
     <UniqueContext.Provider value={contextValue}>
       {children}
@@ -125,9 +132,12 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
           <Popup
             ref={setPopupRef}
             portal={Portal}
-            prefixCls={options.prefixCls}
+            prefixCls={prefixCls}
             popup={options.popup}
-            className={options.popupClassName}
+            className={classNames(
+              options.popupClassName,
+              `${prefixCls}-unique-controlled`,
+            )}
             style={options.popupStyle}
             target={options.target}
             open={open}
@@ -142,6 +152,12 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             offsetB={offsetB}
             onAlign={onAlign}
             onPrepare={onPrepare}
+            onResize={(size) =>
+              setPopupSize({
+                width: size.offsetWidth,
+                height: size.offsetHeight,
+              })
+            }
             arrowPos={{
               x: arrowX,
               y: arrowY,
@@ -154,7 +170,19 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             maskMotion={options.maskMotion}
             getPopupContainer={options.getPopupContainer}
           >
-            <FloatBg prefixCls={options.prefixCls} popupEle={popupEle} />
+            <FloatBg
+              prefixCls={prefixCls}
+              popupEle={popupEle}
+              isMobile={false}
+              ready={ready}
+              open={open}
+              align={alignInfo}
+              offsetR={offsetR}
+              offsetB={offsetB}
+              offsetX={offsetX}
+              offsetY={offsetY}
+              popupSize={popupSize}
+            />
           </Popup>
         </TriggerContext.Provider>
       )}

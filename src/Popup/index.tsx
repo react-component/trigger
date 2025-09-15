@@ -1,7 +1,9 @@
 import classNames from 'classnames';
 import type { CSSMotionProps } from '@rc-component/motion';
 import CSSMotion from '@rc-component/motion';
-import ResizeObserver from '@rc-component/resize-observer';
+import ResizeObserver, {
+  type ResizeObserverProps,
+} from '@rc-component/resize-observer';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import { composeRef } from '@rc-component/util/lib/ref';
 import * as React from 'react';
@@ -11,6 +13,7 @@ import Arrow from './Arrow';
 import Mask from './Mask';
 import PopupContent from './PopupContent';
 import useOffsetStyle from '../hooks/useOffsetStyle';
+import { useEvent } from '@rc-component/util';
 
 export interface MobileConfig {
   mask?: boolean;
@@ -75,6 +78,9 @@ export interface PopupProps {
   targetWidth?: number;
   targetHeight?: number;
 
+  // Resize
+  onResize?: ResizeObserverProps['onResize'];
+
   // Mobile
   mobile?: MobileConfig;
 }
@@ -134,6 +140,9 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     onAlign,
     onPrepare,
 
+    // Resize
+    onResize,
+
     stretch,
     targetWidth,
     targetHeight,
@@ -175,6 +184,12 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       setShow(true);
     }
   }, [show, getPopupContainerNeedParams, target]);
+
+  // ========================= Resize =========================
+  const onInternalResize: ResizeObserverProps['onResize'] = useEvent((size) => {
+    onResize?.(size);
+    onAlign();
+  });
 
   // ========================= Styles =========================
   const offsetStyle = useOffsetStyle(
@@ -226,7 +241,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
         motion={mergedMaskMotion}
         mobile={isMobile}
       />
-      <ResizeObserver onResize={onAlign} disabled={!open}>
+      <ResizeObserver onResize={onInternalResize} disabled={!open}>
         {(resizeObserverRef) => {
           return (
             <CSSMotion

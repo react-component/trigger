@@ -73,6 +73,23 @@
       opacity: 0;
     }
   }
+
+  // =============== Float BG ===============
+  &-float-bg {
+    position: absolute;
+    z-index: 0;
+    box-sizing: border-box;
+    border: 1px solid red;
+    background: green;
+    transition: all 0.3s;
+  }
+
+  // Debug
+  &-unique-controlled {
+    border-color: rgba(0, 0, 0, 0.01) !important;
+    background: transparent !important;
+    z-index: 1;
+  }
 }
 
 @import './index/Mask';
