@@ -324,7 +324,9 @@ export function generateTrigger(
     useLayoutEffect(() => {
       if (uniqueContext && targetEle && !openUncontrolled) {
         if (mergedOpen) {
-          uniqueContext.show(getUniqueOptions(0));
+          Promise.resolve().then(() => {
+            uniqueContext.show(getUniqueOptions(0));
+          });
         } else {
           uniqueContext.hide(0);
         }
