@@ -56,6 +56,7 @@ const MovingPopupDemo = () => {
             background: 'white',
             boxSizing: 'border-box',
           }}
+          unique
         >
           <button type="button">左侧按钮</button>
         </Trigger>
@@ -76,6 +77,7 @@ const MovingPopupDemo = () => {
             background: 'white',
             boxSizing: 'border-box',
           }}
+          unique
         >
           <button type="button">Right Button</button>
         </Trigger>

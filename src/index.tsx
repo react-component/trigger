@@ -111,6 +111,11 @@ export interface TriggerProps {
    */
   fresh?: boolean;
 
+  /**
+   * Config with UniqueProvider to shared the floating popup.
+   */
+  unique?: boolean;
+
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
 
@@ -173,6 +178,7 @@ export function generateTrigger(
       stretch,
       getPopupClassNameFromAlign,
       fresh,
+      unique,
 
       alignPoint,
 
@@ -323,7 +329,7 @@ export function generateTrigger(
     // Handle controlled state changes for UniqueProvider
     // Only sync to UniqueProvider when it's controlled mode
     useLayoutEffect(() => {
-      if (uniqueContext && targetEle && !openUncontrolled) {
+      if (uniqueContext && unique && targetEle && !openUncontrolled) {
         if (mergedOpen) {
           Promise.resolve().then(() => {
             uniqueContext.show(getUniqueOptions(0));
@@ -370,7 +376,7 @@ export function generateTrigger(
       }
 
       // If UniqueContext exists and not controlled, pass delay to Provider instead of handling it internally
-      if (uniqueContext && openUncontrolled) {
+      if (uniqueContext && unique && openUncontrolled) {
         if (nextOpen) {
           uniqueContext.show(getUniqueOptions(delay));
         } else {
@@ -769,7 +775,7 @@ export function generateTrigger(
         >
           {triggerNode}
         </ResizeObserver>
-        {rendedRef.current && !uniqueContext && (
+        {rendedRef.current && (!uniqueContext || !unique) && (
           <TriggerContext.Provider value={context}>
             <Popup
               portal={PortalComponent}
