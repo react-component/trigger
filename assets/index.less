@@ -81,7 +81,14 @@
     box-sizing: border-box;
     border: 1px solid red;
     background: green;
-    transition: all 0.3s;
+
+    &-hidden {
+      display: none;
+    }
+
+    &-visible {
+      transition: all 0.3s;
+    }
   }
 
   // Debug

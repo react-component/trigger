@@ -1,5 +1,8 @@
 import React from 'react';
 import useOffsetStyle from '../hooks/useOffsetStyle';
+import classNames from 'classnames';
+import CSSMotion from '@rc-component/motion';
+import type { CSSMotionProps } from '@rc-component/motion';
 
 export interface FloatBgProps {
   prefixCls: string; // ${prefixCls}-float-bg
@@ -13,6 +16,7 @@ export interface FloatBgProps {
   offsetX: number;
   offsetY: number;
   popupSize?: { width: number; height: number };
+  motion?: CSSMotionProps;
 }
 
 const FloatBg = (props: FloatBgProps) => {
@@ -28,11 +32,21 @@ const FloatBg = (props: FloatBgProps) => {
     offsetX,
     offsetY,
     popupSize,
+    motion,
   } = props;
 
-  // Apply className as requested in TODO
-  const className = `${prefixCls}-float-bg`;
+  const floatBgCls = `${prefixCls}-float-bg`;
 
+  // ========================= Ready ==========================
+  // const [delayReady, setDelayReady] = React.useState(false);
+
+  // React.useEffect(() => {
+  //   setDelayReady(ready);
+  // }, [ready]);
+
+  const [motionVisible, setMotionVisible] = React.useState(false);
+
+  // ========================= Styles =========================
   const offsetStyle = useOffsetStyle(
     isMobile,
     ready,
@@ -52,9 +66,40 @@ const FloatBg = (props: FloatBgProps) => {
   }
 
   // Remove console.log as it's for debugging only
-  // console.log('>>>', popupEle);
+  // console.log('>>>', ready, open, offsetStyle);
 
-  return <div className={className} style={{ ...offsetStyle, ...sizeStyle }} />;
+  // ========================= Render =========================
+  return (
+    <CSSMotion
+      motionAppear
+      motionEnter
+      motionLeave
+      removeOnLeave={false}
+      leavedClassName={`${floatBgCls}-hidden`}
+      {...motion}
+      visible={open}
+      onVisibleChanged={(nextVisible) => {
+        setMotionVisible(nextVisible);
+      }}
+    >
+      {({ className: motionClassName, style: motionStyle }) => {
+        const cls = classNames(floatBgCls, motionClassName, {
+          [`${floatBgCls}-visible`]: motionVisible,
+        });
+
+        return (
+          <div
+            className={cls}
+            style={{
+              ...offsetStyle,
+              ...sizeStyle,
+              ...motionStyle,
+            }}
+          />
+        );
+      }}
+    </CSSMotion>
+  );
 };
 
 export default FloatBg;
