@@ -3,9 +3,34 @@ import React from 'react';
 import Trigger, { UniqueProvider } from '../src';
 import { awaitFakeTimer } from './util';
 
+// Mock FloatBg to check if open props changed
+global.openChangeLog = [];
+
+jest.mock('../src/UniqueProvider/FloatBg', () => {
+  const OriginalFloatBg = jest.requireActual(
+    '../src/UniqueProvider/FloatBg',
+  ).default;
+  const OriginReact = jest.requireActual('react');
+
+  return (props: any) => {
+    const { open } = props;
+    const openRef = OriginReact.useRef(open);
+
+    OriginReact.useEffect(() => {
+      if (openRef.current !== open) {
+        global.openChangeLog.push({ from: openRef.current, to: open });
+        openRef.current = open;
+      }
+    }, [open]);
+
+    return OriginReact.createElement(OriginalFloatBg, props);
+  };
+});
+
 describe('Trigger.Unique', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    global.openChangeLog = [];
   });
 
   afterEach(() => {
@@ -74,5 +99,8 @@ describe('Trigger.Unique', () => {
     expect(document.querySelectorAll('.rc-trigger-popup-float-bg').length).toBe(
       1,
     );
+
+    // FloatBg open prop should not have changed during transition (no close animation)
+    expect(global.openChangeLog).toHaveLength(0);
   });
 });
