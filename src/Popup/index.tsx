@@ -10,6 +10,7 @@ import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';
 import Arrow from './Arrow';
 import Mask from './Mask';
 import PopupContent from './PopupContent';
+import useOffsetStyle from '../hooks/useOffsetStyle';
 
 export interface MobileConfig {
   mask?: boolean;
@@ -175,47 +176,21 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     }
   }, [show, getPopupContainerNeedParams, target]);
 
+  // ========================= Styles =========================
+  const offsetStyle = useOffsetStyle(
+    isMobile,
+    ready,
+    open,
+    align,
+    offsetR,
+    offsetB,
+    offsetX,
+    offsetY,
+  );
+
   // ========================= Render =========================
   if (!show) {
     return null;
-  }
-
-  // TODO: Move offsetStyle logic to useOffsetStyle.ts hooks
-  // >>>>> Offset
-  const AUTO = 'auto' as const;
-
-  const offsetStyle: React.CSSProperties = isMobile
-    ? {}
-    : {
-        left: '-1000vw',
-        top: '-1000vh',
-        right: AUTO,
-        bottom: AUTO,
-      };
-
-  // Set align style
-  if (!isMobile && (ready || !open)) {
-    const { points } = align;
-    const dynamicInset =
-      align.dynamicInset || (align as any)._experimental?.dynamicInset;
-    const alignRight = dynamicInset && points[0][1] === 'r';
-    const alignBottom = dynamicInset && points[0][0] === 'b';
-
-    if (alignRight) {
-      offsetStyle.right = offsetR;
-      offsetStyle.left = AUTO;
-    } else {
-      offsetStyle.left = offsetX;
-      offsetStyle.right = AUTO;
-    }
-
-    if (alignBottom) {
-      offsetStyle.bottom = offsetB;
-      offsetStyle.top = AUTO;
-    } else {
-      offsetStyle.top = offsetY;
-      offsetStyle.bottom = AUTO;
-    }
   }
 
   // >>>>> Misc
