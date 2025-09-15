@@ -14,6 +14,7 @@ import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import FloatBg from './FloatBg';
 import classNames from 'classnames';
+import MotionContent from './MotionContent';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -41,13 +42,18 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   });
 
   // ========================== Register ==========================
+  const [popupId, setPopupId] = React.useState(0);
+
   const delayInvoke = useDelay();
 
-  const show = (showOptions: UniqueShowOptions) => {
+  const show = useEvent((showOptions: UniqueShowOptions) => {
     delayInvoke(() => {
+      if (showOptions.id !== options?.id) {
+        setPopupId((i) => i + 1);
+      }
       trigger(showOptions);
     }, showOptions.delay);
-  };
+  });
 
   const hide = (delay: number) => {
     delayInvoke(() => {
@@ -60,11 +66,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   const onVisibleChanged = useEvent((visible: boolean) => {
     // Call useTargetState callback to handle animation state
     onTargetVisibleChanged(visible);
-    // if (!visible) {
-    //   setTarget(null);
-    //   setCurrentNode(null);
-    //   setOptions(null);
-    // }
   });
 
   // =========================== Align ============================
@@ -133,7 +134,11 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             ref={setPopupRef}
             portal={Portal}
             prefixCls={prefixCls}
-            popup={options.popup}
+            popup={
+              <MotionContent prefixCls={prefixCls} key={popupId}>
+                {options.popup}
+              </MotionContent>
+            }
             className={classNames(
               options.popupClassName,
               `${prefixCls}-unique-controlled`,

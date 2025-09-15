@@ -12,6 +12,7 @@ export default TriggerContext;
 
 // ==================== Unique ====================
 export interface UniqueShowOptions {
+  id: string;
   popup: TriggerProps['popup'];
   target: HTMLElement;
   delay: number;

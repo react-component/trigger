@@ -317,6 +317,7 @@ export function generateTrigger(
       maskMotion,
       arrow,
       getPopupContainer,
+      id,
     }));
 
     // Handle controlled state changes for UniqueProvider

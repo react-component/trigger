@@ -87,7 +87,7 @@
     }
 
     &-visible {
-      transition: all 0.3s;
+      transition: all 0.1s;
     }
   }
 
@@ -96,6 +96,30 @@
     border-color: rgba(0, 0, 0, 0.01) !important;
     background: transparent !important;
     z-index: 1;
+  }
+
+  // Motion Content
+  &-motion-content {
+    // Fade motion
+    &-fade-appear {
+      opacity: 0;
+      animation-duration: 0.3s;
+      animation-fill-mode: both;
+      animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+    }
+
+    &-fade-appear&-fade-appear-active {
+      animation-name: rcTriggerFadeIn;
+    }
+
+    @keyframes rcTriggerFadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
   }
 }
 

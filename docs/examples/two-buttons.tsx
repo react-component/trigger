@@ -2,7 +2,7 @@ import Trigger, { UniqueProvider } from '@rc-component/trigger';
 import React, { useState } from 'react';
 import '../../assets/index.less';
 
-const LEAVE_DELAY = 0.1;
+const LEAVE_DELAY = 0.2;
 
 const builtinPlacements = {
   left: {

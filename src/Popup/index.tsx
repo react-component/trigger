@@ -186,10 +186,12 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   }, [show, getPopupContainerNeedParams, target]);
 
   // ========================= Resize =========================
-  const onInternalResize: ResizeObserverProps['onResize'] = useEvent((size) => {
-    onResize?.(size);
-    onAlign();
-  });
+  const onInternalResize: ResizeObserverProps['onResize'] = useEvent(
+    (size, ele) => {
+      onResize?.(size, ele);
+      onAlign();
+    },
+  );
 
   // ========================= Styles =========================
   const offsetStyle = useOffsetStyle(
