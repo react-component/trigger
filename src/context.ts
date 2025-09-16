@@ -1,5 +1,7 @@
 import * as React from 'react';
+import type { CSSMotionProps } from '@rc-component/motion';
 import type { TriggerProps } from './index';
+import type { AlignType, ArrowTypeOuter, BuildInPlacements } from './interface';
 
 // ===================== Nest =====================
 export interface TriggerContextProps {
