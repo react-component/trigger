@@ -51,7 +51,7 @@ export default function useTargetState(): [
       // Animation enter completed, check if there are pending options
       setIsAnimating(false);
       if (pendingOptionsRef.current) {
-        // Apply pending options - Use functional update to ensure re-render is triggered
+        // Apply pending options
         setOptions(pendingOptionsRef.current);
         pendingOptionsRef.current = null;
       }
