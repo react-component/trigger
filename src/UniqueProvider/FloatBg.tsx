@@ -3,13 +3,14 @@ import useOffsetStyle from '../hooks/useOffsetStyle';
 import classNames from 'classnames';
 import CSSMotion from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
+import type { AlignType } from '../interface';
 
 export interface FloatBgProps {
   prefixCls: string; // ${prefixCls}-float-bg
   isMobile: boolean;
   ready: boolean;
   open: boolean;
-  align: any;
+  align: AlignType;
   offsetR: number;
   offsetB: number;
   offsetX: number;
