@@ -29,7 +29,7 @@ export interface UniqueShowOptions {
   maskClosable?: boolean;
   popupMotion?: CSSMotionProps;
   maskMotion?: CSSMotionProps;
-  arrow?: boolean | ArrowTypeOuter;
+  arrow?: ArrowTypeOuter;
   getPopupContainer?: TriggerProps['getPopupContainer'];
 }
 

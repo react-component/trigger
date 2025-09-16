@@ -286,6 +286,14 @@ export function generateTrigger(
       );
     });
 
+    // =========================== Arrow ============================
+    const innerArrow: ArrowTypeOuter = arrow
+      ? {
+          // true and Object likely
+          ...(arrow !== true ? arrow : {}),
+        }
+      : null;
+
     // ============================ Open ============================
     const [internalOpen, setInternalOpen] = React.useState(
       defaultPopupVisible || false,
@@ -321,7 +329,7 @@ export function generateTrigger(
       maskClosable,
       popupMotion,
       maskMotion,
-      arrow,
+      arrow: innerArrow,
       getPopupContainer,
       id,
     }));
@@ -751,13 +759,6 @@ export function generateTrigger(
       x: arrowX,
       y: arrowY,
     };
-
-    const innerArrow: ArrowTypeOuter = arrow
-      ? {
-          // true and Object likely
-          ...(arrow !== true ? arrow : {}),
-        }
-      : null;
 
     // Child Node
     const triggerNode = React.cloneElement(child, {
