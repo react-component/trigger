@@ -20,14 +20,14 @@ export interface UniqueShowOptions {
   popupClassName?: string;
   popupStyle?: React.CSSProperties;
   popupPlacement?: string;
-  builtinPlacements?: any;
-  popupAlign?: any;
+  builtinPlacements?: BuildInPlacements;
+  popupAlign?: AlignType;
   zIndex?: number;
   mask?: boolean;
   maskClosable?: boolean;
-  popupMotion?: any;
-  maskMotion?: any;
-  arrow?: any;
+  popupMotion?: CSSMotionProps;
+  maskMotion?: CSSMotionProps;
+  arrow?: boolean | ArrowTypeOuter;
   getPopupContainer?: TriggerProps['getPopupContainer'];
 }
 
