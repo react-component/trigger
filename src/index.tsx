@@ -336,8 +336,9 @@ export function generateTrigger(
 
     // Handle controlled state changes for UniqueProvider
     // Only sync to UniqueProvider when it's controlled mode
+    // If there is a parentContext, don't call uniqueContext methods
     useLayoutEffect(() => {
-      if (uniqueContext && unique && targetEle && !openUncontrolled) {
+      if (uniqueContext && unique && targetEle && !openUncontrolled && !parentContext) {
         if (mergedOpen) {
           Promise.resolve().then(() => {
             uniqueContext.show(getUniqueOptions(0));
@@ -384,7 +385,8 @@ export function generateTrigger(
       }
 
       // If UniqueContext exists and not controlled, pass delay to Provider instead of handling it internally
-      if (uniqueContext && unique && openUncontrolled) {
+      // If there is a parentContext, don't call uniqueContext methods
+      if (uniqueContext && unique && openUncontrolled && !parentContext) {
         if (nextOpen) {
           uniqueContext.show(getUniqueOptions(delay));
         } else {
