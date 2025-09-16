@@ -36,13 +36,6 @@ const FloatBg = (props: FloatBgProps) => {
 
   const floatBgCls = `${prefixCls}-float-bg`;
 
-  // ========================= Ready ==========================
-  // const [delayReady, setDelayReady] = React.useState(false);
-
-  // React.useEffect(() => {
-  //   setDelayReady(ready);
-  // }, [ready]);
-
   const [motionVisible, setMotionVisible] = React.useState(false);
 
   // ========================= Styles =========================
@@ -63,9 +56,6 @@ const FloatBg = (props: FloatBgProps) => {
     sizeStyle.width = popupSize.width;
     sizeStyle.height = popupSize.height;
   }
-
-  // Remove console.log as it's for debugging only
-  // console.log('>>>', ready, open, offsetStyle);
 
   // ========================= Render =========================
   return (

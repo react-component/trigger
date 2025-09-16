@@ -11,7 +11,6 @@ export default function useOffsetStyle(
   offsetX: number,
   offsetY: number,
 ) {
-  // TODO: Move offsetStyle logic to useOffsetStyle.ts hooks
   // >>>>> Offset
   const AUTO = 'auto' as const;
 
