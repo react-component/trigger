@@ -34,7 +34,7 @@ export default function useTargetState(): [
         pendingOptionsRef.current = nextOptions;
       } else {
         setOpen(true);
-        // Use functional update to ensure re-render is always triggered
+        // Set new options
         setOptions(nextOptions);
         pendingOptionsRef.current = null;
 
