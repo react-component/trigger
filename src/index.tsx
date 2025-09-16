@@ -10,9 +10,10 @@ import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
 import type { TriggerContextProps } from './context';
-import TriggerContext from './context';
+import TriggerContext, { UniqueContext } from './context';
 import useAction from './hooks/useAction';
 import useAlign from './hooks/useAlign';
+import useDelay from './hooks/useDelay';
 import useWatch from './hooks/useWatch';
 import useWinClick from './hooks/useWinClick';
 import type {
@@ -30,6 +31,8 @@ export type {
   ArrowTypeOuter as ArrowType,
   BuildInPlacements,
 };
+
+export { default as UniqueProvider } from './UniqueProvider';
 
 export interface TriggerRef {
   nativeElement: HTMLElement;
@@ -108,6 +111,11 @@ export interface TriggerProps {
    */
   fresh?: boolean;
 
+  /**
+   * Config with UniqueProvider to shared the floating popup.
+   */
+  unique?: boolean;
+
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
 
@@ -170,6 +178,7 @@ export function generateTrigger(
       stretch,
       getPopupClassNameFromAlign,
       fresh,
+      unique,
 
       alignPoint,
 
@@ -190,6 +199,7 @@ export function generateTrigger(
     } = props;
 
     const mergedAutoDestroy = autoDestroy || false;
+    const openUncontrolled = popupVisible === undefined;
 
     // =========================== Mobile ===========================
     const isMobile = !!mobile;
@@ -207,6 +217,9 @@ export function generateTrigger(
         },
       };
     }, [parentContext]);
+
+    // ======================== UniqueContext =========================
+    const uniqueContext = React.useContext(UniqueContext);
 
     // =========================== Popup ============================
     const id = useId();
@@ -273,6 +286,14 @@ export function generateTrigger(
       );
     });
 
+    // =========================== Arrow ============================
+    const innerArrow: ArrowTypeOuter = arrow
+      ? {
+          // true and Object likely
+          ...(arrow !== true ? arrow : {}),
+        }
+      : null;
+
     // ============================ Open ============================
     const [internalOpen, setInternalOpen] = React.useState(
       defaultPopupVisible || false,
@@ -283,7 +304,7 @@ export function generateTrigger(
 
     // We use effect sync here in case `popupVisible` back to `undefined`
     const setMergedOpen = useEvent((nextOpen: boolean) => {
-      if (popupVisible === undefined) {
+      if (openUncontrolled) {
         setInternalOpen(nextOpen);
       }
     });
@@ -291,6 +312,41 @@ export function generateTrigger(
     useLayoutEffect(() => {
       setInternalOpen(popupVisible || false);
     }, [popupVisible]);
+
+    // Extract common options for UniqueProvider
+    const getUniqueOptions = useEvent((delay: number = 0) => ({
+      popup,
+      target: targetEle,
+      delay,
+      prefixCls,
+      popupClassName,
+      popupStyle,
+      popupPlacement,
+      builtinPlacements,
+      popupAlign,
+      zIndex,
+      mask,
+      maskClosable,
+      popupMotion,
+      maskMotion,
+      arrow: innerArrow,
+      getPopupContainer,
+      id,
+    }));
+
+    // Handle controlled state changes for UniqueProvider
+    // Only sync to UniqueProvider when it's controlled mode
+    useLayoutEffect(() => {
+      if (uniqueContext && unique && targetEle && !openUncontrolled) {
+        if (mergedOpen) {
+          Promise.resolve().then(() => {
+            uniqueContext.show(getUniqueOptions(0));
+          });
+        } else {
+          uniqueContext.hide(0);
+        }
+      }
+    }, [mergedOpen]);
 
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
@@ -315,25 +371,32 @@ export function generateTrigger(
     });
 
     // Trigger for delay
-    const delayRef = React.useRef<ReturnType<typeof setTimeout>>(null);
-
-    const clearDelay = () => {
-      clearTimeout(delayRef.current);
-    };
+    const delayInvoke = useDelay();
 
     const triggerOpen = (nextOpen: boolean, delay = 0) => {
-      clearDelay();
-
-      if (delay === 0) {
-        internalTriggerOpen(nextOpen);
-      } else {
-        delayRef.current = setTimeout(() => {
+      // If it's controlled mode, always use internal trigger logic
+      // UniqueProvider will be synced through useLayoutEffect
+      if (popupVisible !== undefined) {
+        delayInvoke(() => {
           internalTriggerOpen(nextOpen);
-        }, delay * 1000);
+        }, delay);
+        return;
       }
-    };
 
-    React.useEffect(() => clearDelay, []);
+      // If UniqueContext exists and not controlled, pass delay to Provider instead of handling it internally
+      if (uniqueContext && unique && openUncontrolled) {
+        if (nextOpen) {
+          uniqueContext.show(getUniqueOptions(delay));
+        } else {
+          uniqueContext.hide(delay);
+        }
+        return;
+      }
+
+      delayInvoke(() => {
+        internalTriggerOpen(nextOpen);
+      }, delay);
+    };
 
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
@@ -697,13 +760,6 @@ export function generateTrigger(
       y: arrowY,
     };
 
-    const innerArrow: ArrowTypeOuter = arrow
-      ? {
-          // true and Object likely
-          ...(arrow !== true ? arrow : {}),
-        }
-      : null;
-
     // Child Node
     const triggerNode = React.cloneElement(child, {
       ...mergedChildrenProps,
@@ -720,7 +776,7 @@ export function generateTrigger(
         >
           {triggerNode}
         </ResizeObserver>
-        {rendedRef.current && (
+        {rendedRef.current && (!uniqueContext || !unique) && (
           <TriggerContext.Provider value={context}>
             <Popup
               portal={PortalComponent}

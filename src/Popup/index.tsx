@@ -1,7 +1,9 @@
 import classNames from 'classnames';
 import type { CSSMotionProps } from '@rc-component/motion';
 import CSSMotion from '@rc-component/motion';
-import ResizeObserver from '@rc-component/resize-observer';
+import ResizeObserver, {
+  type ResizeObserverProps,
+} from '@rc-component/resize-observer';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import { composeRef } from '@rc-component/util/lib/ref';
 import * as React from 'react';
@@ -10,6 +12,8 @@ import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';
 import Arrow from './Arrow';
 import Mask from './Mask';
 import PopupContent from './PopupContent';
+import useOffsetStyle from '../hooks/useOffsetStyle';
+import { useEvent } from '@rc-component/util';
 
 export interface MobileConfig {
   mask?: boolean;
@@ -58,6 +62,8 @@ export interface PopupProps {
   autoDestroy?: boolean;
   portal: React.ComponentType<any>;
 
+  children?: React.ReactElement;
+
   // Align
   ready: boolean;
   offsetX: number;
@@ -71,6 +77,9 @@ export interface PopupProps {
   stretch?: string;
   targetWidth?: number;
   targetHeight?: number;
+
+  // Resize
+  onResize?: ResizeObserverProps['onResize'];
 
   // Mobile
   mobile?: MobileConfig;
@@ -114,6 +123,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     getPopupContainer,
     autoDestroy,
     portal: Portal,
+    children,
 
     zIndex,
 
@@ -130,12 +140,15 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     onAlign,
     onPrepare,
 
+    // Resize
+    onResize,
+
     stretch,
     targetWidth,
     targetHeight,
   } = props;
 
-  const childNode = typeof popup === 'function' ? popup() : popup;
+  const popupContent = typeof popup === 'function' ? popup() : popup;
 
   // We can not remove holder only when motion finished.
   const isNodeVisible = open || keepDom;
@@ -172,46 +185,29 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     }
   }, [show, getPopupContainerNeedParams, target]);
 
+  // ========================= Resize =========================
+  const onInternalResize: ResizeObserverProps['onResize'] = useEvent(
+    (size, ele) => {
+      onResize?.(size, ele);
+      onAlign();
+    },
+  );
+
+  // ========================= Styles =========================
+  const offsetStyle = useOffsetStyle(
+    isMobile,
+    ready,
+    open,
+    align,
+    offsetR,
+    offsetB,
+    offsetX,
+    offsetY,
+  );
+
   // ========================= Render =========================
   if (!show) {
     return null;
-  }
-
-  // >>>>> Offset
-  const AUTO = 'auto' as const;
-
-  const offsetStyle: React.CSSProperties = isMobile
-    ? {}
-    : {
-        left: '-1000vw',
-        top: '-1000vh',
-        right: AUTO,
-        bottom: AUTO,
-      };
-
-  // Set align style
-  if (!isMobile && (ready || !open)) {
-    const { points } = align;
-    const dynamicInset =
-      align.dynamicInset || (align as any)._experimental?.dynamicInset;
-    const alignRight = dynamicInset && points[0][1] === 'r';
-    const alignBottom = dynamicInset && points[0][0] === 'b';
-
-    if (alignRight) {
-      offsetStyle.right = offsetR;
-      offsetStyle.left = AUTO;
-    } else {
-      offsetStyle.left = offsetX;
-      offsetStyle.right = AUTO;
-    }
-
-    if (alignBottom) {
-      offsetStyle.bottom = offsetB;
-      offsetStyle.top = AUTO;
-    } else {
-      offsetStyle.top = offsetY;
-      offsetStyle.bottom = AUTO;
-    }
   }
 
   // >>>>> Misc
@@ -247,7 +243,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
         motion={mergedMaskMotion}
         mobile={isMobile}
       />
-      <ResizeObserver onResize={onAlign} disabled={!open}>
+      <ResizeObserver onResize={onInternalResize} disabled={!open}>
         {(resizeObserverRef) => {
           return (
             <CSSMotion
@@ -305,7 +301,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                       />
                     )}
                     <PopupContent cache={!open && !fresh}>
-                      {childNode}
+                      {popupContent}
                     </PopupContent>
                   </div>
                 );
@@ -314,6 +310,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
           );
         }}
       </ResizeObserver>
+      {children}
     </Portal>
   );
 });
