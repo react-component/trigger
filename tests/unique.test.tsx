@@ -151,8 +151,5 @@ describe('Trigger.Unique', () => {
     // Check that custom className from getPopupClassNameFromAlign is applied
     expect(popup.className).toContain('custom-align');
     expect(popup.className).toContain('rc-trigger-popup-unique-controlled');
-
-    // The base placement className might not be available immediately due to async alignment
-    // but the custom className should always be applied
   });
 });
