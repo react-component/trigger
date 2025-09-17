@@ -45,19 +45,33 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   // ========================== Register ==========================
   const [popupId, setPopupId] = React.useState(0);
 
+  // Store the isOpen function from the latest show call
+  const isOpenRef = React.useRef<(() => boolean) | null>(null);
+
   const delayInvoke = useDelay();
 
-  const show = useEvent((showOptions: UniqueShowOptions) => {
-    delayInvoke(() => {
-      if (showOptions.id !== options?.id) {
-        setPopupId((i) => i + 1);
-      }
-      trigger(showOptions);
-    }, showOptions.delay);
-  });
+  const show = useEvent(
+    (showOptions: UniqueShowOptions, isOpen: () => boolean) => {
+      // Store the isOpen function for later use in hide
+      isOpenRef.current = isOpen;
+
+      delayInvoke(() => {
+        if (showOptions.id !== options?.id) {
+          setPopupId((i) => i + 1);
+        }
+        trigger(showOptions);
+      }, showOptions.delay);
+    },
+  );
 
   const hide = (delay: number) => {
     delayInvoke(() => {
+      // Check if we should still hide by calling the isOpen function
+      // If isOpen returns true, it means another trigger wants to keep it open
+      if (isOpenRef.current?.()) {
+        return; // Don't hide if something else wants it open
+      }
+
       trigger(false);
       // Don't clear target, currentNode, options immediately, wait until animation completes
     }, delay);
@@ -106,7 +120,10 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
       false, // alignPoint is false for UniqueProvider
     );
 
-    return classNames(baseClassName, options.getPopupClassNameFromAlign?.(alignInfo));
+    return classNames(
+      baseClassName,
+      options.getPopupClassNameFromAlign?.(alignInfo),
+    );
   }, [
     alignInfo,
     options?.getPopupClassNameFromAlign,
