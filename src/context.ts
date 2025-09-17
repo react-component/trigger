@@ -35,7 +35,7 @@ export interface UniqueShowOptions {
 }
 
 export interface UniqueContextProps {
-  show: (options: UniqueShowOptions) => void;
+  show: (options: UniqueShowOptions, isOpen: () => boolean) => void;
   hide: (delay: number) => void;
 }
 

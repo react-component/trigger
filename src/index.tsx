@@ -309,6 +309,9 @@ export function generateTrigger(
       }
     });
 
+    // Support ref
+    const isOpen = useEvent(() => mergedOpen);
+
     useLayoutEffect(() => {
       setInternalOpen(popupVisible || false);
     }, [popupVisible]);
@@ -347,9 +350,7 @@ export function generateTrigger(
         !parentContext
       ) {
         if (mergedOpen) {
-          Promise.resolve().then(() => {
-            uniqueContext.show(getUniqueOptions(0));
-          });
+          uniqueContext.show(getUniqueOptions(0), isOpen);
         } else {
           uniqueContext.hide(0);
         }
@@ -395,7 +396,7 @@ export function generateTrigger(
       // If there is a parentContext, don't call uniqueContext methods
       if (uniqueContext && unique && openUncontrolled && !parentContext) {
         if (nextOpen) {
-          uniqueContext.show(getUniqueOptions(delay));
+          uniqueContext.show(getUniqueOptions(delay), isOpen);
         } else {
           uniqueContext.hide(delay);
         }
