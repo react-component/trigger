@@ -338,7 +338,13 @@ export function generateTrigger(
     // Only sync to UniqueProvider when it's controlled mode
     // If there is a parentContext, don't call uniqueContext methods
     useLayoutEffect(() => {
-      if (uniqueContext && unique && targetEle && !openUncontrolled && !parentContext) {
+      if (
+        uniqueContext &&
+        unique &&
+        targetEle &&
+        !openUncontrolled &&
+        !parentContext
+      ) {
         if (mergedOpen) {
           Promise.resolve().then(() => {
             uniqueContext.show(getUniqueOptions(0));
@@ -347,7 +353,7 @@ export function generateTrigger(
           uniqueContext.hide(0);
         }
       }
-    }, [mergedOpen]);
+    }, [mergedOpen, targetEle]);
 
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
