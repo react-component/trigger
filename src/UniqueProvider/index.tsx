@@ -173,7 +173,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             arrow={options.arrow}
             motion={options.popupMotion}
             maskMotion={options.maskMotion}
-            getPopupContainer={options.getPopupContainer}
+            // getPopupContainer={options.getPopupContainer}
           >
             <FloatBg
               prefixCls={prefixCls}
