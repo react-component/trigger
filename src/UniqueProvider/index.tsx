@@ -15,6 +15,7 @@ import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import FloatBg from './FloatBg';
 import classNames from 'classnames';
 import MotionContent from './MotionContent';
+import { getAlignPopupClassName } from '../util';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -93,6 +94,26 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
     false, // isMobile
   );
 
+  const alignedClassName = React.useMemo(() => {
+    if (!options) {
+      return '';
+    }
+
+    const baseClassName = getAlignPopupClassName(
+      options.builtinPlacements || {},
+      options.prefixCls || '',
+      alignInfo,
+      false, // alignPoint is false for UniqueProvider
+    );
+
+    return classNames(baseClassName, options.getPopupClassNameFromAlign?.(alignInfo));
+  }, [
+    alignInfo,
+    options?.getPopupClassNameFromAlign,
+    options?.builtinPlacements,
+    options?.prefixCls,
+  ]);
+
   const contextValue = React.useMemo<UniqueContextProps>(
     () => ({
       show,
@@ -141,6 +162,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             }
             className={classNames(
               options.popupClassName,
+              alignedClassName,
               `${prefixCls}-unique-controlled`,
             )}
             style={options.popupStyle}

@@ -331,6 +331,7 @@ export function generateTrigger(
       maskMotion,
       arrow: innerArrow,
       getPopupContainer,
+      getPopupClassNameFromAlign,
       id,
     }));
 

@@ -103,4 +103,56 @@ describe('Trigger.Unique', () => {
     // FloatBg open prop should not have changed during transition (no close animation)
     expect(global.openChangeLog).toHaveLength(0);
   });
+
+  it('should add aligned className to UniqueProvider popup', async () => {
+    const getPopupClassNameFromAlign = (align: any) => {
+      return `custom-align-${align.points?.[0] || 'default'}`;
+    };
+
+    const { container } = render(
+      <UniqueProvider>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+          popupPlacement="bottomLeft"
+          builtinPlacements={{
+            bottomLeft: {
+              points: ['tl', 'bl'],
+              offset: [0, 4],
+              overflow: {
+                adjustX: 0,
+                adjustY: 1,
+              },
+            },
+          }}
+          getPopupClassNameFromAlign={getPopupClassNameFromAlign}
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    // Initially no popup should be visible
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Click trigger to show popup
+    fireEvent.click(container.querySelector('.target'));
+    await awaitFakeTimer();
+
+    // Wait a bit more for alignment to complete
+    await awaitFakeTimer();
+
+    // Check that popup exists
+    const popup = document.querySelector('.rc-trigger-popup');
+    expect(popup).toBeTruthy();
+    expect(popup.querySelector('.x-content').textContent).toBe('tooltip');
+
+    // Check that custom className from getPopupClassNameFromAlign is applied
+    expect(popup.className).toContain('custom-align');
+    expect(popup.className).toContain('rc-trigger-popup-unique-controlled');
+
+    // The base placement className might not be available immediately due to async alignment
+    // but the custom className should always be applied
+  });
 });

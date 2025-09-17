@@ -31,6 +31,7 @@ export interface UniqueShowOptions {
   maskMotion?: CSSMotionProps;
   arrow?: ArrowTypeOuter;
   getPopupContainer?: TriggerProps['getPopupContainer'];
+  getPopupClassNameFromAlign?: (align: AlignType) => string;
 }
 
 export interface UniqueContextProps {
