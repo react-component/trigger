@@ -42,8 +42,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   });
 
   // ========================== Register ==========================
-  const [popupId, setPopupId] = React.useState(0);
-
   // Store the isOpen function from the latest show call
   const isOpenRef = React.useRef<(() => boolean) | null>(null);
 
@@ -55,9 +53,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
       isOpenRef.current = isOpen;
 
       delayInvoke(() => {
-        if (showOptions.id !== options?.id) {
-          setPopupId((i) => i + 1);
-        }
         trigger(showOptions);
       }, showOptions.delay);
     },
