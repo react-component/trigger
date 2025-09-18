@@ -212,9 +212,10 @@ describe('Trigger.Unique', () => {
     // Check that FloatBg has the custom background style
     const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
     expect(floatBg).toBeTruthy();
-    const computedStyle = window.getComputedStyle(floatBg);
-    expect(computedStyle.backgroundColor).toBe('red');
-    expect(computedStyle.border).toContain('1px solid blue');
+    expect(floatBg).toHaveStyle({
+      backgroundColor: 'red',
+      border: '1px solid blue',
+    });
   });
 
   it('should not apply any additional className to FloatBg when uniqueBgClassName is not provided', async () => {
