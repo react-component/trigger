@@ -188,6 +188,66 @@ describe('Trigger.Arrow', () => {
       const arrowDom = document.querySelector('.rc-trigger-popup-arrow');
       expect(arrowDom.classList.contains('abc')).toBeTruthy();
     });
+
+    it('arrow style', async () => {
+      render(
+        <Trigger
+          popupVisible
+          popupAlign={{
+            points: ['cl', 'cr'],
+            autoArrow: false,
+          }}
+          popup={<strong>trigger</strong>}
+          arrow={{
+            style: {
+              color: 'red',
+              backgroundColor: 'blue',
+            },
+          }}
+        >
+          <div />
+        </Trigger>,
+      );
+
+      await awaitFakeTimer();
+
+      const arrowDom = document.querySelector('.rc-trigger-popup-arrow');
+      expect(arrowDom).toHaveStyle({
+        color: 'red',
+        backgroundColor: 'blue',
+      });
+    });
+
+    it('arrow style should merge with align style', async () => {
+      render(
+        <Trigger
+          popupVisible
+          popupAlign={{
+            points: ['cl', 'cr'],
+            autoArrow: true,
+          }}
+          popup={<strong>trigger</strong>}
+          arrow={{
+            style: {
+              color: 'red',
+              backgroundColor: 'blue',
+            },
+          }}
+        >
+          <div />
+        </Trigger>,
+      );
+
+      await awaitFakeTimer();
+
+      const arrowDom = document.querySelector('.rc-trigger-popup-arrow');
+      // Should have both align style (left: 0) and custom style
+      expect(arrowDom).toHaveStyle({
+        left: 0,
+        color: 'red',
+        backgroundColor: 'blue',
+      });
+    });
   });
 
   it('content', async () => {
