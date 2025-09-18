@@ -152,4 +152,27 @@ describe('Trigger.Unique', () => {
     expect(popup.className).toContain('custom-align');
     expect(popup.className).toContain('rc-trigger-popup-unique-controlled');
   });
+
+  it('should apply uniqueBgClassName to FloatBg component', async () => {
+    const { container } = render(
+      <UniqueProvider>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+          uniqueBgClassName="custom-bg-class"
+          popupVisible
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    await awaitFakeTimer();
+
+    // Check that FloatBg has the custom background className
+    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
+    expect(floatBg).toBeTruthy();
+    expect(floatBg).toHaveClass('custom-bg-class');
+  });
 });

@@ -40,3 +40,4 @@ bun.lockb
 # dumi
 .dumi/tmp
 .dumi/tmp-production
+dist/
