@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { generateTrigger } from './index';
+import { generateTrigger, UniqueProvider } from './index';
 
 interface MockPortalProps {
   open?: boolean;
@@ -32,3 +32,5 @@ const MockPortal: React.FC<MockPortalProps> = ({
 };
 
 export default generateTrigger(MockPortal);
+
+export { UniqueProvider };
