@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import Trigger, { UniqueProvider } from '../src';
 import { awaitFakeTimer } from './util';
+import type { TriggerProps } from '../src';
 
 // Mock FloatBg to check if open props changed
 global.openChangeLog = [];
@@ -26,6 +27,34 @@ jest.mock('../src/UniqueProvider/FloatBg', () => {
     return OriginReact.createElement(OriginalFloatBg, props);
   };
 });
+
+async function setupAndOpenPopup(triggerProps: Partial<TriggerProps> = {}) {
+  const { container } = render(
+    <UniqueProvider>
+      <Trigger
+        action={['click']}
+        popup={<strong className="x-content">tooltip</strong>}
+        unique
+        {...triggerProps}
+      >
+        <div className="target">click me</div>
+      </Trigger>
+    </UniqueProvider>,
+  );
+
+  // Initially no popup should be visible
+  expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+  // Click trigger to show popup
+  fireEvent.click(container.querySelector('.target'));
+  await awaitFakeTimer();
+
+  // Check that popup exists
+  const popup = document.querySelector('.rc-trigger-popup');
+  expect(popup).toBeTruthy();
+
+  return { container, popup };
+}
 
 describe('Trigger.Unique', () => {
   beforeEach(() => {
@@ -151,5 +180,35 @@ describe('Trigger.Unique', () => {
     // Check that custom className from getPopupClassNameFromAlign is applied
     expect(popup.className).toContain('custom-align');
     expect(popup.className).toContain('rc-trigger-popup-unique-controlled');
+  });
+
+  it('should apply uniqueBgClassName to FloatBg component', async () => {
+    await setupAndOpenPopup({ uniqueBgClassName: 'custom-bg-class' });
+
+    // Check that FloatBg has the custom background className
+    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
+    expect(floatBg).toBeTruthy();
+    expect(floatBg.className).toContain('custom-bg-class');
+  });
+
+  it('should apply uniqueBgStyle to FloatBg component', async () => {
+    await setupAndOpenPopup({ uniqueBgStyle: { backgroundColor: 'red', border: '1px solid blue' } });
+
+    // Check that FloatBg has the custom background style
+    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
+    expect(floatBg).toBeTruthy();
+    expect(floatBg).toHaveStyle({
+      backgroundColor: 'red',
+      border: '1px solid blue',
+    });
+  });
+
+  it('should not apply any additional className to FloatBg when uniqueBgClassName is not provided', async () => {
+    await setupAndOpenPopup();
+
+    // Check that FloatBg exists but does not have custom background className
+    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
+    expect(floatBg).toBeTruthy();
+    expect(floatBg.className).not.toContain('undefined');
   });
 });

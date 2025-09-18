@@ -17,6 +17,8 @@ export interface FloatBgProps {
   offsetY: number;
   popupSize?: { width: number; height: number };
   motion?: CSSMotionProps;
+  uniqueBgClassName?: string;
+  uniqueBgStyle?: React.CSSProperties;
 }
 
 const FloatBg = (props: FloatBgProps) => {
@@ -32,6 +34,8 @@ const FloatBg = (props: FloatBgProps) => {
     offsetY,
     popupSize,
     motion,
+    uniqueBgClassName,
+    uniqueBgStyle,
   } = props;
 
   const floatBgCls = `${prefixCls}-float-bg`;
@@ -72,7 +76,7 @@ const FloatBg = (props: FloatBgProps) => {
       }}
     >
       {({ className: motionClassName, style: motionStyle }) => {
-        const cls = classNames(floatBgCls, motionClassName, {
+        const cls = classNames(floatBgCls, motionClassName, uniqueBgClassName, {
           [`${floatBgCls}-visible`]: motionVisible,
         });
 
@@ -83,6 +87,7 @@ const FloatBg = (props: FloatBgProps) => {
               ...offsetStyle,
               ...sizeStyle,
               ...motionStyle,
+              ...uniqueBgStyle,
             }}
           />
         );

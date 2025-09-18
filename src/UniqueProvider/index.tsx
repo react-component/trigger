@@ -216,6 +216,8 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
               offsetY={offsetY}
               popupSize={popupSize}
               motion={options.popupMotion}
+              uniqueBgClassName={options.uniqueBgClassName}
+              uniqueBgStyle={options.uniqueBgStyle}
             />
           </Popup>
         </TriggerContext.Provider>
