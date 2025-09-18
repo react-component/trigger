@@ -14,7 +14,6 @@ import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import FloatBg from './FloatBg';
 import classNames from 'classnames';
-import MotionContent from './MotionContent';
 import { getAlignPopupClassName } from '../util';
 
 export interface UniqueProviderProps {
@@ -43,8 +42,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   });
 
   // ========================== Register ==========================
-  const [popupId, setPopupId] = React.useState(0);
-
   // Store the isOpen function from the latest show call
   const isOpenRef = React.useRef<(() => boolean) | null>(null);
 
@@ -56,9 +53,6 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
       isOpenRef.current = isOpen;
 
       delayInvoke(() => {
-        if (showOptions.id !== options?.id) {
-          setPopupId((i) => i + 1);
-        }
         trigger(showOptions);
       }, showOptions.delay);
     },
@@ -172,11 +166,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             ref={setPopupRef}
             portal={Portal}
             prefixCls={prefixCls}
-            popup={
-              <MotionContent prefixCls={prefixCls} key={popupId}>
-                {options.popup}
-              </MotionContent>
-            }
+            popup={options.popup}
             className={classNames(
               options.popupClassName,
               alignedClassName,
