@@ -21,6 +21,7 @@ export interface UniqueShowOptions {
   prefixCls?: string;
   popupClassName?: string;
   uniqueBgClassName?: string;
+  uniqueBgStyle?: React.CSSProperties;
   popupStyle?: React.CSSProperties;
   popupPlacement?: string;
   builtinPlacements?: BuildInPlacements;

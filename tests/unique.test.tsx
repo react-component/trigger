@@ -161,18 +161,89 @@ describe('Trigger.Unique', () => {
           popup={<strong className="x-content">tooltip</strong>}
           unique
           uniqueBgClassName="custom-bg-class"
-          popupVisible
         >
           <div className="target">click me</div>
         </Trigger>
       </UniqueProvider>,
     );
 
+    // Initially no popup should be visible
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Click trigger to show popup
+    fireEvent.click(container.querySelector('.target'));
     await awaitFakeTimer();
+
+    // Check that popup exists
+    const popup = document.querySelector('.rc-trigger-popup');
+    expect(popup).toBeTruthy();
 
     // Check that FloatBg has the custom background className
     const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
     expect(floatBg).toBeTruthy();
-    expect(floatBg).toHaveClass('custom-bg-class');
+    expect(floatBg.className).toContain('custom-bg-class');
+  });
+
+  it('should apply uniqueBgStyle to FloatBg component', async () => {
+    const { container } = render(
+      <UniqueProvider>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+          uniqueBgStyle={{ backgroundColor: 'red', border: '1px solid blue' }}
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    // Initially no popup should be visible
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Click trigger to show popup
+    fireEvent.click(container.querySelector('.target'));
+    await awaitFakeTimer();
+
+    // Check that popup exists
+    const popup = document.querySelector('.rc-trigger-popup');
+    expect(popup).toBeTruthy();
+
+    // Check that FloatBg has the custom background style
+    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
+    expect(floatBg).toBeTruthy();
+    const computedStyle = window.getComputedStyle(floatBg);
+    expect(computedStyle.backgroundColor).toBe('red');
+    expect(computedStyle.border).toContain('1px solid blue');
+  });
+
+  it('should not apply any additional className to FloatBg when uniqueBgClassName is not provided', async () => {
+    const { container } = render(
+      <UniqueProvider>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    // Initially no popup should be visible
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Click trigger to show popup
+    fireEvent.click(container.querySelector('.target'));
+    await awaitFakeTimer();
+
+    // Check that popup exists
+    const popup = document.querySelector('.rc-trigger-popup');
+    expect(popup).toBeTruthy();
+
+    // Check that FloatBg exists but does not have custom background className
+    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
+    expect(floatBg).toBeTruthy();
+    expect(floatBg.className).not.toContain('undefined');
   });
 });
