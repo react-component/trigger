@@ -89,6 +89,7 @@ export interface AlignType {
 }
 
 export interface ArrowTypeOuter {
+  style?: React.CSSProperties;
   className?: string;
   content?: React.ReactNode;
 }
