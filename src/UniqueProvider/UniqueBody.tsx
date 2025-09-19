@@ -38,7 +38,7 @@ const UniqueBody = (props: UniqueBodyProps) => {
     uniqueBgStyle,
   } = props;
 
-  const floatBgCls = `${prefixCls}-unique-body`;
+  const bodyCls = `${prefixCls}-unique-body`;
 
   const [motionVisible, setMotionVisible] = React.useState(false);
 
@@ -68,7 +68,7 @@ const UniqueBody = (props: UniqueBodyProps) => {
       motionEnter
       motionLeave
       removeOnLeave={false}
-      leavedClassName={`${floatBgCls}-hidden`}
+      leavedClassName={`${bodyCls}-hidden`}
       {...motion}
       visible={open}
       onVisibleChanged={(nextVisible) => {
@@ -76,8 +76,8 @@ const UniqueBody = (props: UniqueBodyProps) => {
       }}
     >
       {({ className: motionClassName, style: motionStyle }) => {
-        const cls = classNames(floatBgCls, motionClassName, uniqueBgClassName, {
-          [`${floatBgCls}-visible`]: motionVisible,
+        const cls = classNames(bodyCls, motionClassName, uniqueBgClassName, {
+          [`${bodyCls}-visible`]: motionVisible,
         });
 
         return (
