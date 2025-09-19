@@ -236,7 +236,7 @@ describe('Trigger.Unique', () => {
               },
             },
           }}
-          arrow={{ pointAtCenter: true }}
+          arrow
         >
           <div className="target">click me</div>
         </Trigger>
