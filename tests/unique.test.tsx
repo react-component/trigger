@@ -3,6 +3,7 @@ import React from 'react';
 import Trigger, { UniqueProvider } from '../src';
 import { awaitFakeTimer } from './util';
 import type { TriggerProps } from '../src';
+import classNames from 'classnames';
 
 // Mock UniqueBody to check if open props changed
 global.openChangeLog = [];
@@ -253,5 +254,28 @@ describe('Trigger.Unique', () => {
     const computedStyle = getComputedStyle(uniqueBody);
     expect(computedStyle.getPropertyValue('--arrow-x')).not.toBe('');
     expect(computedStyle.getPropertyValue('--arrow-y')).not.toBe('');
+  });
+
+  it('should apply postOptions to customize options', async () => {
+    const postOptions = (options: any) => ({
+      ...options,
+      popupClassName: classNames(options.popupClassName, 'custom-post-options-class'),
+    });
+
+    render(
+      <UniqueProvider postOptions={postOptions}>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+          popupVisible
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    // Check that the custom class from postOptions is applied
+    expect(document.querySelector('.rc-trigger-popup')).toHaveClass('custom-post-options-class');
   });
 });

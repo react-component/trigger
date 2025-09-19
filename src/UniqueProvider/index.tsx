@@ -18,10 +18,21 @@ import { getAlignPopupClassName } from '../util';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
+  /** Additional handle options data to do the customize info */
+  postOptions?: (options: UniqueShowOptions) => UniqueShowOptions;
 }
 
-const UniqueProvider = ({ children }: UniqueProviderProps) => {
+const UniqueProvider = ({ children, postOptions }: UniqueProviderProps) => {
   const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
+
+  // ========================== Options ===========================
+  const mergedOptions = React.useMemo(() => {
+    if (!options || !postOptions) {
+      return options;
+    }
+
+    return postOptions(options);
+  }, [options, postOptions]);
 
   // =========================== Popup ============================
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
@@ -155,7 +166,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
   );
 
   // =========================== Render ===========================
-  const prefixCls = options?.prefixCls;
+  const prefixCls = mergedOptions?.prefixCls;
 
   return (
     <UniqueContext.Provider value={contextValue}>
@@ -166,14 +177,14 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             ref={setPopupRef}
             portal={Portal}
             prefixCls={prefixCls}
-            popup={options.popup}
+            popup={mergedOptions.popup}
             className={classNames(
-              options.popupClassName,
+              mergedOptions.popupClassName,
               alignedClassName,
               `${prefixCls}-unique-controlled`,
             )}
-            style={options.popupStyle}
-            target={options.target}
+            style={mergedOptions.popupStyle}
+            target={mergedOptions.target}
             open={open}
             keepDom={true}
             fresh={true}
@@ -197,12 +208,12 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
               y: arrowY,
             }}
             align={alignInfo}
-            zIndex={options.zIndex}
-            mask={options.mask}
-            arrow={options.arrow}
-            motion={options.popupMotion}
-            maskMotion={options.maskMotion}
-            // getPopupContainer={options.getPopupContainer}
+            zIndex={mergedOptions.zIndex}
+            mask={mergedOptions.mask}
+            arrow={mergedOptions.arrow}
+            motion={mergedOptions.popupMotion}
+            maskMotion={mergedOptions.maskMotion}
+            getPopupContainer={mergedOptions.getPopupContainer}
           >
             <UniqueBody
               prefixCls={prefixCls}
@@ -219,12 +230,12 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
                 y: arrowY,
               }}
               popupSize={popupSize}
-              motion={options.popupMotion}
+              motion={mergedOptions.popupMotion}
               uniqueBgClassName={classNames(
-                options.uniqueBgClassName,
+                mergedOptions.uniqueBgClassName,
                 alignedClassName,
               )}
-              uniqueBgStyle={options.uniqueBgStyle}
+              uniqueBgStyle={mergedOptions.uniqueBgStyle}
             />
           </Popup>
         </TriggerContext.Provider>
