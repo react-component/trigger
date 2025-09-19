@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import Trigger, { UniqueProvider } from '../src';
+import Trigger, { UniqueProvider, type UniqueProviderProps } from '../src';
 import { awaitFakeTimer } from './util';
 import type { TriggerProps } from '../src';
 import classNames from 'classnames';
@@ -257,9 +257,14 @@ describe('Trigger.Unique', () => {
   });
 
   it('should apply postTriggerProps to customize options', async () => {
-    const postTriggerProps = (options: any) => ({
+    const postTriggerProps: UniqueProviderProps['postTriggerProps'] = (
+      options,
+    ) => ({
       ...options,
-      popupClassName: classNames(options.popupClassName, 'custom-post-options-class'),
+      popupClassName: classNames(
+        options.popupClassName,
+        'custom-post-options-class',
+      ),
     });
 
     render(
@@ -276,6 +281,8 @@ describe('Trigger.Unique', () => {
     );
 
     // Check that the custom class from postTriggerProps is applied
-    expect(document.querySelector('.rc-trigger-popup')).toHaveClass('custom-post-options-class');
+    expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
+      'custom-post-options-class',
+    );
   });
 });
