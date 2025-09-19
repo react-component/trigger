@@ -125,9 +125,9 @@ describe('Trigger.Unique', () => {
 
     // There should only be one popup element
     expect(document.querySelectorAll('.rc-trigger-popup').length).toBe(1);
-    expect(document.querySelectorAll('.rc-trigger-popup-unique-body').length).toBe(
-      1,
-    );
+    expect(
+      document.querySelectorAll('.rc-trigger-popup-unique-body').length,
+    ).toBe(1);
 
     // FloatBg open prop should not have changed during transition (no close animation)
     expect(global.openChangeLog).toHaveLength(0);
@@ -192,7 +192,9 @@ describe('Trigger.Unique', () => {
   });
 
   it('should apply uniqueBgStyle to UniqueBody component', async () => {
-    await setupAndOpenPopup({ uniqueBgStyle: { backgroundColor: 'red', border: '1px solid blue' } });
+    await setupAndOpenPopup({
+      uniqueBgStyle: { backgroundColor: 'red', border: '1px solid blue' },
+    });
 
     // Check that UniqueBody has the custom background style
     const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
@@ -210,5 +212,39 @@ describe('Trigger.Unique', () => {
     const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
     expect(uniqueBody).toBeTruthy();
     expect(uniqueBody.className).not.toContain('undefined');
+  });
+
+  it('should pass alignedClassName on unique body', async () => {
+    const getPopupClassNameFromAlign = () => 'bamboo';
+
+    render(
+      <UniqueProvider>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+          popupVisible
+          popupPlacement="bottomLeft"
+          getPopupClassNameFromAlign={getPopupClassNameFromAlign}
+          builtinPlacements={{
+            bottomLeft: {
+              points: ['tl', 'bl'],
+              offset: [0, 4],
+              overflow: {
+                adjustX: 0,
+                adjustY: 1,
+              },
+            },
+          }}
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    expect(document.querySelector('.rc-trigger-popup')).toHaveClass('bamboo');
+    expect(document.querySelector('.rc-trigger-popup-unique-body')).toHaveClass(
+      'bamboo',
+    );
   });
 });
