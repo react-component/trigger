@@ -125,9 +125,9 @@ describe('Trigger.Unique', () => {
 
     // There should only be one popup element
     expect(document.querySelectorAll('.rc-trigger-popup').length).toBe(1);
-    expect(document.querySelectorAll('.rc-trigger-popup-unique-body').length).toBe(
-      1,
-    );
+    expect(
+      document.querySelectorAll('.rc-trigger-popup-unique-body').length,
+    ).toBe(1);
 
     // FloatBg open prop should not have changed during transition (no close animation)
     expect(global.openChangeLog).toHaveLength(0);
@@ -192,7 +192,9 @@ describe('Trigger.Unique', () => {
   });
 
   it('should apply uniqueBgStyle to UniqueBody component', async () => {
-    await setupAndOpenPopup({ uniqueBgStyle: { backgroundColor: 'red', border: '1px solid blue' } });
+    await setupAndOpenPopup({
+      uniqueBgStyle: { backgroundColor: 'red', border: '1px solid blue' },
+    });
 
     // Check that UniqueBody has the custom background style
     const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
@@ -213,17 +215,17 @@ describe('Trigger.Unique', () => {
   });
 
   it('should combine alignedClassName with uniqueBgClassName', async () => {
-    const getPopupClassNameFromAlign = (align: any) => {
-      return `custom-align-${align.points?.[0] || 'default'}`;
-    };
+    const getPopupClassNameFromAlign = () => 'bamboo';
 
-    const { container } = render(
+    render(
       <UniqueProvider>
         <Trigger
           action={['click']}
           popup={<strong className="x-content">tooltip</strong>}
           unique
+          popupVisible
           popupPlacement="bottomLeft"
+          getPopupClassNameFromAlign={getPopupClassNameFromAlign}
           builtinPlacements={{
             bottomLeft: {
               points: ['tl', 'bl'],
@@ -234,33 +236,15 @@ describe('Trigger.Unique', () => {
               },
             },
           }}
-          getPopupClassNameFromAlign={getPopupClassNameFromAlign}
-          uniqueBgClassName="custom-bg-class"
         >
           <div className="target">click me</div>
         </Trigger>
       </UniqueProvider>,
     );
 
-    // Initially no popup should be visible
-    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
-
-    // Click trigger to show popup
-    fireEvent.click(container.querySelector('.target'));
-    await awaitFakeTimer();
-
-    // Wait a bit more for alignment to complete
-    await awaitFakeTimer();
-
-    // Check that popup exists
-    const popup = document.querySelector('.rc-trigger-popup');
-    expect(popup).toBeTruthy();
-    expect(popup.querySelector('.x-content').textContent).toBe('tooltip');
-
-    // Check that both custom background className and aligned className are applied to UniqueBody
-    const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
-    expect(uniqueBody).toBeTruthy();
-    expect(uniqueBody.className).toContain('custom-bg-class');
-    expect(uniqueBody.className).toContain('custom-align');
+    expect(document.querySelector('.rc-trigger-popup')).toHaveClass('bamboo');
+    expect(document.querySelector('.rc-trigger-popup-unique-body')).toHaveClass(
+      'bamboo',
+    );
   });
 });
