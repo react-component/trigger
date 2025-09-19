@@ -12,7 +12,7 @@ import Popup from '../Popup';
 import { useEvent } from '@rc-component/util';
 import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import FloatBg from './FloatBg';
+import UniqueBody from './UniqueBody';
 import classNames from 'classnames';
 import { getAlignPopupClassName } from '../util';
 
@@ -204,7 +204,7 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
             maskMotion={options.maskMotion}
             // getPopupContainer={options.getPopupContainer}
           >
-            <FloatBg
+            <UniqueBody
               prefixCls={prefixCls}
               isMobile={false}
               ready={ready}

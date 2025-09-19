@@ -5,8 +5,8 @@ import CSSMotion from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
 import type { AlignType } from '../interface';
 
-export interface FloatBgProps {
-  prefixCls: string; // ${prefixCls}-float-bg
+export interface UniqueBodyProps {
+  prefixCls: string; // ${prefixCls}-unique-body
   isMobile: boolean;
   ready: boolean;
   open: boolean;
@@ -21,7 +21,7 @@ export interface FloatBgProps {
   uniqueBgStyle?: React.CSSProperties;
 }
 
-const FloatBg = (props: FloatBgProps) => {
+const UniqueBody = (props: UniqueBodyProps) => {
   const {
     prefixCls,
     isMobile,
@@ -38,7 +38,7 @@ const FloatBg = (props: FloatBgProps) => {
     uniqueBgStyle,
   } = props;
 
-  const floatBgCls = `${prefixCls}-float-bg`;
+  const floatBgCls = `${prefixCls}-unique-body`;
 
   const [motionVisible, setMotionVisible] = React.useState(false);
 
@@ -96,4 +96,4 @@ const FloatBg = (props: FloatBgProps) => {
   );
 };
 
-export default FloatBg;
+export default UniqueBody;
