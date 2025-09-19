@@ -3,7 +3,7 @@ import useOffsetStyle from '../hooks/useOffsetStyle';
 import classNames from 'classnames';
 import CSSMotion from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
-import type { AlignType } from '../interface';
+import type { AlignType, ArrowPos } from '../interface';
 
 export interface UniqueBodyProps {
   prefixCls: string; // ${prefixCls}-unique-body
@@ -15,6 +15,7 @@ export interface UniqueBodyProps {
   offsetB: number;
   offsetX: number;
   offsetY: number;
+  arrowPos?: ArrowPos;
   popupSize?: { width: number; height: number };
   motion?: CSSMotionProps;
   uniqueBgClassName?: string;
@@ -32,6 +33,7 @@ const UniqueBody = (props: UniqueBodyProps) => {
     offsetB,
     offsetX,
     offsetY,
+    arrowPos,
     popupSize,
     motion,
     uniqueBgClassName,
@@ -84,11 +86,13 @@ const UniqueBody = (props: UniqueBodyProps) => {
           <div
             className={cls}
             style={{
+              '--arrow-x': `${arrowPos?.x || 0}px`,
+              '--arrow-y': `${arrowPos?.y || 0}px`,
               ...offsetStyle,
               ...sizeStyle,
               ...motionStyle,
               ...uniqueBgStyle,
-            }}
+            } as React.CSSProperties}
           />
         );
       }}

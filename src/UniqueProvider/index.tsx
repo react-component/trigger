@@ -214,6 +214,10 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
               offsetB={offsetB}
               offsetX={offsetX}
               offsetY={offsetY}
+              arrowPos={{
+                x: arrowX,
+                y: arrowY,
+              }}
               popupSize={popupSize}
               motion={options.popupMotion}
               uniqueBgClassName={classNames(
