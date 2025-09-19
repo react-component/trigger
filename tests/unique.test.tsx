@@ -236,6 +236,7 @@ describe('Trigger.Unique', () => {
               },
             },
           }}
+          arrow={{ pointAtCenter: true }}
         >
           <div className="target">click me</div>
         </Trigger>
@@ -246,5 +247,11 @@ describe('Trigger.Unique', () => {
     expect(document.querySelector('.rc-trigger-popup-unique-body')).toHaveClass(
       'bamboo',
     );
+
+    // Check that arrow position CSS variables are set
+    const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
+    const computedStyle = getComputedStyle(uniqueBody);
+    expect(computedStyle.getPropertyValue('--arrow-x')).not.toBe('');
+    expect(computedStyle.getPropertyValue('--arrow-y')).not.toBe('');
   });
 });
