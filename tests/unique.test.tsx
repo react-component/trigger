@@ -4,12 +4,12 @@ import Trigger, { UniqueProvider } from '../src';
 import { awaitFakeTimer } from './util';
 import type { TriggerProps } from '../src';
 
-// Mock FloatBg to check if open props changed
+// Mock UniqueBody to check if open props changed
 global.openChangeLog = [];
 
-jest.mock('../src/UniqueProvider/FloatBg', () => {
-  const OriginalFloatBg = jest.requireActual(
-    '../src/UniqueProvider/FloatBg',
+jest.mock('../src/UniqueProvider/UniqueBody', () => {
+  const OriginalUniqueBody = jest.requireActual(
+    '../src/UniqueProvider/UniqueBody',
   ).default;
   const OriginReact = jest.requireActual('react');
 
@@ -24,7 +24,7 @@ jest.mock('../src/UniqueProvider/FloatBg', () => {
       }
     }, [open]);
 
-    return OriginReact.createElement(OriginalFloatBg, props);
+    return OriginReact.createElement(OriginalUniqueBody, props);
   };
 });
 
@@ -103,7 +103,7 @@ describe('Trigger.Unique', () => {
       '-hidden',
     );
     expect(
-      document.querySelector('.rc-trigger-popup-float-bg').className,
+      document.querySelector('.rc-trigger-popup-unique-body').className,
     ).not.toContain('-hidden');
 
     // Move from first to second trigger - popup should not hide, but content should change
@@ -120,12 +120,12 @@ describe('Trigger.Unique', () => {
       '-hidden',
     );
     expect(
-      document.querySelector('.rc-trigger-popup-float-bg').className,
+      document.querySelector('.rc-trigger-popup-unique-body').className,
     ).not.toContain('-hidden');
 
     // There should only be one popup element
     expect(document.querySelectorAll('.rc-trigger-popup').length).toBe(1);
-    expect(document.querySelectorAll('.rc-trigger-popup-float-bg').length).toBe(
+    expect(document.querySelectorAll('.rc-trigger-popup-unique-body').length).toBe(
       1,
     );
 
@@ -182,33 +182,33 @@ describe('Trigger.Unique', () => {
     expect(popup.className).toContain('rc-trigger-popup-unique-controlled');
   });
 
-  it('should apply uniqueBgClassName to FloatBg component', async () => {
+  it('should apply uniqueBgClassName to UniqueBody component', async () => {
     await setupAndOpenPopup({ uniqueBgClassName: 'custom-bg-class' });
 
-    // Check that FloatBg has the custom background className
-    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
-    expect(floatBg).toBeTruthy();
-    expect(floatBg.className).toContain('custom-bg-class');
+    // Check that UniqueBody has the custom background className
+    const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
+    expect(uniqueBody).toBeTruthy();
+    expect(uniqueBody.className).toContain('custom-bg-class');
   });
 
-  it('should apply uniqueBgStyle to FloatBg component', async () => {
+  it('should apply uniqueBgStyle to UniqueBody component', async () => {
     await setupAndOpenPopup({ uniqueBgStyle: { backgroundColor: 'red', border: '1px solid blue' } });
 
-    // Check that FloatBg has the custom background style
-    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
-    expect(floatBg).toBeTruthy();
-    expect(floatBg).toHaveStyle({
+    // Check that UniqueBody has the custom background style
+    const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
+    expect(uniqueBody).toBeTruthy();
+    expect(uniqueBody).toHaveStyle({
       backgroundColor: 'red',
       border: '1px solid blue',
     });
   });
 
-  it('should not apply any additional className to FloatBg when uniqueBgClassName is not provided', async () => {
+  it('should not apply any additional className to UniqueBody when uniqueBgClassName is not provided', async () => {
     await setupAndOpenPopup();
 
-    // Check that FloatBg exists but does not have custom background className
-    const floatBg = document.querySelector('.rc-trigger-popup-float-bg');
-    expect(floatBg).toBeTruthy();
-    expect(floatBg.className).not.toContain('undefined');
+    // Check that UniqueBody exists but does not have custom background className
+    const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
+    expect(uniqueBody).toBeTruthy();
+    expect(uniqueBody.className).not.toContain('undefined');
   });
 });

@@ -5,8 +5,8 @@ import CSSMotion from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
 import type { AlignType } from '../interface';
 
-export interface FloatBgProps {
-  prefixCls: string; // ${prefixCls}-float-bg
+export interface UniqueBodyProps {
+  prefixCls: string; // ${prefixCls}-unique-body
   isMobile: boolean;
   ready: boolean;
   open: boolean;
@@ -21,7 +21,7 @@ export interface FloatBgProps {
   uniqueBgStyle?: React.CSSProperties;
 }
 
-const FloatBg = (props: FloatBgProps) => {
+const UniqueBody = (props: UniqueBodyProps) => {
   const {
     prefixCls,
     isMobile,
@@ -38,7 +38,7 @@ const FloatBg = (props: FloatBgProps) => {
     uniqueBgStyle,
   } = props;
 
-  const floatBgCls = `${prefixCls}-float-bg`;
+  const bodyCls = `${prefixCls}-unique-body`;
 
   const [motionVisible, setMotionVisible] = React.useState(false);
 
@@ -68,7 +68,7 @@ const FloatBg = (props: FloatBgProps) => {
       motionEnter
       motionLeave
       removeOnLeave={false}
-      leavedClassName={`${floatBgCls}-hidden`}
+      leavedClassName={`${bodyCls}-hidden`}
       {...motion}
       visible={open}
       onVisibleChanged={(nextVisible) => {
@@ -76,8 +76,8 @@ const FloatBg = (props: FloatBgProps) => {
       }}
     >
       {({ className: motionClassName, style: motionStyle }) => {
-        const cls = classNames(floatBgCls, motionClassName, uniqueBgClassName, {
-          [`${floatBgCls}-visible`]: motionVisible,
+        const cls = classNames(bodyCls, motionClassName, uniqueBgClassName, {
+          [`${bodyCls}-visible`]: motionVisible,
         });
 
         return (
@@ -96,4 +96,4 @@ const FloatBg = (props: FloatBgProps) => {
   );
 };
 
-export default FloatBg;
+export default UniqueBody;
