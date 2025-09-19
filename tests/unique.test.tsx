@@ -211,4 +211,56 @@ describe('Trigger.Unique', () => {
     expect(uniqueBody).toBeTruthy();
     expect(uniqueBody.className).not.toContain('undefined');
   });
+
+  it('should combine alignedClassName with uniqueBgClassName', async () => {
+    const getPopupClassNameFromAlign = (align: any) => {
+      return `custom-align-${align.points?.[0] || 'default'}`;
+    };
+
+    const { container } = render(
+      <UniqueProvider>
+        <Trigger
+          action={['click']}
+          popup={<strong className="x-content">tooltip</strong>}
+          unique
+          popupPlacement="bottomLeft"
+          builtinPlacements={{
+            bottomLeft: {
+              points: ['tl', 'bl'],
+              offset: [0, 4],
+              overflow: {
+                adjustX: 0,
+                adjustY: 1,
+              },
+            },
+          }}
+          getPopupClassNameFromAlign={getPopupClassNameFromAlign}
+          uniqueBgClassName="custom-bg-class"
+        >
+          <div className="target">click me</div>
+        </Trigger>
+      </UniqueProvider>,
+    );
+
+    // Initially no popup should be visible
+    expect(document.querySelector('.rc-trigger-popup')).toBeFalsy();
+
+    // Click trigger to show popup
+    fireEvent.click(container.querySelector('.target'));
+    await awaitFakeTimer();
+
+    // Wait a bit more for alignment to complete
+    await awaitFakeTimer();
+
+    // Check that popup exists
+    const popup = document.querySelector('.rc-trigger-popup');
+    expect(popup).toBeTruthy();
+    expect(popup.querySelector('.x-content').textContent).toBe('tooltip');
+
+    // Check that both custom background className and aligned className are applied to UniqueBody
+    const uniqueBody = document.querySelector('.rc-trigger-popup-unique-body');
+    expect(uniqueBody).toBeTruthy();
+    expect(uniqueBody.className).toContain('custom-bg-class');
+    expect(uniqueBody.className).toContain('custom-align');
+  });
 });

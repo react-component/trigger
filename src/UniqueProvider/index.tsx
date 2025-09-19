@@ -216,7 +216,10 @@ const UniqueProvider = ({ children }: UniqueProviderProps) => {
               offsetY={offsetY}
               popupSize={popupSize}
               motion={options.popupMotion}
-              uniqueBgClassName={options.uniqueBgClassName}
+              uniqueBgClassName={classNames(
+                options.uniqueBgClassName,
+                alignedClassName,
+              )}
               uniqueBgStyle={options.uniqueBgStyle}
             />
           </Popup>
