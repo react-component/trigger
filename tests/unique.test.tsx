@@ -256,14 +256,14 @@ describe('Trigger.Unique', () => {
     expect(computedStyle.getPropertyValue('--arrow-y')).not.toBe('');
   });
 
-  it('should apply postOptions to customize options', async () => {
-    const postOptions = (options: any) => ({
+  it('should apply postTriggerProps to customize options', async () => {
+    const postTriggerProps = (options: any) => ({
       ...options,
       popupClassName: classNames(options.popupClassName, 'custom-post-options-class'),
     });
 
     render(
-      <UniqueProvider postOptions={postOptions}>
+      <UniqueProvider postTriggerProps={postTriggerProps}>
         <Trigger
           action={['click']}
           popup={<strong className="x-content">tooltip</strong>}
@@ -275,7 +275,7 @@ describe('Trigger.Unique', () => {
       </UniqueProvider>,
     );
 
-    // Check that the custom class from postOptions is applied
+    // Check that the custom class from postTriggerProps is applied
     expect(document.querySelector('.rc-trigger-popup')).toHaveClass('custom-post-options-class');
   });
 });

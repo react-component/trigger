@@ -19,20 +19,20 @@ import { getAlignPopupClassName } from '../util';
 export interface UniqueProviderProps {
   children: React.ReactNode;
   /** Additional handle options data to do the customize info */
-  postOptions?: (options: UniqueShowOptions) => UniqueShowOptions;
+  postTriggerProps?: (options: UniqueShowOptions) => UniqueShowOptions;
 }
 
-const UniqueProvider = ({ children, postOptions }: UniqueProviderProps) => {
+const UniqueProvider = ({ children, postTriggerProps }: UniqueProviderProps) => {
   const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
 
   // ========================== Options ===========================
   const mergedOptions = React.useMemo(() => {
-    if (!options || !postOptions) {
+    if (!options || !postTriggerProps) {
       return options;
     }
 
-    return postOptions(options);
-  }, [options, postOptions]);
+    return postTriggerProps(options);
+  }, [options, postTriggerProps]);
 
   // =========================== Popup ============================
   const [popupEle, setPopupEle] = React.useState<HTMLDivElement>(null);
