@@ -32,7 +32,10 @@ export type {
   BuildInPlacements,
 };
 
-export { default as UniqueProvider } from './UniqueProvider';
+import UniqueProvider, { type UniqueProviderProps } from './UniqueProvider';
+
+export { UniqueProvider };
+export type { UniqueProviderProps };
 
 export interface TriggerRef {
   nativeElement: HTMLElement;
