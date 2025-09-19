@@ -34,7 +34,8 @@ export type {
 
 import UniqueProvider, { type UniqueProviderProps } from './UniqueProvider';
 
-export { UniqueProvider, UniqueProviderProps };
+export { UniqueProvider };
+export type { UniqueProviderProps };
 
 export interface TriggerRef {
   nativeElement: HTMLElement;
