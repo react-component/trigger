@@ -214,7 +214,7 @@ describe('Trigger.Unique', () => {
     expect(uniqueBody.className).not.toContain('undefined');
   });
 
-  it('should combine alignedClassName with uniqueBgClassName', async () => {
+  it('should pass alignedClassName on unique body', async () => {
     const getPopupClassNameFromAlign = () => 'bamboo';
 
     render(
