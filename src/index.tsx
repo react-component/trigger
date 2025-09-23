@@ -361,9 +361,9 @@ export function generateTrigger(
         !parentContext
       ) {
         if (mergedOpen) {
-          uniqueContext.show(getUniqueOptions(0), isOpen);
+          uniqueContext.show(getUniqueOptions(mouseEnterDelay), isOpen);
         } else {
-          uniqueContext.hide(0);
+          uniqueContext.hide(mouseLeaveDelay);
         }
       }
     }, [mergedOpen, targetEle]);
