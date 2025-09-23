@@ -105,35 +105,35 @@ const UniqueProvider = ({ children, postTriggerProps }: UniqueProviderProps) => 
   ] = useAlign(
     open,
     popupEle,
-    options?.target,
-    options?.popupPlacement,
-    options?.builtinPlacements || {},
-    options?.popupAlign,
+    mergedOptions?.target,
+    mergedOptions?.popupPlacement,
+    mergedOptions?.builtinPlacements || {},
+    mergedOptions?.popupAlign,
     undefined, // onPopupAlign
     false, // isMobile
   );
 
   const alignedClassName = React.useMemo(() => {
-    if (!options) {
+    if (!mergedOptions) {
       return '';
     }
 
     const baseClassName = getAlignPopupClassName(
-      options.builtinPlacements || {},
-      options.prefixCls || '',
+      mergedOptions.builtinPlacements || {},
+      mergedOptions.prefixCls || '',
       alignInfo,
       false, // alignPoint is false for UniqueProvider
     );
 
     return classNames(
       baseClassName,
-      options.getPopupClassNameFromAlign?.(alignInfo),
+      mergedOptions.getPopupClassNameFromAlign?.(alignInfo),
     );
   }, [
     alignInfo,
-    options?.getPopupClassNameFromAlign,
-    options?.builtinPlacements,
-    options?.prefixCls,
+    mergedOptions?.getPopupClassNameFromAlign,
+    mergedOptions?.builtinPlacements,
+    mergedOptions?.prefixCls,
   ]);
 
   const contextValue = React.useMemo<UniqueContextProps>(
@@ -171,7 +171,7 @@ const UniqueProvider = ({ children, postTriggerProps }: UniqueProviderProps) => 
   return (
     <UniqueContext.Provider value={contextValue}>
       {children}
-      {options && (
+      {mergedOptions && (
         <TriggerContext.Provider value={triggerContextValue}>
           <Popup
             ref={setPopupRef}
