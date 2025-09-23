@@ -56,6 +56,14 @@ const UniqueBody = (props: UniqueBodyProps) => {
     offsetY,
   );
 
+  // Cache for offsetStyle when ready is true
+  const cachedOffsetStyleRef = React.useRef(offsetStyle);
+
+  // Update cached offset style when ready is true
+  if (ready) {
+    cachedOffsetStyleRef.current = offsetStyle;
+  }
+
   // Apply popup size if available
   const sizeStyle: React.CSSProperties = {};
   if (popupSize) {
@@ -85,14 +93,16 @@ const UniqueBody = (props: UniqueBodyProps) => {
         return (
           <div
             className={cls}
-            style={{
-              '--arrow-x': `${arrowPos?.x || 0}px`,
-              '--arrow-y': `${arrowPos?.y || 0}px`,
-              ...offsetStyle,
-              ...sizeStyle,
-              ...motionStyle,
-              ...uniqueBgStyle,
-            } as React.CSSProperties}
+            style={
+              {
+                '--arrow-x': `${arrowPos?.x || 0}px`,
+                '--arrow-y': `${arrowPos?.y || 0}px`,
+                ...cachedOffsetStyleRef.current,
+                ...sizeStyle,
+                ...motionStyle,
+                ...uniqueBgStyle,
+              } as React.CSSProperties
+            }
           />
         );
       }}
