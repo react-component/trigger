@@ -22,7 +22,10 @@ export interface UniqueProviderProps {
   postTriggerProps?: (options: UniqueShowOptions) => UniqueShowOptions;
 }
 
-const UniqueProvider = ({ children, postTriggerProps }: UniqueProviderProps) => {
+const UniqueProvider = ({
+  children,
+  postTriggerProps,
+}: UniqueProviderProps) => {
   const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
 
   // ========================== Options ===========================
@@ -143,6 +146,11 @@ const UniqueProvider = ({ children, postTriggerProps }: UniqueProviderProps) => 
     }),
     [],
   );
+
+  // =========================== Align ============================
+  React.useEffect(() => {
+    onAlign();
+  }, [mergedOptions?.target]);
 
   // =========================== Motion ===========================
   const onPrepare = useEvent(() => {
