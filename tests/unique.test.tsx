@@ -66,6 +66,7 @@ describe('Trigger.Unique', () => {
   afterEach(() => {
     cleanup();
     jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   it('moving will not hide the popup', async () => {
@@ -284,5 +285,83 @@ describe('Trigger.Unique', () => {
     expect(document.querySelector('.rc-trigger-popup')).toHaveClass(
       'custom-post-options-class',
     );
+  });
+
+  it('should call onAlign when target changes', async () => {
+    const mockOnAlign = jest.fn();
+
+    // Mock useAlign to return our mock onAlign function
+    const useAlignModule = require('../src/hooks/useAlign');
+    const originalUseAlign = useAlignModule.default;
+    
+    jest.spyOn(useAlignModule, 'default').mockImplementation((...args) => {
+      const originalResult = originalUseAlign(...args);
+      // Replace onAlign with our mock
+      return [
+        originalResult[0], // ready
+        originalResult[1], // offsetX
+        originalResult[2], // offsetY
+        originalResult[3], // offsetR
+        originalResult[4], // offsetB
+        originalResult[5], // arrowX
+        originalResult[6], // arrowY
+        originalResult[7], // scaleX
+        originalResult[8], // scaleY
+        originalResult[9], // alignInfo
+        mockOnAlign, // onAlign - our mock function
+      ];
+    });
+
+    // Test component with two controlled triggers
+    const TestComponent = () => {
+      const [trigger1Open, setTrigger1Open] = React.useState(true);
+      const [trigger2Open, setTrigger2Open] = React.useState(false);
+
+      return (
+        <div>
+          <button 
+            className="switch-trigger-btn"
+            onClick={() => {
+              // Switch which trigger is open - this changes the target
+              setTrigger1Open(!trigger1Open);
+              setTrigger2Open(!trigger2Open);
+            }}
+          >
+            Switch Trigger
+          </button>
+          <UniqueProvider>
+            <Trigger
+              popupVisible={trigger1Open}
+              popup={<div>Trigger 1 Popup</div>}
+              unique
+            >
+              <div className="trigger-1">Trigger 1</div>
+            </Trigger>
+            <Trigger
+              popupVisible={trigger2Open}
+              popup={<div>Trigger 2 Popup</div>}
+              unique
+            >
+              <div className="trigger-2">Trigger 2</div>
+            </Trigger>
+          </UniqueProvider>
+        </div>
+      );
+    };
+
+    const { container } = render(<TestComponent />);
+
+    // Wait for initial render
+    await awaitFakeTimer();
+
+    // Clear any initial calls
+    mockOnAlign.mockClear();
+
+    // Switch triggers - this should change the target and call onAlign
+    fireEvent.click(container.querySelector('.switch-trigger-btn'));
+    await awaitFakeTimer();
+
+    // Verify onAlign was called due to target change
+    expect(mockOnAlign).toHaveBeenCalled();
   });
 });
