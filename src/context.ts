@@ -20,8 +20,8 @@ export interface UniqueShowOptions {
   delay: number;
   prefixCls?: string;
   popupClassName?: string;
-  uniqueBgClassName?: string;
-  uniqueBgStyle?: React.CSSProperties;
+  uniqueContainerClassName?: string;
+  uniqueContainerStyle?: React.CSSProperties;
   popupStyle?: React.CSSProperties;
   popupPlacement?: string;
   builtinPlacements?: BuildInPlacements;

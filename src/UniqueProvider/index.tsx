@@ -12,7 +12,7 @@ import Popup from '../Popup';
 import { useEvent } from '@rc-component/util';
 import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import UniqueBody from './UniqueBody';
+import UniqueContainer from './UniqueContainer';
 import classNames from 'classnames';
 import { getAlignPopupClassName } from '../util';
 
@@ -223,7 +223,7 @@ const UniqueProvider = ({
             maskMotion={mergedOptions.maskMotion}
             getPopupContainer={mergedOptions.getPopupContainer}
           >
-            <UniqueBody
+            <UniqueContainer
               prefixCls={prefixCls}
               isMobile={false}
               ready={ready}
@@ -239,11 +239,11 @@ const UniqueProvider = ({
               }}
               popupSize={popupSize}
               motion={mergedOptions.popupMotion}
-              uniqueBgClassName={classNames(
-                mergedOptions.uniqueBgClassName,
+              uniqueContainerClassName={classNames(
+                mergedOptions.uniqueContainerClassName,
                 alignedClassName,
               )}
-              uniqueBgStyle={mergedOptions.uniqueBgStyle}
+              uniqueContainerStyle={mergedOptions.uniqueContainerStyle}
             />
           </Popup>
         </TriggerContext.Provider>

@@ -5,8 +5,8 @@ import CSSMotion from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
 import type { AlignType, ArrowPos } from '../interface';
 
-export interface UniqueBodyProps {
-  prefixCls: string; // ${prefixCls}-unique-body
+export interface UniqueContainerProps {
+  prefixCls: string; // ${prefixCls}-unique-container
   isMobile: boolean;
   ready: boolean;
   open: boolean;
@@ -18,11 +18,11 @@ export interface UniqueBodyProps {
   arrowPos?: ArrowPos;
   popupSize?: { width: number; height: number };
   motion?: CSSMotionProps;
-  uniqueBgClassName?: string;
-  uniqueBgStyle?: React.CSSProperties;
+  uniqueContainerClassName?: string;
+  uniqueContainerStyle?: React.CSSProperties;
 }
 
-const UniqueBody = (props: UniqueBodyProps) => {
+const UniqueContainer = (props: UniqueContainerProps) => {
   const {
     prefixCls,
     isMobile,
@@ -36,11 +36,11 @@ const UniqueBody = (props: UniqueBodyProps) => {
     arrowPos,
     popupSize,
     motion,
-    uniqueBgClassName,
-    uniqueBgStyle,
+    uniqueContainerClassName,
+    uniqueContainerStyle,
   } = props;
 
-  const bodyCls = `${prefixCls}-unique-body`;
+  const containerCls = `${prefixCls}-unique-container`;
 
   const [motionVisible, setMotionVisible] = React.useState(false);
 
@@ -78,7 +78,7 @@ const UniqueBody = (props: UniqueBodyProps) => {
       motionEnter
       motionLeave
       removeOnLeave={false}
-      leavedClassName={`${bodyCls}-hidden`}
+      leavedClassName={`${containerCls}-hidden`}
       {...motion}
       visible={open}
       onVisibleChanged={(nextVisible) => {
@@ -86,8 +86,8 @@ const UniqueBody = (props: UniqueBodyProps) => {
       }}
     >
       {({ className: motionClassName, style: motionStyle }) => {
-        const cls = classNames(bodyCls, motionClassName, uniqueBgClassName, {
-          [`${bodyCls}-visible`]: motionVisible,
+        const cls = classNames(containerCls, motionClassName, uniqueContainerClassName, {
+          [`${containerCls}-visible`]: motionVisible,
         });
 
         return (
@@ -100,7 +100,7 @@ const UniqueBody = (props: UniqueBodyProps) => {
                 ...cachedOffsetStyleRef.current,
                 ...sizeStyle,
                 ...motionStyle,
-                ...uniqueBgStyle,
+                ...uniqueContainerStyle,
               } as React.CSSProperties
             }
           />
@@ -110,4 +110,4 @@ const UniqueBody = (props: UniqueBodyProps) => {
   );
 };
 
-export default UniqueBody;
+export default UniqueContainer;

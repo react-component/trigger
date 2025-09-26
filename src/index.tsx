@@ -101,10 +101,10 @@ export interface TriggerProps {
   builtinPlacements?: BuildInPlacements;
   popupAlign?: AlignType;
   popupClassName?: string;
-  /** Pass to `UniqueProvider` FloatBg */
-  uniqueBgClassName?: string;
-  /** Pass to `UniqueProvider` FloatBg */
-  uniqueBgStyle?: React.CSSProperties;
+  /** Pass to `UniqueProvider` UniqueContainer */
+  uniqueContainerClassName?: string;
+  /** Pass to `UniqueProvider` UniqueContainer */
+  uniqueContainerStyle?: React.CSSProperties;
   popupStyle?: React.CSSProperties;
   getPopupClassNameFromAlign?: (align: AlignType) => string;
   onPopupClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -176,8 +176,8 @@ export function generateTrigger(
       // Popup
       popup,
       popupClassName,
-      uniqueBgClassName,
-      uniqueBgStyle,
+      uniqueContainerClassName,
+      uniqueContainerStyle,
       popupStyle,
 
       popupPlacement,
@@ -332,8 +332,8 @@ export function generateTrigger(
       delay,
       prefixCls,
       popupClassName,
-      uniqueBgClassName,
-      uniqueBgStyle,
+      uniqueContainerClassName,
+      uniqueContainerStyle,
       popupStyle,
       popupPlacement,
       builtinPlacements,
