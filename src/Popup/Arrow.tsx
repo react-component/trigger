@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import * as React from 'react';
 import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';
 
@@ -57,7 +57,7 @@ export default function Arrow(props: ArrowProps) {
   return (
     <div
       ref={arrowRef}
-      className={classNames(`${prefixCls}-arrow`, className)}
+      className={clsx(`${prefixCls}-arrow`, className)}
       style={{ ...alignStyle, ...style }}
     >
       {content}

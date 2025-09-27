@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import type { CSSMotionProps } from '@rc-component/motion';
 import CSSMotion from '@rc-component/motion';
 import * as React from 'react';
@@ -36,7 +36,7 @@ export default function Mask(props: MaskProps) {
       {({ className }) => (
         <div
           style={{ zIndex }}
-          className={classNames(
+          className={clsx(
             `${prefixCls}-mask`,
             mobile && `${prefixCls}-mobile-mask`,
             className,
