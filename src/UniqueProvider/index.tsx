@@ -13,7 +13,7 @@ import { useEvent } from '@rc-component/util';
 import useTargetState from './useTargetState';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import UniqueContainer from './UniqueContainer';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import { getAlignPopupClassName } from '../util';
 
 export interface UniqueProviderProps {
@@ -128,7 +128,7 @@ const UniqueProvider = ({
       false, // alignPoint is false for UniqueProvider
     );
 
-    return classNames(
+    return clsx(
       baseClassName,
       mergedOptions.getPopupClassNameFromAlign?.(alignInfo),
     );
@@ -186,7 +186,7 @@ const UniqueProvider = ({
             portal={Portal}
             prefixCls={prefixCls}
             popup={mergedOptions.popup}
-            className={classNames(
+            className={clsx(
               mergedOptions.popupClassName,
               alignedClassName,
               `${prefixCls}-unique-controlled`,
@@ -239,7 +239,7 @@ const UniqueProvider = ({
               }}
               popupSize={popupSize}
               motion={mergedOptions.popupMotion}
-              uniqueContainerClassName={classNames(
+              uniqueContainerClassName={clsx(
                 mergedOptions.uniqueContainerClassName,
                 alignedClassName,
               )}

@@ -3,7 +3,7 @@ import React from 'react';
 import Trigger, { UniqueProvider, type UniqueProviderProps } from '../src';
 import { awaitFakeTimer } from './util';
 import type { TriggerProps } from '../src';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 
 // Mock UniqueContainer to check if open props changed
 global.openChangeLog = [];
@@ -185,21 +185,30 @@ describe('Trigger.Unique', () => {
   });
 
   it('should apply uniqueContainerClassName to UniqueContainer component', async () => {
-    await setupAndOpenPopup({ uniqueContainerClassName: 'custom-container-class' });
+    await setupAndOpenPopup({
+      uniqueContainerClassName: 'custom-container-class',
+    });
 
     // Check that UniqueContainer has the custom container className
-    const uniqueContainer = document.querySelector('.rc-trigger-popup-unique-container');
+    const uniqueContainer = document.querySelector(
+      '.rc-trigger-popup-unique-container',
+    );
     expect(uniqueContainer).toBeTruthy();
     expect(uniqueContainer.className).toContain('custom-container-class');
   });
 
   it('should apply uniqueContainerStyle to UniqueContainer component', async () => {
     await setupAndOpenPopup({
-      uniqueContainerStyle: { backgroundColor: 'red', border: '1px solid blue' },
+      uniqueContainerStyle: {
+        backgroundColor: 'red',
+        border: '1px solid blue',
+      },
     });
 
     // Check that UniqueContainer has the custom container style
-    const uniqueContainer = document.querySelector('.rc-trigger-popup-unique-container');
+    const uniqueContainer = document.querySelector(
+      '.rc-trigger-popup-unique-container',
+    );
     expect(uniqueContainer).toBeTruthy();
     expect(uniqueContainer).toHaveStyle({
       backgroundColor: 'red',
@@ -211,7 +220,9 @@ describe('Trigger.Unique', () => {
     await setupAndOpenPopup();
 
     // Check that UniqueContainer exists but does not have custom container className
-    const uniqueContainer = document.querySelector('.rc-trigger-popup-unique-container');
+    const uniqueContainer = document.querySelector(
+      '.rc-trigger-popup-unique-container',
+    );
     expect(uniqueContainer).toBeTruthy();
     expect(uniqueContainer.className).not.toContain('undefined');
   });
@@ -246,12 +257,14 @@ describe('Trigger.Unique', () => {
     );
 
     expect(document.querySelector('.rc-trigger-popup')).toHaveClass('bamboo');
-    expect(document.querySelector('.rc-trigger-popup-unique-container')).toHaveClass(
-      'bamboo',
-    );
+    expect(
+      document.querySelector('.rc-trigger-popup-unique-container'),
+    ).toHaveClass('bamboo');
 
     // Check that arrow position CSS variables are set
-    const uniqueContainer = document.querySelector('.rc-trigger-popup-unique-container');
+    const uniqueContainer = document.querySelector(
+      '.rc-trigger-popup-unique-container',
+    );
     const computedStyle = getComputedStyle(uniqueContainer);
     expect(computedStyle.getPropertyValue('--arrow-x')).not.toBe('');
     expect(computedStyle.getPropertyValue('--arrow-y')).not.toBe('');
@@ -262,10 +275,7 @@ describe('Trigger.Unique', () => {
       options,
     ) => ({
       ...options,
-      popupClassName: classNames(
-        options.popupClassName,
-        'custom-post-options-class',
-      ),
+      popupClassName: clsx(options.popupClassName, 'custom-post-options-class'),
     });
 
     render(
@@ -293,7 +303,7 @@ describe('Trigger.Unique', () => {
     // Mock useAlign to return our mock onAlign function
     const useAlignModule = require('../src/hooks/useAlign');
     const originalUseAlign = useAlignModule.default;
-    
+
     jest.spyOn(useAlignModule, 'default').mockImplementation((...args) => {
       const originalResult = originalUseAlign(...args);
       // Replace onAlign with our mock
@@ -319,7 +329,7 @@ describe('Trigger.Unique', () => {
 
       return (
         <div>
-          <button 
+          <button
             className="switch-trigger-btn"
             onClick={() => {
               // Switch which trigger is open - this changes the target

@@ -1,6 +1,6 @@
 import React from 'react';
 import useOffsetStyle from '../hooks/useOffsetStyle';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import CSSMotion from '@rc-component/motion';
 import type { CSSMotionProps } from '@rc-component/motion';
 import type { AlignType, ArrowPos } from '../interface';
@@ -86,9 +86,12 @@ const UniqueContainer = (props: UniqueContainerProps) => {
       }}
     >
       {({ className: motionClassName, style: motionStyle }) => {
-        const cls = classNames(containerCls, motionClassName, uniqueContainerClassName, {
-          [`${containerCls}-visible`]: motionVisible,
-        });
+        const cls = clsx(
+          containerCls,
+          motionClassName,
+          uniqueContainerClassName,
+          { [`${containerCls}-visible`]: motionVisible },
+        );
 
         return (
           <div
