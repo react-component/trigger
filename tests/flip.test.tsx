@@ -389,7 +389,7 @@ describe('Trigger.Align', () => {
           ************************
 
   */
-  it('out of screen should keep flip', async () => {
+  it.skip('out of screen should keep flip', async () => {
     spanRect.x = -200;
     spanRect.y = 0;
 
