@@ -9,10 +9,10 @@ React Trigger Component
 [![bundle size][bundlephobia-image]][bundlephobia-url]
 [![dumi][dumi-image]][dumi-url]
 
-[npm-image]: http://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/@rc-component/trigger
-[github-actions-image]: https://github.com/react-component/trigger/workflows/CI/badge.svg
-[github-actions-url]: https://github.com/react-component/trigger/actions
+[npm-image]: https://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@rc-component/trigger
+[github-actions-image]: https://github.com/react-component/trigger/actions/workflows/main.yml/badge.svg
+[github-actions-url]: https://github.com/react-component/trigger/actions/workflows/main.yml
 [codecov-image]: https://img.shields.io/codecov/c/github/react-component/trigger/master.svg?style=flat-square
 [codecov-url]: https://codecov.io/gh/react-component/trigger/branch/master
 [david-url]: https://david-dm.org/react-component/trigger
