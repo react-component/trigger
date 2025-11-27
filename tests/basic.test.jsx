@@ -371,10 +371,7 @@ describe('Trigger.Basic', () => {
   describe('children renderProps', () => {
     it('should get current open', () => {
       const { container } = render(
-        <Trigger
-          popupVisible={true}
-          popup={<span>Hello!</span>}
-        >
+        <Trigger popupVisible={true} popup={<span>Hello!</span>}>
           {({ open }) => <button>{String(open)}</button>}
         </Trigger>,
       );
@@ -992,6 +989,16 @@ describe('Trigger.Basic', () => {
     rerender(<Demo popupVisible={undefined} />);
     await awaitFakeTimer();
     expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
+  });
+
+  it('defaultPopupVisible should work', async () => {
+    render(
+      <Trigger defaultPopupVisible>
+        <div className="target" />
+      </Trigger>,
+    );
+
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
   });
 
   describe('click window to hide', () => {

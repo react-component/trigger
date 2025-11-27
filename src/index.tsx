@@ -33,6 +33,7 @@ export type {
 };
 
 import UniqueProvider, { type UniqueProviderProps } from './UniqueProvider';
+import { useControlledState } from '@rc-component/util';
 
 export { UniqueProvider };
 export type { UniqueProviderProps };
@@ -303,12 +304,12 @@ export function generateTrigger(
       : null;
 
     // ============================ Open ============================
-    const [internalOpen, setInternalOpen] = React.useState(
+    const [internalOpen, setInternalOpen] = useControlledState(
       defaultPopupVisible || false,
+      popupVisible,
     );
 
-    // Render still use props as first priority
-    const mergedOpen = popupVisible ?? internalOpen;
+    const mergedOpen = internalOpen || false;
 
     // ========================== Children ==========================
     const child = React.useMemo(() => {
@@ -321,19 +322,8 @@ export function generateTrigger(
 
     const originChildProps = child?.props || {};
 
-    // We use effect sync here in case `popupVisible` back to `undefined`
-    const setMergedOpen = useEvent((nextOpen: boolean) => {
-      if (openUncontrolled) {
-        setInternalOpen(nextOpen);
-      }
-    });
-
     // Support ref
     const isOpen = useEvent(() => mergedOpen);
-
-    useLayoutEffect(() => {
-      setInternalOpen(popupVisible || false);
-    }, [popupVisible]);
 
     // Extract common options for UniqueProvider
     const getUniqueOptions = useEvent((delay: number = 0) => ({
@@ -385,7 +375,7 @@ export function generateTrigger(
     lastTriggerRef.current = [];
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
-      setMergedOpen(nextOpen);
+      setInternalOpen(nextOpen);
 
       // Enter or Pointer will both trigger open state change
       // We only need take one to avoid duplicated change event trigger
