@@ -50,7 +50,9 @@ export interface TriggerRef {
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
 
 export interface TriggerProps {
-  children: React.ReactElement<any>;
+  children:
+    | React.ReactElement<any>
+    | ((info: { open: boolean }) => React.ReactElement<any>);
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
@@ -261,9 +263,6 @@ export function generateTrigger(
       }
     });
 
-    // ========================== Children ==========================
-    const child = React.Children.only(children);
-    const originChildProps = child?.props || {};
     const cloneProps: Pick<
       React.HTMLAttributes<HTMLElement>,
       | 'onClick'
@@ -310,6 +309,17 @@ export function generateTrigger(
 
     // Render still use props as first priority
     const mergedOpen = popupVisible ?? internalOpen;
+
+    // ========================== Children ==========================
+    const child = React.useMemo(() => {
+      const nextChild =
+        typeof children === 'function'
+          ? children({ open: mergedOpen })
+          : children;
+      return React.Children.only(nextChild);
+    }, [children, mergedOpen]);
+
+    const originChildProps = child?.props || {};
 
     // We use effect sync here in case `popupVisible` back to `undefined`
     const setMergedOpen = useEvent((nextOpen: boolean) => {
