@@ -6,9 +6,7 @@ import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
 import useEvent from '@rc-component/util/lib/hooks/useEvent';
 import useId from '@rc-component/util/lib/hooks/useId';
-import useLayoutEffect, {
-  useLayoutUpdateEffect,
-} from '@rc-component/util/lib/hooks/useLayoutEffect';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
 import type { TriggerContextProps } from './context';
