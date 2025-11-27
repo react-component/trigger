@@ -368,6 +368,22 @@ describe('Trigger.Basic', () => {
     });
   });
 
+  describe('children renderProps', () => {
+    it('should get current open', () => {
+      const { container } = render(
+        <Trigger
+          popupVisible={true}
+          popup={<span>Hello!</span>}
+        >
+          {({ open }) => <button>{String(open)}</button>}
+        </Trigger>,
+      );
+
+      const button = container.querySelector('button');
+      expect(button.textContent).toBe('true');
+    });
+  });
+
   describe('destroyPopupOnHide', () => {
     it('defaults to false', () => {
       const { container } = render(
