@@ -1200,4 +1200,72 @@ describe('Trigger.Basic', () => {
     await awaitFakeTimer();
     expect(isPopupHidden()).toBeTruthy();
   });
+
+  describe('keyboard', () => {
+    it('esc should close popup', async () => {
+      const { container } = render(
+        <Trigger action="click" popup={<strong>trigger</strong>}>
+          <div className="target" />
+        </Trigger>,
+      );
+
+      trigger(container, '.target');
+      expect(isPopupHidden()).toBeFalsy();
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      await awaitFakeTimer();
+      expect(isPopupHidden()).toBeTruthy();
+    });
+
+    it('esc should close nested popup from inside out', async () => {
+      const useIdModule = require('@rc-component/util/lib/hooks/useId');
+      let seed = 0;
+      const useIdSpy = jest
+        .spyOn(useIdModule, 'default')
+        .mockImplementation(() => `nested-popup-${(seed += 1)}`);
+
+      try {
+        const NestedPopup = () => (
+          <Trigger
+            action="click"
+            popupClassName="inner-popup"
+            popup={<div>Inner Content</div>}
+          >
+            <button type="button" className="inner-target">
+              Inner Target
+            </button>
+          </Trigger>
+        );
+
+        const { container } = render(
+          <Trigger
+            action="click"
+            popupClassName="outer-popup"
+            popup={
+              <div className="outer-popup-content">
+                <NestedPopup />
+              </div>
+            }
+          >
+            <div className="outer-target" />
+          </Trigger>,
+        );
+
+        trigger(container, '.outer-target');
+        expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
+
+        fireEvent.click(document.querySelector('.inner-target'));
+        expect(isPopupClassHidden('.inner-popup')).toBeFalsy();
+
+        fireEvent.keyDown(window, { key: 'Escape' });
+        expect(isPopupClassHidden('.inner-popup')).toBeTruthy();
+        expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
+
+        fireEvent.keyDown(window, { key: 'Escape' });
+        expect(isPopupClassHidden('.outer-popup')).toBeTruthy();
+      } finally {
+        useIdSpy.mockRestore();
+      }
+    });
+  });
 });
