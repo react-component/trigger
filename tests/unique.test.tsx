@@ -374,4 +374,21 @@ describe('Trigger.Unique', () => {
     // Verify onAlign was called due to target change
     expect(mockOnAlign).toHaveBeenCalled();
   });
+
+  it('esc should close unique popup', async () => {
+    const { container,baseElement } = render(
+      <UniqueProvider>
+        <Trigger action={['click']} popup={<div>Popup</div>} unique>
+          <div className="target" />
+        </Trigger>
+      </UniqueProvider>,
+    );
+    fireEvent.click(container.querySelector('.target'));
+    await awaitFakeTimer();
+    expect(baseElement.querySelector('.rc-trigger-popup-hidden')).toBeFalsy();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    await awaitFakeTimer();
+    expect(baseElement.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
+  });
 });

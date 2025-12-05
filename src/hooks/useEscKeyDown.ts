@@ -62,7 +62,7 @@ function registerEscEntry(entry: EscEntry) {
   addEscListener(win);
 }
 
-export default function useEscCancel(
+export default function useEscKeyDown(
   popupId: string,
   open: boolean,
   popupEle: HTMLElement,
@@ -73,7 +73,7 @@ export default function useEscCancel(
   });
 
   React.useEffect(() => {
-    if (!open || !popupEle) {
+    if (!popupId || !open || !popupEle) {
       return;
     }
 

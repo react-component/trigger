@@ -16,7 +16,7 @@ import useAlign from './hooks/useAlign';
 import useDelay from './hooks/useDelay';
 import useWatch from './hooks/useWatch';
 import useWinClick from './hooks/useWinClick';
-import useEscCancel from './hooks/useEscCancel';
+import useEscKeyDown from './hooks/useEscKeyDown';
 import type {
   ActionType,
   AlignType,
@@ -648,7 +648,7 @@ export function generateTrigger(
       triggerOpen,
     );
 
-    useEscCancel(id, mergedOpen, popupEle, triggerOpen);
+    useEscKeyDown(id, mergedOpen, popupEle, triggerOpen);
 
     // ======================= Action: Hover ========================
     const hoverToShow = showActions.has('hover');
