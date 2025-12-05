@@ -15,6 +15,7 @@ import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import UniqueContainer from './UniqueContainer';
 import { clsx } from 'clsx';
 import { getAlignPopupClassName } from '../util';
+import useEscKeyDown from '../hooks/useEscKeyDown';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
@@ -90,6 +91,8 @@ const UniqueProvider = ({
     // Call useTargetState callback to handle animation state
     onTargetVisibleChanged(visible);
   });
+
+  useEscKeyDown(mergedOptions?.id, open, popupEle, () => trigger(false));
 
   // =========================== Align ============================
   const [

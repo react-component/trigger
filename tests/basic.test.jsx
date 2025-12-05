@@ -1217,6 +1217,20 @@ describe('Trigger.Basic', () => {
       expect(isPopupHidden()).toBeTruthy();
     });
 
+    it('non-escape key should not close popup', async () => {
+      const { container } = render(
+        <Trigger action="click" popup={<strong>trigger</strong>}>
+          <div className="target" />
+        </Trigger>,
+      );
+
+      trigger(container, '.target');
+      expect(isPopupHidden()).toBeFalsy();
+
+      fireEvent.keyDown(window, { key: 'Enter' });
+      expect(isPopupHidden()).toBeFalsy();
+    });
+
     it('esc should close nested popup from inside out', async () => {
       const useIdModule = require('@rc-component/util/lib/hooks/useId');
       let seed = 0;
