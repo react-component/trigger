@@ -53,7 +53,7 @@
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^16.0.0",
     "@types/jest": "^29.5.2",
-    "@types/node": "^24.0.3",
+    "@types/node": "^25.0.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@umijs/fabric": "^4.0.1",
