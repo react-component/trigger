@@ -69,7 +69,7 @@ function getAlignPoint(rect: Rect, points: Points) {
   return { x, y };
 }
 
-function reversePoints(points: Points, index: number): string {
+function reversePoints(points: Points, index: number): Points {
   const reverseMap = {
     t: 'b',
     b: 't',
@@ -77,14 +77,13 @@ function reversePoints(points: Points, index: number): string {
     r: 'l',
   };
 
-  return points
-    .map((point, i) => {
-      if (i === index) {
-        return reverseMap[point] || 'c';
-      }
-      return point;
-    })
-    .join('');
+  const clone = [...points] as Points;
+  clone[index] = reverseMap[points[index]] || 'c';
+  return clone;
+}
+
+function flatPoints(points: Points): string {
+  return points.join('');
 }
 
 export default function useAlign(
@@ -340,6 +339,8 @@ export default function useAlign(
         ...placementInfo,
       };
 
+      let nextPoints = [popupPoints, targetPoints];
+
       // Next Offset
       let nextOffsetX = targetAlignPoint.x - popupAlignPoint.x + popupOffsetX;
       let nextOffsetY = targetAlignPoint.y - popupAlignPoint.y + popupOffsetY;
@@ -450,9 +451,9 @@ export default function useAlign(
           nextOffsetY = tmpNextOffsetY;
           popupOffsetY = -popupOffsetY;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
+          nextPoints = [
+            reversePoints(nextPoints[0], 0),
+            reversePoints(nextPoints[1], 0),
           ];
         } else {
           prevFlipRef.current.bt = false;
@@ -496,9 +497,9 @@ export default function useAlign(
           nextOffsetY = tmpNextOffsetY;
           popupOffsetY = -popupOffsetY;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 0),
-            reversePoints(targetPoints, 0),
+          nextPoints = [
+            reversePoints(nextPoints[0], 0),
+            reversePoints(nextPoints[1], 0),
           ];
         } else {
           prevFlipRef.current.tb = false;
@@ -549,9 +550,9 @@ export default function useAlign(
           nextOffsetX = tmpNextOffsetX;
           popupOffsetX = -popupOffsetX;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
+          nextPoints = [
+            reversePoints(nextPoints[0], 1),
+            reversePoints(nextPoints[1], 1),
           ];
         } else {
           prevFlipRef.current.rl = false;
@@ -595,14 +596,19 @@ export default function useAlign(
           nextOffsetX = tmpNextOffsetX;
           popupOffsetX = -popupOffsetX;
 
-          nextAlignInfo.points = [
-            reversePoints(popupPoints, 1),
-            reversePoints(targetPoints, 1),
+          nextPoints = [
+            reversePoints(nextPoints[0], 1),
+            reversePoints(nextPoints[1], 1),
           ];
         } else {
           prevFlipRef.current.lr = false;
         }
       }
+
+      nextAlignInfo.points = [
+        flatPoints(nextPoints[0]),
+        flatPoints(nextPoints[1]),
+      ];
 
       // ============================ Shift ============================
       syncNextPopupPosition();

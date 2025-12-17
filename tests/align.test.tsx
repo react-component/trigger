@@ -296,4 +296,41 @@ describe('Trigger.Align', () => {
       top: `56px`,
     });
   });
+
+  it('both adjustX and adjustY should get correct points', async () => {
+    // Set target position to top left corner to force flip to bottom right
+    rectX = 0;
+    rectY = 0;
+    rectWidth = 100;
+    rectHeight = 100;
+
+    const onPopupAlign = jest.fn();
+
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        popupAlign={{
+          points: ['tl', 'bl'],
+          overflow: {
+            adjustX: true,
+            adjustY: true,
+          },
+        }}
+        onPopupAlign={onPopupAlign}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    // Check that the points have been flipped correctly
+    expect(onPopupAlign).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        points: ['br', 'tr'],
+      }),
+    );
+  });
 });

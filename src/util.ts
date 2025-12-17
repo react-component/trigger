@@ -1,17 +1,16 @@
-import type {
-  AlignType,
-  BuildInPlacements,
-} from './interface';
+import type { AlignType, BuildInPlacements } from './interface';
 
 function isPointsEq(
   a1: string[] = [],
   a2: string[] = [],
   isAlignPoint: boolean,
 ): boolean {
+  const getVal = (a: string[], index: number) => a[index] || '';
+
   if (isAlignPoint) {
-    return a1[0] === a2[0];
+    return getVal(a1, 0) === getVal(a2, 0);
   }
-  return a1[0] === a2[0] && a1[1] === a2[1];
+  return getVal(a1, 0) === getVal(a2, 0) && getVal(a1, 1) === getVal(a2, 1);
 }
 
 export function getAlignPopupClassName(
