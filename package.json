@@ -1,6 +1,6 @@
 {
   "name": "@rc-component/trigger",
-  "version": "3.7.1",
+  "version": "3.7.2",
   "description": "base abstract trigger component for react",
   "engines": {
     "node": ">=8.x"
