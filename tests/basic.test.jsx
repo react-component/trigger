@@ -6,6 +6,11 @@ import ReactDOM, { createPortal } from 'react-dom';
 import Trigger from '../src';
 import { awaitFakeTimer, placementAlignMap } from './util';
 
+jest.mock('@rc-component/util/lib/hooks/useId', () => {
+  const origin = jest.requireActual('react');
+  return origin.useId;
+});
+
 describe('Trigger.Basic', () => {
   beforeAll(() => {
     spyElementPrototypes(HTMLElement, {
@@ -1202,27 +1207,6 @@ describe('Trigger.Basic', () => {
   });
 
   describe('keyboard', () => {
-    const useIdModule = require('@rc-component/util/lib/hooks/useId');
-    let useIdSpy;
-    let uuid = 0;
-
-    beforeEach(() => {
-      useIdSpy = jest.spyOn(useIdModule, 'default').mockImplementation(() => {
-        const idRef = React.useRef();
-
-        if (!idRef.current) {
-          uuid += 1;
-          idRef.current = `test-id-${uuid}`;
-        }
-
-        return idRef.current;
-      });
-    });
-
-    afterEach(() => {
-      useIdSpy.mockRestore();
-    });
-
     it('esc should close popup', async () => {
       const { container } = render(
         <Trigger action="click" popup={<strong>trigger</strong>}>
