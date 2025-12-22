@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Portal from '@rc-component/portal';
+import Portal, { type PortalProps } from '@rc-component/portal';
 import TriggerContext, {
   UniqueContext,
   type UniqueContextProps,
@@ -15,10 +15,10 @@ import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import UniqueContainer from './UniqueContainer';
 import { clsx } from 'clsx';
 import { getAlignPopupClassName } from '../util';
-import useEscKeyDown from '../hooks/useEscKeyDown';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
+  onKeyDown?: (event: KeyboardEvent) => void;
   /** Additional handle options data to do the customize info */
   postTriggerProps?: (options: UniqueShowOptions) => UniqueShowOptions;
 }
@@ -26,6 +26,7 @@ export interface UniqueProviderProps {
 const UniqueProvider = ({
   children,
   postTriggerProps,
+  onKeyDown,
 }: UniqueProviderProps) => {
   const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
 
@@ -92,7 +93,12 @@ const UniqueProvider = ({
     onTargetVisibleChanged(visible);
   });
 
-  useEscKeyDown(mergedOptions?.id, open, popupEle, () => trigger(false));
+  const onEsc: PortalProps['onEsc'] = ({ top, event }) => {
+    if (top) {
+      trigger(false);
+    }
+    onKeyDown?.(event);
+  };
 
   // =========================== Align ============================
   const [
@@ -187,6 +193,7 @@ const UniqueProvider = ({
           <Popup
             ref={setPopupRef}
             portal={Portal}
+            onEsc={onEsc}
             prefixCls={prefixCls}
             popup={mergedOptions.popup}
             className={clsx(

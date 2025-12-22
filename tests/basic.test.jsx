@@ -1202,6 +1202,27 @@ describe('Trigger.Basic', () => {
   });
 
   describe('keyboard', () => {
+    const useIdModule = require('@rc-component/util/lib/hooks/useId');
+    let useIdSpy;
+    let uuid = 0;
+
+    beforeEach(() => {
+      useIdSpy = jest.spyOn(useIdModule, 'default').mockImplementation(() => {
+        const idRef = React.useRef();
+
+        if (!idRef.current) {
+          uuid += 1;
+          idRef.current = `test-id-${uuid}`;
+        }
+
+        return idRef.current;
+      });
+    });
+
+    afterEach(() => {
+      useIdSpy.mockRestore();
+    });
+
     it('esc should close popup', async () => {
       const { container } = render(
         <Trigger action="click" popup={<strong>trigger</strong>}>
@@ -1232,54 +1253,44 @@ describe('Trigger.Basic', () => {
     });
 
     it('esc should close nested popup from inside out', async () => {
-      const useIdModule = require('@rc-component/util/lib/hooks/useId');
-      let seed = 0;
-      const useIdSpy = jest
-        .spyOn(useIdModule, 'default')
-        .mockImplementation(() => `nested-popup-${(seed += 1)}`);
+      const NestedPopup = () => (
+        <Trigger
+          action="click"
+          popupClassName="inner-popup"
+          popup={<div>Inner Content</div>}
+        >
+          <button type="button" className="inner-target">
+            Inner Target
+          </button>
+        </Trigger>
+      );
 
-      try {
-        const NestedPopup = () => (
-          <Trigger
-            action="click"
-            popupClassName="inner-popup"
-            popup={<div>Inner Content</div>}
-          >
-            <button type="button" className="inner-target">
-              Inner Target
-            </button>
-          </Trigger>
-        );
+      const { container } = render(
+        <Trigger
+          action="click"
+          popupClassName="outer-popup"
+          popup={
+            <div className="outer-popup-content">
+              <NestedPopup />
+            </div>
+          }
+        >
+          <div className="outer-target" />
+        </Trigger>,
+      );
 
-        const { container } = render(
-          <Trigger
-            action="click"
-            popupClassName="outer-popup"
-            popup={
-              <div className="outer-popup-content">
-                <NestedPopup />
-              </div>
-            }
-          >
-            <div className="outer-target" />
-          </Trigger>,
-        );
+      trigger(container, '.outer-target');
+      expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
 
-        trigger(container, '.outer-target');
-        expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
+      fireEvent.click(document.querySelector('.inner-target'));
+      expect(isPopupClassHidden('.inner-popup')).toBeFalsy();
 
-        fireEvent.click(document.querySelector('.inner-target'));
-        expect(isPopupClassHidden('.inner-popup')).toBeFalsy();
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(isPopupClassHidden('.inner-popup')).toBeTruthy();
+      expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
 
-        fireEvent.keyDown(window, { key: 'Escape' });
-        expect(isPopupClassHidden('.inner-popup')).toBeTruthy();
-        expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
-
-        fireEvent.keyDown(window, { key: 'Escape' });
-        expect(isPopupClassHidden('.outer-popup')).toBeTruthy();
-      } finally {
-        useIdSpy.mockRestore();
-      }
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(isPopupClassHidden('.outer-popup')).toBeTruthy();
     });
   });
 });

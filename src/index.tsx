@@ -16,7 +16,8 @@ import useAlign from './hooks/useAlign';
 import useDelay from './hooks/useDelay';
 import useWatch from './hooks/useWatch';
 import useWinClick from './hooks/useWinClick';
-import useEscKeyDown from './hooks/useEscKeyDown';
+import type { PortalProps } from '@rc-component/portal';
+
 import type {
   ActionType,
   AlignType,
@@ -52,6 +53,7 @@ export interface TriggerRef {
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
 
 export interface TriggerProps {
+  onKeyDown?: (event: KeyboardEvent) => void;
   children:
     | React.ReactElement<any>
     | ((info: { open: boolean }) => React.ReactElement<any>);
@@ -147,6 +149,7 @@ export function generateTrigger(
     const {
       prefixCls = 'rc-trigger-popup',
       children,
+      onKeyDown,
 
       // Action
       action = 'hover',
@@ -420,6 +423,13 @@ export function generateTrigger(
       }, delay);
     };
 
+    const onEsc: PortalProps['onEsc'] = ({ top, event }) => {
+      if (top) {
+        triggerOpen(false);
+      }
+      onKeyDown?.(event);
+    };
+
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
 
@@ -648,8 +658,6 @@ export function generateTrigger(
       triggerOpen,
     );
 
-    useEscKeyDown(id, mergedOpen, popupEle, triggerOpen);
-
     // ======================= Action: Hover ========================
     const hoverToShow = showActions.has('hover');
     const hoverToHide = hideActions.has('hover');
@@ -833,6 +841,7 @@ export function generateTrigger(
               forceRender={forceRender}
               autoDestroy={mergedAutoDestroy}
               getPopupContainer={getPopupContainer}
+              onEsc={onEsc}
               // Arrow
               align={alignInfo}
               arrow={innerArrow}
