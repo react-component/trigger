@@ -384,11 +384,9 @@ describe('Trigger.Unique', () => {
       </UniqueProvider>,
     );
     fireEvent.click(container.querySelector('.target'));
-    await awaitFakeTimer();
     expect(baseElement.querySelector('.rc-trigger-popup-hidden')).toBeFalsy();
 
     fireEvent.keyDown(window, { key: 'Escape' });
-    await awaitFakeTimer();
     expect(baseElement.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
   });
 });

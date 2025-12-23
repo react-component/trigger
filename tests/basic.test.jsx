@@ -1218,7 +1218,6 @@ describe('Trigger.Basic', () => {
       expect(isPopupHidden()).toBeFalsy();
 
       fireEvent.keyDown(window, { key: 'Escape' });
-      await awaitFakeTimer();
       expect(isPopupHidden()).toBeTruthy();
     });
 
