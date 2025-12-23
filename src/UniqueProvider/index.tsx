@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Portal, { type PortalProps } from '@rc-component/portal';
+import Portal from '@rc-component/portal';
 import TriggerContext, {
   UniqueContext,
   type UniqueContextProps,
