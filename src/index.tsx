@@ -422,11 +422,11 @@ export function generateTrigger(
       }, delay);
     };
 
-    const onEsc: PortalProps['onEsc'] = ({ top }) => {
+    function onEsc({ top }: Parameters<PortalProps['onEsc']>[0]) {
       if (top) {
         triggerOpen(false);
       }
-    };
+    }
 
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
