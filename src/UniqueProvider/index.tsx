@@ -18,7 +18,6 @@ import { getAlignPopupClassName } from '../util';
 
 export interface UniqueProviderProps {
   children: React.ReactNode;
-  onKeyDown?: (event: KeyboardEvent) => void;
   /** Additional handle options data to do the customize info */
   postTriggerProps?: (options: UniqueShowOptions) => UniqueShowOptions;
 }
@@ -26,7 +25,6 @@ export interface UniqueProviderProps {
 const UniqueProvider = ({
   children,
   postTriggerProps,
-  onKeyDown,
 }: UniqueProviderProps) => {
   const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
 
@@ -92,13 +90,6 @@ const UniqueProvider = ({
     // Call useTargetState callback to handle animation state
     onTargetVisibleChanged(visible);
   });
-
-  const onEsc: PortalProps['onEsc'] = ({ top, event }) => {
-    if (top) {
-      trigger(false);
-    }
-    onKeyDown?.(event);
-  };
 
   // =========================== Align ============================
   const [
@@ -193,7 +184,7 @@ const UniqueProvider = ({
           <Popup
             ref={setPopupRef}
             portal={Portal}
-            onEsc={onEsc}
+            onEsc={mergedOptions.onEsc}
             prefixCls={prefixCls}
             popup={mergedOptions.popup}
             className={clsx(

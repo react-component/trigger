@@ -53,7 +53,6 @@ export interface TriggerRef {
 // New version will not wrap popup with `rc-trigger-popup-content` when multiple children
 
 export interface TriggerProps {
-  onKeyDown?: (event: KeyboardEvent) => void;
   children:
     | React.ReactElement<any>
     | ((info: { open: boolean }) => React.ReactElement<any>);
@@ -149,7 +148,6 @@ export function generateTrigger(
     const {
       prefixCls = 'rc-trigger-popup',
       children,
-      onKeyDown,
 
       // Action
       action = 'hover',
@@ -351,6 +349,7 @@ export function generateTrigger(
       getPopupContainer,
       getPopupClassNameFromAlign,
       id,
+      onEsc,
     }));
 
     // Handle controlled state changes for UniqueProvider
@@ -423,11 +422,10 @@ export function generateTrigger(
       }, delay);
     };
 
-    const onEsc: PortalProps['onEsc'] = ({ top, event }) => {
+    const onEsc: PortalProps['onEsc'] = ({ top }) => {
       if (top) {
         triggerOpen(false);
       }
-      onKeyDown?.(event);
     };
 
     // ========================== Motion ============================
