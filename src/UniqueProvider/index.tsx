@@ -184,6 +184,7 @@ const UniqueProvider = ({
           <Popup
             ref={setPopupRef}
             portal={Portal}
+            onEsc={mergedOptions.onEsc}
             prefixCls={prefixCls}
             popup={mergedOptions.popup}
             className={clsx(

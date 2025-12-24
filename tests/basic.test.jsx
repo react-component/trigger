@@ -6,6 +6,11 @@ import ReactDOM, { createPortal } from 'react-dom';
 import Trigger from '../src';
 import { awaitFakeTimer, placementAlignMap } from './util';
 
+jest.mock('@rc-component/util/lib/hooks/useId', () => {
+  const origin = jest.requireActual('react');
+  return origin.useId;
+});
+
 describe('Trigger.Basic', () => {
   beforeAll(() => {
     spyElementPrototypes(HTMLElement, {
@@ -1199,5 +1204,76 @@ describe('Trigger.Basic', () => {
     fireEvent.mouseDown(container.querySelector('.outer'));
     await awaitFakeTimer();
     expect(isPopupHidden()).toBeTruthy();
+  });
+
+  describe('keyboard', () => {
+    it('esc should close popup', async () => {
+      const { container } = render(
+        <Trigger action="click" popup={<strong>trigger</strong>}>
+          <div className="target" />
+        </Trigger>,
+      );
+
+      trigger(container, '.target');
+      expect(isPopupHidden()).toBeFalsy();
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(isPopupHidden()).toBeTruthy();
+    });
+
+    it('non-escape key should not close popup', async () => {
+      const { container } = render(
+        <Trigger action="click" popup={<strong>trigger</strong>}>
+          <div className="target" />
+        </Trigger>,
+      );
+
+      trigger(container, '.target');
+      expect(isPopupHidden()).toBeFalsy();
+
+      fireEvent.keyDown(window, { key: 'Enter' });
+      expect(isPopupHidden()).toBeFalsy();
+    });
+
+    it('esc should close nested popup from inside out', async () => {
+      const NestedPopup = () => (
+        <Trigger
+          action="click"
+          popupClassName="inner-popup"
+          popup={<div>Inner Content</div>}
+        >
+          <button type="button" className="inner-target">
+            Inner Target
+          </button>
+        </Trigger>
+      );
+
+      const { container } = render(
+        <Trigger
+          action="click"
+          popupClassName="outer-popup"
+          popup={
+            <div className="outer-popup-content">
+              <NestedPopup />
+            </div>
+          }
+        >
+          <div className="outer-target" />
+        </Trigger>,
+      );
+
+      trigger(container, '.outer-target');
+      expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
+
+      fireEvent.click(document.querySelector('.inner-target'));
+      expect(isPopupClassHidden('.inner-popup')).toBeFalsy();
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(isPopupClassHidden('.inner-popup')).toBeTruthy();
+      expect(isPopupClassHidden('.outer-popup')).toBeFalsy();
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(isPopupClassHidden('.outer-popup')).toBeTruthy();
+    });
   });
 });
