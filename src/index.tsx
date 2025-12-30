@@ -372,9 +372,18 @@ export function generateTrigger(
     openRef.current = mergedOpen;
 
     const lastTriggerRef = React.useRef<boolean[]>([]);
-    lastTriggerRef.current = [];
+    const resetScheduledRef = React.useRef(false);
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
+      // `lastTriggerRef` is for interaction-level deduplication; do not reset it on render.
+      if (!resetScheduledRef.current) {
+        resetScheduledRef.current = true;
+        queueMicrotask(() => {
+          resetScheduledRef.current = false;
+          lastTriggerRef.current = [];
+        });
+      }
+
       setInternalOpen(nextOpen);
 
       // Enter or Pointer will both trigger open state change
