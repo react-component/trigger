@@ -14,6 +14,7 @@ import Mask from './Mask';
 import PopupContent from './PopupContent';
 import useOffsetStyle from '../hooks/useOffsetStyle';
 import { useEvent } from '@rc-component/util';
+import type { PortalProps } from '@rc-component/portal';
 
 export interface MobileConfig {
   mask?: boolean;
@@ -24,6 +25,7 @@ export interface MobileConfig {
 }
 
 export interface PopupProps {
+  onEsc?: PortalProps['onEsc'];
   prefixCls: string;
   className?: string;
   style?: React.CSSProperties;
@@ -87,6 +89,7 @@ export interface PopupProps {
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   const {
+    onEsc,
     popup,
     className,
     prefixCls,
@@ -234,6 +237,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       open={forceRender || isNodeVisible}
       getContainer={getPopupContainer && (() => getPopupContainer(target))}
       autoDestroy={autoDestroy}
+      onEsc={onEsc}
     >
       <Mask
         prefixCls={prefixCls}

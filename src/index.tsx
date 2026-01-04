@@ -16,6 +16,8 @@ import useAlign from './hooks/useAlign';
 import useDelay from './hooks/useDelay';
 import useWatch from './hooks/useWatch';
 import useWinClick from './hooks/useWinClick';
+import type { PortalProps } from '@rc-component/portal';
+
 import type {
   ActionType,
   AlignType,
@@ -347,6 +349,7 @@ export function generateTrigger(
       getPopupContainer,
       getPopupClassNameFromAlign,
       id,
+      onEsc,
     }));
 
     // Handle controlled state changes for UniqueProvider
@@ -418,6 +421,12 @@ export function generateTrigger(
         internalTriggerOpen(nextOpen);
       }, delay);
     };
+
+    function onEsc({ top }: Parameters<PortalProps['onEsc']>[0]) {
+      if (top) {
+        triggerOpen(false);
+      }
+    }
 
     // ========================== Motion ============================
     const [inMotion, setInMotion] = React.useState(false);
@@ -830,6 +839,7 @@ export function generateTrigger(
               forceRender={forceRender}
               autoDestroy={mergedAutoDestroy}
               getPopupContainer={getPopupContainer}
+              onEsc={onEsc}
               // Arrow
               align={alignInfo}
               arrow={innerArrow}

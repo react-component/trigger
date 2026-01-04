@@ -1,5 +1,6 @@
 import * as React from 'react';
 import type { CSSMotionProps } from '@rc-component/motion';
+import type { PortalProps } from '@rc-component/portal';
 import type { TriggerProps } from './index';
 import type { AlignType, ArrowTypeOuter, BuildInPlacements } from './interface';
 
@@ -34,6 +35,7 @@ export interface UniqueShowOptions {
   arrow?: ArrowTypeOuter;
   getPopupContainer?: TriggerProps['getPopupContainer'];
   getPopupClassNameFromAlign?: (align: AlignType) => string;
+  onEsc?: PortalProps['onEsc'];
 }
 
 export interface UniqueContextProps {
