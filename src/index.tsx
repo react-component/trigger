@@ -34,6 +34,7 @@ export type {
 
 import UniqueProvider, { type UniqueProviderProps } from './UniqueProvider';
 import { useControlledState } from '@rc-component/util';
+import { flushSync } from 'react-dom';
 
 export { UniqueProvider };
 export type { UniqueProviderProps };
@@ -371,32 +372,14 @@ export function generateTrigger(
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
 
-    const lastTriggerRef = React.useRef<boolean[]>([]);
-    const resetScheduledRef = React.useRef(false);
-
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
-      // `lastTriggerRef` is for interaction-level deduplication; do not reset it on render.
-      if (!resetScheduledRef.current) {
-        resetScheduledRef.current = true;
-        queueMicrotask(() => {
-          resetScheduledRef.current = false;
-          lastTriggerRef.current = [];
-        });
-      }
-
-      setInternalOpen(nextOpen);
-
-      // Enter or Pointer will both trigger open state change
-      // We only need take one to avoid duplicated change event trigger
-      // Use `lastTriggerRef` to record last open type
-      if (
-        (lastTriggerRef.current[lastTriggerRef.current.length - 1] ??
-          mergedOpen) !== nextOpen
-      ) {
-        lastTriggerRef.current.push(nextOpen);
-        onOpenChange?.(nextOpen);
-        onPopupVisibleChange?.(nextOpen);
-      }
+      flushSync(() => {
+        if (mergedOpen !== nextOpen) {
+          setInternalOpen(nextOpen);
+          onOpenChange?.(nextOpen);
+          onPopupVisibleChange?.(nextOpen);
+        }
+      });
     });
 
     // Trigger for delay
