@@ -703,8 +703,8 @@ export default function useAlign(
       }
 
       if (scaleY === 1) {
-        nextOffsetY = Math.round(nextOffsetY);
-        offsetY4Bottom = Math.round(offsetY4Bottom);
+        nextOffsetY = Math.floor(nextOffsetY);
+        offsetY4Bottom = Math.floor(offsetY4Bottom);
       }
 
       const nextOffsetInfo = {
