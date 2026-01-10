@@ -272,7 +272,7 @@ describe('Trigger.Align', () => {
     });
   });
 
-  it('round when decimal precision', async () => {
+  it('floor when decimal precision', async () => {
     rectX = 22.6;
     rectY = 33.4;
     rectWidth = 33.7;
@@ -293,7 +293,7 @@ describe('Trigger.Align', () => {
     await awaitFakeTimer();
 
     expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
-      top: `56px`,
+      top: `55px`,
     });
   });
 
