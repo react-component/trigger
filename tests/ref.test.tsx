@@ -50,4 +50,36 @@ describe('Trigger.Ref', () => {
       document.querySelector('.rc-trigger-popup'),
     );
   });
+
+  it('should support ref.nativeElement', () => {
+    const ChildComponent = React.forwardRef<
+      { nativeElement: HTMLElement },
+      React.PropsWithChildren
+    >((props, ref) => {
+      const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+      React.useImperativeHandle(ref, () => ({
+        nativeElement: buttonRef.current,
+      }));
+
+      return <button ref={buttonRef} {...props} />;
+    });
+
+    const triggerRef = React.createRef<TriggerRef>();
+    const childRef = React.createRef<{ nativeElement: HTMLElement }>();
+
+    const { container } = render(
+      <Trigger ref={triggerRef} popup={<div />}>
+        <ChildComponent ref={childRef} />
+      </Trigger>,
+    );
+
+    const buttonElement = container.querySelector('button');
+
+    // Check child ref returns object with nativeElement
+    expect(childRef.current.nativeElement).toBe(buttonElement);
+
+    // Check Trigger can extract DOM from child ref
+    expect(triggerRef.current.nativeElement).toBe(buttonElement);
+  });
 });
