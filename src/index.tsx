@@ -664,6 +664,8 @@ export function generateTrigger(
 
     if (hoverToShow) {
       const onMouseEnterCallback = (event: React.MouseEvent) => {
+         // Clear any delayed close operations
+        clearDelay();
         setMousePosByEvent(event);
       };
 
@@ -684,7 +686,11 @@ export function generateTrigger(
       );
 
       onPopupMouseEnter = (event) => {
-        // Only trigger re-open when popup is visible
+        // Always clear the delay to ensure the mouse returns to the menu to cancel the close
+        clearDelay();
+
+        // Only trigger re-open when popup is visible or in motion
+        // and ensure the mouse is entering the popup area
         if (
           (mergedOpen || inMotion) &&
           popupEle?.contains(event.target as HTMLElement)
