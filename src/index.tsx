@@ -1,10 +1,10 @@
 import Portal from '@rc-component/portal';
 import { clsx } from 'clsx';
 import type { CSSMotionProps } from '@rc-component/motion';
-// TODO: Replace ResizeObserver with useResizeObserver
-import ResizeObserver, { useResizeObserver } from '@rc-component/resize-observer';
+import { useResizeObserver } from '@rc-component/resize-observer';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
+import {  useComposeRef } from '@rc-component/util/lib/ref';
 import useEvent from '@rc-component/util/lib/hooks/useEvent';
 import useId from '@rc-component/util/lib/hooks/useId';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
@@ -783,8 +783,17 @@ export function generateTrigger(
       y: arrowY,
     };
 
+    // =================== Resize Observer ===================
+    // Use hook to observe target element resize
+    // Pass targetEle directly instead of a function so the hook will re-observe when target changes
+    useResizeObserver(mergedOpen, targetEle, onTargetResize);
+
+    // Compose refs
+    const mergedRef = useComposeRef(setTargetRef, (child as any).ref);
+
     // Child Node
     const triggerNode = React.cloneElement(child, {
+      ref: mergedRef,
       ...mergedChildrenProps,
       ...passedProps,
     });
@@ -792,13 +801,7 @@ export function generateTrigger(
     // Render
     return (
       <>
-        <ResizeObserver
-          disabled={!mergedOpen}
-          ref={setTargetRef}
-          onResize={onTargetResize}
-        >
-          {triggerNode}
-        </ResizeObserver>
+        {triggerNode}
         {rendedRef.current && (!uniqueContext || !unique) && (
           <TriggerContext.Provider value={context}>
             <Popup
