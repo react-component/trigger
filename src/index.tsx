@@ -1,7 +1,8 @@
 import Portal from '@rc-component/portal';
 import { clsx } from 'clsx';
 import type { CSSMotionProps } from '@rc-component/motion';
-import ResizeObserver from '@rc-component/resize-observer';
+// TODO: Replace ResizeObserver with useResizeObserver
+import ResizeObserver, { useResizeObserver } from '@rc-component/resize-observer';
 import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
 import useEvent from '@rc-component/util/lib/hooks/useEvent';
