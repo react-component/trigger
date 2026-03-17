@@ -661,6 +661,30 @@ export default function useAlign(
         }
       }
 
+      syncNextPopupPosition();
+
+      if (typeof numShiftX === 'number' && numShiftX !== 0) {
+          const minLeft = visibleRegion.left + numShiftX;
+          const maxRight = visibleRegion.right - numShiftX;
+
+        if (nextPopupX < minLeft) {
+          nextOffsetX += minLeft - nextPopupX;
+        } else if (nextPopupRight > maxRight) {
+          nextOffsetX += maxRight - nextPopupRight;
+        }
+      }
+
+      if (typeof numShiftY === 'number' && numShiftY !== 0) {
+          const minTop = visibleRegion.top + numShiftY;
+          const maxBottom = visibleRegion.bottom - numShiftY;
+
+        if (nextPopupY < minTop) {
+          nextOffsetY += minTop - nextPopupY;
+        } else if (nextPopupBottom > maxBottom) {
+          nextOffsetY += maxBottom - nextPopupBottom;
+        }
+      }
+
       // ============================ Arrow ============================
       // Arrow center align
       const popupLeft = popupRect.x + nextOffsetX;
