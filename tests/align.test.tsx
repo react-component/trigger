@@ -333,4 +333,74 @@ describe('Trigger.Align', () => {
       }),
     );
   });
+
+  // https://github.com/react-component/trigger/issues/XXX
+  it('should not modify popup styles during alignment measurement', async () => {
+    // On some platforms (notably Linux), the alignment calculation runs
+    // mid-CSS-animation. The fix uses a temporary measurement element
+    // instead of modifying the popup's styles, so CSS animations
+    // (transform, transition) are never disrupted.
+
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="popup-content" />}
+        popupAlign={{
+          points: ['tl', 'bl'],
+        }}
+      >
+        <div className="trigger-target" />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    const popupElement = document.querySelector(
+      '.rc-trigger-popup',
+    ) as HTMLElement;
+    expect(popupElement).toBeTruthy();
+
+    // Spy on popup style mutations during alignment using property setter
+    // spies (catches both direct assignment and setProperty)
+    const styleChanges: string[] = [];
+    const propsToWatch = ['left', 'top', 'transform', 'transition', 'overflow'];
+    const restoreSpies: (() => void)[] = [];
+
+    propsToWatch.forEach((prop) => {
+      const descriptor = Object.getOwnPropertyDescriptor(
+        CSSStyleDeclaration.prototype,
+        prop,
+      );
+      if (descriptor?.set) {
+        const origSet = descriptor.set;
+        Object.defineProperty(popupElement.style, prop, {
+          set(value: string) {
+            styleChanges.push(prop);
+            origSet.call(this, value);
+          },
+          get: descriptor.get,
+          configurable: true,
+        });
+        restoreSpies.push(() => {
+          Object.defineProperty(popupElement.style, prop, descriptor);
+        });
+      }
+    });
+
+    // Trigger re-alignment
+    triggerResize(popupElement);
+    await awaitFakeTimer();
+
+    // Restore original property descriptors
+    restoreSpies.forEach((restore) => restore());
+
+    // The popup's styles should not have been modified directly during
+    // measurement (only the final positioning values should be applied
+    // via the React state update, not during the measurement phase)
+    expect(styleChanges).not.toContain('left');
+    expect(styleChanges).not.toContain('top');
+    expect(styleChanges).not.toContain('transform');
+    expect(styleChanges).not.toContain('transition');
+    expect(styleChanges).not.toContain('overflow');
+  });
 });
