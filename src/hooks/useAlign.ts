@@ -177,35 +177,38 @@ export default function useAlign(
       const doc = popupElement.ownerDocument;
       const win = getWin(popupElement);
 
-      const { position: popupPosition } = win.getComputedStyle(popupElement);
-
-      const originLeft = popupElement.style.left;
-      const originTop = popupElement.style.top;
-      const originRight = popupElement.style.right;
-      const originBottom = popupElement.style.bottom;
-      const originOverflow = popupElement.style.overflow;
-
       // Placement
       const placementInfo: AlignType = {
         ...builtinPlacements[placement],
         ...popupAlign,
       };
 
-      // placeholder element
-      const placeholderElement = doc.createElement('div');
-      popupElement.parentElement?.appendChild(placeholderElement);
-      placeholderElement.style.left = `${popupElement.offsetLeft}px`;
-      placeholderElement.style.top = `${popupElement.offsetTop}px`;
-      placeholderElement.style.position = popupPosition;
-      placeholderElement.style.height = `${popupElement.offsetHeight}px`;
-      placeholderElement.style.width = `${popupElement.offsetWidth}px`;
-
-      // Reset first
-      popupElement.style.left = '0';
-      popupElement.style.top = '0';
-      popupElement.style.right = 'auto';
-      popupElement.style.bottom = 'auto';
-      popupElement.style.overflow = 'hidden';
+      // Use a temporary measurement element instead of modifying the popup
+      // directly. This avoids disrupting CSS animations (transform, transition)
+      // that may be active on the popup during entrance motion.
+      // On some platforms (notably Linux), the alignment calculation runs
+      // mid-animation. Modifying popup styles (left/top/transform) interferes
+      // with active CSS transitions (transition: all) and transforms
+      // (transform: scale()), causing getBoundingClientRect() to return
+      // incorrect values and producing wildly wrong popup positions.
+      const measureEl = popupElement.cloneNode(false) as HTMLElement;
+      // Copy layout dimensions to the clone since cloneNode(false) produces
+      // an empty element whose size would otherwise collapse to 0x0.
+      // Use offsetWidth/offsetHeight instead of getComputedStyle because
+      // computed styles may return empty during the initial render cycle.
+      measureEl.style.width = `${popupElement.offsetWidth}px`;
+      measureEl.style.height = `${popupElement.offsetHeight}px`;
+      measureEl.style.left = '0';
+      measureEl.style.top = '0';
+      measureEl.style.right = 'auto';
+      measureEl.style.bottom = 'auto';
+      measureEl.style.overflow = 'hidden';
+      measureEl.style.transform = 'none';
+      measureEl.style.transition = 'none';
+      measureEl.style.animation = 'none';
+      measureEl.style.visibility = 'hidden';
+      measureEl.style.pointerEvents = 'none';
+      popupElement.parentElement?.appendChild(measureEl);
 
       // Calculate align style, we should consider `transform` case
       let targetRect: Rect;
@@ -227,7 +230,9 @@ export default function useAlign(
           height: rect.height,
         };
       }
-      const popupRect = popupElement.getBoundingClientRect();
+      // Measure from the temporary element (not affected by CSS transforms
+      // or transitions on the popup).
+      const popupRect = measureEl.getBoundingClientRect();
       const { height, width } = win.getComputedStyle(popupElement);
       popupRect.x = popupRect.x ?? popupRect.left;
       popupRect.y = popupRect.y ?? popupRect.top;
@@ -281,22 +286,16 @@ export default function useAlign(
         ? visibleRegionArea
         : visibleArea;
 
-      // Record right & bottom align data
-      popupElement.style.left = 'auto';
-      popupElement.style.top = 'auto';
-      popupElement.style.right = '0';
-      popupElement.style.bottom = '0';
+      // Record right & bottom align data using measurement element
+      measureEl.style.left = 'auto';
+      measureEl.style.top = 'auto';
+      measureEl.style.right = '0';
+      measureEl.style.bottom = '0';
 
-      const popupMirrorRect = popupElement.getBoundingClientRect();
+      const popupMirrorRect = measureEl.getBoundingClientRect();
 
-      // Reset back
-      popupElement.style.left = originLeft;
-      popupElement.style.top = originTop;
-      popupElement.style.right = originRight;
-      popupElement.style.bottom = originBottom;
-      popupElement.style.overflow = originOverflow;
-
-      popupElement.parentElement?.removeChild(placeholderElement);
+      // Clean up measurement element (popup styles were never modified)
+      popupElement.parentElement?.removeChild(measureEl);
 
       // Calculate scale
       const scaleX = toNum(
