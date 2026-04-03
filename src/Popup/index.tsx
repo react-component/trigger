@@ -15,6 +15,10 @@ import PopupContent from './PopupContent';
 import useOffsetStyle from '../hooks/useOffsetStyle';
 import { useEvent } from '@rc-component/util';
 import type { PortalProps } from '@rc-component/portal';
+import {
+  focusPopupRootOrFirst,
+  handlePopupTabTrap,
+} from '../focusUtils';
 
 export interface MobileConfig {
   mask?: boolean;
@@ -85,6 +89,12 @@ export interface PopupProps {
 
   // Mobile
   mobile?: MobileConfig;
+
+  /**
+   * Move focus into the popup when it opens and return it to `target` when it closes.
+   * Tab cycles within the popup. Escape is handled by Portal `onEsc`.
+   */
+  focusPopup?: boolean;
 }
 
 const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
@@ -149,7 +159,12 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     stretch,
     targetWidth,
     targetHeight,
+
+    focusPopup,
   } = props;
+
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const prevOpenRef = React.useRef(false);
 
   const popupContent = typeof popup === 'function' ? popup() : popup;
 
@@ -208,12 +223,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     offsetY,
   );
 
-  // ========================= Render =========================
-  if (!show) {
-    return null;
-  }
-
-  // >>>>> Misc
+  // >>>>> Misc (computed before conditional return; hooks must run every render)
   const miscStyle: React.CSSProperties = {};
   if (stretch) {
     if (stretch.includes('height') && targetHeight) {
@@ -230,6 +240,49 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   if (!open) {
     miscStyle.pointerEvents = 'none';
+  }
+
+  useLayoutEffect(() => {
+    if (!focusPopup) {
+      prevOpenRef.current = open;
+      return;
+    }
+
+    const root = rootRef.current;
+    const wasOpen = prevOpenRef.current;
+    prevOpenRef.current = open;
+
+    if (open && !wasOpen && root && isNodeVisible) {
+      focusPopupRootOrFirst(root);
+    } else if (!open && wasOpen && root) {
+      const active = document.activeElement as HTMLElement | null;
+      if (
+        target &&
+        active &&
+        (root === active || root.contains(active))
+      ) {
+        if (target.isConnected) {
+          target.focus();
+        }
+      }
+    }
+  }, [open, focusPopup, isNodeVisible, target]);
+
+  const onPopupKeyDownCapture = useEvent(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!focusPopup || !open) {
+        return;
+      }
+      const root = rootRef.current;
+      if (root) {
+        handlePopupTabTrap(e, root);
+      }
+    },
+  );
+
+  // ========================= Render =========================
+  if (!show) {
+    return null;
   }
 
   return (
@@ -276,7 +329,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
                 return (
                   <div
-                    ref={composeRef(resizeObserverRef, ref, motionRef)}
+                    ref={composeRef(resizeObserverRef, ref, motionRef, rootRef)}
                     className={cls}
                     style={
                       {
@@ -295,6 +348,7 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
                     onPointerEnter={onPointerEnter}
                     onClick={onClick}
                     onPointerDownCapture={onPointerDownCapture}
+                    onKeyDownCapture={onPopupKeyDownCapture}
                   >
                     {arrow && (
                       <Arrow

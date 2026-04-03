@@ -36,6 +36,7 @@ export interface UniqueShowOptions {
   getPopupContainer?: TriggerProps['getPopupContainer'];
   getPopupClassNameFromAlign?: (align: AlignType) => string;
   onEsc?: PortalProps['onEsc'];
+  focusPopup?: boolean;
 }
 
 export interface UniqueContextProps {
