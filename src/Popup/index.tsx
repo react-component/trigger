@@ -256,14 +256,15 @@ const Popup = React.forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
       focusPopupRootOrFirst(root);
     } else if (!open && wasOpen && root) {
       const active = document.activeElement as HTMLElement | null;
+      // Only restore trigger focus if focus is still inside the popup (e.g. Escape).
+      // If the user dismissed by clicking elsewhere, activeElement may already be
+      // outside — avoid stealing focus from that target with target.focus().
       if (
-        target &&
+        target?.isConnected &&
         active &&
         (root === active || root.contains(active))
       ) {
-        if (target.isConnected) {
-          target.focus();
-        }
+        target.focus();
       }
     }
   }, [open, focusPopup, isNodeVisible, target]);
