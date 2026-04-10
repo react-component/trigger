@@ -224,4 +224,72 @@ describe('Trigger focus management', () => {
     )!;
     expect(inner).not.toHaveFocus();
   });
+
+  it('does not run tab trap when focusPopup is false (handler early return)', async () => {
+    render(
+      <Trigger
+        action="click"
+        focusPopup={false}
+        builtinPlacements={placementAlignMap}
+        popupPlacement="bottom"
+        popup={
+          <div>
+            <button type="button">a</button>
+            <button type="button">b</button>
+          </div>
+        }
+      >
+        <button type="button">trigger</button>
+      </Trigger>,
+    );
+
+    const trigger = document.querySelector('button')!;
+    act(() => {
+      fireEvent.click(trigger);
+    });
+    await flush();
+
+    const popup = document.querySelector('.rc-trigger-popup')!;
+    expect(popup).toBeTruthy();
+
+    const btnA = Array.from(document.querySelectorAll('button')).find(
+      (b) => b.textContent === 'a',
+    )!;
+    const btnB = Array.from(document.querySelectorAll('button')).find(
+      (b) => b.textContent === 'b',
+    )!;
+    act(() => {
+      btnB.focus();
+    });
+
+    fireEvent.keyDown(popup, { key: 'Tab', shiftKey: false, bubbles: true });
+
+    expect(document.activeElement).toBe(btnB);
+  });
+
+  it('enables focus management by default for focus-only trigger', async () => {
+    render(
+      <Trigger
+        action="focus"
+        builtinPlacements={placementAlignMap}
+        popupPlacement="bottom"
+        popup={<button type="button">inner</button>}
+      >
+        <button type="button">trigger</button>
+      </Trigger>,
+    );
+
+    const trigger = document.querySelector('button')!;
+
+    act(() => {
+      fireEvent.focus(trigger);
+    });
+
+    await flush();
+
+    const inner = Array.from(document.querySelectorAll('button')).find(
+      (b) => b.textContent === 'inner',
+    )!;
+    expect(document.activeElement).toBe(inner);
+  });
 });
