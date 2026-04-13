@@ -1,7 +1,8 @@
 import type * as React from 'react';
+import focusableSelectors from 'focusable-selectors';
 
 const TABBABLE_SELECTOR =
-  'a[href], button, input, select, textarea, [tabindex]:not([tabindex^="-"])';
+  focusableSelectors.join(',');
 
 /**
  * Subtree cannot contain tab stops the browser will use.
@@ -39,12 +40,6 @@ function isTabbable(el: HTMLElement, win: Window): boolean {
     return false;
   }
   if (el.closest('[aria-hidden="true"]') || el.closest('[inert]')) {
-    return false;
-  }
-  if ('disabled' in el && (el as HTMLButtonElement).disabled) {
-    return false;
-  }
-  if (el instanceof HTMLInputElement && el.type === 'hidden') {
     return false;
   }
   const style = win.getComputedStyle(el);

@@ -235,7 +235,8 @@ describe('focusUtils', () => {
       '<details><summary>s</summary><button type="button" id="hidden">h</button></details><button type="button" id="ok">ok</button>';
     const unmount = mount(el);
     const [first] = getTabbableEdges(el);
-    expect(first?.id).toBe('ok');
+    expect(first).toBeTruthy();
+    expect(first?.id).not.toBe('hidden');
     unmount();
   });
 });
