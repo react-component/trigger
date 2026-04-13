@@ -252,9 +252,6 @@ describe('Trigger focus management', () => {
     const popup = document.querySelector('.rc-trigger-popup')!;
     expect(popup).toBeTruthy();
 
-    const btnA = Array.from(document.querySelectorAll('button')).find(
-      (b) => b.textContent === 'a',
-    )!;
     const btnB = Array.from(document.querySelectorAll('button')).find(
       (b) => b.textContent === 'b',
     )!;
