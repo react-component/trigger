@@ -1,5 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react';
-import isMobile from '@rc-component/util/lib/isMobile';
+import { isMobile } from '@rc-component/util';
 import React from 'react';
 import Trigger, { type TriggerProps } from '../src';
 import { placementAlignMap } from './util';

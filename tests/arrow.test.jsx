@@ -1,10 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { act, cleanup, render } from '@testing-library/react';
-import {
-  spyElementPrototype,
-  spyElementPrototypes,
-} from '@rc-component/util/lib/test/domHook';
+import { spyElementPrototype, spyElementPrototypes } from '@rc-component/util';
 import Trigger from '../src';
 
 describe('Trigger.Arrow', () => {

@@ -9,9 +9,8 @@ import TriggerContext, {
 import useDelay from '../hooks/useDelay';
 import useAlign from '../hooks/useAlign';
 import Popup from '../Popup';
-import { useEvent } from '@rc-component/util';
+import { isDOM, useEvent } from '@rc-component/util';
 import useTargetState from './useTargetState';
-import { isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import UniqueContainer from './UniqueContainer';
 import { clsx } from 'clsx';
 import { getAlignPopupClassName } from '../util';

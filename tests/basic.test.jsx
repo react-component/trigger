@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
-import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
+import { spyElementPrototypes } from '@rc-component/util';
 import React, { StrictMode, createRef } from 'react';
 import ReactDOM, { createPortal } from 'react-dom';
 import Trigger from '../src';

@@ -2,12 +2,18 @@ import Portal from '@rc-component/portal';
 import { clsx } from 'clsx';
 import type { CSSMotionProps } from '@rc-component/motion';
 import { useResizeObserver } from '@rc-component/resize-observer';
-import { getDOM, isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
-import { getNodeRef, useComposeRef } from '@rc-component/util/lib/ref';
-import useEvent from '@rc-component/util/lib/hooks/useEvent';
-import useId from '@rc-component/util/lib/hooks/useId';
-import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import {
+  getDOM,
+  getNodeRef,
+  getShadowRoot,
+  isDOM,
+  supportRef,
+  useComposeRef,
+  useControlledState,
+  useEvent,
+  useId,
+  useLayoutEffect,
+} from '@rc-component/util';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
 import type { TriggerContextProps } from './context';
@@ -22,6 +28,7 @@ import type { PortalProps } from '@rc-component/portal';
 import type {
   ActionType,
   AlignType,
+  AnimationType,
   ArrowPos,
   ArrowTypeOuter,
   BuildInPlacements,
@@ -31,12 +38,12 @@ import { getAlignPopupClassName } from './util';
 export type {
   ActionType,
   AlignType,
+  AnimationType,
   ArrowTypeOuter as ArrowType,
   BuildInPlacements,
 };
 
 import UniqueProvider, { type UniqueProviderProps } from './UniqueProvider';
-import { useControlledState } from '@rc-component/util';
 import { flushSync } from 'react-dom';
 
 export { UniqueProvider };
@@ -791,13 +798,17 @@ export function generateTrigger(
     useResizeObserver(mergedOpen, targetEle, onTargetResize);
 
     // Compose refs
-    const mergedRef = useComposeRef(setTargetRef, getNodeRef(child));
+    const childSupportRef = supportRef(child);
+    const mergedRef = useComposeRef(
+      setTargetRef,
+      childSupportRef ? getNodeRef(child) : null,
+    );
 
     // Child Node
     const triggerNode = React.cloneElement(child, {
       ...mergedChildrenProps,
       ...passedProps,
-      ref: mergedRef,
+      ref: childSupportRef ? mergedRef : undefined,
     });
 
     // Render
@@ -868,5 +879,37 @@ export function generateTrigger(
 
   return Trigger;
 }
+
+interface MockPortalProps {
+  open?: boolean;
+  autoDestroy?: boolean;
+  children: React.ReactElement<any>;
+  getContainer?: () => HTMLElement;
+}
+
+const MockPortal: React.FC<MockPortalProps> = ({
+  open,
+  autoDestroy,
+  children,
+  getContainer,
+}) => {
+  const [visible, setVisible] = React.useState(open);
+
+  React.useEffect(() => {
+    getContainer?.();
+  });
+
+  React.useEffect(() => {
+    if (open) {
+      setVisible(true);
+    } else if (autoDestroy) {
+      setVisible(false);
+    }
+  }, [open, autoDestroy]);
+
+  return visible ? children : null;
+};
+
+export const MockTrigger = generateTrigger(MockPortal);
 
 export default generateTrigger(Portal);
