@@ -7,7 +7,6 @@ import {
   getNodeRef,
   getShadowRoot,
   isDOM,
-  supportRef,
   useComposeRef,
   useControlledState,
   useEvent,
@@ -798,17 +797,13 @@ export function generateTrigger(
     useResizeObserver(mergedOpen, targetEle, onTargetResize);
 
     // Compose refs
-    const childSupportRef = supportRef(child);
-    const mergedRef = useComposeRef(
-      setTargetRef,
-      childSupportRef ? getNodeRef(child) : null,
-    );
+    const mergedRef = useComposeRef(setTargetRef, getNodeRef(child));
 
     // Child Node
     const triggerNode = React.cloneElement(child, {
       ...mergedChildrenProps,
       ...passedProps,
-      ref: childSupportRef ? mergedRef : undefined,
+      ref: mergedRef,
     });
 
     // Render
@@ -879,37 +874,5 @@ export function generateTrigger(
 
   return Trigger;
 }
-
-interface MockPortalProps {
-  open?: boolean;
-  autoDestroy?: boolean;
-  children: React.ReactElement<any>;
-  getContainer?: () => HTMLElement;
-}
-
-const MockPortal: React.FC<MockPortalProps> = ({
-  open,
-  autoDestroy,
-  children,
-  getContainer,
-}) => {
-  const [visible, setVisible] = React.useState(open);
-
-  React.useEffect(() => {
-    getContainer?.();
-  });
-
-  React.useEffect(() => {
-    if (open) {
-      setVisible(true);
-    } else if (autoDestroy) {
-      setVisible(false);
-    }
-  }, [open, autoDestroy]);
-
-  return visible ? children : null;
-};
-
-export const MockTrigger = generateTrigger(MockPortal);
 
 export default generateTrigger(Portal);
