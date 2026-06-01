@@ -226,6 +226,40 @@ describe('Trigger.Align', () => {
     });
   });
 
+  it('should restore overflowX and overflowY after align', async () => {
+    const triggerRef = React.createRef<TriggerRef>();
+
+    render(
+      <Trigger
+        popupVisible
+        popup={<span className="bamboo" />}
+        popupStyle={{
+          overflowX: 'auto',
+          overflowY: 'scroll',
+        }}
+        ref={triggerRef}
+      >
+        <div />
+      </Trigger>,
+    );
+
+    await awaitFakeTimer();
+
+    const popupElement = document.querySelector(
+      '.rc-trigger-popup',
+    ) as HTMLElement;
+    expect(popupElement.style.overflowX).toBe('auto');
+    expect(popupElement.style.overflowY).toBe('scroll');
+
+    act(() => {
+      triggerRef.current!.forceAlign();
+    });
+    await awaitFakeTimer();
+
+    expect(popupElement.style.overflowX).toBe('auto');
+    expect(popupElement.style.overflowY).toBe('scroll');
+  });
+
   it('targetOffset support ptg', async () => {
     render(
       <Trigger
