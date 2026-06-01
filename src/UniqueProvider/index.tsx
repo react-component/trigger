@@ -223,6 +223,7 @@ const UniqueProvider = ({
             motion={mergedOptions.popupMotion}
             maskMotion={mergedOptions.maskMotion}
             getPopupContainer={mergedOptions.getPopupContainer}
+            focusPopup={mergedOptions.focusPopup}
           >
             <UniqueContainer
               prefixCls={prefixCls}

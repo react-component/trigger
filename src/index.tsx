@@ -130,6 +130,14 @@ export interface TriggerProps {
    */
   unique?: boolean;
 
+  /**
+   * When true, moves focus into the popup on open (first tabbable node or the popup root with
+   * `tabIndex={-1}`), restores focus to the trigger on close, and keeps Tab cycling inside the
+   * popup. When undefined, enabled for click / contextMenu / focus triggers unless `hover` is also
+   * a show action (so hover-only tooltips are unchanged).
+   */
+  focusPopup?: boolean;
+
   // ==================== Arrow ====================
   arrow?: boolean | ArrowTypeOuter;
 
@@ -210,6 +218,8 @@ export function generateTrigger(
 
       // Private
       mobile,
+
+      focusPopup: focusPopupProp,
 
       ...restProps
     } = props;
@@ -331,6 +341,24 @@ export function generateTrigger(
     // Support ref
     const isOpen = useEvent(() => mergedOpen);
 
+    const [showActions, hideActions] = useAction(
+      action,
+      showAction,
+      hideAction,
+    );
+
+    const mergedFocusPopup = React.useMemo(() => {
+      if (focusPopupProp !== undefined) {
+        return focusPopupProp;
+      }
+      return (
+        !showActions.has('hover') &&
+        (showActions.has('click') ||
+          showActions.has('contextMenu') ||
+          showActions.has('focus'))
+      );
+    }, [focusPopupProp, showActions]);
+
     // Extract common options for UniqueProvider
     const getUniqueOptions = useEvent((delay: number = 0) => ({
       popup,
@@ -354,6 +382,7 @@ export function generateTrigger(
       getPopupClassNameFromAlign,
       id,
       onEsc,
+      focusPopup: mergedFocusPopup,
     }));
 
     // Handle controlled state changes for UniqueProvider
@@ -470,12 +499,6 @@ export function generateTrigger(
       popupAlign,
       onPopupAlign,
       isMobile,
-    );
-
-    const [showActions, hideActions] = useAction(
-      action,
-      showAction,
-      hideAction,
     );
 
     const clickToShow = showActions.has('click');
@@ -838,6 +861,7 @@ export function generateTrigger(
               autoDestroy={mergedAutoDestroy}
               getPopupContainer={getPopupContainer}
               onEsc={onEsc}
+              focusPopup={mergedFocusPopup}
               // Arrow
               align={alignInfo}
               arrow={innerArrow}
