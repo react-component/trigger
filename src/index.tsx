@@ -41,7 +41,6 @@ export type {
 
 import UniqueProvider, { type UniqueProviderProps } from './UniqueProvider';
 import { useControlledState } from '@rc-component/util';
-import { flushSync } from 'react-dom';
 
 export { UniqueProvider };
 export type { UniqueProviderProps };
@@ -382,14 +381,34 @@ export function generateTrigger(
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
 
+    // Track the last synchronously dispatched `nextOpen` so multiple events
+    // firing in the same batch (e.g. `pointerenter` + `focus`, or `pointerleave`
+    // + `blur`) only emit one `onOpenChange`. We can't read `mergedOpen` here
+    // because React state updates are async — within a single batch the second
+    // call would still see the stale value. A simple `useRef` avoids that
+    // without requiring `flushSync`, which would emit a React 19 warning when
+    // `internalTriggerOpen` is reached from inside a render/lifecycle (e.g.
+    // a child commit triggered by clicking a `<Tooltip trigger="focus">`-
+    // wrapped button that also opens a Modal).
+    // See https://github.com/ant-design/ant-design/issues/57789
+    const lastDispatchedOpenRef = React.useRef(mergedOpen);
+
+    // Keep the ref in sync with `mergedOpen` after each render so that
+    // controlled updates from outside (or any internal state change that
+    // already committed) reset the dedup baseline. This preserves the
+    // behaviour fixed in #601 where the dedup state could leak across user
+    // interactions in controlled mode without re-renders.
+    useLayoutEffect(() => {
+      lastDispatchedOpenRef.current = mergedOpen;
+    }, [mergedOpen]);
+
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
-      flushSync(() => {
-        if (mergedOpen !== nextOpen) {
-          setInternalOpen(nextOpen);
-          onOpenChange?.(nextOpen);
-          onPopupVisibleChange?.(nextOpen);
-        }
-      });
+      if (lastDispatchedOpenRef.current !== nextOpen) {
+        lastDispatchedOpenRef.current = nextOpen;
+        setInternalOpen(nextOpen);
+        onOpenChange?.(nextOpen);
+        onPopupVisibleChange?.(nextOpen);
+      }
     });
 
     // Trigger for delay
