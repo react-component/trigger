@@ -1,5 +1,4 @@
-import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
-import { warning } from '@rc-component/util/lib/warning';
+import { getShadowRoot, warning } from '@rc-component/util';
 import * as React from 'react';
 import { getWin } from '../util';
 

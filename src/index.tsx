@@ -2,12 +2,16 @@ import Portal from '@rc-component/portal';
 import { clsx } from 'clsx';
 import type { CSSMotionProps } from '@rc-component/motion';
 import { useResizeObserver } from '@rc-component/resize-observer';
-import { getDOM, isDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import { getShadowRoot } from '@rc-component/util/lib/Dom/shadow';
-import { getNodeRef, useComposeRef } from '@rc-component/util/lib/ref';
-import useEvent from '@rc-component/util/lib/hooks/useEvent';
-import useId from '@rc-component/util/lib/hooks/useId';
-import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import {
+  getDOM,
+  getNodeRef,
+  getShadowRoot,
+  isDOM,
+  useComposeRef,
+  useEvent,
+  useId,
+  useLayoutEffect,
+} from '@rc-component/util';
 import * as React from 'react';
 import Popup, { type MobileConfig } from './Popup';
 import type { TriggerContextProps } from './context';
