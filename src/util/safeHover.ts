@@ -161,8 +161,7 @@ function getSafeHoverIntentPolygon(
   }
 }
 
-export function isPointInSafeHoverArea(
-  point: SafeHoverPoint,
+export function getSafeHoverAreaPolygons(
   leavePoint: SafeHoverPoint,
   targetRect: SafeHoverRect,
   popupRect: SafeHoverRect,
@@ -171,6 +170,30 @@ export function isPointInSafeHoverArea(
   const side = getSafeHoverSide(targetRect, popupRect);
 
   if (!side || !isLeavePointTowardsPopup(side, leavePoint, targetRect)) {
+    return [];
+  }
+
+  return [
+    getSafeHoverGapPolygon(side, targetRect, popupRect, buffer),
+    getSafeHoverIntentPolygon(side, leavePoint, popupRect, buffer),
+  ];
+}
+
+export function isPointInSafeHoverArea(
+  point: SafeHoverPoint,
+  leavePoint: SafeHoverPoint,
+  targetRect: SafeHoverRect,
+  popupRect: SafeHoverRect,
+  buffer = 0.5,
+) {
+  const safeHoverPolygons = getSafeHoverAreaPolygons(
+    leavePoint,
+    targetRect,
+    popupRect,
+    buffer,
+  );
+
+  if (!safeHoverPolygons.length) {
     return false;
   }
 
@@ -180,14 +203,5 @@ export function isPointInSafeHoverArea(
 
   // The gap polygon keeps the straight corridor open; the intent polygon
   // catches diagonal movement toward the popup edge.
-  return (
-    isPointInPolygon(
-      point,
-      getSafeHoverGapPolygon(side, targetRect, popupRect, buffer),
-    ) ||
-    isPointInPolygon(
-      point,
-      getSafeHoverIntentPolygon(side, leavePoint, popupRect, buffer),
-    )
-  );
+  return safeHoverPolygons.some((polygon) => isPointInPolygon(point, polygon));
 }
