@@ -107,7 +107,7 @@ export function getVisibleArea(
   const visibleArea = { ...initArea };
 
   (scrollerList || []).forEach((ele) => {
-    if (ele instanceof HTMLBodyElement || ele instanceof HTMLHtmlElement) {
+    if (ele.tagName === 'BODY' || ele.tagName === 'HTML') {
       return;
     }
 
