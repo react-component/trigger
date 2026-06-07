@@ -1,16 +1,15 @@
-import Trigger, { type TriggerRef } from '@rc-component/trigger';
-import React from 'react';
-import {
-  getSafeHoverAreaPolygons,
-  type SafeHoverPoint,
-} from '../../src/util/safeHover';
+import Trigger from '@rc-component/trigger';
+import type { TriggerRef } from '@rc-component/trigger';
+import React, { useState } from 'react';
+import { getSafeHoverAreaPolygons } from '../../src/util/safeHover';
+import type { SafeHoverPoint } from '../../src/util/safeHover';
 import '../../assets/index.less';
 
-type SafeHoverPolygon = {
+interface SafeHoverPolygon {
   points: SafeHoverPoint[];
   fill: string;
   stroke: string;
-};
+}
 
 const safeHoverPolygonStyles = [
   {
@@ -38,12 +37,10 @@ const popupStyle: React.CSSProperties = {
   boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
 };
 
-const SafeHoverDemo = () => {
+const SafeHoverDemo: React.FC = () => {
   const triggerRef = React.useRef<TriggerRef>(null);
 
-  const [safeHoverPolygons, setSafeHoverPolygons] = React.useState<
-    SafeHoverPolygon[]
-  >([]);
+  const [safeHoverPolygons, setPolygons] = useState<SafeHoverPolygon[]>([]);
 
   const updateSafeHoverPolygons = (
     event: React.MouseEvent<HTMLElement> | React.PointerEvent<HTMLElement>,
@@ -52,20 +49,18 @@ const SafeHoverDemo = () => {
     const popup = triggerRef.current?.popupElement;
 
     if (!target || !popup) {
-      setSafeHoverPolygons([]);
+      setPolygons([]);
       return;
     }
 
     const leavePoint: SafeHoverPoint = [event.clientX, event.clientY];
-    setSafeHoverPolygons(
+
+    setPolygons(
       getSafeHoverAreaPolygons(
         leavePoint,
         target.getBoundingClientRect(),
         popup.getBoundingClientRect(),
-      ).map((points, index) => ({
-        points,
-        ...safeHoverPolygonStyles[index],
-      })),
+      ).map((points, i) => ({ points, ...safeHoverPolygonStyles[i] })),
     );
   };
 
@@ -83,17 +78,19 @@ const SafeHoverDemo = () => {
             zIndex: 999,
           }}
         >
-          {safeHoverPolygons.map(({ points, fill, stroke }, index) => (
-            <polygon
-              // eslint-disable-next-line react/no-array-index-key
-              key={index}
-              points={points.map((point) => point.join(',')).join(' ')}
-              fill={fill}
-              stroke={stroke}
-              strokeDasharray="4 3"
-              strokeWidth={1}
-            />
-          ))}
+          {safeHoverPolygons.map(({ points, fill, stroke }, index) => {
+            return (
+              <polygon
+                // eslint-disable-next-line react/no-array-index-key
+                key={`polygon-${index}`}
+                points={points.map((point) => point.join(',')).join(' ')}
+                fill={fill}
+                stroke={stroke}
+                strokeDasharray="4 3"
+                strokeWidth={1}
+              />
+            );
+          })}
         </svg>
       )}
       <Trigger
@@ -105,18 +102,15 @@ const SafeHoverDemo = () => {
         popupStyle={popupStyle}
         onOpenChange={(nextOpen) => {
           if (!nextOpen) {
-            setSafeHoverPolygons([]);
+            setPolygons([]);
           }
         }}
         popup={
-          <div onMouseEnter={() => setSafeHoverPolygons([])}>
+          <div onMouseEnter={() => setPolygons([])}>
             <strong>Safe hover popup</strong>
             <div style={{ marginTop: 8 }}>
               Move through the gap to reach me.
             </div>
-            <button style={{ marginTop: 12 }} type="button">
-              Popup action
-            </button>
           </div>
         }
       >
@@ -126,10 +120,9 @@ const SafeHoverDemo = () => {
           onMouseLeave={updateSafeHoverPolygons}
           onPointerLeave={updateSafeHoverPolygons}
         >
-          Hover target
+          trigger
         </button>
       </Trigger>
-
       <div
         style={{
           width: 240,

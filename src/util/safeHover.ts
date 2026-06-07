@@ -7,7 +7,10 @@ export type SafeHoverRect = Pick<
 
 export type SafeHoverSide = 'top' | 'bottom' | 'left' | 'right';
 
-function isPointInPolygon(point: SafeHoverPoint, polygon: SafeHoverPoint[]) {
+export const isPointInPolygon = (
+  point: SafeHoverPoint,
+  polygon: SafeHoverPoint[],
+) => {
   const [x, y] = point;
   let isInside = false;
 
@@ -23,63 +26,57 @@ function isPointInPolygon(point: SafeHoverPoint, polygon: SafeHoverPoint[]) {
   }
 
   return isInside;
-}
+};
 
-function isPointInRect(point: SafeHoverPoint, rect: SafeHoverRect) {
+export const isPointInRect = (point: SafeHoverPoint, rect: SafeHoverRect) => {
   return (
     point[0] >= rect.left &&
     point[0] <= rect.right &&
     point[1] >= rect.top &&
     point[1] <= rect.bottom
   );
-}
+};
 
-export function getSafeHoverSide(
+export const getSafeHoverSide = (
   targetRect: SafeHoverRect,
   popupRect: SafeHoverRect,
-): SafeHoverSide | null {
+): SafeHoverSide | null => {
   const gaps: { side: SafeHoverSide; value: number }[] = [
     { side: 'top', value: targetRect.top - popupRect.bottom },
     { side: 'bottom', value: popupRect.top - targetRect.bottom },
     { side: 'left', value: targetRect.left - popupRect.right },
     { side: 'right', value: popupRect.left - targetRect.right },
   ];
-
   const largestGap = gaps.reduce((prev, next) =>
     next.value > prev.value ? next : prev,
   );
-
   return largestGap.value > 0 ? largestGap.side : null;
-}
+};
 
-function isLeavePointTowardsPopup(
+const isLeavePointTowardsPopup = (
   side: SafeHoverSide,
   leavePoint: SafeHoverPoint,
   targetRect: SafeHoverRect,
-) {
+) => {
   const [x, y] = leavePoint;
-
   switch (side) {
     case 'top':
       return y <= targetRect.top + 1;
-
     case 'bottom':
       return y >= targetRect.bottom - 1;
-
     case 'left':
       return x <= targetRect.left + 1;
-
     case 'right':
       return x >= targetRect.right - 1;
   }
-}
+};
 
-function getSafeHoverGapPolygon(
+const getSafeHoverGapPolygon = (
   side: SafeHoverSide,
   targetRect: SafeHoverRect,
   popupRect: SafeHoverRect,
   buffer: number,
-): SafeHoverPoint[] {
+): SafeHoverPoint[] => {
   const verticalRect =
     popupRect.width > targetRect.width ? targetRect : popupRect;
   const horizontalRect =
@@ -88,7 +85,6 @@ function getSafeHoverGapPolygon(
   const right = verticalRect.right + buffer;
   const top = horizontalRect.top - buffer;
   const bottom = horizontalRect.bottom + buffer;
-
   switch (side) {
     case 'top':
       return [
@@ -97,7 +93,6 @@ function getSafeHoverGapPolygon(
         [right, targetRect.top + 1],
         [right, popupRect.bottom - 1],
       ];
-
     case 'bottom':
       return [
         [left, targetRect.bottom - 1],
@@ -105,7 +100,6 @@ function getSafeHoverGapPolygon(
         [right, popupRect.top + 1],
         [right, targetRect.bottom - 1],
       ];
-
     case 'left':
       return [
         [popupRect.right - 1, top],
@@ -113,7 +107,6 @@ function getSafeHoverGapPolygon(
         [targetRect.left + 1, bottom],
         [targetRect.left + 1, top],
       ];
-
     case 'right':
       return [
         [targetRect.right - 1, top],
@@ -122,14 +115,14 @@ function getSafeHoverGapPolygon(
         [popupRect.left + 1, top],
       ];
   }
-}
+};
 
-function getSafeHoverIntentPolygon(
+const getSafeHoverIntentPolygon = (
   side: SafeHoverSide,
   leavePoint: SafeHoverPoint,
   popupRect: SafeHoverRect,
   buffer: number,
-): SafeHoverPoint[] {
+): SafeHoverPoint[] => {
   switch (side) {
     case 'top':
       return [
@@ -137,21 +130,18 @@ function getSafeHoverIntentPolygon(
         [popupRect.left - buffer, popupRect.bottom + buffer],
         [popupRect.right + buffer, popupRect.bottom + buffer],
       ];
-
     case 'bottom':
       return [
         leavePoint,
         [popupRect.right + buffer, popupRect.top - buffer],
         [popupRect.left - buffer, popupRect.top - buffer],
       ];
-
     case 'left':
       return [
         leavePoint,
         [popupRect.right + buffer, popupRect.bottom + buffer],
         [popupRect.right + buffer, popupRect.top - buffer],
       ];
-
     case 'right':
       return [
         leavePoint,
@@ -159,33 +149,32 @@ function getSafeHoverIntentPolygon(
         [popupRect.left - buffer, popupRect.bottom + buffer],
       ];
   }
-}
+};
 
-export function getSafeHoverAreaPolygons(
+export const getSafeHoverAreaPolygons = (
   leavePoint: SafeHoverPoint,
   targetRect: SafeHoverRect,
   popupRect: SafeHoverRect,
   buffer = 0.5,
-) {
+) => {
   const side = getSafeHoverSide(targetRect, popupRect);
 
   if (!side || !isLeavePointTowardsPopup(side, leavePoint, targetRect)) {
     return [];
   }
-
   return [
     getSafeHoverGapPolygon(side, targetRect, popupRect, buffer),
     getSafeHoverIntentPolygon(side, leavePoint, popupRect, buffer),
   ];
-}
+};
 
-export function isPointInSafeHoverArea(
+export const isPointInSafeHoverArea = (
   point: SafeHoverPoint,
   leavePoint: SafeHoverPoint,
   targetRect: SafeHoverRect,
   popupRect: SafeHoverRect,
   buffer = 0.5,
-) {
+) => {
   const safeHoverPolygons = getSafeHoverAreaPolygons(
     leavePoint,
     targetRect,
@@ -204,4 +193,4 @@ export function isPointInSafeHoverArea(
   // The gap polygon keeps the straight corridor open; the intent polygon
   // catches diagonal movement toward the popup edge.
   return safeHoverPolygons.some((polygon) => isPointInPolygon(point, polygon));
-}
+};
