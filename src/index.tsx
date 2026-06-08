@@ -483,42 +483,44 @@ export function generateTrigger(
         // Between 1 frame and 1 second
         const refreshDelay = clamp(mouseLeaveDelay * 1000, 1000 / 60, 1000);
 
+        const cancelRefresh = () => {
+          const safeHover = safeHoverRef.current;
+          if (safeHover?.refreshTimer) {
+            clearTimeout(safeHover.refreshTimer);
+            safeHover.refreshTimer = null;
+          }
+        };
+
         const scheduleRefresh = () => {
           const safeHover = safeHoverRef.current;
 
-          if (!safeHover || !refreshDelay) {
+          if (!safeHover || safeHover.refreshTimer) {
             return;
           }
 
           safeHover.refreshTimer = setTimeout(() => {
             if (isPointSafe(latestPoint)) {
-              triggerOpen(false, mouseLeaveDelay);
-              scheduleRefresh();
+              safeHover.refreshTimer = null;
             } else {
               clearSafeHover();
-              triggerOpen(false, mouseLeaveDelay);
+              triggerOpen(false);
             }
           }, refreshDelay);
         };
 
-        // Keep the existing close delay alive while the cursor crosses the gap.
         const handler = (nativeEvent: MouseEvent) => {
           latestPoint = [nativeEvent.clientX, nativeEvent.clientY];
 
           if (isPointSafe(latestPoint)) {
-            triggerOpen(false, mouseLeaveDelay);
+            cancelRefresh();
           } else {
-            clearSafeHover();
-            triggerOpen(false, mouseLeaveDelay);
+            scheduleRefresh();
           }
         };
 
         doc.addEventListener('mousemove', handler);
 
         safeHoverRef.current = { doc, handler, refreshTimer: null };
-
-        triggerOpen(false, mouseLeaveDelay);
-        scheduleRefresh();
 
         return true;
       },
@@ -536,7 +538,7 @@ export function generateTrigger(
       }
     }, [mergedOpen, clearSafeHover]);
 
-    function onEsc({ top }: Parameters<PortalProps['onEsc']>[0]) {
+    function onEsc({ top }: Parameters<NonNullable<PortalProps['onEsc']>>[0]) {
       if (top) {
         triggerOpen(false);
       }
@@ -555,7 +557,7 @@ export function generateTrigger(
     );
 
     const [motionPrepareResolve, setMotionPrepareResolve] =
-      React.useState<VoidFunction>(null);
+      React.useState<VoidFunction | null>(null);
 
     // =========================== Align ============================
     const [mousePos, setMousePos] = React.useState<

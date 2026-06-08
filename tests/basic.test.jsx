@@ -298,7 +298,7 @@ describe('Trigger.Basic', () => {
         expect(isPopupHidden()).toBeTruthy();
       });
 
-      it('closes popup when safe hover area disappears while mouse is paused', () => {
+      it('waits for mousemove to start refresh close detection after safe hover area disappears', () => {
         const { container } = render(
           <Trigger
             action={['hover']}
@@ -323,6 +323,11 @@ describe('Trigger.Basic', () => {
 
         mockRect(popup, { left: 10, top: 10, width: 60, height: 30 });
         act(() => jest.advanceTimersByTime(150));
+
+        expect(isPopupHidden()).toBeFalsy();
+
+        fireEvent.mouseMove(document, { clientX: 150, clientY: 40 });
+        act(() => jest.advanceTimersByTime(100));
 
         expect(isPopupHidden()).toBeTruthy();
       });
