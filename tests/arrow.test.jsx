@@ -6,6 +6,7 @@ import {
   spyElementPrototypes,
 } from '@rc-component/util/lib/test/domHook';
 import Trigger from '../src';
+import Arrow from '../src/Popup/Arrow';
 
 describe('Trigger.Arrow', () => {
   beforeAll(() => {
@@ -40,6 +41,22 @@ describe('Trigger.Arrow', () => {
         <div />
       </Trigger>,
     );
+  });
+
+  it('uses default arrow options and position', () => {
+    render(
+      <Arrow
+        prefixCls="rc-trigger-popup"
+        align={{ points: ['tl', 'bl'] }}
+        arrow={undefined}
+        arrowPos={{}}
+      />,
+    );
+
+    expect(document.querySelector('.rc-trigger-popup-arrow')).toHaveStyle({
+      left: 0,
+      top: 0,
+    });
   });
 
   describe('direction', () => {

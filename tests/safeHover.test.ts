@@ -1,4 +1,5 @@
 import {
+  getSafeHoverAreaPolygons,
   getSafeHoverSide,
   isPointInSafeHoverArea,
   type SafeHoverRect,
@@ -137,5 +138,23 @@ describe('safeHover util', () => {
         rect(60, 0, 30, 100),
       ),
     ).toBe(true);
+  });
+
+  it('supports custom safe hover buffer', () => {
+    expect(
+      getSafeHoverAreaPolygons(
+        [50, 20],
+        rect(0, 0, 100, 20),
+        rect(20, 60, 60, 30),
+      ),
+    ).toHaveLength(2);
+    expect(
+      getSafeHoverAreaPolygons(
+        [50, 20],
+        rect(0, 0, 100, 20),
+        rect(20, 60, 60, 30),
+        4,
+      ),
+    ).toHaveLength(2);
   });
 });
