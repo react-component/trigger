@@ -480,10 +480,11 @@ export function generateTrigger(
             popupEle.getBoundingClientRect(),
           );
 
-        const refreshDelay = Math.max(
-          16,
-          Math.min(mouseLeaveDelay * 500, 100),
-        );
+        const refreshDelay =
+          mouseLeaveDelay > 0
+            ? Math.max(1000 / 60, Math.min(mouseLeaveDelay * 1000, 1000))
+            : 0;
+
         const scheduleRefresh = () => {
           const safeHover = safeHoverRef.current;
 
