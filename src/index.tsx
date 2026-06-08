@@ -434,7 +434,6 @@ export function generateTrigger(
 
       if (safeHover) {
         safeHover.doc.removeEventListener('mousemove', safeHover.handler);
-        safeHover.doc.removeEventListener('pointermove', safeHover.handler);
 
         if (safeHover.refreshTimer) {
           clearTimeout(safeHover.refreshTimer);
@@ -448,7 +447,12 @@ export function generateTrigger(
       (
         event: React.MouseEvent<HTMLElement> | React.PointerEvent<HTMLElement>,
       ) => {
-        if (!targetEle || !popupEle || !openRef.current) {
+        if (
+          !targetEle ||
+          !popupEle ||
+          !openRef.current ||
+          mouseLeaveDelay <= 0
+        ) {
           return false;
         }
 
@@ -511,12 +515,8 @@ export function generateTrigger(
         };
 
         doc.addEventListener('mousemove', handler);
-        doc.addEventListener('pointermove', handler);
-        safeHoverRef.current = {
-          doc,
-          handler,
-          refreshTimer: null,
-        };
+
+        safeHoverRef.current = { doc, handler, refreshTimer: null };
 
         triggerOpen(false, mouseLeaveDelay);
         scheduleRefresh();
