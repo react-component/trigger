@@ -4,7 +4,7 @@ import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import * as React from 'react';
 import type { AlignType, TriggerProps } from '../src';
 import Trigger from '../src';
-import { getVisibleArea } from '../src/util';
+import { collectScroller, getVisibleArea } from '../src/util';
 
 const flush = async () => {
   for (let i = 0; i < 10; i += 1) {
@@ -364,6 +364,47 @@ describe('Trigger.Align', () => {
     });
 
     window.getComputedStyle = oriGetComputedStyle;
+  });
+
+  it('visible area skips document body and html elements', () => {
+    const initArea = {
+      left: 0,
+      right: 500,
+      top: 0,
+      bottom: 500,
+    };
+
+    expect(getVisibleArea(initArea)).toEqual(initArea);
+    expect(
+      getVisibleArea(initArea, [document.body, document.documentElement]),
+    ).toEqual(initArea);
+  });
+
+  it('handles elements without a document window', () => {
+    const detachedDocument = document.implementation.createHTMLDocument();
+    const scroller = detachedDocument.createElement('div');
+    const child = detachedDocument.createElement('div');
+
+    detachedDocument.body.appendChild(scroller);
+    scroller.appendChild(child);
+
+    expect(collectScroller(child)).toEqual([]);
+    expect(
+      getVisibleArea(
+        {
+          left: 0,
+          right: 500,
+          top: 0,
+          bottom: 500,
+        },
+        [scroller],
+      ),
+    ).toEqual({
+      left: 0,
+      right: 100,
+      top: 0,
+      bottom: 100,
+    });
   });
 
   // e.g. adjustY + shiftX may make popup out but push back in screen

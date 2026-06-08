@@ -13,7 +13,8 @@ import {
   useLayoutEffect,
 } from '@rc-component/util';
 import * as React from 'react';
-import Popup, { type MobileConfig } from './Popup';
+import Popup from './Popup';
+import type { MobileConfig } from './Popup';
 import type { TriggerContextProps } from './context';
 import TriggerContext, { UniqueContext } from './context';
 import useAction from './hooks/useAction';
@@ -22,7 +23,8 @@ import useDelay from './hooks/useDelay';
 import useWatch from './hooks/useWatch';
 import useWinClick from './hooks/useWinClick';
 import type { PortalProps } from '@rc-component/portal';
-
+import { isPointInSafeHoverArea } from './util/safeHover';
+import type { SafeHoverPoint } from './util/safeHover';
 import type {
   ActionType,
   AlignType,
@@ -30,7 +32,7 @@ import type {
   ArrowTypeOuter,
   BuildInPlacements,
 } from './interface';
-import { getAlignPopupClassName } from './util';
+import { clamp, getAlignPopupClassName } from './util';
 
 export type {
   ActionType,
@@ -421,7 +423,122 @@ export function generateTrigger(
       }, delay);
     };
 
-    function onEsc({ top }: Parameters<PortalProps['onEsc']>[0]) {
+    const safeHoverRef = React.useRef<{
+      doc: Document;
+      handler: (event: MouseEvent) => void;
+      refreshTimer: ReturnType<typeof setTimeout> | null;
+    } | null>(null);
+
+    const clearSafeHover = useEvent(() => {
+      const safeHover = safeHoverRef.current;
+
+      if (safeHover) {
+        safeHover.doc.removeEventListener('mousemove', safeHover.handler);
+
+        if (safeHover.refreshTimer) {
+          clearTimeout(safeHover.refreshTimer);
+        }
+
+        safeHoverRef.current = null;
+      }
+    });
+
+    const startSafeHover = useEvent(
+      (
+        event: React.MouseEvent<HTMLElement> | React.PointerEvent<HTMLElement>,
+      ) => {
+        if (
+          !targetEle ||
+          !popupEle ||
+          !openRef.current ||
+          mouseLeaveDelay <= 0
+        ) {
+          return false;
+        }
+
+        const leavePoint: SafeHoverPoint = [event.clientX, event.clientY];
+        const targetRect = targetEle.getBoundingClientRect();
+        const popupRect = popupEle.getBoundingClientRect();
+
+        if (
+          !isPointInSafeHoverArea(leavePoint, leavePoint, targetRect, popupRect)
+        ) {
+          return false;
+        }
+
+        const doc = targetEle.ownerDocument;
+
+        clearSafeHover();
+
+        let latestPoint = leavePoint;
+
+        const isPointSafe = (point: SafeHoverPoint) =>
+          isPointInSafeHoverArea(
+            point,
+            leavePoint,
+            targetEle.getBoundingClientRect(),
+            popupEle.getBoundingClientRect(),
+          );
+
+        // Between 1 frame and 1 second
+        const refreshDelay = clamp(mouseLeaveDelay * 1000, 1000 / 60, 1000);
+
+        const cancelRefresh = () => {
+          const safeHover = safeHoverRef.current;
+          if (safeHover?.refreshTimer) {
+            clearTimeout(safeHover.refreshTimer);
+            safeHover.refreshTimer = null;
+          }
+        };
+
+        const scheduleRefresh = () => {
+          const safeHover = safeHoverRef.current;
+
+          if (!safeHover || safeHover.refreshTimer) {
+            return;
+          }
+
+          safeHover.refreshTimer = setTimeout(() => {
+            if (isPointSafe(latestPoint)) {
+              safeHover.refreshTimer = null;
+            } else {
+              clearSafeHover();
+              triggerOpen(false);
+            }
+          }, refreshDelay);
+        };
+
+        const handler = (nativeEvent: MouseEvent) => {
+          latestPoint = [nativeEvent.clientX, nativeEvent.clientY];
+
+          if (isPointSafe(latestPoint)) {
+            cancelRefresh();
+          } else {
+            scheduleRefresh();
+          }
+        };
+
+        doc.addEventListener('mousemove', handler);
+
+        safeHoverRef.current = { doc, handler, refreshTimer: null };
+
+        return true;
+      },
+    );
+
+    React.useEffect(() => {
+      return () => {
+        clearSafeHover();
+      };
+    }, [clearSafeHover]);
+
+    useLayoutEffect(() => {
+      if (!mergedOpen) {
+        clearSafeHover();
+      }
+    }, [mergedOpen, clearSafeHover]);
+
+    function onEsc({ top }: Parameters<NonNullable<PortalProps['onEsc']>>[0]) {
       if (top) {
         triggerOpen(false);
       }
@@ -440,7 +557,7 @@ export function generateTrigger(
     );
 
     const [motionPrepareResolve, setMotionPrepareResolve] =
-      React.useState<VoidFunction>(null);
+      React.useState<VoidFunction | null>(null);
 
     // =========================== Align ============================
     const [mousePos, setMousePos] = React.useState<
@@ -668,6 +785,7 @@ export function generateTrigger(
 
     if (hoverToShow) {
       const onMouseEnterCallback = (event: React.MouseEvent) => {
+        clearSafeHover();
         setMousePosByEvent(event);
       };
 
@@ -688,6 +806,8 @@ export function generateTrigger(
       );
 
       onPopupMouseEnter = (event) => {
+        clearSafeHover();
+
         // Only trigger re-open when popup is visible
         if (
           (mergedOpen || inMotion) &&
@@ -706,22 +826,26 @@ export function generateTrigger(
     }
 
     if (hoverToHide) {
-      wrapperAction(
-        'onMouseLeave',
-        false,
-        mouseLeaveDelay,
-        undefined,
-        ignoreMouseTrigger,
-      );
-      wrapperAction(
-        'onPointerLeave',
-        false,
-        mouseLeaveDelay,
-        undefined,
-        ignoreMouseTrigger,
-      );
+      cloneProps.onMouseLeave = (event, ...args) => {
+        if (!ignoreMouseTrigger() && !startSafeHover(event)) {
+          triggerOpen(false, mouseLeaveDelay);
+        }
+
+        // Pass to origin
+        originChildProps.onMouseLeave?.(event, ...args);
+      };
+
+      cloneProps.onPointerLeave = (event, ...args) => {
+        if (!ignoreMouseTrigger() && !startSafeHover(event)) {
+          triggerOpen(false, mouseLeaveDelay);
+        }
+
+        // Pass to origin
+        originChildProps.onPointerLeave?.(event, ...args);
+      };
 
       onPopupMouseLeave = () => {
+        clearSafeHover();
         triggerOpen(false, mouseLeaveDelay);
       };
     }

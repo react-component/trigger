@@ -136,6 +136,17 @@ describe('Trigger.Basic', () => {
     });
 
     describe('hover works', () => {
+      function mockRect(element, rect) {
+        element.getBoundingClientRect = jest.fn(() => ({
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+          right: rect.left + rect.width,
+          bottom: rect.top + rect.height,
+        }));
+      }
+
       it('mouse event', () => {
         const { container } = render(
           <Trigger
@@ -179,6 +190,236 @@ describe('Trigger.Basic', () => {
         trigger(document, '.rc-trigger-popup', 'pointerEnter');
         expect(isPopupHidden()).toBeFalsy();
       });
+
+      it('keeps popup open while mouse moves through safe hover area', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0.1}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+        act(() => jest.advanceTimersByTime(50));
+
+        fireEvent.mouseMove(document, { clientX: 50, clientY: 40 });
+        act(() => jest.advanceTimersByTime(50));
+
+        expect(isPopupHidden()).toBeFalsy();
+
+        fireEvent.mouseEnter(popup, { clientX: 50, clientY: 60 });
+        act(() => jest.runAllTimers());
+
+        expect(isPopupHidden()).toBeFalsy();
+      });
+
+      it('tracks safe hover with mousemove instead of pointermove', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0.1}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+
+        target.getBoundingClientRect.mockClear();
+        popup.getBoundingClientRect.mockClear();
+
+        fireEvent.pointerMove(document, { clientX: 50, clientY: 40 });
+
+        expect(target.getBoundingClientRect).not.toHaveBeenCalled();
+        expect(popup.getBoundingClientRect).not.toHaveBeenCalled();
+
+        fireEvent.mouseMove(document, { clientX: 50, clientY: 40 });
+
+        expect(target.getBoundingClientRect).toHaveBeenCalledTimes(1);
+        expect(popup.getBoundingClientRect).toHaveBeenCalledTimes(1);
+      });
+
+      it('closes popup after mouse leaves safe hover area', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0.1}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+        act(() => jest.advanceTimersByTime(50));
+
+        fireEvent.mouseMove(document, { clientX: 50, clientY: 40 });
+        act(() => jest.advanceTimersByTime(80));
+
+        expect(isPopupHidden()).toBeFalsy();
+
+        fireEvent.mouseMove(document, { clientX: 150, clientY: 40 });
+        act(() => jest.advanceTimersByTime(100));
+
+        expect(isPopupHidden()).toBeTruthy();
+      });
+
+      it('cancels refresh close detection when mouse returns to safe hover area', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0.1}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+        fireEvent.mouseMove(document, { clientX: 150, clientY: 40 });
+        fireEvent.mouseMove(document, { clientX: 50, clientY: 40 });
+
+        act(() => jest.advanceTimersByTime(100));
+
+        expect(isPopupHidden()).toBeFalsy();
+      });
+
+      it('keeps pending refresh close detection while mouse remains unsafe', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0.1}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+        fireEvent.mouseMove(document, { clientX: 50, clientY: 150 });
+        fireEvent.mouseMove(document, { clientX: 50, clientY: 150 });
+
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 200 });
+        act(() => jest.advanceTimersByTime(100));
+
+        expect(isPopupHidden()).toBeFalsy();
+      });
+
+      it('waits for mousemove to start refresh close detection after safe hover area disappears', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0.1}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+
+        mockRect(popup, { left: 10, top: 10, width: 60, height: 30 });
+        act(() => jest.advanceTimersByTime(150));
+
+        expect(isPopupHidden()).toBeFalsy();
+
+        fireEvent.mouseMove(document, { clientX: 150, clientY: 40 });
+        act(() => jest.advanceTimersByTime(100));
+
+        expect(isPopupHidden()).toBeTruthy();
+      });
+
+      it('keeps zero mouseLeaveDelay closing immediately', () => {
+        const { container } = render(
+          <Trigger
+            action={['hover']}
+            mouseLeaveDelay={0}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>,
+        );
+
+        const target = container.querySelector('.target');
+
+        fireEvent.mouseEnter(target, { clientX: 50, clientY: 10 });
+        act(() => jest.runAllTimers());
+
+        const popup = document.querySelector('.rc-trigger-popup');
+
+        mockRect(target, { left: 0, top: 0, width: 100, height: 20 });
+        mockRect(popup, { left: 20, top: 60, width: 60, height: 30 });
+
+        fireEvent.mouseLeave(target, { clientX: 50, clientY: 20 });
+        act(() => jest.runAllTimers());
+
+        expect(isPopupHidden()).toBeTruthy();
+      });
+
     });
 
     it('contextMenu works', () => {
