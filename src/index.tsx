@@ -13,7 +13,8 @@ import {
   useLayoutEffect,
 } from '@rc-component/util';
 import * as React from 'react';
-import Popup, { type MobileConfig } from './Popup';
+import Popup from './Popup';
+import type { MobileConfig } from './Popup';
 import type { TriggerContextProps } from './context';
 import TriggerContext, { UniqueContext } from './context';
 import useAction from './hooks/useAction';
@@ -24,7 +25,6 @@ import useWinClick from './hooks/useWinClick';
 import type { PortalProps } from '@rc-component/portal';
 import { isPointInSafeHoverArea } from './util/safeHover';
 import type { SafeHoverPoint } from './util/safeHover';
-
 import type {
   ActionType,
   AlignType,
@@ -32,7 +32,7 @@ import type {
   ArrowTypeOuter,
   BuildInPlacements,
 } from './interface';
-import { getAlignPopupClassName } from './util';
+import { clamp, getAlignPopupClassName } from './util';
 
 export type {
   ActionType,
@@ -480,10 +480,8 @@ export function generateTrigger(
             popupEle.getBoundingClientRect(),
           );
 
-        const refreshDelay = Math.max(
-          1000 / 60,
-          Math.min(mouseLeaveDelay * 1000, 1000),
-        );
+        // Between 1 frame and 1 second
+        const refreshDelay = clamp(mouseLeaveDelay * 1000, 1000 / 60, 1000);
 
         const scheduleRefresh = () => {
           const safeHover = safeHoverRef.current;
