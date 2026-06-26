@@ -12,7 +12,12 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
-      "@rc-component/trigger": ["src/index.tsx"]
+      "@rc-component/trigger": ["src/index.tsx"],
+      "@rc-component/trigger/es": ["src"],
+      "@rc-component/trigger/es/*": ["src/*"],
+      "@rc-component/trigger/assets/*": ["assets/*"]
     }
-  }
+  },
+  "include": [".dumirc.ts", "src", "tests", "docs/examples"],
+  "exclude": ["docs-dist", "lib", "es"]
 }

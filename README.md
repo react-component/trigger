@@ -1,258 +1,111 @@
-# @rc-component/trigger
+<div align="center">
+  <h1>@rc-component/trigger</h1>
+  <p>🎯 Popup trigger and alignment primitive for React.</p>
+  <p>
+    <a href="https://ant.design">
+      <img width="32" height="32" src="https://gw.alipayobjects.com/zos/bmw-prod/ae669a89-0c24-40ff-a91d-2b83497170f6.svg" alt="Ant Design" />
+    </a>
+  </p>
+  <p>Part of the <a href="https://ant.design">Ant Design</a> ecosystem.</p>
+  <p>
+    <a href="https://www.npmjs.com/package/@rc-component/trigger"><img src="https://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square" alt="npm version" /></a>
+    <a href="https://www.npmjs.com/package/@rc-component/trigger"><img src="https://img.shields.io/npm/dm/@rc-component/trigger.svg?style=flat-square" alt="npm downloads" /></a>
+    <a href="https://github.com/react-component/trigger/actions/workflows/react-component-ci.yml"><img src="https://github.com/react-component/trigger/actions/workflows/react-component-ci.yml/badge.svg" alt="CI" /></a>
+    <a href="https://app.codecov.io/gh/react-component/trigger"><img src="https://img.shields.io/codecov/c/github/react-component/trigger/master.svg?style=flat-square" alt="Codecov" /></a>
+    <a href="https://bundlephobia.com/package/@rc-component/trigger"><img src="https://badgen.net/bundlephobia/minzip/@rc-component/trigger" alt="bundle size" /></a>
+    <a href="https://github.com/umijs/dumi"><img src="https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square" alt="dumi" /></a>
+  </p>
+</div>
 
-React Trigger Component
+## Highlights
 
-[![NPM version][npm-image]][npm-url]
-[![npm download][download-image]][download-url]
-[![build status][github-actions-image]][github-actions-url]
-[![Test coverage][codecov-image]][codecov-url]
-[![bundle size][bundlephobia-image]][bundlephobia-url]
-[![dumi][dumi-image]][dumi-url]
-
-[npm-image]: https://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/@rc-component/trigger
-[github-actions-image]: https://github.com/react-component/trigger/actions/workflows/main.yml/badge.svg
-[github-actions-url]: https://github.com/react-component/trigger/actions/workflows/main.yml
-[codecov-image]: https://img.shields.io/codecov/c/github/react-component/trigger/master.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/react-component/trigger/branch/master
-[david-url]: https://david-dm.org/react-component/trigger
-[david-image]: https://david-dm.org/react-component/trigger/status.svg?style=flat-square
-[david-dev-url]: https://david-dm.org/react-component/trigger?type=dev
-[david-dev-image]: https://david-dm.org/react-component/trigger/dev-status.svg?style=flat-square
-[download-image]: https://img.shields.io/npm/dm/@rc-component/trigger.svg?style=flat-square
-[download-url]: https://npmjs.org/package/@rc-component/trigger
-[bundlephobia-url]: https://bundlephobia.com/result?p=@rc-component/trigger
-[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/@rc-component/trigger
-[dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
-[dumi-url]: https://github.com/umijs/dumi
+- Built for React and maintained by the rc-component team.
+- Used by Ant Design and other React component libraries.
+- Ships TypeScript declarations with both ES module and CommonJS outputs.
+- Keeps examples, tests, and preview builds aligned with the package source.
 
 ## Install
 
-[![@rc-component/trigger](https://nodei.co/npm/@rc-component/trigger.png)](https://npmjs.org/package/@rc-component/trigger)
+```bash
+npm install @rc-component/trigger
+```
 
 ## Usage
 
-Include the default [styling](https://github.com/react-component/trigger/blob/master/assets/index.less#L4:L11) and then:
-
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
+```tsx
 import Trigger from '@rc-component/trigger';
+import '@rc-component/trigger/assets/index.css';
 
-ReactDOM.render(
+export default () => (
   <Trigger
     action={['click']}
-    popup={<span>popup</span>}
+    popup={<span>Popup content</span>}
     popupAlign={{
       points: ['tl', 'bl'],
-      offset: [0, 3],
+      offset: [0, 4],
     }}
   >
-    <a href="#">hover</a>
-  </Trigger>,
-  container,
+    <button type="button">Open</button>
+  </Trigger>
 );
 ```
 
-## Compatibility
+## Examples
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Electron |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| IE11, Edge                                                                                                                                                                                                     | last 2 versions                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                                      |
+Run the local dumi site to explore the examples:
 
-## Example
-
-http://localhost:9001
-
-## Development
-
-```
+```bash
 npm install
 npm start
 ```
 
 ## API
 
-### props
+### Trigger
 
-<table class="table table-bordered table-striped">
-    <thead>
-    <tr>
-        <th style="width: 100px;">name</th>
-        <th style="width: 50px;">type</th>
-        <th style="width: 50px;">default</th>
-        <th>description</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>alignPoint</td>
-          <td>bool</td>
-          <td>false</td>
-          <td>Popup will align with mouse position (support action of 'click', 'hover' and 'contextMenu')</td>
-        </tr>
-        <tr>
-          <td>popupClassName</td>
-          <td>string</td>
-          <td></td>
-          <td>additional className added to popup</td>
-        </tr>
-        <tr>
-          <td>forceRender</td>
-          <td>boolean</td>
-          <td>false</td>
-          <td>whether render popup before first show</td>
-        </tr>
-        <tr>
-          <td>destroyPopupOnHide</td>
-          <td>boolean</td>
-          <td>false</td>
-          <td>whether destroy popup when hide</td>
-        </tr>
-        <tr>
-          <td>getPopupClassNameFromAlign</td>
-          <td>getPopupClassNameFromAlign(align: Object):String</td>
-          <td></td>
-          <td>additional className added to popup according to align</td>
-        </tr>
-        <tr>
-          <td>action</td>
-          <td>string[]</td>
-          <td>['hover']</td>
-          <td>which actions cause popup shown. enum of 'hover','click','focus','contextMenu'</td>
-        </tr>
-        <tr>
-          <td>mouseEnterDelay</td>
-          <td>number</td>
-          <td>0</td>
-          <td>delay time to show when mouse enter. unit: s.</td>
-        </tr>
-        <tr>
-          <td>mouseLeaveDelay</td>
-          <td>number</td>
-          <td>0.1</td>
-          <td>delay time to hide when mouse leave. unit: s.</td>
-        </tr>
-        <tr>
-          <td>popupStyle</td>
-          <td>Object</td>
-          <td></td>
-          <td>additional style of popup</td>
-        </tr>
-        <tr>
-          <td>prefixCls</td>
-          <td>String</td>
-          <td>rc-trigger-popup</td>
-          <td>prefix class name</td>
-        </tr>
-        <tr>
-          <td>popupTransitionName</td>
-          <td>String|Object</td>
-          <td></td>
-          <td>https://github.com/react-component/animate</td>
-        </tr>
-        <tr>
-          <td>maskTransitionName</td>
-          <td>String|Object</td>
-          <td></td>
-          <td>https://github.com/react-component/animate</td>
-        </tr>
-        <tr>
-          <td>onPopupVisibleChange</td>
-          <td>Function</td>
-          <td></td>
-          <td>call when popup visible is changed</td>
-        </tr>
-        <tr>
-          <td>mask</td>
-          <td>boolean</td>
-          <td>false</td>
-          <td>whether to support mask</td>
-        </tr>
-        <tr>
-          <td>maskClosable</td>
-          <td>boolean</td>
-          <td>true</td>
-          <td>whether to support click mask to hide</td>
-        </tr>
-        <tr>
-          <td>popupVisible</td>
-          <td>boolean</td>
-          <td></td>
-          <td>whether popup is visible</td>
-        </tr>
-        <tr>
-          <td>zIndex</td>
-          <td>number</td>
-          <td></td>
-          <td>popup's zIndex</td>
-        </tr>
-        <tr>
-          <td>defaultPopupVisible</td>
-          <td>boolean</td>
-          <td></td>
-          <td>whether popup is visible initially</td>
-        </tr>
-        <tr>
-          <td>popupAlign</td>
-          <td>Object: alignConfig of [dom-align](https://github.com/yiminghe/dom-align)</td>
-          <td></td>
-          <td>popup 's align config</td>
-        </tr>
-        <tr>
-          <td>onPopupAlign</td>
-          <td>function(popupDomNode, align)</td>
-          <td></td>
-          <td>callback when popup node is aligned</td>
-        </tr>
-        <tr>
-          <td>popup</td>
-          <td>React.Element | function() => React.Element</td>
-          <td></td>
-          <td>popup content</td>
-        </tr>
-        <tr>
-          <td>getPopupContainer</td>
-          <td>getPopupContainer(): HTMLElement</td>
-          <td></td>
-          <td>function returning html node which will act as popup container</td>
-        </tr>
-        <tr>
-          <td>getDocument</td>
-          <td>getDocument(): HTMLElement</td>
-          <td></td>
-          <td>function returning document node which will be attached click event to close trigger</td>
-        </tr>
-        <tr>
-          <td>popupPlacement</td>
-          <td>string</td>
-          <td></td>
-          <td>use preset popup align config from builtinPlacements, can be merged by popupAlign prop</td>
-        </tr>
-        <tr>
-          <td>builtinPlacements</td>
-          <td>object</td>
-          <td></td>
-          <td>builtin placement align map. used by placement prop</td>
-        </tr>
-        <tr>
-          <td>stretch</td>
-          <td>string</td>
-          <td></td>
-          <td>Let popup div stretch with trigger element. enums of 'width', 'minWidth', 'height', 'minHeight'. (You can also mixed with 'height minWidth')</td>
-        </tr>
-    </tbody>
-</table>
+| Prop                 | Description                                                               | Type                                                     | Default     |
+| -------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- | ----------- |
+| action               | Actions that control popup visibility.                                    | `Array<'hover' \| 'click' \| 'focus' \| 'contextMenu'>`  | `['hover']` |
+| alignPoint           | Align popup to mouse position for click, hover, and context menu actions. | `boolean`                                                | `false`     |
+| autoDestroy          | Destroy popup DOM when it is hidden.                                      | `boolean`                                                | `false`     |
+| builtinPlacements    | Named placement presets.                                                  | `BuildInPlacements`                                      | -           |
+| defaultPopupVisible  | Initial uncontrolled visibility.                                          | `boolean`                                                | `false`     |
+| destroyPopupOnHide   | Destroy popup when it hides.                                              | `boolean`                                                | `false`     |
+| forceRender          | Render popup before it is first shown.                                    | `boolean`                                                | `false`     |
+| getPopupContainer    | Return the element that should contain the popup.                         | `() => HTMLElement`                                      | -           |
+| mask                 | Render a mask behind the popup.                                           | `boolean`                                                | `false`     |
+| maskClosable         | Close when clicking the mask.                                             | `boolean`                                                | `true`      |
+| popup                | Popup content.                                                            | `ReactNode` \| `() => ReactNode`                         | -           |
+| popupAlign           | Alignment config compatible with dom-align.                               | `AlignType`                                              | -           |
+| popupClassName       | Class name added to popup.                                                | `string`                                                 | -           |
+| popupPlacement       | Placement key from `builtinPlacements`.                                   | `string`                                                 | -           |
+| popupRender          | Customize popup node before render.                                       | `(node) => ReactNode`                                    | -           |
+| popupStyle           | Inline popup style.                                                       | `React.CSSProperties`                                    | -           |
+| popupVisible         | Controlled popup visibility.                                              | `boolean`                                                | -           |
+| stretch              | Stretch popup width and/or height from target.                            | `'width'` \| `'minWidth'` \| `'height'` \| `'minHeight'` | -           |
+| zIndex               | Popup z-index.                                                            | `number`                                                 | -           |
+| onPopupAlign         | Called when the popup is aligned.                                         | `(element, align) => void`                               | -           |
+| onPopupVisibleChange | Called when visibility changes.                                           | `(visible) => void`                                      | -           |
 
-## Test Case
+## Development
 
-```
+```bash
+npm install
+npm start
 npm test
-npm run coverage
+npm run tsc
+npm run compile
+npm run build
 ```
 
-open coverage/ dir
+## Release
+
+The release flow is handled by `@rc-component/np` from the `prepublishOnly` script:
+
+```bash
+npm publish
+```
 
 ## License
 
-rc-trigger is released under the MIT license.
+@rc-component/trigger is released under the MIT license.

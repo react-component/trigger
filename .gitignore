@@ -30,15 +30,14 @@ package-lock.json
 pnpm-lock.yaml
 bun.lockb
 .vscode
-
 # dumi
 .umi
 .umi-production
 .umi-test
 .docs
-
-
-# dumi
 .dumi/tmp
 .dumi/tmp-production
 dist/
+.dumi
+docs-dist
+.vercel

@@ -1,7 +1,7 @@
 {
   "name": "@rc-component/trigger",
   "version": "3.9.1",
-  "description": "base abstract trigger component for react",
+  "description": "Popup trigger and alignment primitive for React.",
   "engines": {
     "node": ">=8.x"
   },
@@ -30,15 +30,19 @@
   "main": "./lib/index",
   "module": "./es/index",
   "scripts": {
-    "start": "dumi dev",
-    "build": "dumi build",
+    "build": "npm run compile && npm run docs:build",
     "compile": "father build && lessc assets/index.less assets/index.css",
-    "prepublishOnly": "npm run compile && rc-np",
-    "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
-    "test": "rc-test",
-    "prettier": "prettier --write .",
     "coverage": "rc-test --coverage",
-    "now-build": "npm run build"
+    "docs:build": "dumi build",
+    "docs:deploy": "gh-pages -d docs-dist",
+    "deploy": "npm run gh-pages",
+    "gh-pages": "cross-env GH_PAGES=1 npm run compile && npm run docs:build && npm run docs:deploy",
+    "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
+    "prepublishOnly": "npm run compile && rc-np",
+    "prettier": "prettier --write --ignore-unknown .",
+    "start": "dumi dev",
+    "test": "rc-test",
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@rc-component/motion": "^1.3.3",
@@ -67,7 +71,8 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "regenerator-runtime": "^0.14.1",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "gh-pages": "^6.3.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

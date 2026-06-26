@@ -1,7 +1,5 @@
 ---
-hero:
-  title: rc-trigger
-  description: React Trigger Component
+title: '@rc-component/trigger'
 ---
 
 <embed src="../README.md"></embed>
