@@ -6,11 +6,9 @@ const publicPath = process.env.GH_PAGES ? '/trigger/' : '/';
 
 export default defineConfig({
   alias: {
-    '@rc-component/trigger$': path.resolve('src'),
-    '@rc-component/trigger/es': path.resolve('src'),
-    '@rc-component/trigger/es/*': path.resolve('src'),
-    '@rc-component/trigger/assets': path.resolve('assets'),
-    '@rc-component/trigger/assets/*': path.resolve('assets'),
+    '@rc-component/trigger$': path.resolve(__dirname, 'src'),
+    '@rc-component/trigger/es': path.resolve(__dirname, 'src'),
+    '@rc-component/trigger/assets': path.resolve(__dirname, 'assets'),
   },
   mfsu: false,
   favicons: ['https://avatars0.githubusercontent.com/u/9441414?s=200&v=4'],

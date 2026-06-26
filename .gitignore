@@ -38,6 +38,5 @@ bun.lockb
 .dumi/tmp
 .dumi/tmp-production
 dist/
-.dumi
 docs-dist
 .vercel
