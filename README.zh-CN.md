@@ -1,7 +1,7 @@
 <div align="center">
   <h1>@rc-component/trigger</h1>
-  <p><sub>Part of the Ant Design ecosystem.</sub></p>
-  <p>🎯 Popup trigger and alignment primitive for React.</p>
+  <p><sub>Ant Design 生态的一部分。</sub></p>
+  <p>🎯 React 弹层触发基础组件，支持定位、对齐、动画和事件触发。</p>
   <p>
     <a href="https://www.npmjs.com/package/@rc-component/trigger"><img src="https://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square" alt="npm version" /></a>
     <a href="https://www.npmjs.com/package/@rc-component/trigger"><img src="https://img.shields.io/npm/dm/@rc-component/trigger.svg?style=flat-square" alt="npm downloads" /></a>
@@ -12,23 +12,23 @@
   </p>
 </div>
 
-<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
+<p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
 
-## Highlights
+## 特性
 
 - Built for React and maintained by the rc-component team.
-- Used by Ant Design and other React component libraries.
-- Ships TypeScript declarations with both ES module and CommonJS outputs.
-- Keeps examples, tests, and preview builds aligned with the package source.
+- 被 Ant Design 使用和其他 React 组件库使用。
+- 提供 TypeScript declarations with both ES module and CommonJS outputs.
+- 保留 examples, tests, and preview builds aligned with the package source.
 
-## Install
+## 安装
 
 ```bash
 npm install @rc-component/trigger
 ```
 
-## Usage
+## 使用
 
 ```tsx
 import Trigger from '@rc-component/trigger';
@@ -48,7 +48,7 @@ export default () => (
 );
 ```
 
-## Examples
+## 示例
 
 Run the local dumi site to explore the examples:
 
@@ -61,7 +61,7 @@ npm start
 
 ### Trigger
 
-| Prop                       | Description                                                               | Type                                      | Default            |
+| 属性 | 说明 | 类型 | 默认值 |
 | -------------------------- | ------------------------------------------------------------------------- | ----------------------------------------- | ------------------ |
 | action                     | Actions that control popup visibility.                                    | `ActionType` \| `ActionType[]`            | `hover`            |
 | afterOpenChange            | Called after popup visibility changes.                                    | `(visible) => void`                       | -                  |
@@ -102,7 +102,7 @@ npm start
 | onPopupClick               | Called when popup is clicked.                                             | `React.MouseEventHandler<HTMLDivElement>` | -                  |
 | onPopupVisibleChange       | Deprecated. Use `onOpenChange` instead.                                   | `(visible) => void`                       | -                  |
 
-## Development
+## 本地开发
 
 ```bash
 npm install
@@ -111,7 +111,7 @@ npm test
 npm run build
 ```
 
-## Release
+## 发布
 
 ```bash
 npm run prepublishOnly
@@ -119,6 +119,6 @@ npm run prepublishOnly
 
 The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
 
-## License
+## 许可证
 
 @rc-component/trigger is released under the [MIT](./LICENSE) license.
