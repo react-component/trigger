@@ -1,7 +1,6 @@
 <div align="center">
   <h1>@rc-component/trigger</h1>
-  <p><sub>Ant Design 生态的一部分。</sub></p>
-  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
+  <p><sub><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /> Ant Design 生态的一部分。</sub></p>
   <p>🎯 React 弹层触发基础组件，支持定位、对齐、动画和事件触发。</p>
   <p>
     <a href="https://www.npmjs.com/package/@rc-component/trigger"><img src="https://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square" alt="npm version" /></a>
@@ -18,10 +17,10 @@
 
 ## 特性
 
-- Built for React and maintained by the rc-component team.
+- 面向 React 构建，并由 rc-component 团队维护。
 - 被 Ant Design 使用和其他 React 组件库使用。
-- 提供 TypeScript declarations with both ES module and CommonJS outputs.
-- 保留 examples, tests, and preview builds aligned with the package source.
+- 提供 TypeScript 类型声明，同时输出 ES module 和 CommonJS 产物。
+- 示例、测试和预览构建与包源码保持一致。
 
 ## 安装
 
@@ -51,7 +50,7 @@ export default () => (
 
 ## 示例
 
-Run the local dumi site to explore the examples:
+运行本地 dumi 站点查看示例：
 
 ```bash
 npm install
@@ -64,44 +63,44 @@ npm start
 
 | 属性 | 说明 | 类型 | 默认值 |
 | -------------------------- | ------------------------------------------------------------------------- | ----------------------------------------- | ------------------ |
-| action                     | Actions that control popup visibility.                                    | `ActionType` \| `ActionType[]`            | `hover`            |
-| afterOpenChange            | Called after popup visibility changes.                                    | `(visible) => void`                       | -                  |
-| afterPopupVisibleChange    | Deprecated. Use `afterOpenChange` instead.                                | `(visible) => void`                       | -                  |
-| alignPoint                 | Align popup to mouse position for click, hover, and context menu actions. | `boolean`                                 | `false`            |
-| arrow                      | Render popup arrow.                                                       | `boolean` \| `ArrowType`                  | -                  |
-| autoDestroy                | Destroy popup DOM when it is hidden.                                      | `boolean`                                 | `false`            |
-| blurDelay                  | Delay before hiding on blur, in seconds.                                  | `number`                                  | -                  |
-| builtinPlacements          | Named placement presets.                                                  | `BuildInPlacements`                       | `{}`               |
-| defaultPopupVisible        | Initial uncontrolled visibility.                                          | `boolean`                                 | `false`            |
-| focusDelay                 | Delay before showing on focus, in seconds.                                | `number`                                  | -                  |
-| forceRender                | Render popup before it is first shown.                                    | `boolean`                                 | `false`            |
-| fresh                      | Keep popup content updated while closed.                                  | `boolean`                                 | -                  |
-| getPopupClassNameFromAlign | Return a popup class name from the current alignment.                     | `(align) => string`                       | -                  |
-| getPopupContainer          | Return the element that should contain the popup.                         | `(node) => HTMLElement`                   | -                  |
-| hideAction                 | Actions that hide popup visibility.                                       | `ActionType[]`                            | -                  |
-| mask                       | Render a mask behind the popup.                                           | `boolean`                                 | `false`            |
-| maskClosable               | Close when clicking the mask.                                             | `boolean`                                 | `true`             |
-| maskMotion                 | Motion config for the mask.                                               | `CSSMotionProps`                          | -                  |
-| mouseEnterDelay            | Delay before showing on mouse enter, in seconds.                          | `number`                                  | -                  |
-| mouseLeaveDelay            | Delay before hiding on mouse leave, in seconds.                           | `number`                                  | `0.1`              |
-| popup                      | Popup content.                                                            | `ReactNode` \| `() => ReactNode`          | -                  |
-| popupAlign                 | Alignment config compatible with dom-align.                               | `AlignType`                               | -                  |
-| popupClassName             | Class name added to popup.                                                | `string`                                  | -                  |
-| popupMotion                | Motion config for the popup.                                              | `CSSMotionProps`                          | -                  |
-| popupPlacement             | Placement key from `builtinPlacements`.                                   | `string`                                  | -                  |
-| popupStyle                 | Inline popup style.                                                       | `React.CSSProperties`                     | -                  |
-| popupVisible               | Controlled popup visibility.                                              | `boolean`                                 | -                  |
-| prefixCls                  | Popup class name prefix.                                                  | `string`                                  | `rc-trigger-popup` |
-| showAction                 | Actions that show popup visibility.                                       | `ActionType[]`                            | -                  |
-| stretch                    | Stretch popup width and/or height from target.                            | `string`                                  | -                  |
-| unique                     | Share popup container through `UniqueProvider`.                           | `boolean`                                 | -                  |
-| uniqueContainerClassName   | Class name passed to `UniqueProvider` container.                          | `string`                                  | -                  |
-| uniqueContainerStyle       | Style passed to `UniqueProvider` container.                               | `React.CSSProperties`                     | -                  |
-| zIndex                     | Popup z-index.                                                            | `number`                                  | -                  |
-| onOpenChange               | Called when visibility changes.                                           | `(visible) => void`                       | -                  |
-| onPopupAlign               | Called when the popup is aligned.                                         | `(element, align) => void`                | -                  |
-| onPopupClick               | Called when popup is clicked.                                             | `React.MouseEventHandler<HTMLDivElement>` | -                  |
-| onPopupVisibleChange       | Deprecated. Use `onOpenChange` instead.                                   | `(visible) => void`                       | -                  |
+| action                     | 控制弹层显示状态的触发行为。                                    | `ActionType` \| `ActionType[]`            | `hover`            |
+| afterOpenChange            | 弹层窗口可见性更改后调用。                                    | `(visible) => void`                       | -                  |
+| afterPopupVisibleChange    | 已废弃。请使用 `afterOpenChange`。                                | `(visible) => void`                       | -                  |
+| alignPoint                 | 将弹层对齐到 `click`、`hover` 和 `context menu` 行为的鼠标位置。 | `boolean`                                 | `false`            |
+| arrow                      | 渲染弹层箭头。                                                       | `boolean` \| `ArrowType`                  | -                  |
+| autoDestroy                | 弹层隐藏时销毁弹层 DOM。                                      | `boolean`                                 | `false`            |
+| blurDelay                  | `blur` 后隐藏前的延迟，单位为秒。                                  | `number`                                  | -                  |
+| builtinPlacements          | 命名位置预设。                                                  | `BuildInPlacements`                       | `{}`               |
+| defaultPopupVisible        | 非受控初始显示状态。                                          | `boolean`                                 | `false`            |
+| focusDelay                 | `focus` 后显示前的延迟，单位为秒。                                | `number`                                  | -                  |
+| forceRender                | 首次显示前渲染弹层。                                    | `boolean`                                 | `false`            |
+| fresh                      | 关闭时仍保持弹层内容更新。                                  | `boolean`                                 | -                  |
+| getPopupClassNameFromAlign | 根据当前对齐信息返回弹层 className。                     | `(align) => string`                       | -                  |
+| getPopupContainer          | 返回弹层挂载容器元素。                         | `(node) => HTMLElement`                   | -                  |
+| hideAction                 | 隐藏弹层的触发行为。                                       | `ActionType[]`                            | -                  |
+| mask                       | 在弹层后渲染遮罩。                                           | `boolean`                                 | `false`            |
+| maskClosable               | 点击遮罩时关闭。                                             | `boolean`                                 | `true`             |
+| maskMotion                 | 遮罩动画配置。                                               | `CSSMotionProps`                          | -                  |
+| mouseEnterDelay            | mouse enter 后显示前的延迟，单位为秒。                          | `number`                                  | -                  |
+| mouseLeaveDelay            | mouse leave 后隐藏前的延迟，单位为秒。                           | `number`                                  | `0.1`              |
+| popup                      | 弹层内容。                                                            | `ReactNode` \| `() => ReactNode`          | -                  |
+| popupAlign                 | 与 dom-align 兼容的对齐配置。                               | `AlignType`                               | -                  |
+| popupClassName             | 添加到弹层的 className。                                                | `string`                                  | -                  |
+| popupMotion                | 弹层动画配置。                                              | `CSSMotionProps`                          | -                  |
+| popupPlacement             | 来自 `builtinPlacements` 的位置 key。                                   | `string`                                  | -                  |
+| popupStyle                 | 弹层内联样式。                                                       | `React.CSSProperties`                     | -                  |
+| popupVisible               | 受控的弹层窗口可见性。                                              | `boolean`                                 | -                  |
+| prefixCls                  | 弹层 className 前缀。                                                  | `string`                                  | `rc-trigger-popup` |
+| showAction                 | 显示弹层的触发行为。                                       | `ActionType[]`                            | -                  |
+| stretch                    | 根据目标拉伸弹层宽度和/或高度。                            | `string`                                  | -                  |
+| unique                     | 通过 `UniqueProvider` 共享弹层容器。                           | `boolean`                                 | -                  |
+| uniqueContainerClassName   | 传给 `UniqueProvider` 容器的 className。                          | `string`                                  | -                  |
+| uniqueContainerStyle       | 传给 `UniqueProvider` 容器的样式。                               | `React.CSSProperties`                     | -                  |
+| zIndex                     | 弹层 z 索引。                                                            | `number`                                  | -                  |
+| onOpenChange               | 当可见性发生变化时调用。                                           | `(visible) => void`                       | -                  |
+| onPopupAlign               | 弹层完成对齐时调用。                                         | `(element, align) => void`                | -                  |
+| onPopupClick               | 点击弹层时调用。                                             | `React.MouseEventHandler<HTMLDivElement>` | -                  |
+| onPopupVisibleChange       | 已废弃。请使用 `onOpenChange`。                                   | `(visible) => void`                       | -                  |
 
 ## 本地开发
 
@@ -118,8 +117,8 @@ npm run build
 npm run prepublishOnly
 ```
 
-The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
+包构建完成后，发布流程由 `@rc-component/np` 通过 `rc-np` 命令处理。
 
 ## 许可证
 
-@rc-component/trigger is released under the [MIT](./LICENSE) license.
+@rc-component/trigger 基于 [MIT](./LICENSE) 许可证发布。

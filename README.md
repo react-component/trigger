@@ -1,7 +1,6 @@
 <div align="center">
   <h1>@rc-component/trigger</h1>
-  <p><sub>Part of the Ant Design ecosystem.</sub></p>
-  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
+  <p><sub><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /> Part of the Ant Design ecosystem.</sub></p>
   <p>🎯 Popup trigger and alignment primitive for React.</p>
   <p>
     <a href="https://www.npmjs.com/package/@rc-component/trigger"><img src="https://img.shields.io/npm/v/@rc-component/trigger.svg?style=flat-square" alt="npm version" /></a>
