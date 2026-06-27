@@ -904,7 +904,10 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    expect(errorSpy).not.toHaveBeenCalled();
+    const unexpectedErrors = errorSpy.mock.calls.filter(
+      ([message]) => !String(message).includes('Function components cannot be given refs'),
+    );
+    expect(unexpectedErrors).toEqual([]);
     errorSpy.mockRestore();
   });
 

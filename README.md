@@ -50,12 +50,14 @@ export default () => (
 
 ## Examples
 
-Run the local dumi site to explore the examples:
+Run the local dumi site:
 
 ```bash
 npm install
 npm start
 ```
+
+Then open `http://localhost:8000`.
 
 ## API
 
