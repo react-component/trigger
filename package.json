@@ -11,7 +11,7 @@
     "react-trigger",
     "trigger"
   ],
-  "homepage": "https://github.com/react-component/trigger",
+  "homepage": "https://react-component.github.io/trigger",
   "author": "",
   "repository": {
     "type": "git",
@@ -77,5 +77,8 @@
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
