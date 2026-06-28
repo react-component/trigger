@@ -84,7 +84,7 @@ npm start
 | maskClosable               | 点击遮罩时关闭。                                             | `boolean`                                 | `true`             |
 | maskMotion                 | 遮罩动画配置。                                               | `CSSMotionProps`                          | -                  |
 | mouseEnterDelay            | mouse enter 后显示前的延迟，单位为秒。                          | `number`                                  | -                  |
-| mouseLeaveDelay            | mouse leave 后隐藏前的延迟，单位为秒。                           | `number`                                  | `0.1`              |
+| mouseLeaveDelay            | 鼠标离开后隐藏前的延迟，单位为秒。                           | `number`                                  | `0.1`              |
 | popup                      | 弹层内容。                                                            | `ReactNode` \| `() => ReactNode`          | -                  |
 | popupAlign                 | 与 dom-align 兼容的对齐配置。                               | `AlignType`                               | -                  |
 | popupClassName             | 添加到弹层的 className。                                                | `string`                                  | -                  |
