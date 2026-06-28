@@ -86,5 +86,6 @@
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"
-  }
+  },
+  "types": "./es/index.d.ts"
 }
