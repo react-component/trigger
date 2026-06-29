@@ -1,7 +1,7 @@
 {
   "name": "@rc-component/trigger",
   "version": "3.9.1",
-  "description": "base abstract trigger component for react",
+  "description": "Popup trigger and alignment primitive for React.",
   "engines": {
     "node": ">=8.x"
   },
@@ -11,7 +11,7 @@
     "react-trigger",
     "trigger"
   ],
-  "homepage": "https://github.com/react-component/trigger",
+  "homepage": "https://react-component.github.io/trigger",
   "author": "",
   "repository": {
     "type": "git",
@@ -30,15 +30,20 @@
   "main": "./lib/index",
   "module": "./es/index",
   "scripts": {
-    "start": "dumi dev",
-    "build": "dumi build",
+    "build": "npm run compile && npm run docs:build",
     "compile": "father build && lessc assets/index.less assets/index.css",
-    "prepublishOnly": "npm run compile && rc-np",
-    "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
-    "test": "rc-test",
-    "prettier": "prettier --write .",
     "coverage": "rc-test --coverage",
-    "now-build": "npm run build"
+    "docs:build": "dumi build",
+    "docs:deploy": "gh-pages -d docs-dist",
+    "deploy": "npm run gh-pages",
+    "gh-pages": "npm run compile && cross-env GH_PAGES=1 npm run docs:build && npm run docs:deploy",
+    "lint": "eslint src/ docs/examples/ --ext .tsx,.ts,.jsx,.js",
+    "prepublishOnly": "npm run compile && rc-np",
+    "prettier": "prettier --write --ignore-unknown .",
+    "start": "dumi dev",
+    "test": "rc-test",
+    "tsc": "tsc --noEmit",
+    "prepare": "husky"
   },
   "dependencies": {
     "@rc-component/motion": "^1.3.3",
@@ -51,26 +56,36 @@
     "@rc-component/father-plugin": "^2.2.0",
     "@rc-component/np": "^1.0.4",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.2",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@testing-library/react": "^15.0.7",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^26.0.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
     "@umijs/fabric": "^4.0.1",
     "cross-env": "^10.1.0",
-    "dumi": "^2.4.28",
+    "dumi": "^2.4.35",
     "eslint": "^8.57.1",
-    "father": "^4.6.21",
-    "less": "^4.6.4",
-    "prettier": "^3.8.3",
+    "father": "^4.6.23",
+    "less": "^4.6.7",
+    "prettier": "^3.9.0",
     "rc-test": "^7.1.3",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "regenerator-runtime": "^0.14.1",
-    "typescript": "~5.9.3"
+    "typescript": "^5.9.3",
+    "gh-pages": "^6.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  },
+  "types": "./es/index.d.ts"
 }
