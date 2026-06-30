@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "declaration": true,
     "skipLibCheck": true,
@@ -10,32 +9,32 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "@@/*": [
-        ".dumi/tmp/*"
+        "./.dumi/tmp/*"
       ],
       "@rc-component/trigger": [
-        "src/index.tsx"
+        "./src/index.tsx"
       ],
       "@rc-component/trigger/es": [
-        "src"
+        "./src"
       ],
       "@rc-component/trigger/es/*": [
-        "src/*"
+        "./src/*"
       ],
       "@rc-component/trigger/assets/*": [
-        "assets/*"
+        "./assets/*"
       ]
     },
-    "ignoreDeprecations": "6.0",
     "noImplicitAny": false,
     "strictNullChecks": false,
     "strictPropertyInitialization": false,
     "strictFunctionTypes": false,
     "strict": false,
     "noImplicitThis": false,
-    "strictBindCallApply": false
+    "strictBindCallApply": false,
+    "module": "ESNext"
   },
   "include": [
     "react-compat.d.ts",
