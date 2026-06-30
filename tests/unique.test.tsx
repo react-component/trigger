@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
+import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 import Trigger, { UniqueProvider, type UniqueProviderProps } from '../src';
 import { awaitFakeTimer } from './util';

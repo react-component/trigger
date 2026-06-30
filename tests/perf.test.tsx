@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
+import { cleanup, render } from '@testing-library/react';
 import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import React from 'react';
 import Trigger, { type TriggerProps } from '../src';

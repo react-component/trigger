@@ -1,4 +1,5 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
+import { act, render } from '@testing-library/react';
 import isMobile from '@rc-component/util/lib/isMobile';
 import React from 'react';
 import Trigger, { type TriggerProps } from '../src';

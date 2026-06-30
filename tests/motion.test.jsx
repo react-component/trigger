@@ -1,4 +1,5 @@
-import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
+import { act, cleanup, render } from '@testing-library/react';
 import Trigger from '../src';
 import { placementAlignMap } from './util';
 

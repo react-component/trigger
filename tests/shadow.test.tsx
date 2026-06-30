@@ -1,4 +1,5 @@
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
+import { act } from '@testing-library/react';
 import { resetWarned } from '@rc-component/util/lib/warning';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
