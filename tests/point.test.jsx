@@ -1,5 +1,4 @@
-import { fireEvent } from '@testing-library/dom';
-import { act, cleanup, render } from '@testing-library/react';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import Trigger from '../src';
 import { getMouseEvent } from './util';
