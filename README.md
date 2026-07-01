@@ -54,7 +54,7 @@ export default () => (
 Run the local dumi site:
 
 ```bash
-npm install
+ut install
 npm start
 ```
 
@@ -108,7 +108,7 @@ Then open `http://localhost:8000`.
 ## Development
 
 ```bash
-npm install
+ut install
 npm start
 npm test
 npm run build
