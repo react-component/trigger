@@ -75,6 +75,7 @@ npm start
 | blurDelay                  | `blur` 后隐藏前的延迟，单位为秒。                                  | `number`                                  | -                  |
 | builtinPlacements          | 命名位置预设。                                                  | `BuildInPlacements`                       | `{}`               |
 | defaultPopupVisible        | 非受控初始显示状态。                                          | `boolean`                                 | `false`            |
+| disabled                   | 临时隐藏弹层，但不主动重置当前打开状态。                       | `boolean`                                 | `false`            |
 | focusDelay                 | `focus` 后显示前的延迟，单位为秒。                                | `number`                                  | -                  |
 | forceRender                | 首次显示前渲染弹层。                                    | `boolean`                                 | `false`            |
 | fresh                      | 关闭时仍保持弹层内容更新。                                  | `boolean`                                 | -                  |
