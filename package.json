@@ -1,6 +1,6 @@
 {
   "name": "@rc-component/trigger",
-  "version": "3.9.1",
+  "version": "3.10.0",
   "description": "Popup trigger and alignment primitive for React.",
   "engines": {
     "node": ">=8.x"
