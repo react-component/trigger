@@ -65,6 +65,8 @@ export interface TriggerProps {
   action?: ActionType | ActionType[];
   showAction?: ActionType[];
   hideAction?: ActionType[];
+  /** Temporarily suppress popup visibility without resetting the current open state. */
+  disabled?: boolean;
 
   prefixCls?: string;
 
@@ -159,6 +161,7 @@ export function generateTrigger(
       action = 'hover',
       showAction,
       hideAction,
+      disabled = false,
 
       // Open
       popupVisible,
@@ -319,7 +322,7 @@ export function generateTrigger(
       popupVisible,
     );
 
-    const mergedOpen = internalOpen || false;
+    const mergedOpen = (internalOpen || false) && !disabled;
 
     // ========================== Children ==========================
     const child = React.useMemo(() => {

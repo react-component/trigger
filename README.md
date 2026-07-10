@@ -75,6 +75,7 @@ Then open `http://localhost:8000`.
 | blurDelay                  | Delay before hiding on blur, in seconds.                                  | `number`                                  | -                  |
 | builtinPlacements          | Named placement presets.                                                  | `BuildInPlacements`                       | `{}`               |
 | defaultPopupVisible        | Initial uncontrolled visibility.                                          | `boolean`                                 | `false`            |
+| disabled                   | Temporarily suppress popup visibility without resetting the current open state. | `boolean`                                 | `false`            |
 | focusDelay                 | Delay before showing on focus, in seconds.                                | `number`                                  | -                  |
 | forceRender                | Render popup before it is first shown.                                    | `boolean`                                 | `false`            |
 | fresh                      | Keep popup content updated while closed.                                  | `boolean`                                 | -                  |
