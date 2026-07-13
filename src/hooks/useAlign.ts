@@ -189,6 +189,32 @@ export default function useAlign(
       const originOverflowX = popupElement.style.overflowX;
       const originOverflowY = popupElement.style.overflowY;
 
+      // Temporarily disable CSS transitions while measuring the popup.
+      //
+      // `useOffsetStyle` positions the popup off-screen (`left: -1000vw;
+      // top: -1000vh`) before it is aligned. To measure the popup at the
+      // origin of its offsetParent, `onAlign` writes `style.left = '0'` /
+      // `style.top = '0'` and then synchronously reads `getBoundingClientRect()`.
+      //
+      // If any CSS rule applies a non-zero `transition-duration` to
+      // `left`/`top` on the popup (e.g. the widely-recommended accessibility
+      // rule `@media (prefers-reduced-motion: reduce) { * {
+      // transition-duration: 0.01ms !important } }`, or React 19's `inset`
+      // shorthand serialisation which can start a transition on the
+      // longhand properties), a `CSSTransition` is created the moment the
+      // inline value changes. Per CSS Transitions Level 1 §3.1, Animations
+      // origin sits above Author Important origin in the cascade, so at
+      // `t=0` of the just-started transition `getBoundingClientRect()`
+      // reports the **previous** used value (`-1000vw`/`-1000vh`) instead
+      // of the newly-assigned `0`. The downstream offset math then explodes
+      // and the popup renders thousands of pixels off-screen — from the
+      // user's perspective, clicking the trigger "does nothing".
+      //
+      // Setting `transition: none` for the duration of the measurement
+      // prevents the transition from starting, so the inline write takes
+      // effect immediately. See issue #618.
+      const originTransition = popupElement.style.transition;
+      popupElement.style.transition = 'none';
 
       // Placement
       const placementInfo: AlignType = {
@@ -302,6 +328,7 @@ export default function useAlign(
       popupElement.style.overflow = originOverflow;
       popupElement.style.overflowX = originOverflowX;
       popupElement.style.overflowY = originOverflowY;
+      popupElement.style.transition = originTransition;
 
       popupElement.parentElement?.removeChild(placeholderElement);
 

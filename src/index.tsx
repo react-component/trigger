@@ -558,7 +558,16 @@ export function generateTrigger(
     // ========================== Motion ============================
     const onVisibleChanged = (visible: boolean) => {
       setInMotion(false);
-      onAlign();
+      // Note: the original code called `onAlign()` here, but the initial
+      // alignment is already performed via the `motionPrepareResolve`
+      // `useLayoutEffect` path. Calling `onAlign()` a second time here
+      // re-measures the popup using the *first* run's offset as the
+      // baseline (because the popup has already been moved), which produces
+      // an oscillating offset: first run computes e.g. `+41px`, second run
+      // reads the popup at `top: 41px` and computes `0px`, snapping the
+      // popup back to the origin. With the `transition: none` fix in
+      // `useAlign` this is less severe but still wrong, so skip the
+      // re-align and keep the stable position from the prepare phase.
       afterOpenChange?.(visible);
       afterPopupVisibleChange?.(visible);
     };
