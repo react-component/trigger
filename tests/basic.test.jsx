@@ -208,6 +208,35 @@ describe('Trigger.Basic', () => {
         expect(isPopupHidden()).toBeFalsy();
         expect(onOpenChange).not.toHaveBeenCalled();
       });
+
+      it('updates open state when mouse leaves while disabled', () => {
+        const onOpenChange = jest.fn();
+        const Demo = ({ disabled = false }) => (
+          <Trigger
+            action={['hover']}
+            disabled={disabled}
+            onOpenChange={onOpenChange}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>
+        );
+
+        const { container, rerender } = render(<Demo />);
+
+        trigger(container, '.target', 'mouseEnter');
+        expect(isPopupHidden()).toBeFalsy();
+        onOpenChange.mockReset();
+
+        rerender(<Demo disabled />);
+        expect(isPopupHidden()).toBeTruthy();
+
+        trigger(container, '.target', 'mouseLeave');
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+
+        rerender(<Demo />);
+        expect(isPopupHidden()).toBeTruthy();
+      });
     });
 
     it('contextMenu works', () => {

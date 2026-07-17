@@ -322,7 +322,8 @@ export function generateTrigger(
       popupVisible,
     );
 
-    const mergedOpen = (internalOpen || false) && !disabled;
+    const rawOpen = internalOpen || false;
+    const mergedOpen = rawOpen && !disabled;
 
     // ========================== Children ==========================
     const child = React.useMemo(() => {
@@ -387,7 +388,7 @@ export function generateTrigger(
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
       flushSync(() => {
-        if (mergedOpen !== nextOpen) {
+        if (rawOpen !== nextOpen) {
           setInternalOpen(nextOpen);
           onOpenChange?.(nextOpen);
           onPopupVisibleChange?.(nextOpen);
