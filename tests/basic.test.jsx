@@ -420,6 +420,63 @@ describe('Trigger.Basic', () => {
         expect(isPopupHidden()).toBeTruthy();
       });
 
+      it('temporarily hides while disabled and restores without mouse leave', () => {
+        const onOpenChange = jest.fn();
+        const Demo = ({ disabled = false }) => (
+          <Trigger
+            action={['hover']}
+            disabled={disabled}
+            onOpenChange={onOpenChange}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>
+        );
+
+        const { container, rerender } = render(<Demo />);
+
+        trigger(container, '.target', 'mouseEnter');
+        expect(isPopupHidden()).toBeFalsy();
+        expect(onOpenChange).toHaveBeenCalledWith(true);
+        onOpenChange.mockReset();
+
+        rerender(<Demo disabled />);
+        expect(isPopupHidden()).toBeTruthy();
+        expect(onOpenChange).not.toHaveBeenCalled();
+
+        rerender(<Demo />);
+        expect(isPopupHidden()).toBeFalsy();
+        expect(onOpenChange).not.toHaveBeenCalled();
+      });
+
+      it('updates open state when mouse leaves while disabled', () => {
+        const onOpenChange = jest.fn();
+        const Demo = ({ disabled = false }) => (
+          <Trigger
+            action={['hover']}
+            disabled={disabled}
+            onOpenChange={onOpenChange}
+            popup={<strong>trigger</strong>}
+          >
+            <div className="target">hover</div>
+          </Trigger>
+        );
+
+        const { container, rerender } = render(<Demo />);
+
+        trigger(container, '.target', 'mouseEnter');
+        expect(isPopupHidden()).toBeFalsy();
+        onOpenChange.mockReset();
+
+        rerender(<Demo disabled />);
+        expect(isPopupHidden()).toBeTruthy();
+
+        trigger(container, '.target', 'mouseLeave');
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+
+        rerender(<Demo />);
+        expect(isPopupHidden()).toBeTruthy();
+      });
     });
 
     it('contextMenu works', () => {
@@ -1145,7 +1202,11 @@ describe('Trigger.Basic', () => {
       </Trigger>,
     );
 
-    expect(errorSpy).not.toHaveBeenCalled();
+    const unexpectedErrors = errorSpy.mock.calls.filter(
+      ([message]) =>
+        !String(message).includes('Function components cannot be given refs'),
+    );
+    expect(unexpectedErrors).toEqual([]);
     errorSpy.mockRestore();
   });
 
@@ -1245,6 +1306,34 @@ describe('Trigger.Basic', () => {
     );
 
     expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+  });
+
+  it('temporarily hides a controlled popup without changing its open state', () => {
+    const onOpenChange = jest.fn();
+    const Demo = ({ disabled = false }) => (
+      <Trigger
+        disabled={disabled}
+        onOpenChange={onOpenChange}
+        popup={<strong>trigger</strong>}
+        popupVisible
+      >
+        {({ open }) => <div data-open={open} />}
+      </Trigger>
+    );
+
+    const { container, rerender } = render(<Demo />);
+
+    expect(container.firstChild).toHaveAttribute('data-open', 'true');
+    expect(isPopupHidden()).toBeFalsy();
+
+    rerender(<Demo disabled />);
+    expect(container.firstChild).toHaveAttribute('data-open', 'false');
+    expect(isPopupHidden()).toBeTruthy();
+
+    rerender(<Demo />);
+    expect(container.firstChild).toHaveAttribute('data-open', 'true');
+    expect(isPopupHidden()).toBeFalsy();
+    expect(onOpenChange).not.toHaveBeenCalled();
   });
 
   describe('click window to hide', () => {

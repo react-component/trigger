@@ -1,18 +1,30 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["@testing-library/jest-dom", "node"],
     "paths": {
-      "@/*": ["src/*"],
-      "@@/*": [".dumi/tmp/*"],
-      "@rc-component/trigger": ["src/index.tsx"]
-    }
-  }
+      "@/*": ["./src/*"],
+      "@@/*": ["./.dumi/tmp/*"],
+      "@rc-component/trigger": ["./src/index.tsx"],
+      "@rc-component/trigger/es": ["./src"],
+      "@rc-component/trigger/es/*": ["./src/*"],
+      "@rc-component/trigger/assets/*": ["./assets/*"]
+    },
+    "strict": false,
+    "module": "ESNext"
+  },
+  "include": [
+    "global.d.ts",
+    ".dumirc.ts",
+    ".fatherrc.ts",
+    "src",
+    "tests",
+    "docs/examples"
+  ],
+  "exclude": ["docs-dist", "lib", "es"]
 }
