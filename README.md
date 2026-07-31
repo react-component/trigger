@@ -15,7 +15,6 @@
 
 <p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
 
-
 ## Highlights
 
 - Built for React and maintained by the rc-component team.
@@ -64,47 +63,47 @@ Then open `http://localhost:8000`.
 
 ### Trigger
 
-| Prop                       | Description                                                               | Type                                      | Default            |
-| -------------------------- | ------------------------------------------------------------------------- | ----------------------------------------- | ------------------ |
-| action                     | Actions that control popup visibility.                                    | `ActionType` \| `ActionType[]`            | `hover`            |
-| afterOpenChange            | Called after popup visibility changes.                                    | `(visible) => void`                       | -                  |
-| afterPopupVisibleChange    | Deprecated. Use `afterOpenChange` instead.                                | `(visible) => void`                       | -                  |
-| alignPoint                 | Align popup to mouse position for click, hover, and context menu actions. | `boolean`                                 | `false`            |
-| arrow                      | Render popup arrow.                                                       | `boolean` \| `ArrowType`                  | -                  |
-| autoDestroy                | Destroy popup DOM when it is hidden.                                      | `boolean`                                 | `false`            |
-| blurDelay                  | Delay before hiding on blur, in seconds.                                  | `number`                                  | -                  |
-| builtinPlacements          | Named placement presets.                                                  | `BuildInPlacements`                       | `{}`               |
-| defaultPopupVisible        | Initial uncontrolled visibility.                                          | `boolean`                                 | `false`            |
+| Prop                       | Description                                                                     | Type                                      | Default            |
+| -------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------- | ------------------ |
+| action                     | Actions that control popup visibility.                                          | `ActionType` \| `ActionType[]`            | `hover`            |
+| afterOpenChange            | Called after popup visibility changes.                                          | `(visible) => void`                       | -                  |
+| afterPopupVisibleChange    | Deprecated. Use `afterOpenChange` instead.                                      | `(visible) => void`                       | -                  |
+| alignPoint                 | Align popup to mouse position for click, hover, and context menu actions.       | `boolean`                                 | `false`            |
+| arrow                      | Render popup arrow.                                                             | `boolean` \| `ArrowType`                  | -                  |
+| autoDestroy                | Destroy popup DOM when it is hidden.                                            | `boolean`                                 | `false`            |
+| blurDelay                  | Delay before hiding on blur, in seconds.                                        | `number`                                  | -                  |
+| builtinPlacements          | Named placement presets.                                                        | `BuildInPlacements`                       | `{}`               |
+| defaultPopupVisible        | Initial uncontrolled visibility.                                                | `boolean`                                 | `false`            |
 | disabled                   | Temporarily suppress popup visibility without resetting the current open state. | `boolean`                                 | `false`            |
-| focusDelay                 | Delay before showing on focus, in seconds.                                | `number`                                  | -                  |
-| forceRender                | Render popup before it is first shown.                                    | `boolean`                                 | `false`            |
-| fresh                      | Keep popup content updated while closed.                                  | `boolean`                                 | -                  |
-| getPopupClassNameFromAlign | Return a popup class name from the current alignment.                     | `(align) => string`                       | -                  |
-| getPopupContainer          | Return the element that should contain the popup.                         | `(node) => HTMLElement`                   | -                  |
-| hideAction                 | Actions that hide popup visibility.                                       | `ActionType[]`                            | -                  |
-| mask                       | Render a mask behind the popup.                                           | `boolean`                                 | `false`            |
-| maskClosable               | Close when clicking the mask.                                             | `boolean`                                 | `true`             |
-| maskMotion                 | Motion config for the mask.                                               | `CSSMotionProps`                          | -                  |
-| mouseEnterDelay            | Delay before showing on mouse enter, in seconds.                          | `number`                                  | -                  |
-| mouseLeaveDelay            | Delay before hiding on mouse leave, in seconds.                           | `number`                                  | `0.1`              |
-| popup                      | Popup content.                                                            | `ReactNode` \| `() => ReactNode`          | -                  |
-| popupAlign                 | Alignment config compatible with dom-align.                               | `AlignType`                               | -                  |
-| popupClassName             | Class name added to popup.                                                | `string`                                  | -                  |
-| popupMotion                | Motion config for the popup.                                              | `CSSMotionProps`                          | -                  |
-| popupPlacement             | Placement key from `builtinPlacements`.                                   | `string`                                  | -                  |
-| popupStyle                 | Inline popup style.                                                       | `React.CSSProperties`                     | -                  |
-| popupVisible               | Controlled popup visibility.                                              | `boolean`                                 | -                  |
-| prefixCls                  | Popup class name prefix.                                                  | `string`                                  | `rc-trigger-popup` |
-| showAction                 | Actions that show popup visibility.                                       | `ActionType[]`                            | -                  |
-| stretch                    | Stretch popup width and/or height from target.                            | `string`                                  | -                  |
-| unique                     | Share popup container through `UniqueProvider`.                           | `boolean`                                 | -                  |
-| uniqueContainerClassName   | Class name passed to `UniqueProvider` container.                          | `string`                                  | -                  |
-| uniqueContainerStyle       | Style passed to `UniqueProvider` container.                               | `React.CSSProperties`                     | -                  |
-| zIndex                     | Popup z-index.                                                            | `number`                                  | -                  |
-| onOpenChange               | Called when visibility changes.                                           | `(visible) => void`                       | -                  |
-| onPopupAlign               | Called when the popup is aligned.                                         | `(element, align) => void`                | -                  |
-| onPopupClick               | Called when popup is clicked.                                             | `React.MouseEventHandler<HTMLDivElement>` | -                  |
-| onPopupVisibleChange       | Deprecated. Use `onOpenChange` instead.                                   | `(visible) => void`                       | -                  |
+| focusDelay                 | Delay before showing on focus, in seconds.                                      | `number`                                  | -                  |
+| forceRender                | Render popup before it is first shown.                                          | `boolean`                                 | `false`            |
+| fresh                      | Keep popup content updated while closed.                                        | `boolean`                                 | -                  |
+| getPopupClassNameFromAlign | Return a popup class name from the current alignment.                           | `(align) => string`                       | -                  |
+| getPopupContainer          | Return the element that should contain the popup.                               | `(node) => HTMLElement`                   | -                  |
+| hideAction                 | Actions that hide popup visibility.                                             | `ActionType[]`                            | -                  |
+| mask                       | Render a mask behind the popup.                                                 | `boolean`                                 | `false`            |
+| maskClosable               | Close when clicking the mask.                                                   | `boolean`                                 | `true`             |
+| maskMotion                 | Motion config for the mask.                                                     | `CSSMotionProps`                          | -                  |
+| mouseEnterDelay            | Delay before showing on mouse enter, in seconds.                                | `number`                                  | -                  |
+| mouseLeaveDelay            | Delay before hiding on mouse leave, in seconds.                                 | `number`                                  | `0.1`              |
+| popup                      | Popup content.                                                                  | `ReactNode` \| `() => ReactNode`          | -                  |
+| popupAlign                 | Alignment config compatible with dom-align.                                     | `AlignType`                               | -                  |
+| popupClassName             | Class name added to popup.                                                      | `string`                                  | -                  |
+| popupMotion                | Motion config for the popup.                                                    | `CSSMotionProps`                          | -                  |
+| popupPlacement             | Placement key from `builtinPlacements`.                                         | `string`                                  | -                  |
+| popupStyle                 | Inline popup style.                                                             | `React.CSSProperties`                     | -                  |
+| popupVisible               | Controlled popup visibility.                                                    | `boolean`                                 | -                  |
+| prefixCls                  | Popup class name prefix.                                                        | `string`                                  | `rc-trigger-popup` |
+| showAction                 | Actions that show popup visibility.                                             | `ActionType[]`                            | -                  |
+| stretch                    | Stretch popup width and/or height from target.                                  | `string`                                  | -                  |
+| unique                     | Share popup container through `UniqueProvider`.                                 | `boolean`                                 | -                  |
+| uniqueContainerClassName   | Class name passed to `UniqueProvider` container.                                | `string`                                  | -                  |
+| uniqueContainerStyle       | Style passed to `UniqueProvider` container.                                     | `React.CSSProperties`                     | -                  |
+| zIndex                     | Popup z-index.                                                                  | `number`                                  | -                  |
+| onOpenChange               | Called when visibility changes.                                                 | `(visible) => void`                       | -                  |
+| onPopupAlign               | Called when the popup is aligned.                                               | `(element, align) => void`                | -                  |
+| onPopupClick               | Called when popup is clicked.                                                   | `React.MouseEventHandler<HTMLDivElement>` | -                  |
+| onPopupVisibleChange       | Deprecated. Use `onOpenChange` instead.                                         | `(visible) => void`                       | -                  |
 
 ## Development
 

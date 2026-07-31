@@ -28,8 +28,8 @@ export default function useOffsetStyle(
     const { points } = align;
     const dynamicInset =
       align.dynamicInset || (align as any)._experimental?.dynamicInset;
-    const alignRight = dynamicInset && points[0][1] === 'r';
-    const alignBottom = dynamicInset && points[0][0] === 'b';
+    const alignRight = dynamicInset && points?.[0][1] === 'r';
+    const alignBottom = dynamicInset && points?.[0][0] === 'b';
 
     if (alignRight) {
       offsetStyle.right = offsetR;

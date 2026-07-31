@@ -52,8 +52,11 @@ export function collectScroller(ele: HTMLElement) {
 
   while (current) {
     const { overflowX, overflowY, overflow } =
-      getWin(current).getComputedStyle(current);
-    if ([overflowX, overflowY, overflow].some((o) => scrollStyle.includes(o))) {
+      getWin(current)?.getComputedStyle(current) || {};
+
+    if (
+      [overflowX, overflowY, overflow].some((o) => o && scrollStyle.includes(o))
+    ) {
       scrollerList.push(current);
     }
 
@@ -67,9 +70,16 @@ export function toNum(num: number, defaultValue = 1) {
   return Number.isNaN(num) ? defaultValue : num;
 }
 
-function getPxValue(val: string) {
-  return toNum(parseFloat(val), 0);
+function getPxValue(val?: string) {
+  if (!val) {
+    return 0;
+  }
+  return toNum(Number.parseFloat(val), 0);
 }
+
+export const clamp = (num: number, min: number, max: number) => {
+  return Math.min(Math.max(num, min), max);
+};
 
 export interface VisibleArea {
   left: number;
@@ -119,7 +129,7 @@ export function getVisibleArea(
       borderBottomWidth,
       borderLeftWidth,
       borderRightWidth,
-    } = getWin(ele).getComputedStyle(ele);
+    } = getWin(ele)?.getComputedStyle(ele) || {};
 
     const eleRect = ele.getBoundingClientRect();
     const {

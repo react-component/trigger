@@ -8,5 +8,4 @@ declare module '*.css';
 declare module '*.less';
 declare module 'jsonp';
 
-
 declare module 'moment/locale/zh-cn';

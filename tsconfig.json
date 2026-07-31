@@ -8,24 +8,12 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@@/*": [
-        "./.dumi/tmp/*"
-      ],
-      "@rc-component/trigger": [
-        "./src/index.tsx"
-      ],
-      "@rc-component/trigger/es": [
-        "./src"
-      ],
-      "@rc-component/trigger/es/*": [
-        "./src/*"
-      ],
-      "@rc-component/trigger/assets/*": [
-        "./assets/*"
-      ]
+      "@/*": ["./src/*"],
+      "@@/*": ["./.dumi/tmp/*"],
+      "@rc-component/trigger": ["./src/index.tsx"],
+      "@rc-component/trigger/es": ["./src"],
+      "@rc-component/trigger/es/*": ["./src/*"],
+      "@rc-component/trigger/assets/*": ["./assets/*"]
     },
     "strict": false,
     "module": "ESNext"
@@ -38,9 +26,5 @@
     "tests",
     "docs/examples"
   ],
-  "exclude": [
-    "docs-dist",
-    "lib",
-    "es"
-  ]
+  "exclude": ["docs-dist", "lib", "es"]
 }

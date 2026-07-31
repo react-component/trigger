@@ -4,7 +4,7 @@ import type { AlignType, ArrowPos, ArrowTypeOuter } from '../interface';
 
 export interface ArrowProps {
   prefixCls: string;
-  align: AlignType;
+  align?: AlignType;
   arrow: ArrowTypeOuter;
   arrowPos: ArrowPos;
 }

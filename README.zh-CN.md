@@ -15,7 +15,6 @@
 
 <p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
-
 ## 特性
 
 - 面向 React 构建，并由 rc-component 团队维护。
@@ -64,47 +63,47 @@ npm start
 
 ### Trigger
 
-| 属性 | 说明 | 类型 | 默认值 |
-| -------------------------- | ------------------------------------------------------------------------- | ----------------------------------------- | ------------------ |
-| action                     | 控制弹层显示状态的触发行为。                                    | `ActionType` \| `ActionType[]`            | `hover`            |
-| afterOpenChange            | 弹层窗口可见性更改后调用。                                    | `(visible) => void`                       | -                  |
-| afterPopupVisibleChange    | 已废弃。请使用 `afterOpenChange`。                                | `(visible) => void`                       | -                  |
+| 属性                       | 说明                                                             | 类型                                      | 默认值             |
+| -------------------------- | ---------------------------------------------------------------- | ----------------------------------------- | ------------------ |
+| action                     | 控制弹层显示状态的触发行为。                                     | `ActionType` \| `ActionType[]`            | `hover`            |
+| afterOpenChange            | 弹层窗口可见性更改后调用。                                       | `(visible) => void`                       | -                  |
+| afterPopupVisibleChange    | 已废弃。请使用 `afterOpenChange`。                               | `(visible) => void`                       | -                  |
 | alignPoint                 | 将弹层对齐到 `click`、`hover` 和 `context menu` 行为的鼠标位置。 | `boolean`                                 | `false`            |
-| arrow                      | 渲染弹层箭头。                                                       | `boolean` \| `ArrowType`                  | -                  |
-| autoDestroy                | 弹层隐藏时销毁弹层 DOM。                                      | `boolean`                                 | `false`            |
-| blurDelay                  | `blur` 后隐藏前的延迟，单位为秒。                                  | `number`                                  | -                  |
-| builtinPlacements          | 命名位置预设。                                                  | `BuildInPlacements`                       | `{}`               |
-| defaultPopupVisible        | 非受控初始显示状态。                                          | `boolean`                                 | `false`            |
-| disabled                   | 临时隐藏弹层，但不主动重置当前打开状态。                       | `boolean`                                 | `false`            |
-| focusDelay                 | `focus` 后显示前的延迟，单位为秒。                                | `number`                                  | -                  |
-| forceRender                | 首次显示前渲染弹层。                                    | `boolean`                                 | `false`            |
-| fresh                      | 关闭时仍保持弹层内容更新。                                  | `boolean`                                 | -                  |
-| getPopupClassNameFromAlign | 根据当前对齐信息返回弹层 className。                     | `(align) => string`                       | -                  |
-| getPopupContainer          | 返回弹层挂载容器元素。                         | `(node) => HTMLElement`                   | -                  |
-| hideAction                 | 隐藏弹层的触发行为。                                       | `ActionType[]`                            | -                  |
-| mask                       | 在弹层后渲染遮罩。                                           | `boolean`                                 | `false`            |
-| maskClosable               | 点击遮罩时关闭。                                             | `boolean`                                 | `true`             |
-| maskMotion                 | 遮罩动画配置。                                               | `CSSMotionProps`                          | -                  |
-| mouseEnterDelay            | mouse enter 后显示前的延迟，单位为秒。                          | `number`                                  | -                  |
-| mouseLeaveDelay            | 鼠标离开后隐藏前的延迟，单位为秒。                           | `number`                                  | `0.1`              |
-| popup                      | 弹层内容。                                                            | `ReactNode` \| `() => ReactNode`          | -                  |
-| popupAlign                 | 与 dom-align 兼容的对齐配置。                               | `AlignType`                               | -                  |
-| popupClassName             | 添加到弹层的 className。                                                | `string`                                  | -                  |
-| popupMotion                | 弹层动画配置。                                              | `CSSMotionProps`                          | -                  |
-| popupPlacement             | 来自 `builtinPlacements` 的位置 key。                                   | `string`                                  | -                  |
-| popupStyle                 | 弹层内联样式。                                                       | `React.CSSProperties`                     | -                  |
-| popupVisible               | 受控的弹层窗口可见性。                                              | `boolean`                                 | -                  |
-| prefixCls                  | 弹层 className 前缀。                                                  | `string`                                  | `rc-trigger-popup` |
-| showAction                 | 显示弹层的触发行为。                                       | `ActionType[]`                            | -                  |
-| stretch                    | 根据目标拉伸弹层宽度和/或高度。                            | `string`                                  | -                  |
-| unique                     | 通过 `UniqueProvider` 共享弹层容器。                           | `boolean`                                 | -                  |
-| uniqueContainerClassName   | 传给 `UniqueProvider` 容器的 className。                          | `string`                                  | -                  |
+| arrow                      | 渲染弹层箭头。                                                   | `boolean` \| `ArrowType`                  | -                  |
+| autoDestroy                | 弹层隐藏时销毁弹层 DOM。                                         | `boolean`                                 | `false`            |
+| blurDelay                  | `blur` 后隐藏前的延迟，单位为秒。                                | `number`                                  | -                  |
+| builtinPlacements          | 命名位置预设。                                                   | `BuildInPlacements`                       | `{}`               |
+| defaultPopupVisible        | 非受控初始显示状态。                                             | `boolean`                                 | `false`            |
+| disabled                   | 临时隐藏弹层，但不主动重置当前打开状态。                         | `boolean`                                 | `false`            |
+| focusDelay                 | `focus` 后显示前的延迟，单位为秒。                               | `number`                                  | -                  |
+| forceRender                | 首次显示前渲染弹层。                                             | `boolean`                                 | `false`            |
+| fresh                      | 关闭时仍保持弹层内容更新。                                       | `boolean`                                 | -                  |
+| getPopupClassNameFromAlign | 根据当前对齐信息返回弹层 className。                             | `(align) => string`                       | -                  |
+| getPopupContainer          | 返回弹层挂载容器元素。                                           | `(node) => HTMLElement`                   | -                  |
+| hideAction                 | 隐藏弹层的触发行为。                                             | `ActionType[]`                            | -                  |
+| mask                       | 在弹层后渲染遮罩。                                               | `boolean`                                 | `false`            |
+| maskClosable               | 点击遮罩时关闭。                                                 | `boolean`                                 | `true`             |
+| maskMotion                 | 遮罩动画配置。                                                   | `CSSMotionProps`                          | -                  |
+| mouseEnterDelay            | mouse enter 后显示前的延迟，单位为秒。                           | `number`                                  | -                  |
+| mouseLeaveDelay            | 鼠标离开后隐藏前的延迟，单位为秒。                               | `number`                                  | `0.1`              |
+| popup                      | 弹层内容。                                                       | `ReactNode` \| `() => ReactNode`          | -                  |
+| popupAlign                 | 与 dom-align 兼容的对齐配置。                                    | `AlignType`                               | -                  |
+| popupClassName             | 添加到弹层的 className。                                         | `string`                                  | -                  |
+| popupMotion                | 弹层动画配置。                                                   | `CSSMotionProps`                          | -                  |
+| popupPlacement             | 来自 `builtinPlacements` 的位置 key。                            | `string`                                  | -                  |
+| popupStyle                 | 弹层内联样式。                                                   | `React.CSSProperties`                     | -                  |
+| popupVisible               | 受控的弹层窗口可见性。                                           | `boolean`                                 | -                  |
+| prefixCls                  | 弹层 className 前缀。                                            | `string`                                  | `rc-trigger-popup` |
+| showAction                 | 显示弹层的触发行为。                                             | `ActionType[]`                            | -                  |
+| stretch                    | 根据目标拉伸弹层宽度和/或高度。                                  | `string`                                  | -                  |
+| unique                     | 通过 `UniqueProvider` 共享弹层容器。                             | `boolean`                                 | -                  |
+| uniqueContainerClassName   | 传给 `UniqueProvider` 容器的 className。                         | `string`                                  | -                  |
 | uniqueContainerStyle       | 传给 `UniqueProvider` 容器的样式。                               | `React.CSSProperties`                     | -                  |
-| zIndex                     | 弹层 z 索引。                                                            | `number`                                  | -                  |
-| onOpenChange               | 当可见性发生变化时调用。                                           | `(visible) => void`                       | -                  |
-| onPopupAlign               | 弹层完成对齐时调用。                                         | `(element, align) => void`                | -                  |
-| onPopupClick               | 点击弹层时调用。                                             | `React.MouseEventHandler<HTMLDivElement>` | -                  |
-| onPopupVisibleChange       | 已废弃。请使用 `onOpenChange`。                                   | `(visible) => void`                       | -                  |
+| zIndex                     | 弹层 z 索引。                                                    | `number`                                  | -                  |
+| onOpenChange               | 当可见性发生变化时调用。                                         | `(visible) => void`                       | -                  |
+| onPopupAlign               | 弹层完成对齐时调用。                                             | `(element, align) => void`                | -                  |
+| onPopupClick               | 点击弹层时调用。                                                 | `React.MouseEventHandler<HTMLDivElement>` | -                  |
+| onPopupVisibleChange       | 已废弃。请使用 `onOpenChange`。                                  | `(visible) => void`                       | -                  |
 
 ## 本地开发
 
