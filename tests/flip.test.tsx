@@ -366,6 +366,27 @@ describe('Trigger.Align', () => {
     window.getComputedStyle = oriGetComputedStyle;
   });
 
+  it('skips iframe html and body elements', () => {
+    const initArea = {
+      left: 0,
+      right: 500,
+      top: 0,
+      bottom: 500,
+    };
+    const iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+
+    try {
+      const { documentElement, body } = iframe.contentDocument!;
+
+      expect(getVisibleArea(initArea, [documentElement, body])).toEqual(
+        initArea,
+      );
+    } finally {
+      iframe.remove();
+    }
+  });
+
   // e.g. adjustY + shiftX may make popup out but push back in screen
   // which should keep flip
   /*
