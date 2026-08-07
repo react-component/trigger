@@ -55,6 +55,12 @@ const builtinPlacements = {
     },
     htmlRegion: 'visibleFirst' as const,
   },
+  topShiftInset: {
+    points: ['bc', 'tc'],
+    overflow: {
+      shiftX: 20,
+    },
+  },
   bottom: {
     points: ['tc', 'bc'],
     overflow: {
@@ -192,6 +198,30 @@ describe('Trigger.Flip+Shift', () => {
     // Just need check left < 0
     expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
       left: '-900px',
+    });
+  });
+
+  it('keeps numeric shiftX as viewport inset after shift', async () => {
+    spanRect.x = -50;
+    spanRect.left = -50;
+
+    render(
+      <Trigger
+        popupVisible
+        popupPlacement="topShiftInset"
+        builtinPlacements={builtinPlacements}
+        popup={<strong>trigger</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      left: '20px',
     });
   });
 
