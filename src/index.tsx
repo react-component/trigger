@@ -385,41 +385,53 @@ export function generateTrigger(
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
 
-    // Track the last synchronously dispatched `nextOpen` so multiple events
-    // firing in the same batch (e.g. `pointerenter` + `focus`, or `pointerleave`
-    // + `blur`) only emit one `onOpenChange`. We can't read `rawOpen` here
-    // because React state updates are async — within a single batch the second
-    // call would still see the stale value. A simple `useRef` avoids that
-    // without requiring `flushSync`, which would emit a React 19 warning when
-    // `internalTriggerOpen` is reached from inside a render/lifecycle (e.g.
-    // a child commit triggered by clicking a `<Tooltip trigger="focus">`-
-    // wrapped button that also opens a Modal).
-    // See https://github.com/ant-design/ant-design/issues/57789
-    const lastDispatchedOpenRef = React.useRef(rawOpen);
+    // Same-batch dispatch dedup for `internalTriggerOpen`.
+    //
+    // Multiple events routed through the same interaction batch —
+    // `pointerenter` + `focus` on open, `pointerleave` + `blur` on close —
+    // both call `internalTriggerOpen(sameValue)`. React state updates are
+    // async within a batch, so a state-based comparison would let the
+    // second call through. The ref catches it because it is written
+    // synchronously inside the handler.
+    //
+    // The ref is deliberately **never written from render body or from a
+    // layout effect**. Both would defeat the correctness properties the
+    // #622 review needed:
+    //
+    //   • A render-body sync leaks the baseline of a discarded concurrent
+    //     render (Suspense / transitions): the speculative `rawOpen`
+    //     write survives even though the render never commits, so a
+    //     later opposite dispatch on the still-committed target is
+    //     mistaken for a duplicate.
+    //   • A `useLayoutEffect([rawOpen])` sync loses to descendant layout
+    //     effects. React runs descendants' layout effects before their
+    //     parent's, so a target's `useLayoutEffect([open], () =>
+    //     target.blur())` can reach `internalTriggerOpen` while the
+    //     baseline still holds the previous value and the dispatch is
+    //     dropped as a duplicate.
+    //
+    // Instead the baseline is reset in a passive effect. `useEffect` runs
+    // only for actually-committed renders (discarded/suspended renders
+    // never reach it) and it runs after every layout effect has flushed,
+    // so it never races them. Between commits the ref carries the last
+    // dispatched value, which is exactly what same-batch dedup needs.
+    //
+    // See https://github.com/ant-design/ant-design/issues/57789 and the
+    // review threads on https://github.com/react-component/trigger/pull/622.
+    const lastDispatchRef = React.useRef<boolean | undefined>(undefined);
 
-    // Sync the dedup baseline to `rawOpen` **in render body**, not in a layout
-    // effect. React runs descendant layout effects *before* their parent's, so
-    // if we synced in Trigger's own `useLayoutEffect([rawOpen])` a descendant
-    // effect (e.g. `useLayoutEffect([open], () => target.blur())`) could reach
-    // `internalTriggerOpen` while the ref still held the previous value and
-    // legitimately-different callbacks would be discarded as duplicates. Doing
-    // the sync during render closes that gap. It's safe: refs are mutable
-    // during render and the only race — a concurrent render being discarded
-    // with a stale ref — cannot suppress a real dispatch because any real
-    // dispatch also writes the ref back to `nextOpen`. Tracks `rawOpen` (not
-    // `mergedOpen`) so toggling `disabled` doesn't re-fire callbacks.
-    // https://github.com/react-component/trigger/pull/622#pullrequestreview-...
-    if (lastDispatchedOpenRef.current !== rawOpen) {
-      lastDispatchedOpenRef.current = rawOpen;
-    }
+    React.useEffect(() => {
+      lastDispatchRef.current = undefined;
+    });
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
-      if (lastDispatchedOpenRef.current !== nextOpen) {
-        lastDispatchedOpenRef.current = nextOpen;
-        setInternalOpen(nextOpen);
-        onOpenChange?.(nextOpen);
-        onPopupVisibleChange?.(nextOpen);
+      if (lastDispatchRef.current === nextOpen) {
+        return;
       }
+      lastDispatchRef.current = nextOpen;
+      setInternalOpen(nextOpen);
+      onOpenChange?.(nextOpen);
+      onPopupVisibleChange?.(nextOpen);
     });
 
     // Trigger for delay
