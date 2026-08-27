@@ -80,8 +80,10 @@ const builtinPlacements = {
 
 describe('Trigger.Flip+Shift', () => {
   let spanRect = { x: 0, y: 0, left: 0, top: 0, width: 0, height: 0 };
+  let popupHeight = 300;
 
   beforeEach(() => {
+    popupHeight = 300;
     spanRect = {
       x: 0,
       y: 100,
@@ -118,7 +120,7 @@ describe('Trigger.Flip+Shift', () => {
           left: 0,
           top: 0,
           width: 100,
-          height: 300,
+          height: popupHeight,
         };
       },
     });
@@ -167,6 +169,59 @@ describe('Trigger.Flip+Shift', () => {
       document.querySelector('.rc-trigger-popup-placement-bottom'),
     ).toHaveStyle({
       top: '100px',
+    });
+  });
+
+  it.each([
+    { placement: 'top', offset: -4, targetY: 100, top: '100px' },
+    { placement: 'bottom', offset: 4, targetY: 100, top: '100px' },
+    { placement: 'top', offset: -4, targetY: 200, top: '0px' },
+    { placement: 'bottom', offset: 4, targetY: 200, top: '0px' },
+  ])(
+    '$placement 在目标位于 $targetY 时，平移不应被偏移量推回视口外',
+    async ({ placement, offset, targetY, top }) => {
+      spanRect.y = targetY;
+      spanRect.top = targetY;
+
+      render(
+        <Trigger
+          popupVisible
+          popupPlacement={placement}
+          builtinPlacements={builtinPlacements}
+          popupAlign={{ offset: [0, offset] }}
+          popup={<strong>日期面板</strong>}
+        >
+          <span className="target" />
+        </Trigger>,
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({ top });
+    },
+  );
+
+  it('面板高于视口时优先保留顶部内容', async () => {
+    popupHeight = 500;
+    render(
+      <Trigger
+        popupVisible
+        popupPlacement="top"
+        builtinPlacements={builtinPlacements}
+        popup={<strong>日期面板</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(document.querySelector('.rc-trigger-popup')).toHaveStyle({
+      top: '0px',
     });
   });
 
