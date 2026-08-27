@@ -189,7 +189,6 @@ export default function useAlign(
       const originOverflowX = popupElement.style.overflowX;
       const originOverflowY = popupElement.style.overflowY;
 
-
       // Placement
       const placementInfo: AlignType = {
         ...builtinPlacements[placement],
@@ -665,6 +664,19 @@ export default function useAlign(
           if (targetRect.y > visibleRegionArea.bottom - numShiftY) {
             nextOffsetY += targetRect.y - visibleRegionArea.bottom + numShiftY;
           }
+        }
+
+        // 目标仍在平移范围内时，避免方向偏移量将弹层再次推到视口外。
+        if (
+          targetRect.y + targetHeight >= visibleRegionArea.top + numShiftY &&
+          targetRect.y <= visibleRegionArea.bottom - numShiftY
+        ) {
+          const minOffsetY = visibleRegionArea.top - popupRect.y;
+          const maxOffsetY = Math.max(
+            minOffsetY,
+            visibleRegionArea.bottom - popupHeight - popupRect.y,
+          );
+          nextOffsetY = Math.min(Math.max(nextOffsetY, minOffsetY), maxOffsetY);
         }
       }
 
