@@ -496,11 +496,11 @@ export function generateTrigger(
       }
     });
 
-    const onScroll = () => {
+    const onScroll = useEvent(() => {
       if (openRef.current && alignPoint && clickToHide) {
         triggerOpen(false);
       }
-    };
+    });
 
     useWatch(mergedOpen, targetEle, popupEle, triggerAlign, onScroll);
 
