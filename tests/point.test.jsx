@@ -141,6 +141,20 @@ describe('Trigger.Point', () => {
 
       expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
     });
+
+    it('should use the latest alignPoint value when scrolling', async () => {
+      const { container, rerender } = render(
+        <Demo action={['click']} alignPoint={false} />,
+      );
+      await trigger(container, 'click', { clientX: 10, clientY: 20 });
+
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeFalsy();
+
+      rerender(<Demo action={['click']} alignPoint />);
+      fireEvent.scroll(container.querySelector('.scroll'));
+
+      expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
+    });
   });
 
   describe('placement', () => {
