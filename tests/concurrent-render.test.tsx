@@ -125,10 +125,14 @@ describe('Trigger.ConcurrentRender (#622 review)', () => {
 
     // Commit the initial state: closed, no throw. The committed target is
     // what all subsequent focus events must land on.
-    const { container, rerender } = render(<Harness open={false} attempt={false} />);
+    const { container, rerender } = render(
+      <Harness open={false} attempt={false} />,
+    );
     await flush();
 
-    const committedTarget = container.querySelector('.target') as HTMLSpanElement;
+    const committedTarget = container.querySelector(
+      '.target',
+    ) as HTMLSpanElement;
     expect(committedTarget).toBeTruthy();
 
     // Attempt the transition: popupVisible=false → true, but the child
@@ -146,7 +150,9 @@ describe('Trigger.ConcurrentRender (#622 review)', () => {
     // The originally committed target must still be in the DOM; the
     // Suspense fallback should not have taken over because the transition
     // is pending.
-    const stillCommitted = container.querySelector('.target') as HTMLSpanElement;
+    const stillCommitted = container.querySelector(
+      '.target',
+    ) as HTMLSpanElement;
     expect(stillCommitted).toBe(committedTarget);
     expect(container.querySelector('.fallback')).toBeNull();
 
