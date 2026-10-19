@@ -40,7 +40,8 @@ export interface UniqueShowOptions {
 
 export interface UniqueContextProps {
   show: (options: UniqueShowOptions, isOpen: () => boolean) => void;
-  hide: (delay: number) => void;
+  hide: (id: string, delay: number) => void;
+  release: (id: string) => void;
 }
 
 export const UniqueContext = React.createContext<UniqueContextProps | null>(

@@ -25,7 +25,8 @@ const UniqueProvider = ({
   children,
   postTriggerProps,
 }: UniqueProviderProps) => {
-  const [trigger, open, options, onTargetVisibleChanged] = useTargetState();
+  const [trigger, open, options, onTargetVisibleChanged, releaseTarget] =
+    useTargetState();
 
   // ========================== Options ===========================
   const mergedOptions = React.useMemo(() => {
@@ -55,34 +56,55 @@ const UniqueProvider = ({
   });
 
   // ========================== Register ==========================
-  // Store the isOpen function from the latest show call
-  const isOpenRef = React.useRef<(() => boolean) | null>(null);
+  const ownerRef = React.useRef<string | null>(null);
+  const delayedOwnerRef = React.useRef<string | null>(null);
+  const isOpenRef = React.useRef(new Map<string, () => boolean>());
 
   const delayInvoke = useDelay();
 
   const show = useEvent(
     (showOptions: UniqueShowOptions, isOpen: () => boolean) => {
-      // Store the isOpen function for later use in hide
-      isOpenRef.current = isOpen;
+      ownerRef.current = showOptions.id;
+      isOpenRef.current.set(showOptions.id, isOpen);
 
+      delayedOwnerRef.current = showOptions.id;
       delayInvoke(() => {
+        delayedOwnerRef.current = null;
         trigger(showOptions);
       }, showOptions.delay);
     },
   );
 
-  const hide = (delay: number) => {
+  const hide = useEvent((id: string, delay: number) => {
+    if (ownerRef.current !== id) {
+      return;
+    }
+
+    delayedOwnerRef.current = id;
     delayInvoke(() => {
-      // Check if we should still hide by calling the isOpen function
-      // If isOpen returns true, it means another trigger wants to keep it open
-      if (isOpenRef.current?.()) {
-        return; // Don't hide if something else wants it open
+      delayedOwnerRef.current = null;
+      // A controlled owner may still need to keep its popup open.
+      if (ownerRef.current !== id || isOpenRef.current.get(id)?.()) {
+        return;
       }
 
       trigger(false);
       // Don't clear target, currentNode, options immediately, wait until animation completes
     }, delay);
-  };
+  });
+
+  const release = useEvent((id: string) => {
+    // Another owner may already have a show or hide scheduled.
+    if (delayedOwnerRef.current === id) {
+      delayInvoke(() => {}, 0);
+      delayedOwnerRef.current = null;
+    }
+    isOpenRef.current.delete(id);
+    const remainingOwner = releaseTarget(id);
+    if (ownerRef.current === id) {
+      ownerRef.current = remainingOwner ?? null;
+    }
+  });
 
   // Callback after animation completes
   const onVisibleChanged = useEvent((visible: boolean) => {
@@ -142,8 +164,9 @@ const UniqueProvider = ({
     () => ({
       show,
       hide,
+      release,
     }),
-    [],
+    [show, hide, release],
   );
 
   // =========================== Align ============================

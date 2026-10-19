@@ -17,25 +17,34 @@ export default function useTargetState(): [
   /* Will always cache last which is not null */
   cacheOptions: UniqueShowOptions | null,
   onVisibleChanged: (visible: boolean) => void,
+  release: (id: string) => string | undefined,
 ] {
   const [options, setOptions] = React.useState<UniqueShowOptions | null>(null);
   const [open, setOpen] = React.useState(false);
   const [isAnimating, setIsAnimating] = React.useState(false);
+  // Unlike cached options, ownership must update between batched cleanups.
+  const currentOptionsRef = React.useRef<UniqueShowOptions | null>(null);
   const pendingOptionsRef = React.useRef<UniqueShowOptions | null>(null);
+
+  const updateOptions = (nextOptions: UniqueShowOptions) => {
+    currentOptionsRef.current = nextOptions;
+    setOptions(nextOptions);
+  };
 
   const trigger = useEvent((nextOptions: UniqueShowOptions | false) => {
     if (nextOptions === false) {
       // Clear pending options when hiding
       pendingOptionsRef.current = null;
+      currentOptionsRef.current = null;
       setOpen(false);
     } else {
-      if (isAnimating && open) {
+      if (isAnimating && open && currentOptionsRef.current) {
         // If animating (appear or enter), cache new options
         pendingOptionsRef.current = nextOptions;
       } else {
         setOpen(true);
         // Set new options
-        setOptions(nextOptions);
+        updateOptions(nextOptions);
         pendingOptionsRef.current = null;
 
         // Only mark as animating when transitioning from closed to open
@@ -52,7 +61,7 @@ export default function useTargetState(): [
       setIsAnimating(false);
       if (pendingOptionsRef.current) {
         // Apply pending options
-        setOptions(pendingOptionsRef.current);
+        updateOptions(pendingOptionsRef.current);
         pendingOptionsRef.current = null;
       }
     } else {
@@ -62,5 +71,25 @@ export default function useTargetState(): [
     }
   });
 
-  return [trigger, open, options, onVisibleChanged];
+  const release = useEvent((id: string) => {
+    if (pendingOptionsRef.current?.id === id) {
+      pendingOptionsRef.current = null;
+    }
+
+    if (currentOptionsRef.current?.id === id) {
+      const nextOptions = pendingOptionsRef.current;
+      pendingOptionsRef.current = null;
+      if (nextOptions) {
+        updateOptions(nextOptions);
+      } else {
+        currentOptionsRef.current = null;
+        setOpen(false);
+      }
+      return nextOptions?.id;
+    }
+
+    return pendingOptionsRef.current?.id ?? currentOptionsRef.current?.id;
+  });
+
+  return [trigger, open, options, onVisibleChanged, release];
 }

@@ -364,6 +364,14 @@ export function generateTrigger(
       onEsc,
     }));
 
+    useLayoutEffect(() => {
+      return () => {
+        if (unique && !parentContext) {
+          uniqueContext?.release(id);
+        }
+      };
+    }, [uniqueContext, unique, parentContext, id]);
+
     // Handle controlled state changes for UniqueProvider
     // Only sync to UniqueProvider when it's controlled mode
     // If there is a parentContext, don't call uniqueContext methods
@@ -378,7 +386,7 @@ export function generateTrigger(
         if (mergedOpen) {
           uniqueContext.show(getUniqueOptions(mouseEnterDelay), isOpen);
         } else {
-          uniqueContext.hide(mouseLeaveDelay);
+          uniqueContext.hide(id, mouseLeaveDelay);
         }
       }
     }, [mergedOpen, targetEle]);
@@ -415,7 +423,7 @@ export function generateTrigger(
         if (nextOpen) {
           uniqueContext.show(getUniqueOptions(delay), isOpen);
         } else {
-          uniqueContext.hide(delay);
+          uniqueContext.hide(id, delay);
         }
         return;
       }
