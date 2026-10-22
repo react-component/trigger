@@ -41,6 +41,8 @@ export interface UniqueShowOptions {
 export interface UniqueContextProps {
   show: (options: UniqueShowOptions, isOpen: () => boolean) => void;
   hide: (delay: number) => void;
+  /** Notify the provider a trigger target is removed (e.g. trigger unmounted) */
+  release: (target: HTMLElement) => void;
 }
 
 export const UniqueContext = React.createContext<UniqueContextProps | null>(

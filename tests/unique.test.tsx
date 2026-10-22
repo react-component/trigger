@@ -376,7 +376,7 @@ describe('Trigger.Unique', () => {
   });
 
   it('esc should close unique popup', async () => {
-    const { container,baseElement } = render(
+    const { container, baseElement } = render(
       <UniqueProvider>
         <Trigger action={['click']} popup={<div>Popup</div>} unique>
           <div className="target" />
@@ -388,5 +388,86 @@ describe('Trigger.Unique', () => {
 
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(baseElement.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
+  });
+
+  it('should hide popup when the trigger is unmounted', async () => {
+    const Demo = ({ show }: { show: boolean }) => (
+      <UniqueProvider>
+        {show && (
+          <Trigger
+            action={['hover']}
+            popup={<strong className="x-content">tooltip</strong>}
+            unique
+            mouseEnterDelay={0.1}
+            mouseLeaveDelay={0.1}
+          >
+            <div className="target">hover me</div>
+          </Trigger>
+        )}
+      </UniqueProvider>
+    );
+
+    const { container, rerender } = render(<Demo show />);
+
+    // Hover to open the popup
+    fireEvent.mouseEnter(container.querySelector('.target'));
+    await awaitFakeTimer();
+
+    expect(document.querySelector('.rc-trigger-popup')).toBeTruthy();
+    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
+      '-hidden',
+    );
+
+    // Unmount the trigger while the popup is open
+    rerender(<Demo show={false} />);
+    await awaitFakeTimer();
+
+    // Popup should be hidden
+    expect(document.querySelector('.rc-trigger-popup').className).toContain(
+      '-hidden',
+    );
+  });
+
+  it('should not hide popup when an inactive trigger is unmounted', async () => {
+    const Demo = ({ showSecond }: { showSecond: boolean }) => (
+      <UniqueProvider>
+        <Trigger
+          action={['hover']}
+          popup={<strong className="x-content">tooltip1</strong>}
+          unique
+          mouseEnterDelay={0.1}
+          mouseLeaveDelay={0.1}
+        >
+          <div className="target1">hover1</div>
+        </Trigger>
+        {showSecond && (
+          <Trigger
+            action={['hover']}
+            popup={<strong className="x-content">tooltip2</strong>}
+            unique
+          >
+            <div className="target2">hover2</div>
+          </Trigger>
+        )}
+      </UniqueProvider>
+    );
+
+    const { container, rerender } = render(<Demo showSecond />);
+
+    // Hover first trigger to open the popup
+    fireEvent.mouseEnter(container.querySelector('.target1'));
+    await awaitFakeTimer();
+    expect(document.querySelector('.x-content').textContent).toBe('tooltip1');
+    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
+      '-hidden',
+    );
+
+    // Unmount the second (inactive) trigger, popup should keep open
+    rerender(<Demo showSecond={false} />);
+    await awaitFakeTimer();
+
+    expect(document.querySelector('.rc-trigger-popup').className).not.toContain(
+      '-hidden',
+    );
   });
 });

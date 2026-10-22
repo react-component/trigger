@@ -60,10 +60,14 @@ const UniqueProvider = ({
 
   const delayInvoke = useDelay();
 
+  // Store the target of the latest show call, used to detect removed targets
+  const targetRef = React.useRef<HTMLElement>(null);
+
   const show = useEvent(
     (showOptions: UniqueShowOptions, isOpen: () => boolean) => {
       // Store the isOpen function for later use in hide
       isOpenRef.current = isOpen;
+      targetRef.current = showOptions.target;
 
       delayInvoke(() => {
         trigger(showOptions);
@@ -75,7 +79,9 @@ const UniqueProvider = ({
     delayInvoke(() => {
       // Check if we should still hide by calling the isOpen function
       // If isOpen returns true, it means another trigger wants to keep it open
-      if (isOpenRef.current?.()) {
+      // Skip the check when the target is removed from the DOM (e.g. trigger unmounted),
+      // since its isOpen function is frozen and would keep returning true
+      if (isOpenRef.current?.() && targetRef.current?.isConnected) {
         return; // Don't hide if something else wants it open
       }
 
@@ -138,10 +144,18 @@ const UniqueProvider = ({
     mergedOptions?.prefixCls,
   ]);
 
+  const release = useEvent((target: HTMLElement) => {
+    // Close the popup only when it is currently showing for the removed target
+    if (open && targetRef.current === target) {
+      trigger(false);
+    }
+  });
+
   const contextValue = React.useMemo<UniqueContextProps>(
     () => ({
       show,
       hide,
+      release,
     }),
     [],
   );

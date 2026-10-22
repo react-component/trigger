@@ -265,6 +265,10 @@ export function generateTrigger(
     // Use state to control here since `useRef` update not trigger render
     const [targetEle, setTargetEle] = React.useState<HTMLElement>(null);
 
+    // Keep the latest target for unmount checking
+    const targetEleRef = React.useRef<HTMLElement>(null);
+    targetEleRef.current = targetEle;
+
     // Used for forwardRef target. Not use internal
     const externalForwardRef = React.useRef<HTMLElement>(null);
 
@@ -385,6 +389,17 @@ export function generateTrigger(
 
     const openRef = React.useRef(mergedOpen);
     openRef.current = mergedOpen;
+
+    // Close the shared popup when the trigger is unmounted
+    React.useEffect(() => {
+      if (uniqueContext && unique && !parentContext) {
+        return () => {
+          if (targetEleRef.current) {
+            uniqueContext.release(targetEleRef.current);
+          }
+        };
+      }
+    }, []);
 
     const internalTriggerOpen = useEvent((nextOpen: boolean) => {
       flushSync(() => {
