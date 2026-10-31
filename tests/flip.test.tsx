@@ -266,6 +266,41 @@ describe('Trigger.Align', () => {
     ).toBeTruthy();
   });
 
+  it('re-align horizontally when the viewport grows back after a flip', async () => {
+    // Popup 50px wide so that both sides fit once the viewport grows
+    popupRect = { x: 0, y: 0, left: 0, top: 0, width: 50, height: 100 };
+    spanRect.x = 90;
+
+    render(
+      <Trigger
+        popupVisible
+        popupPlacement="right"
+        builtinPlacements={builtinPlacements}
+        popup={<strong>trigger</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await flush();
+
+    // No room on the right in a 100px wide viewport, so it flips to the left
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-left'),
+    ).toBeTruthy();
+
+    // Viewport widens: there is room on the right again, the flip must not be reused
+    eleRect = { width: 200, height: 100 };
+    act(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+    await flush();
+
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-right'),
+    ).toBeTruthy();
+  });
+
   // `getPopupContainer` sometime makes the popup 0/0 not start at left top.
   // We need cal the real visible position
   /*
