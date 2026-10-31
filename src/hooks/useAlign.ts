@@ -166,6 +166,13 @@ export default function useAlign(
   const resetFlipCache = () => {
     prevFlipRef.current = {};
   };
+  // The flip decision is relative to the visible area. When the viewport size
+  // changes (window resize, zoom, or a temporary viewport rewrite), the memo is
+  // meaningless - clear it so the next align is computed from scratch.
+  const prevViewportRef = React.useRef<{
+    width: number;
+    height: number;
+  } | null>(null);
 
   if (!open) {
     resetFlipCache();
@@ -188,7 +195,6 @@ export default function useAlign(
       const originOverflow = popupElement.style.overflow;
       const originOverflowX = popupElement.style.overflowX;
       const originOverflowY = popupElement.style.overflowY;
-
 
       // Placement
       const placementInfo: AlignType = {
@@ -244,6 +250,15 @@ export default function useAlign(
         scrollTop,
         scrollLeft,
       } = doc.documentElement;
+
+      if (
+        !prevViewportRef.current ||
+        prevViewportRef.current.width !== clientWidth ||
+        prevViewportRef.current.height !== clientHeight
+      ) {
+        prevViewportRef.current = { width: clientWidth, height: clientHeight };
+        resetFlipCache();
+      }
 
       const popupHeight = popupRect.height;
       const popupWidth = popupRect.width;
