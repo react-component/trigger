@@ -231,6 +231,41 @@ describe('Trigger.Align', () => {
     });
   });
 
+  it('re-align when the viewport grows back after a flip', async () => {
+    // Popup 50px tall so that both sides fit once the viewport grows
+    popupRect = { x: 0, y: 0, left: 0, top: 0, width: 100, height: 50 };
+    spanRect.y = 90;
+
+    render(
+      <Trigger
+        popupVisible
+        popupPlacement="bottom"
+        builtinPlacements={builtinPlacements}
+        popup={<strong>trigger</strong>}
+      >
+        <span className="target" />
+      </Trigger>,
+    );
+
+    await flush();
+
+    // No room below in a 100px high viewport, so it flips above
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-top'),
+    ).toBeTruthy();
+
+    // Viewport grows: there is room below again, the flip must not be reused
+    eleRect = { width: 100, height: 200 };
+    act(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+    await flush();
+
+    expect(
+      document.querySelector('.rc-trigger-popup-placement-bottom'),
+    ).toBeTruthy();
+  });
+
   // `getPopupContainer` sometime makes the popup 0/0 not start at left top.
   // We need cal the real visible position
   /*
