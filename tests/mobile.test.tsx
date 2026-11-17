@@ -43,6 +43,7 @@ describe('Trigger.Mobile', () => {
 
     // Touch work
     fireEvent.touchStart(target);
+    fireEvent.touchEnd(target);
     fireEvent.mouseEnter(target);
     fireEvent.mouseLeave(target);
     flush();
@@ -50,6 +51,7 @@ describe('Trigger.Mobile', () => {
 
     // Touch again
     fireEvent.touchStart(target);
+    fireEvent.touchEnd(target);
     flush();
     expect(document.querySelector('.rc-trigger-popup-hidden')).toBeTruthy();
   });
