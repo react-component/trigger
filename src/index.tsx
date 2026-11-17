@@ -281,6 +281,9 @@ export function generateTrigger(
       React.HTMLAttributes<HTMLElement>,
       | 'onClick'
       | 'onTouchStart'
+      | 'onTouchEnd'
+      | 'onTouchCancel'
+      | 'onPointerCancel'
       | 'onMouseEnter'
       | 'onMouseLeave'
       | 'onMouseMove'
@@ -593,10 +596,10 @@ export function generateTrigger(
       nextOpen: boolean,
       delay?: number,
       callback?: (event: Event) => void,
-      ignoreCheck?: () => boolean,
+      ignoreCheck?: (event: Event) => boolean,
     ) {
       cloneProps[eventName] = (event: any, ...args: any[]) => {
-        if (!ignoreCheck || !ignoreCheck()) {
+        if (!ignoreCheck || !ignoreCheck(event)) {
           callback?.(event);
           triggerOpen(nextOpen, delay);
         }
@@ -613,18 +616,53 @@ export function generateTrigger(
     /** Used for prevent `hover` event conflict with mobile env */
     const touchedRef = React.useRef(false);
 
+    /** A touch that has started and may still turn out to be a tap */
+    const touchPendingRef = React.useRef(false);
+
     if (touchToShow || touchToHide) {
+      // Toggle when a tap ends, not when it starts: a touch the browser takes
+      // over to scroll or zoom ends in `pointercancel` (or `touchcancel`), and
+      // toggling on `touchstart` flashed the popup under the finger.
       cloneProps.onTouchStart = (...args: any[]) => {
         touchedRef.current = true;
-
-        if (openRef.current && touchToHide) {
-          triggerOpen(false);
-        } else if (!openRef.current && touchToShow) {
-          triggerOpen(true);
-        }
+        touchPendingRef.current = true;
 
         // Pass to origin
         originChildProps.onTouchStart?.(...args);
+      };
+
+      cloneProps.onPointerCancel = (
+        event: React.PointerEvent<HTMLElement>,
+        ...args: any[]
+      ) => {
+        if (event.pointerType !== 'mouse') {
+          touchPendingRef.current = false;
+        }
+
+        // Pass to origin
+        originChildProps.onPointerCancel?.(event, ...args);
+      };
+
+      cloneProps.onTouchCancel = (...args: any[]) => {
+        touchPendingRef.current = false;
+
+        // Pass to origin
+        originChildProps.onTouchCancel?.(...args);
+      };
+
+      cloneProps.onTouchEnd = (...args: any[]) => {
+        if (touchPendingRef.current) {
+          touchPendingRef.current = false;
+
+          if (openRef.current && touchToHide) {
+            triggerOpen(false);
+          } else if (!openRef.current && touchToShow) {
+            triggerOpen(true);
+          }
+        }
+
+        // Pass to origin
+        originChildProps.onTouchEnd?.(...args);
       };
     }
 
@@ -666,7 +704,23 @@ export function generateTrigger(
     let onPopupMouseEnter: React.MouseEventHandler<HTMLDivElement>;
     let onPopupMouseLeave: VoidFunction;
 
-    const ignoreMouseTrigger = () => {
+    const ignoreMouseTrigger = (event: React.SyntheticEvent) => {
+      const { pointerType } = event as React.PointerEvent;
+
+      // A touch pointer fires `pointerenter` before `touchstart` and
+      // `pointerleave` right after it. The touch action already handles the
+      // tap, so these must not open or close the popup a second time. A pen on
+      // a touch screen fires touch events too, so it is treated the same.
+      if (pointerType === 'touch' || pointerType === 'pen') {
+        return true;
+      }
+
+      // A mouse pointer means the touch is over: hover works again.
+      if (pointerType === 'mouse') {
+        touchedRef.current = false;
+      }
+
+      // Compatibility mouse events a tap fires after the touch.
       return touchedRef.current;
     };
 
@@ -773,6 +827,9 @@ export function generateTrigger(
       'onClick',
       'onMouseDown',
       'onTouchStart',
+      'onTouchEnd',
+      'onTouchCancel',
+      'onPointerCancel',
       'onMouseEnter',
       'onMouseLeave',
       'onFocus',
